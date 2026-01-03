@@ -57,6 +57,15 @@ Notes / pitfall fixed:
 
 Purpose: get per-sample `F_MISS` values to decide which sample to keep inside each duplicate cluster.
 
+Rationale:
+
+- After Step 1 removes 92 high-missingness samples, the dataset changes to 1,155 samples.
+- F_MISS values must be recalculated on this new sample set (not reused from raw data).
+- Later in Step 5, when duplicate clusters are identified (samples with PI_HAT >= 0.98), we keep the **best-quality sample per cluster** = the one with **lowest F_MISS** (fewest missing genotypes).
+- This ensures we retain the most informative sample from each duplicate/related group.
+
+Command:
+
 ```bash
 plink --bfile ConvSK_mind20 --missing --out ConvSK_mind20_miss
 ```
