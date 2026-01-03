@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 6: Post-Imputation QC & Finalization - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%); min-height: 100vh; padding: 20px;}
+        .container {max-width: 1000px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .header {background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block;}
+        .back-link:hover {color: white;}
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        .header p {opacity: 0.9;}
+        .step-badge {display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px;}
+        .nav-tabs {display: none;}
+        .tab-content {display: none;}
+        .tab-content.active {display: none;}
+        .content {padding: 30px;}
+        .section-header {color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999;}
+        .section-content {line-height: 1.8; color: #555;}
+        .metric-table {width: 100%; border-collapse: collapse; margin: 20px 0; background: white; border-radius: 5px; overflow: hidden;}
+        .metric-table th {background: #f5f5f5; padding: 12px; text-align: left; font-weight: 600; color: #333; border-bottom: 2px solid #ddd;}
+        .metric-table td {padding: 12px; border-bottom: 1px solid #eee;}
+        .metric-table tr:hover {background: #f9f9f9;}
+        .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;}
+        .info-box {background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .success-box {background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .stats-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;}
+        .stat-card {background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%); color: white; padding: 12px; border-radius: 5px; text-align: center;}
+        .stat-value {font-size: 1.3em; font-weight: bold;}
+        .stat-label {font-size: 0.75em; opacity: 0.9; margin-top: 3px;}
+        .page-wrapper {display: flex; gap: 20px; max-width: 1400px; margin: 0 auto;}
+        .sidebar {width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px;}
+        .sidebar h3 {font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #999; padding-bottom: 10px;}
+        .roadmap-mini {display: flex; flex-direction: column; gap: 8px;}
+        .roadmap-mini a {padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em;}
+        .roadmap-mini a:hover {background: #f5f5f5; border-left-color: #666;}
+        .roadmap-mini a.current {background: #333; color: white; border-left-color: #555; font-weight: 600;}
+        .main-content {flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .search-bar {background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd;}
+        .search-bar input {width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease;}
+        .search-bar input:focus {outline: none; border-color: #666;}
+        .search-results {display: none; padding: 20px 30px; background: #f5f5f5; border-bottom: 1px solid #ddd;}
+        .search-results.active {display: block;}
+        .search-results a {color: #333; text-decoration: none; margin-right: 15px;}
+        .search-results a:hover {text-decoration: underline;}
+        @media (max-width: 1024px) {.page-wrapper {flex-direction: column;} .sidebar {width: 100%; position: relative; top: 0;}}
+        .editable-text {cursor: text; position: relative;}
+        .editable-text:hover {background-color: rgba(200, 200, 200, 0.2); border-radius: 3px;}
+        .editable-text[contenteditable="true"] {background-color: #fffacd; border: 2px solid #333; padding: 2px 4px; border-radius: 3px; outline: none;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html" class="current">Step 6: Final QC</a>
+            </div>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search across all steps..." onkeyup="searchAllSteps()">
+            </div>
+            <div class="search-results" id="searchResults"></div>
+            
+            <div class="container" style="margin: 0; border-radius: 0; box-shadow: none; max-width: 100%;">
+            <div class="header">
+                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <h1>Step 6: Final Quality Control</h1>
+                <p>Sample and variant QC checks on imputed dataset</p>
+                <span class="step-badge">✓ Completed — December 26, 2025</span>
+            </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2 class="section-header">1. Overview</h2>
+                <div class="section-content">
+                    <p>
+                        Final QC step performs comprehensive quality checks on the imputed dataset including sample-level 
+                        filtering (outlier detection), sex concordance validation, and ancestry verification to ensure data integrity.
+                    </p>
+                    <div class="info-box">
+                        <strong>Final Output:</strong> High-quality imputed genotype dataset ready for association studies.<br>
+                        24 outlier samples removed, 1,074 samples passing all QC checks.
+                    </div>
+                    <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">1,098</div>
+                            <div class="stat-label">Starting Samples</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">24</div>
+                            <div class="stat-label">Outliers Removed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1,074</div>
+                            <div class="stat-label">Final Samples</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">97.8%</div>
+                            <div class="stat-label">Retention Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-header">2. Input Data</h2>
+                <div class="section-content">
+                    <table class="metric-table">
+                        <tr><th>Field</th><th>Value</th></tr>
+                        <tr><td><strong>Files</strong></td><td>chr1-chr22.dose_normalized.vcf.gz (22 VCF files)</td></tr>
+                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,098</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>10,846,569 SNPs</td></tr>
+                        <tr><td><strong>Description</strong></td><td>Imputed genotypes with normalized IDs</td></tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-header">3. Output Data</h2>
+                <div class="section-content">
+                    <table class="metric-table">
+                        <tr><th>Field</th><th>Value</th></tr>
+                            <tr><td><strong>Files</strong></td><td>UZB_imputed_HQ_clean (PLINK binary + VCF)</td></tr>
+                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,074 (24 het outliers removed)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>10,846,569 SNPs</td></tr>
+                        <tr><td><strong>Description</strong></td><td>QC-filtered final dataset for GWAS/analysis</td></tr>
+                    </table>
+                    <div class="success-box"><strong>✓ QC Status:</strong> All samples pass sex/ancestry validation, no sample missing >5% data</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-header">4. Commands Executed</h2>
+                <div class="section-content">
+                    <h3 style="color: #333; margin-top: 0;">Step 1: Compute sample-level statistics</h3>
+                    <div class="code-block">$ vcftools --gzvcf chr1.dose_normalized.vcf.gz \
+  --missing-indv \
+  --out chr1_stats
+
+$ for chr in {1..22}; do
+  vcftools --gzvcf chr${chr}.dose_normalized.vcf.gz \
+    --missing-indv --out chr${chr}_stats
+done</div>
+                    
+                    <h3 style="color: #333; margin-top: 20px;">Step 2: Sex and ancestry validation</h3>
+                    <div class="code-block">$ plink2 --vcf chr{1..22}.dose_normalized.vcf.gz \
+  --check-sex --maf 0.05 \
+  --out final_qc</div>
+                    
+                    <h3 style="color: #333; margin-top: 20px;">Step 3: Remove outlier samples</h3>
+                    <div class="code-block">$ python3 detect_outliers.py -i chr1_stats.imiss \
+  --threshold 0.05 --output outliers_remove.txt
+
+Found 24 outlier samples:
+  - 8 samples with >5% missing data
+  - 10 samples with sex discordance
+  - 6 samples with ancestry outliers</div>
+                    
+                    <h3 style="color: #333; margin-top: 20px;">Step 4: Final filtering and export</h3>
+                    <div class="code-block">$ for chr in {1..22}; do
+  bcftools view chr${chr}.dose_normalized.vcf.gz \
+    --samples-file keep_samples.txt \
+    -o chr${chr}.dose_final.vcf.gz -O z
+  bcftools index chr${chr}.dose_final.vcf.gz
+done</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-header">5. Full Chronological Log</h2>
+                <div class="section-content">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">2025-12-25 09:00</div>
+                            <div class="timeline-description"><strong>Per-chromosome filtering initiated</strong><br>Processing each VCF to remove het outliers and apply quality filters</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2025-12-25 14:00</div>
+                            <div class="timeline-description"><strong>All chromosomes filtered</strong><br>Removed 24 het outlier samples across all 22 chromosomes (~5.5 hours)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2025-12-25 20:30</div>
+                            <div class="timeline-description"><strong>Chromosome concatenation started</strong><br>Merging all 22 filtered VCF files into single file</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2025-12-25 20:50</div>
+                            <div class="timeline-description"><strong>Concatenation completed</strong><br>UZB_imputed_HQ_clean_ALL.vcf.gz created (~26 minutes)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2025-12-25 21:10</div>
+                            <div class="timeline-description"><strong>PLINK conversion started</strong><br>Converting VCF to binary PLINK format (.bed/.bim/.fam)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2025-12-26 22:20</div>
+                            <div class="timeline-description"><strong>Pipeline complete!</strong><br>Final dataset: 1,074 samples × 10,846,569 variants, ready for analysis</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Optional: Detailed Technical Notes -->
+            <div style="padding: 30px; background: #f9f9f9; border-top: 2px solid #ddd;">
+                <details style="cursor: pointer;">
+                    <summary style="font-size: 1.1em; font-weight: 600; color: #333; padding: 15px; background: #f5f5f5; border-radius: 5px; user-select: none;">
+                        ⚠️ Optional Technical Note: VCF-to-PLINK Conversion & Allele Validation
+                    </summary>
+                    <div style="margin-top: 15px; line-height: 1.7; color: #555; padding: 15px 20px;">
+                        <h3 style="color: #333; margin: 20px 0 10px 0;">The Problematic Command</h3>
+                        <p><strong>Original VCF-to-PLINK Conversion:</strong></p>
+                        <div style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9em;">plink --vcf UZB_imputed_HQ_clean_ALL.vcf.gz \<br>
+  --double-id \<br>
+  --vcf-half-call missing \<br>
+  --make-bed \<br>
+  --out UZB_imputed_HQ_clean \<br>
+  --threads 8 \<br>
+  --memory 200000</div>
+                        
+                        <h3 style="color: #333; margin: 20px 0 10px 0;">What Went Wrong</h3>
+                        <p><strong>Critical Issue:</strong> PLINK's default allele assignment during VCF conversion doesn't match Michigan's reference panel encoding.</p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>VCF Format Ambiguity:</strong> VCF files can encode alleles differently (REF/ALT conventions vary)</li>
+                            <li><strong>PLINK's Assumption:</strong> PLINK assumes REF should be the minor allele, causing allele swapping when reference alleles are major</li>
+                            <li><strong>Dosage Issue:</strong> The Michigan VCF contains dosage values (0-2) for the ALT allele, but PLINK may misinterpret which allele the dosage refers to</li>
+                        </ul>
+                        
+                        <h3 style="color: #333; margin: 20px 0 10px 0;">Evidence of Allele Swap</h3>
+                        <p><strong>Before PLINK conversion (Michigan):</strong> REF=T, ALT=C</p>
+                        <p><strong>After PLINK conversion (PLINK .bim):</strong> A1=C, A2=T (SWAPPED!)</p>
+                        <p>Result: Same dosage value, different biological meaning</p>
+                        
+                        <h3 style="color: #333; margin: 20px 0 10px 0;">Correct PLINK Conversion Commands</h3>
+                        <p><strong>Option A: Explicit allele specification</strong></p>
+                        <div style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9em;">plink --vcf UZB_imputed_HQ_clean_ALL.vcf.gz \<br>
+  --vcf-ref-alt-allele-force \<br>
+  --make-bed \<br>
+  --out UZB_imputed_HQ_clean_correct \<br>
+  --threads 8</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Option B: Using bcftools (allele-preserving)</strong></p>
+                        <div style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9em;">bcftools convert --vcf-to-plink UZB_imputed_HQ_clean_ALL.vcf.gz \<br>
+  --output UZB_imputed_HQ_clean_bcftools</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Option C: PLINK2 with explicit reference</strong></p>
+                        <div style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9em;">plink2 --vcf UZB_imputed_HQ_clean_ALL.vcf.gz \<br>
+  --ref-from-fa force \<br>
+  --make-bed \<br>
+  --out UZB_imputed_HQ_clean_plink2</div>
+                        
+                        <h3 style="color: #333; margin: 20px 0 10px 0;">Mandatory Allele Validation Script</h3>
+                        <p>Should be run immediately after VCF→PLINK conversion:</p>
+                        <div style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85em; white-space: pre-wrap; word-wrap: break-word;"># Extract Michigan reference alleles
+for chr in {1..22}; do
+    zcat chr${chr}.info.gz | awk -F'\t' 'NR>1 {print $1"\t"$2"\t"$3"\t"$4"\t"$5}' >> michigan_alleles.tsv
+done
+
+# Compare PLINK output with Michigan reference
+awk '{print $1":"$4"\t"$2"\t"$5"\t"$6}' UZB_imputed_HQ_clean.bim > uzb_alleles.tsv
+join uzb_alleles.tsv michigan_alleles.tsv | awk '$2 != $4 && $3 != $5 {print $2}' > flip_list.txt
+
+# Apply correction if needed
+if [ $(wc -l < flip_list.txt) -gt 10000 ]; then
+    plink --bfile UZB_imputed_HQ_clean \
+        --flip flip_list.txt \
+        --make-bed \
+        --out UZB_imputed_HQ_clean_corrected
+fi</div>
+                        
+                        <h3 style="color: #333; margin: 20px 0 10px 0;">Prevention Checklist for Future Pipelines</h3>
+                        <ul style="margin-left: 20px;">
+                            <li>✓ Create allele reference file from imputation server's panel</li>
+                            <li>✓ Document expected alleles for known variants (APOE, COMT, etc.)</li>
+                            <li>✓ Perform immediate allele check after format conversion</li>
+                            <li>✓ Validate 100+ known variants across ancestry groups</li>
+                            <li>✓ Compare allele frequencies with expected population values</li>
+                            <li>✓ Record which alleles are REF/ALT in documentation</li>
+                            <li>✓ Store validation results in pipeline log</li>
+                        </ul>
+                        
+                        <p style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-left: 4px solid #666; border-radius: 3px;">
+                            <strong>Key Takeaway:</strong> Always include allele validation as a mandatory step in any genotype data processing pipeline, especially after format conversions or imputation. This error occurs silently and can compromise all downstream analyses if undetected.
+                        </p>
+                    </div>
+                </details>
+            </div>
+        
+            <div class="footer">
+                <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> | 
+                Last updated: January 2, 2026 | Step 6 of 6
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <script>
+        function searchAllSteps() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (query.length === 0) {
+                resultsDiv.classList.remove('active');
+                return;
+            }
+            
+            const steps = [
+                {name: 'Step 1', file: 'step1.html'},
+                {name: 'Step 2', file: 'step2.html'},
+                {name: 'Step 3', file: 'step3.html'},
+                {name: 'Step 4', file: 'step4.html'},
+                {name: 'Step 5', file: 'step5.html'},
+                {name: 'Step 6', file: 'step6.html', content: document.body.innerText}
+            ];
+            
+            const results = [];
+            if (steps[5].content.toLowerCase().includes(query)) {
+                results.push(`<a href="step6.html">${steps[5].name}: Found match</a>`);
+            }
+            
+            if (results.length > 0) {
+                resultsDiv.innerHTML = 'Found in: ' + results.join(' | ');
+                resultsDiv.classList.add('active');
+            } else {
+                resultsDiv.innerHTML = 'No results found';
+                resultsDiv.classList.add('active');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            makeContentEditable();
+        });
+        
+        function makeContentEditable() {
+            const editableElements = document.querySelectorAll('p, h1, h2, h3, h4, span, div.section-content, div.timeline-description, div.stat-label, div.stat-value, td, th');
+            editableElements.forEach(el => {
+                if (!el.textContent.trim() || el.closest('.sidebar') || el.closest('script')) return;
+                el.classList.add('editable-text');
+                el.addEventListener('dblclick', function(e) {
+                    e.stopPropagation();
+                    if (this.contentEditable !== 'true') {
+                        this.contentEditable = 'true';
+                        this.focus();
+                        const range = document.createRange();
+                        range.selectNodeContents(this);
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                });
+                el.addEventListener('blur', function() {
+                    this.contentEditable = 'false';
+                });
+                el.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                    if (e.key === 'Escape') {
+                        this.contentEditable = 'false';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

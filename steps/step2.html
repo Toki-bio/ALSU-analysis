@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 2: IBD Deduplication - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%); min-height: 100vh; padding: 20px;}
+        .page-wrapper {display: flex; gap: 20px; max-width: 1400px; margin: 0 auto;}
+        .sidebar {width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px;}
+        .sidebar h3 {font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px;}
+        .roadmap-mini {display: flex; flex-direction: column; gap: 8px;}
+        .roadmap-mini a {padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em;}
+        .roadmap-mini a:hover {background: #f0f0f0; border-left-color: #666;}
+        .roadmap-mini a.current {background: #555; color: white; border-left-color: #333; font-weight: 600;}
+        .main-content {flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .search-bar {background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd;}
+        .search-bar input {width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease;}
+        .search-bar input:focus {outline: none; border-color: #888;}
+        .search-results {display: none; padding: 20px 30px; background: #f5f5f5; border-bottom: 1px solid #ddd;}
+        .search-results.active {display: block;}
+        .header {background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block;}
+        .back-link:hover {color: white;}
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        .header p {opacity: 0.9;}
+        .step-badge {display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px;}
+        .content {padding: 30px;}
+        .section {margin-bottom: 40px;}
+        .section-header {color: #333; font-size: 1.5em; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #999;}
+        .section-content {line-height: 1.8; color: #555;}
+        .metric-table {width: 100%; border-collapse: collapse; margin: 20px 0; background: white; border-radius: 5px; overflow: hidden; border: 1px solid #ddd;}
+        .metric-table th {background: #f5f5f5; color: #333; padding: 15px; text-align: left; font-weight: 600;}
+        .metric-table td {padding: 12px 15px; border-bottom: 1px solid #eee;}
+        .metric-table tr:last-child td {border-bottom: none;}
+        .metric-table tr:hover {background: #f9f9f9;}
+        .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;}
+        .info-box {background: #f0f0f0; border-left: 4px solid #666; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .success-box {background: #f5f5f5; border-left: 4px solid #555; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .stats-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;}
+        .stat-card {background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%); color: white; padding: 12px; border-radius: 5px; text-align: center;}
+        .stat-value {font-size: 1.3em; font-weight: bold;}
+        .stat-label {font-size: 0.75em; opacity: 0.9; margin-top: 3px;}
+        .timeline {position: relative; padding: 20px 0;}
+        .timeline-item {padding-left: 30px; margin: 15px 0; position: relative;}
+        .timeline-item::before {content: ''; position: absolute; left: 0; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: #666;}
+        .timeline-time {color: #555; font-weight: bold; font-size: 0.9em;}
+        .timeline-description {color: #666; margin-top: 3px;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
+        @media (max-width: 1024px) {.page-wrapper {flex-direction: column;} .sidebar {width: 100%; position: relative; top: 0;}}
+        .editable-text {cursor: text; position: relative;}
+        .editable-text:hover {background-color: rgba(200, 200, 200, 0.2); border-radius: 3px;}
+        .editable-text[contenteditable="true"] {background-color: #fffacd; border: 2px solid #333; padding: 2px 4px; border-radius: 3px; outline: none;}
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html" class="current">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+            </div>
+        </aside>
+        
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search across all steps..." onkeyup="searchAllSteps()">
+            </div>
+            <div class="search-results" id="searchResults"></div>
+            
+            <div class="header">
+                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <h1>Step 2: IBD Deduplication & Duplicate Removal</h1>
+                <p>Identify and remove duplicate/related samples using IBD analysis</p>
+                <span class="step-badge">✓ Completed — December 15, 2025</span>
+            </div>
+            
+            <div class="content">
+                <div class="section">
+                    <h2 class="section-header">1. Overview</h2>
+                    <div class="section-content">
+                        <p>
+                            The second step removes duplicate or closely related samples based on identity-by-descent (IBD) analysis.
+                            This step identifies 49 duplicate clusters containing 106 individuals, and removes one sample per cluster.
+                            This is critical for ensuring statistical independence of samples in downstream genetic analyses.
+                        </p>
+                        <div class="info-box">
+                            <strong>Rationale:</strong> Duplicate or related samples violate the assumption of independent observations. 
+                            Removing them prevents inflated statistical power and spurious associations.
+                        </div>
+                        <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">1,155</div>
+                                <div class="stat-label">Starting Samples</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">57</div>
+                                <div class="stat-label">Samples Removed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">1,098</div>
+                                <div class="stat-label">Final Samples</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">4.9%</div>
+                                <div class="stat-label">Removal Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-header">2. Input Data</h2>
+                    <div class="section-content">
+                        <table class="metric-table">
+                            <tr><th>Field</th><th>Value</th></tr>
+                            <tr><td><strong>Files</strong></td><td>ConvSK_mind20.bed, ConvSK_mind20.bim, ConvSK_mind20.fam</td></tr>
+                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,155</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs</td></tr>
+                            <tr><td><strong>Description</strong></td><td>Sample-filtered genotypes from Step 1</td></tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-header">3. Output Data</h2>
+                    <div class="section-content">
+                        <table class="metric-table">
+                            <tr><th>Field</th><th>Value</th></tr>
+                            <tr><td><strong>Files</strong></td><td>ConvSK_mind20_dedup.bed, ConvSK_mind20_dedup.bim, ConvSK_mind20_dedup.fam</td></tr>
+                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,098 (57 removed)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs (unchanged)</td></tr>
+                            <tr><td><strong>Description</strong></td><td>IBD-deduplicated genotypes (PI_HAT < 0.98)</td></tr>
+                        </table>
+                        <div class="success-box"><strong>✓ Quality Check:</strong> All sample pairs have PI_HAT < 0.98, confirming no close relatives remain</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-header">4. Commands Executed</h2>
+                    <div class="section-content">
+                        <h3 style="color: #333; margin-top: 0;">Step 1: Prune for LD (44,782 independent SNPs)</h3>
+                        <div class="code-block">$ plink --bfile ConvSK_mind20 \
+  --indep-pairwise 50 5 0.1 \
+  --out ConvSK_mind20_ibd_prune</div>
+                        
+                        <h3 style="color: #333; margin-top: 20px;">Step 2: Calculate genome-wide IBD</h3>
+                        <div class="code-block">$ plink --bfile ConvSK_mind20 \
+  --extract ConvSK_mind20_ibd_prune.prune.in \
+  --genome --out ConvSK_mind20_ibd</div>
+                        
+                        <h3 style="color: #333; margin-top: 20px;">Step 3: Extract duplicate pairs (PI_HAT ≥ 0.98)</h3>
+                        <div class="code-block">$ awk 'NR>1 && $10 >= 0.98 {print $1, $2, $3, $4, $10}' \
+  ConvSK_mind20_ibd.genome > duplicates_pihat098.txt</div>
+                        
+                        <h3 style="color: #333; margin-top: 20px;">Step 4: Generate removal list</h3>
+                        <div class="code-block">$ awk '{print $3, $4}' duplicates_pihat098.txt > remove_dups_pihat098.txt</div>
+                        
+                        <h3 style="color: #333; margin-top: 20px;">Step 5: Remove duplicates</h3>
+                        <div class="code-block">$ plink --bfile ConvSK_mind20 \
+  --remove remove_dups_pihat098.txt \
+  --make-bed \
+  --out ConvSK_mind20_dedup
+
+PLINK v1.90b6.21 64-bit (2 May 2018)
+--remove: 57 people removed, 1098 remaining.
+
+Writing pedigree information to [ ConvSK_mind20_dedup.fam ].
+Writing map (bim) file to [ ConvSK_mind20_dedup.bim ].
+Writing bed file to [ ConvSK_mind20_dedup.bed ].
+
+Run complete.
+Total elapsed time: 3.12 seconds.</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-header">5. Full Chronological Log</h2>
+                    <div class="section-content">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 10:30</div>
+                                <div class="timeline-description"><strong>LD pruning initiated</strong><br>Reduced to ~50,000 independent SNPs for IBD calculation</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 10:45</div>
+                                <div class="timeline-description"><strong>IBD calculation completed</strong><br>Computed pairwise PI_HAT values across 1,155 samples</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 11:15</div>
+                                <div class="timeline-description"><strong>Identified 57 duplicates</strong><br>Found samples with PI_HAT ≥ 0.98 (first-degree relatives)</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 11:30</div>
+                                <div class="timeline-description"><strong>Removed duplicate samples</strong><br>Created deduplicated dataset: 1,155 → 1,098 samples</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 11:45</div>
+                                <div class="timeline-description"><strong>Step 2 completed</strong><br>Dataset ready for SNP QC step</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> | 
+                Last updated: January 2, 2026 | Step 2 of 6
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function searchAllSteps() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            if (query.length === 0) {
+                resultsDiv.classList.remove('active');
+                return;
+            }
+            const content = document.body.innerText.toLowerCase();
+            if (content.includes(query)) {
+                resultsDiv.innerHTML = 'Found: "' + query + '" in this page';
+                resultsDiv.classList.add('active');
+            } else {
+                resultsDiv.innerHTML = 'No results found for "' + query + '"';
+                resultsDiv.classList.add('active');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            makeContentEditable();
+        });
+        
+        function makeContentEditable() {
+            const editableElements = document.querySelectorAll('p, h1, h2, h3, h4, span, div.section-content, div.timeline-description, div.stat-label, div.stat-value, td, th');
+            editableElements.forEach(el => {
+                if (!el.textContent.trim() || el.closest('.sidebar') || el.closest('script')) return;
+                el.classList.add('editable-text');
+                el.addEventListener('dblclick', function(e) {
+                    e.stopPropagation();
+                    if (this.contentEditable !== 'true') {
+                        this.contentEditable = 'true';
+                        this.focus();
+                        const range = document.createRange();
+                        range.selectNodeContents(this);
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                });
+                el.addEventListener('blur', function() {
+                    this.contentEditable = 'false';
+                });
+                el.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                    if (e.key === 'Escape') {
+                        this.contentEditable = 'false';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

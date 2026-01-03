@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Guide - ALSU Workflow Documentation</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px;}
+        .container {max-width: 1100px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .header {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px;}
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        .header p {opacity: 0.9;}
+        .content {padding: 40px 30px;}
+        .section {margin-bottom: 40px;}
+        .section-title {color: #667eea; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #667eea;}
+        .section-content {color: #555; line-height: 1.8;}
+        h3 {color: #333; margin-top: 20px; margin-bottom: 10px;}
+        .code-block {background: #f5f5f5; padding: 15px; border-left: 4px solid #667eea; border-radius: 3px; margin: 15px 0; font-family: 'Courier New', monospace; overflow-x: auto;}
+        .info-box {background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .warning-box {background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .success-box {background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .step-list {list-style: none; margin: 20px 0;}
+        .step-list li {padding: 10px 0; padding-left: 30px; position: relative;}
+        .step-list li:before {content: counter(step); counter-increment: step; position: absolute; left: 0; background: #667eea; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.9em;}
+        .step-list {counter-reset: step;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
+        a {color: #667eea; text-decoration: none;}
+        a:hover {text-decoration: underline;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Setup Guide & Documentation</h1>
+            <p>ALSU Genotyping Pipeline - Workflow Documentation System</p>
+        </div>
+        
+        <div class="content">
+            <!-- OVERVIEW -->
+            <div class="section">
+                <h2 class="section-title">Overview</h2>
+                <div class="section-content">
+                    <p>
+                        This guide explains how to set up and maintain the ALSU Genotyping Pipeline workflow documentation system. 
+                        The documentation consists of:
+                    </p>
+                    <ul style="margin: 15px 0 15px 20px;">
+                        <li><strong>Main Index Page</strong> - Roadmap with all pipeline steps</li>
+                        <li><strong>Step Pages (1-6)</strong> - Detailed documentation for each step</li>
+                        <li><strong>Daily Logs</strong> - Terminal output and activity logs</li>
+                        <li><strong>Workserver Integration</strong> - SSH connection to Biotech2024</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- FILE STRUCTURE -->
+            <div class="section">
+                <h2 class="section-title">File Structure</h2>
+                <div class="section-content">
+                    <div class="code-block">
+d:\perenos\ALSU-analysis\log\
+├── index.html                    # Main page with roadmap
+├── config.json                   # Configuration file
+├── steps/
+│   ├── step1.html               # Sample Missingness Filter
+│   ├── step2.html               # IBD Deduplication
+│   ├── step3.html               # SNP QC & VCF Export
+│   ├── step4.html               # Michigan Imputation
+│   ├── step5.html               # Homoglyph Fix
+│   └── step6.html               # Post-Imputation QC
+├── daily/
+│   ├── 2025-12-15.html          # Day 1 activity log
+│   ├── 2025-12-16.html          # Day 2 activity log
+│   ├── 2025-12-17.html          # Day 3 activity log
+│   ├── 2025-12-18-22.html       # Days 4-8 log
+│   ├── 2025-12-23.html          # Day 9 activity log
+│   └── 2025-12-26.html          # Day 10 activity log
+├── old_logs/                    # Original markdown documentation
+│   ├── complete_pipeline_summary.md
+│   ├── alsu_genotype_imputation_pipeline_full_technical_log.md
+│   ├── step6_technical_log.md
+│   └── ConvSK_QC_and_VCF_report.md
+└── README.md                    # This documentation
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CONFIGURATION -->
+            <div class="section">
+                <h2 class="section-title">Configuration (config.json)</h2>
+                <div class="section-content">
+                    <p>Edit <code>config.json</code> to customize the documentation system:</p>
+                    
+                    <h3>Workserver Settings</h3>
+                    <div class="code-block">
+{
+  "workserver": {
+    "hostname": "Biotech2024",
+    "host": "biotech2024.example.com",  // Change to your server hostname/IP
+    "port": 22,                         // SSH port
+    "username": "your_username",        // Your SSH username
+    "baseDirectory": "/staging/ALSU-analysis/winter2025/PLINK_301125_0312",
+    "enableSSHSync": false,             // Set to true to enable auto-sync
+    "syncInterval": 3600                // Seconds (default: 1 hour)
+  }
+}
+                    </div>
+                    
+                    <div class="info-box">
+                        <strong>Note:</strong> Update <code>host</code>, <code>username</code>, and <code>baseDirectory</code> 
+                        with your actual Biotech2024 workserver credentials.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- WORKSERVER CONNECTION -->
+            <div class="section">
+                <h2 class="section-title">Workserver Connection Setup</h2>
+                <div class="section-content">
+                    <h3>Step 1: Verify SSH Access</h3>
+                    <p>Test SSH connection to Biotech2024 workserver:</p>
+                    <div class="code-block">
+ssh -p 22 your_username@biotech2024.example.com
+# If successful, you should see the remote shell prompt
+                    </div>
+                    
+                    <h3>Step 2: Set Up SSH Key (Optional but Recommended)</h3>
+                    <p>For automated syncing without password prompts:</p>
+                    <div class="code-block">
+# On your local machine, generate SSH key if you don't have one
+ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa
+
+# Copy public key to workserver
+ssh-copy-id -i ~/.ssh/id_rsa.pub your_username@biotech2024.example.com
+
+# Test passwordless login
+ssh your_username@biotech2024.example.com
+                    </div>
+                    
+                    <h3>Step 3: Configure Automatic Log Sync</h3>
+                    <p>Create a script to fetch logs from Biotech2024 automatically:</p>
+                    <div class="code-block">
+#!/bin/bash
+# File: sync_logs.sh
+
+REMOTE_USER="your_username"
+REMOTE_HOST="biotech2024.example.com"
+REMOTE_PATH="/staging/ALSU-analysis/winter2025/"
+LOCAL_PATH="d:\perenos\ALSU-analysis\log\daily\"
+
+# Sync terminal logs and reports
+rsync -avz --delete \
+  ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}*.log \
+  ${LOCAL_PATH}terminal_logs/
+
+# Sync any markdown documentation
+rsync -avz --delete \
+  ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}*.md \
+  ${LOCAL_PATH}remote_docs/
+
+echo "Log sync completed at $(date)"
+                    </div>
+                    
+                    <h3>Step 4: Schedule Automatic Syncing (Windows Task Scheduler)</h3>
+                    <p>To run sync automatically every hour:</p>
+                    <ol class="step-list">
+                        <li>Open Windows Task Scheduler</li>
+                        <li>Click "Create Basic Task"</li>
+                        <li>Set trigger: "Daily" at 1:00 AM, repeat every 1 hour indefinitely</li>
+                        <li>Set action: "Start a program" → path to sync_logs.sh (via Git Bash or WSL)</li>
+                        <li>Click OK</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- DAILY LOG MANAGEMENT -->
+            <div class="section">
+                <h2 class="section-title">Managing Daily Logs</h2>
+                <div class="section-content">
+                    <h3>Creating a New Daily Log</h3>
+                    <p>Each day should have a corresponding HTML log file in <code>daily/</code> folder:</p>
+                    <ol class="step-list">
+                        <li>Name file as <code>YYYY-MM-DD.html</code> (e.g., <code>2025-12-15.html</code>)</li>
+                        <li>Use the template structure from existing daily log pages</li>
+                        <li>Include three sections:
+                            <ul style="margin: 10px 0 10px 20px;">
+                                <li><strong>Summary Box</strong> - Quick overview of the day's work</li>
+                                <li><strong>Session Log</strong> - Timestamped entries with commands and outputs</li>
+                                <li><strong>Statistics/Status</strong> - Key metrics and completion status</li>
+                            </ul>
+                        </li>
+                        <li>Add link to daily log in main index.html</li>
+                    </ol>
+                    
+                    <h3>Capturing Terminal Output</h3>
+                    <p>On Biotech2024, capture complete session:</p>
+                    <div class="code-block">
+# Method 1: Using script command
+script session_log.txt
+# ... run your commands ...
+exit
+# This creates session_log.txt with all terminal output
+
+# Method 2: Redirect to file and screen (tee)
+some_command 2>&1 | tee command_output.log
+
+# Method 3: Save entire session (bash)
+bash -c 'your_commands_here' | tee session_output.log
+                    </div>
+                </div>
+            </div>
+            
+            <!-- UPDATING STEPS -->
+            <div class="section">
+                <h2 class="section-title">Updating Step Documentation</h2>
+                <div class="section-content">
+                    <p>Each step page has three tabs that should be maintained:</p>
+                    
+                    <h3>Tab 1: Overview</h3>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Brief description of the step's purpose</li>
+                        <li>Key metrics in stat cards</li>
+                        <li>Rationale for the analysis</li>
+                    </ul>
+                    
+                    <h3>Tab 2: Technical Details</h3>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Detailed parameters used</li>
+                        <li>Input/output files with file sizes</li>
+                        <li>Complete command sequence</li>
+                        <li>Quality control checks performed</li>
+                    </ul>
+                    
+                    <h3>Tab 3: Chronological Log</h3>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Timeline of events with timestamps</li>
+                        <li>Key decisions made during execution</li>
+                        <li>Any errors encountered and how they were resolved</li>
+                        <li>Link to detailed daily log if available</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- MAINTENANCE -->
+            <div class="section">
+                <h2 class="section-title">Maintenance & Updates</h2>
+                <div class="section-content">
+                    <h3>Weekly Maintenance</h3>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Review and validate all HTML files load correctly</li>
+                        <li>Check external links (especially to workserver logs)</li>
+                        <li>Update "Last updated" date in footer of modified pages</li>
+                    </ul>
+                    
+                    <h3>Adding New Steps (if pipeline expands)</h3>
+                    <p>To add a new step to the pipeline:</p>
+                    <ol class="step-list">
+                        <li>Create new HTML file in <code>steps/</code> (e.g., <code>step7.html</code>)</li>
+                        <li>Use existing step template with step number and date updated</li>
+                        <li>Add step card to index.html roadmap section</li>
+                        <li>Update step count and progress indicators</li>
+                        <li>Update config.json with new step information</li>
+                    </ol>
+                    
+                    <h3>Archiving Old Documentation</h3>
+                    <p>Original markdown files are kept in <code>old_logs/</code> for reference. To archive:</p>
+                    <div class="code-block">
+# Create archive subdirectory
+mkdir old_logs/archive_2025
+
+# Move old files
+mv old_logs/*.md old_logs/archive_2025/
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TROUBLESHOOTING -->
+            <div class="section">
+                <h2 class="section-title">Troubleshooting</h2>
+                <div class="section-content">
+                    <h3>SSH Connection Issues</h3>
+                    <div class="warning-box">
+                        <strong>Problem:</strong> Cannot connect to Biotech2024<br>
+                        <strong>Solution:</strong> Verify hostname, port, and credentials in config.json. 
+                        Test with <code>ping biotech2024.example.com</code> first.
+                    </div>
+                    
+                    <h3>HTML Pages Not Loading</h3>
+                    <div class="warning-box">
+                        <strong>Problem:</strong> Pages display as text or with broken formatting<br>
+                        <strong>Solution:</strong> Ensure files are saved with .html extension. 
+                        Check that all relative links use ../ for navigation.
+                    </div>
+                    
+                    <h3>Log Sync Not Working</h3>
+                    <div class="warning-box">
+                        <strong>Problem:</strong> Daily logs not updating automatically<br>
+                        <strong>Solution:</strong> Check SSH key setup, verify rsync is installed, 
+                        review Task Scheduler logs for errors.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BEST PRACTICES -->
+            <div class="section">
+                <h2 class="section-title">Best Practices</h2>
+                <div class="section-content">
+                    <ul style="margin: 15px 0 15px 20px;">
+                        <li><strong>Document as you go</strong> - Don't wait until step is complete to document it</li>
+                        <li><strong>Include timestamps</strong> - All log entries should have date/time stamps</li>
+                        <li><strong>Save complete outputs</strong> - Include full command output, not just summaries</li>
+                        <li><strong>Record errors</strong> - Document any issues encountered and how they were resolved</li>
+                        <li><strong>Link references</strong> - Cross-reference between daily logs and step pages</li>
+                        <li><strong>Version control</strong> - Consider using Git to track changes to documentation</li>
+                        <li><strong>Regular backups</strong> - Keep copies of critical logs in secure location</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Last updated: January 2, 2026 | ALSU Workflow Documentation System
+        </div>
+    </div>
+</body>
+</html>

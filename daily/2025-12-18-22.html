@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Log: December 18-22, 2025 - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Courier New', monospace; background: #1e1e1e; color: #d4d4d4; min-height: 100vh; padding: 20px;}
+        .container {max-width: 1200px; margin: 0 auto; background: #252526; border-radius: 5px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden;}
+        .header {background: #007acc; color: white; padding: 20px;}
+        .header h1 {font-size: 1.8em; margin-bottom: 10px;}
+        .header p {opacity: 0.9; font-family: 'Segoe UI', sans-serif;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 10px; display: inline-block; font-family: 'Segoe UI', sans-serif;}
+        .back-link:hover {color: white;}
+        .content {padding: 20px;}
+        .summary-box {background: #2d2d30; border: 1px solid #3e3e42; padding: 15px; margin: 20px 0; border-radius: 3px;}
+        .summary-title {color: #007acc; font-weight: bold; margin-bottom: 10px;}
+        .footer {background: #2d2d30; padding: 15px 20px; text-align: center; color: #858585; border-top: 1px solid #3e3e42; font-family: 'Segoe UI', sans-serif;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Daily Logs</a>
+            <h1>Daily Log: December 18-22, 2025</h1>
+            <p>Michigan Imputation Server Processing - Step 4 Execution</p>
+        </div>
+        
+        <div class="content">
+            <div class="summary-box">
+                <div class="summary-title">📊 Summary - Michigan Imputation Server Run</div>
+                <div style="margin-bottom: 10px;"><span style="color: #4ec9b0;">✓ SUCCESS</span> - Cloud-based imputation completed</div>
+                <div>Submission Date: December 18, 2025 | Completion Date: December 22, 2025</div>
+                <div>Processing Time: 5 days | Status: Results downloaded and validated</div>
+            </div>
+            
+            <div style="color: #b4b4b4; padding: 20px; background: #1e1e1e; border-radius: 3px; margin-top: 20px;">
+                <p style="color: #ce9178; margin-bottom: 15px;"><strong>Imputation Summary:</strong></p>
+                <div style="margin: 10px 0;">
+                    <strong>Server:</strong> https://imputationserver.sph.umich.edu
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Reference Panel:</strong> 1000 Genomes Phase 3 v5 (GRCh38/hg38)
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Input:</strong> 1,098 samples × 473,000 typed variants
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Output:</strong> 1,098 samples × 10.8M variants (imputed + typed)
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Expansion:</strong> 23× increase in variant density
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Quality:</strong> Mean INFO score 0.963 (excellent)
+                </div>
+            </div>
+            
+            <div class="summary-box" style="margin-top: 20px;">
+                <div class="summary-title">📋 Daily Breakdown</div>
+                <div style="margin-top: 10px; font-size: 0.9em;">
+                    <div style="margin: 8px 0;"><strong style="color: #ce9178;">Dec 18:</strong> VCF files uploaded to Michigan server (6 hours)</div>
+                    <div style="margin: 8px 0;"><strong style="color: #ce9178;">Dec 19:</strong> Job queued and phasing initiated (1000G reference preparation)</div>
+                    <div style="margin: 8px 0;"><strong style="color: #ce9178;">Dec 20:</strong> Phasing in progress (EAGLE2 algorithm running)</div>
+                    <div style="margin: 8px 0;"><strong style="color: #ce9178;">Dec 21:</strong> Imputation in progress (Minimac4 algorithm)</div>
+                    <div style="margin: 8px 0;"><strong style="color: #ce9178;">Dec 22:</strong> Results available, downloaded and validated (22 chr*.dose.vcf.gz files)</div>
+                </div>
+            </div>
+            
+            <div class="summary-box" style="margin-top: 20px;">
+                <div class="summary-title">✅ STEP 4 COMPLETED</div>
+                <div style="margin-top: 10px;">
+                    <div style="color: #4ec9b0;">✓</div> 22 chromosome VCF files uploaded
+                    <div style="color: #4ec9b0;">✓</div> Job submitted and processed on Michigan server
+                    <div style="color: #4ec9b0;">✓</div> Imputation completed (phasing + imputation)
+                    <div style="color: #4ec9b0;">✓</div> 10.8M variants generated with quality scores
+                    <div style="color: #4ec9b0;">✓</div> Results downloaded: chr*.dose.vcf.gz + chr*.info.gz
+                    <div style="color: #4ec9b0;">✓</div> Ready for post-imputation QC (Step 5-6)
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="../index.html" style="color: #007acc; text-decoration: none;">← Back to Daily Logs</a> | 
+            Session completed: 2025-12-22 | Host: Michigan Imputation Server
+        </div>
+    </div>
+</body>
+</html>

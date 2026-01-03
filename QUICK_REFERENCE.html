@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Reference - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px;}
+        .container {max-width: 900px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .header {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px;}
+        .header h1 {font-size: 1.8em; margin-bottom: 10px;}
+        .content {padding: 30px;}
+        .grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;}
+        .card {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-decoration: none; transition: transform 0.3s ease;}
+        .card:hover {transform: translateY(-5px); box-shadow: 0 8px 20px rgba(102,126,234,0.3);}
+        .card-title {font-weight: bold; font-size: 1.1em; margin-bottom: 10px;}
+        .card-desc {font-size: 0.9em; opacity: 0.9;}
+        .section {margin: 30px 0;}
+        .section-title {color: #667eea; font-size: 1.5em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #667eea;}
+        .table {width: 100%; border-collapse: collapse; margin: 15px 0;}
+        .table th {background: #f5f5f5; padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #ddd;}
+        .table td {padding: 10px 12px; border-bottom: 1px solid #eee;}
+        .table tr:hover {background: #f9f9f9;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; border-top: 1px solid #ddd;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quick Reference Guide</h1>
+            <p>Fast access to documentation pages and resources</p>
+        </div>
+        
+        <div class="content">
+            <!-- MAIN PAGES -->
+            <div class="section">
+                <h2 class="section-title">📌 Main Pages</h2>
+                <div class="grid">
+                    <a href="index.html" class="card">
+                        <div class="card-title">🏠 Roadmap</div>
+                        <div class="card-desc">Overview of all 6 pipeline steps</div>
+                    </a>
+                    <a href="SETUP_GUIDE.html" class="card">
+                        <div class="card-title">⚙️ Setup Guide</div>
+                        <div class="card-desc">Configuration and workserver setup</div>
+                    </a>
+                    <a href="README.md" class="card">
+                        <div class="card-title">📖 README</div>
+                        <div class="card-desc">Project documentation overview</div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- STEP PAGES -->
+            <div class="section">
+                <h2 class="section-title">📋 Pipeline Steps</h2>
+                <table class="table">
+                    <tr>
+                        <th>Step</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Sample Missingness Filter</td>
+                        <td>Dec 15</td>
+                        <td><a href="steps/step1.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>IBD Deduplication & Duplicate Removal</td>
+                        <td>Dec 16</td>
+                        <td><a href="steps/step2.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>SNP QC for Imputation & VCF Export</td>
+                        <td>Dec 17</td>
+                        <td><a href="steps/step3.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Michigan Imputation Server</td>
+                        <td>Dec 18-22</td>
+                        <td><a href="steps/step4.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>Sample ID Normalization (Homoglyph Fix)</td>
+                        <td>Dec 23</td>
+                        <td><a href="steps/step5.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td>Post-Imputation QC & Dataset Finalization</td>
+                        <td>Dec 26</td>
+                        <td><a href="steps/step6.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- DAILY LOGS -->
+            <div class="section">
+                <h2 class="section-title">📅 Daily Activity Logs</h2>
+                <table class="table">
+                    <tr>
+                        <th>Date</th>
+                        <th>Activity</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Dec 15</strong></td>
+                        <td>Sample missingness analysis</td>
+                        <td><a href="daily/2025-12-15.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dec 16</strong></td>
+                        <td>IBD and duplicate analysis</td>
+                        <td><a href="daily/2025-12-16.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dec 17</strong></td>
+                        <td>SNP QC and VCF preparation</td>
+                        <td><a href="daily/2025-12-17.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dec 18-22</strong></td>
+                        <td>Michigan imputation run</td>
+                        <td><a href="daily/2025-12-18-22.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dec 23</strong></td>
+                        <td>Homoglyph fix and merging</td>
+                        <td><a href="daily/2025-12-23.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dec 26</strong></td>
+                        <td>Final QC and dataset finalization</td>
+                        <td><a href="daily/2025-12-26.html" style="color: #667eea;">View →</a></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- KEY FILES -->
+            <div class="section">
+                <h2 class="section-title">📂 Key Project Information</h2>
+                <div style="background: #f5f5f5; padding: 20px; border-radius: 5px;">
+                    <table class="table" style="background: none;">
+                        <tr>
+                            <td><strong>Project Name</strong></td>
+                            <td>ALSU Uzbek Pregnancy Loss Cohort</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Final Dataset</strong></td>
+                            <td>UZB_imputed_HQ_clean</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Final Samples</strong></td>
+                            <td>1,074 (from 1,247 initial)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Final Variants</strong></td>
+                            <td>10,846,569 (from 654,027 typed)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Genotyping Rate</strong></td>
+                            <td>100% (imputed data)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mean Imputation Quality</strong></td>
+                            <td>R² = 0.963 (excellent)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pipeline Status</strong></td>
+                            <td>✓ Complete (Dec 26, 2025)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ready For</strong></td>
+                            <td>Population genetics analyses, GWAS</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- TIPS -->
+            <div class="section">
+                <h2 class="section-title">💡 Tips & Tricks</h2>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 5px; border-left: 4px solid #1976d2;">
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Quick Navigation:</strong> Use browser back button or breadcrumb links to navigate between pages</li>
+                        <li><strong>Tab Switching:</strong> Each step page has 3 tabs - click to switch between Overview, Technical Details, and Chronological Log</li>
+                        <li><strong>Full Terminal Output:</strong> Daily logs include complete command output for reference</li>
+                        <li><strong>Terminal Format:</strong> Dark terminal theme used for daily logs - similar to actual workserver interface</li>
+                        <li><strong>Responsive Design:</strong> All pages work on desktop and mobile devices</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="index.html" style="color: #667eea; text-decoration: none;">← Back to Main Page</a> | 
+            Last updated: January 2, 2026
+        </div>
+    </div>
+</body>
+</html>

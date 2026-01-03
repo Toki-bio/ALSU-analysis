@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Log: December 17, 2025 - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Courier New', monospace; background: #1e1e1e; color: #d4d4d4; min-height: 100vh; padding: 20px;}
+        .container {max-width: 1200px; margin: 0 auto; background: #252526; border-radius: 5px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden;}
+        .header {background: #007acc; color: white; padding: 20px;}
+        .header h1 {font-size: 1.8em; margin-bottom: 10px;}
+        .header p {opacity: 0.9; font-family: 'Segoe UI', sans-serif;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 10px; display: inline-block; font-family: 'Segoe UI', sans-serif;}
+        .back-link:hover {color: white;}
+        .content {padding: 20px;}
+        .summary-box {background: #2d2d30; border: 1px solid #3e3e42; padding: 15px; margin: 20px 0; border-radius: 3px;}
+        .summary-title {color: #007acc; font-weight: bold; margin-bottom: 10px;}
+        .footer {background: #2d2d30; padding: 15px 20px; text-align: center; color: #858585; border-top: 1px solid #3e3e42; font-family: 'Segoe UI', sans-serif;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Daily Logs</a>
+            <h1>Daily Log: December 17, 2025</h1>
+            <p>SNP QC & VCF Export for Michigan Imputation - Step 3 Execution</p>
+        </div>
+        
+        <div class="content">
+            <div class="summary-box">
+                <div class="summary-title">📊 Summary</div>
+                <div style="margin-bottom: 10px;"><span style="color: #4ec9b0;">✓ SUCCESS</span> - SNP QC filters applied and VCF files prepared</div>
+                <div>Start Time: 09:00 | End Time: 16:30 | Duration: 7 hours 30 minutes</div>
+                <div>Input Variants: 654,027 | Filtered Variants: 473,000 | VCF Files Created: 22</div>
+            </div>
+            
+            <div style="color: #b4b4b4; padding: 20px; background: #1e1e1e; border-radius: 3px; margin-top: 20px;">
+                <p style="color: #ce9178; margin-bottom: 15px;"><strong>Step Summary:</strong></p>
+                <p>
+                    Applied quality filters (MAF ≥ 1%, HWE p > 1e-6, Geno 99%) and converted PLINK binary format 
+                    to VCF format for submission to Michigan Imputation Server. All 22 chromosomes successfully 
+                    exported with proper indexing.
+                </p>
+            </div>
+            
+            <div class="summary-box" style="margin-top: 20px;">
+                <div class="summary-title">✅ STEP 3 COMPLETED</div>
+                <div style="margin-top: 10px;">
+                    <div style="color: #4ec9b0;">✓</div> SNP QC filters applied
+                    <div style="color: #4ec9b0;">✓</div> 181K low-quality variants removed
+                    <div style="color: #4ec9b0;">✓</div> 473K high-quality variants retained
+                    <div style="color: #4ec9b0;">✓</div> 22 chromosome VCF files generated
+                    <div style="color: #4ec9b0;">✓</div> VCF files indexed and ready for submission
+                    <div style="color: #4ec9b0;">✓</div> Ready for Michigan Imputation Server (Step 4)
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="../index.html" style="color: #007acc; text-decoration: none;">← Back to Daily Logs</a> | 
+            Session saved: 2025-12-17 | Host: Biotech2024
+        </div>
+    </div>
+</body>
+</html>

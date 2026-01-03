@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Log: December 26, 2025 - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Courier New', monospace; background: #1e1e1e; color: #d4d4d4; min-height: 100vh; padding: 20px;}
+        .container {max-width: 1200px; margin: 0 auto; background: #252526; border-radius: 5px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden;}
+        .header {background: #007acc; color: white; padding: 20px;}
+        .header h1 {font-size: 1.8em; margin-bottom: 10px;}
+        .header p {opacity: 0.9; font-family: 'Segoe UI', sans-serif;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 10px; display: inline-block; font-family: 'Segoe UI', sans-serif;}
+        .back-link:hover {color: white;}
+        .content {padding: 20px;}
+        .summary-box {background: #2d2d30; border: 1px solid #3e3e42; padding: 15px; margin: 20px 0; border-radius: 3px;}
+        .summary-title {color: #007acc; font-weight: bold; margin-bottom: 10px;}
+        .footer {background: #2d2d30; padding: 15px 20px; text-align: center; color: #858585; border-top: 1px solid #3e3e42; font-family: 'Segoe UI', sans-serif;}
+        .success {color: #4ec9b0;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Daily Logs</a>
+            <h1>Daily Log: December 26, 2025</h1>
+            <p>Post-Imputation QC & Dataset Finalization - Step 6 Execution</p>
+        </div>
+        
+        <div class="content">
+            <div class="summary-box">
+                <div class="summary-title">📊 Summary</div>
+                <div style="margin-bottom: 10px;"><span class="success">✓ PIPELINE COMPLETE</span> - Final QC filters applied, analysis-ready dataset created</div>
+                <div>Start Time: 08:00 | End Time: 15:45 | Duration: 7 hours 45 minutes</div>
+                <div>Initial Samples: 1,098 | Final Samples: 1,074 | Heterozygosity Outliers Removed: 24</div>
+            </div>
+            
+            <div style="color: #b4b4b4; padding: 20px; background: #1e1e1e; border-radius: 3px; margin-top: 20px;">
+                <p style="color: #ce9178; margin-bottom: 15px;"><strong>Final QC Summary:</strong></p>
+                <div style="margin: 10px 0;">
+                    <strong>Imputation Quality Filters:</strong> R² ≥ 0.8, MAF ≥ 0.001
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Sample-Level Filters:</strong> Heterozygosity |F| ≤ 0.2
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Final Dataset Name:</strong> UZB_imputed_HQ_clean
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Final Dimensions:</strong> 1,074 samples × 10,846,569 variants
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Genotyping Rate:</strong> 100% (imputed data)
+                </div>
+                <div style="margin: 10px 0;">
+                    <strong>Mean Imputation Quality:</strong> 69% R² ≥ 0.9, 31% R² 0.8-0.9
+                </div>
+            </div>
+            
+            <div class="summary-box" style="margin-top: 20px;">
+                <div class="summary-title">📈 Quality Metrics Achieved</div>
+                <div style="margin-top: 10px; font-size: 0.9em;">
+                    <div style="margin: 8px 0;"><span class="success">✓</span> All variants pass R² ≥ 0.8 threshold</div>
+                    <div style="margin: 8px 0;"><span class="success">✓</span> All variants MAF ≥ 0.001 (Uzbek population-specific)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓</span> All samples heterozygosity within bounds (|F| ≤ 0.2)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓</span> 100% genotyping rate (no missing data)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓</span> No duplicates or related individuals</div>
+                </div>
+            </div>
+            
+            <div class="summary-box" style="margin-top: 20px;">
+                <div class="summary-title">✅ ENTIRE PIPELINE COMPLETED SUCCESSFULLY</div>
+                <div style="margin-top: 10px;">
+                    <div style="margin: 8px 0;"><span class="success">✓ STEP 1:</span> Sample Missingness (1247 → 1155)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓ STEP 2:</span> IBD Deduplication (1155 → 1098)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓ STEP 3:</span> SNP QC & VCF (654K → 473K variants)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓ STEP 4:</span> Michigan Imputation (473K → 10.8M variants)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓ STEP 5:</span> Homoglyph Fix (Sample ID normalization)</div>
+                    <div style="margin: 8px 0;"><span class="success">✓ STEP 6:</span> Post-Imputation QC (1098 → 1074 samples)</div>
+                </div>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #3e3e42;">
+                    <div style="color: #ce9178;"><strong>Final Dataset Ready For:</strong></div>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>GWAS analyses</li>
+                        <li>Population genetics studies</li>
+                        <li>Allele frequency estimation</li>
+                        <li>Haplotype phase analyses</li>
+                        <li>Complex trait heritability</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="../index.html" style="color: #007acc; text-decoration: none;">← Back to Daily Logs</a> | 
+            Pipeline completed: 2025-12-26 | Host: Biotech2024
+        </div>
+    </div>
+</body>
+</html>
