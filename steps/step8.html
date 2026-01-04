@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 8: Global PCA with 1000 Genomes - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        
+        .search-results { display: none; padding: 20px 30px; background: #e3f2fd; border-bottom: 1px solid #ddd; }
+        .search-results.active { display: block; }
+        .search-results a { color: #1976d2; text-decoration: none; margin-right: 15px; }
+        .search-results a:hover { text-decoration: underline; }
+        
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        
+        .content { padding: 30px; }
+        
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #f5f5f5; padding: 15px; border-radius: 5px; border-left: 4px solid #1976d2; margin: 20px 0; overflow-x: auto; font-family: 'Courier New', monospace; }
+        .command-output { background: #1a1a1a; color: #00ff00; padding: 15px; border-radius: 5px; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; overflow-x: auto; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+        
+        .section-header {
+            color: #333;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #999;
+        }
+        
+        .section-content {
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .section {
+            margin: 20px 0;
+        }
+        
+        /* Editable Content Styles */
+        [contenteditable="true"] { 
+            outline: 2px dashed #667eea; 
+            outline-offset: 2px;
+            cursor: text;
+            padding: 2px 4px;
+        }
+        [contenteditable="true"]:focus { 
+            outline: 2px solid #1976d2; 
+            background: #f0f7ff;
+        }
+        .edit-toolbar { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            background: white; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+            z-index: 1000;
+            display: none;
+        }
+        .edit-toolbar.active { display: block; }
+        .edit-toolbar button { 
+            padding: 8px 15px; 
+            margin: 5px 5px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: 600;
+        }
+        .save-btn { background: #28a745; color: white; }
+        .save-btn:hover { background: #218838; }
+        .cancel-btn { background: #6c757d; color: white; }
+        .cancel-btn:hover { background: #5a6268; }
+        .edit-mode-notice { 
+            background: #fff3cd; 
+            padding: 12px 15px; 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            display: none; 
+        }
+        .edit-mode-notice.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+                <a href="step7.html">Step 7: PCA Analysis</a>
+                <a href="step8.html" class="current">Step 8: Global PCA</a>
+            </div>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search across all steps..." onkeyup="searchAllSteps()">
+            </div>
+            <div class="search-results" id="searchResults"></div>
+            
+            <div class="header">
+                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <h1>Step 8: Global PCA with 1000 Genomes Reference</h1>
+                <p>Establish ancestry context and compare Uzbek cohort to global populations</p>
+                <span class="step-badge">Completed — January 3, 2026</span>
+            </div>
+        
+            <div class="content">
+                <div class="section">
+                    <h2 class="section-header">1. Overview</h2>
+                    <div class="section-content">
+                        <p>
+                            To contextualize the ancestry of the Uzbek samples within global populations, we merge our imputed dataset with the 1000 Genomes Phase 3 reference (GRCh38), then perform global PCA. This step reveals the position of the Uzbek cohort relative to major continental ancestry groups and identifies any potential admixture patterns.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-header">2. Input Data</h2>
+                    <div class="section-content">
+                <table>
+                    <tr>
+                        <th>Source</th>
+                        <th>File(s)</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>Uzbek Data</td>
+                        <td><code>UZB_imputed_HQ_unique.{bed,bim,fam}</code></td>
+                        <td>1,074 Uzbek samples, 5.38M variants (unique IDs)</td>
+                    </tr>
+                    <tr>
+                        <td>1000G Reference</td>
+                        <td><code>ALL.chr*.shapeit2_integrated_v1a.GRCh38.phased.vcf.gz</code></td>
+                        <td>2,548 samples across 5 superpopulations (AFR, AMR, EAS, EUR, SAS)</td>
+                    </tr>
+                    <tr>
+                        <td>Metadata</td>
+                        <td><code>1000g_panel.txt</code></td>
+                        <td>Sample IDs, population codes, superpopulation labels</td>
+                    </tr>
+                </table>
+                
+                <h2>Step 1: Extract Target SNPs from 1000G</h2>
+                <p>
+                    The 1000 Genomes reference contains ~80M variants. To make the merge computationally tractable and ensure proper overlap with our imputed dataset, we extract only the SNPs present in our LD-pruned list (88.3K independent variants).
+                </p>
+                
+                <h3>Prepare Position-Based Extraction</h3>
+                <div class="code-block">
+# Define paths
+UZB_DIR="/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/filtered_clean"
+PRUNED_LIST="${UZB_DIR}/UZB_pruned.prune.in"
+
+for chr in {1..22}; do
+    echo "--- Working on Chromosome $chr ---"
+    
+    # Create BED file with position ranges (matching VCF naming with 'chr' prefix)
+    grep "^${chr}:" $PRUNED_LIST | awk -F':' '{print "chr"$1 "\t" ($2-1) "\t" $2}' > chr${chr}_targets.bed
+    
+    # Extract SNPs using bcftools (position-based is faster and more accurate than ID-based)
+    bcftools view -T chr${chr}_targets.bed \
+      -m2 -M2 -v snps \
+      ALL.chr${chr}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz \
+      -Oz -o chr${chr}_subset.vcf.gz
+    
+    # Count extracted variants
+    COUNT=$(bcftools view -H chr${chr}_subset.vcf.gz | wc -l)
+    echo "Found $COUNT variants for Chromosome $chr"
+done
+                </div>
+                
+                <div class="command-output">
+--- Working on Chromosome 21 ---
+Found 1348 variants for Chromosome 21
+--- Working on Chromosome 22 ---
+Found 1392 variants for Chromosome 22
+                </div>
+                
+                <h3>Convert VCF to PLINK Binary Format</h3>
+                <div class="code-block">
+plink2 --vcf chr${chr}_subset.vcf.gz \
+  --set-all-var-ids '@:#:$r:$a' \
+  --new-id-max-allele-len 50 \
+  --make-bed \
+  --out chr${chr}_ref \
+  --threads 8
+                </div>
+                
+                <div class="stat-box">
+                    <span class="stat-label">Total 1000G Variants Extracted:</span>
+                    <span class="stat-value"><strong>83,664</strong> (matching Uzbek LD-pruned set)</span><br><br>
+                    <span class="stat-label">1000G Samples:</span>
+                    <span class="stat-value"><strong>2,548</strong> (split across 5 superpopulations)</span>
+                </div>
+                
+                <h2>Step 2: Merge 1000G Chromosomes</h2>
+                <p>
+                    Combine the 22 chromosome-specific 1000G reference files into a single, unified dataset using PLINK's merge functionality.
+                </p>
+                
+                <div class="code-block">
+# Create merge list (excluding chr1, which serves as master)
+ls chr*_ref.bed | grep -v "chr1_ref" | sed 's/.bed//' > merge_list.txt
+
+# Merge all chromosomes
+plink --bfile chr1_ref --merge-list merge_list.txt --make-bed --out KG_reference_final
+                </div>
+                
+                <div class="command-output">
+Performing single-pass merge (2548 people, 83664 variants).
+Merged fileset written to KG_reference_final-merge.bed + .bim + .fam.
+83664 variants and 2548 people pass filters and QC.
+Note: No phenotypes present.
+--make-bed to KG_reference_final.bed + KG_reference_final.bim + KG_reference_final.fam ... done.
+                </div>
+                
+                <div class="success">
+                    <strong>Reference Dataset Ready:</strong> 2,548 1000G samples × 83,664 common variants
+                </div>
+                
+                <h2>Step 3: Merge Uzbek Data with 1000G Reference</h2>
+                <p>
+                    Merge the Uzbek imputed dataset with the 1000G reference to create a combined dataset for global PCA analysis.
+                </p>
+                
+                <div class="code-block">
+plink --bfile UZB_imputed_HQ_unique --bmerge KG_reference_final \
+  --make-bed \
+  --out UZB_1kG_merged
+                </div>
+                
+                <div class="stat-box">
+                    <span class="stat-label">Combined Dataset:</span>
+                    <span class="stat-value">3,610 samples (1,062 UZB + 2,548 1000G)</span><br><br>
+                    <span class="stat-label">Variants Available:</span>
+                    <span class="stat-value">5,383,967 total (matching across both datasets)</span><br><br>
+                    <span class="stat-label">Variants Used for Global PCA:</span>
+                    <span class="stat-value">83,664 (1000G reference set)</span>
+                </div>
+                
+                <h2>Step 4: Global PCA</h2>
+                <p>
+                    Perform PCA on the merged dataset using only the 83.6K common variants. This reveals how the Uzbek samples cluster relative to the five 1000 Genomes superpopulations (AFR, AMR, EAS, EUR, SAS).
+                </p>
+                
+                <div class="code-block">
+plink2 --bfile UZB_1kG_merged \
+  --extract KG_reference_final.bim \
+  --pca 10 \
+  --out GLOBAL_PCA \
+  --threads 8
+                </div>
+                
+                <div class="command-output">
+Start time: Sat Jan  3 18:54:11 2026
+3610 samples (0 females, 0 males, 3610 ambiguous; 3610 founders) loaded.
+5383967 variants loaded from UZB_1kG_merged.bim.
+--extract: 83664 variants remaining.
+Calculating allele frequencies... done.
+83664 variants remaining after main filters.
+Constructing GRM: done.
+Correcting for missingness... done.
+Extracting eigenvalues and eigenvectors... done.
+--pca: Eigenvectors written to GLOBAL_PCA.eigenvec, eigenvalues to GLOBAL_PCA.eigenval.
+End time: Sat Jan  3 18:54:30 2026
+                </div>
+                
+                <h2>Step 5: Create Population Mapping &amp; Visualization</h2>
+                <p>
+                    Combine PCA results with population labels from the 1000G panel, then create a publication-quality scatter plot showing ancestry composition.
+                </p>
+                
+                <div class="code-block">
+# Extract population mapping from 1000G panel
+awk 'NR>1 {print $1 "\t" $3}' 1000g_panel.txt > pop_mapping.txt
+
+# Add Uzbek samples labeled as 'UZB'
+awk '{print $2 "\tUZB"}' UZB_imputed_HQ_unique.fam >> pop_mapping.txt
+                </div>
+                
+                <div class="code-block">
+cat << 'EOF' > plot_global_pca.R
+library(ggplot2)
+
+# Load PCA results and population labels
+eigenvec <- read.table("GLOBAL_PCA.eigenvec", header = TRUE, comment.char = "")
+colnames(eigenvec)[1:2] <- c("Sample", "IID")
+mapping <- read.table("pop_mapping.txt", header = FALSE, col.names = c("Sample", "Group"))
+
+# Merge data
+data <- merge(eigenvec, mapping, by = "Sample")
+
+# Define colors for each superpopulation
+colors <- c("AFR" = "#E41A1C", "AMR" = "#377EB8", "EAS" = "#4DAF4A",
+            "EUR" = "#984EA3", "SAS" = "#FF7F00", "UZB" = "black")
+
+# Create plot
+ggplot(data, aes(x = PC1, y = PC2, color = Group)) +
+  geom_point(alpha = 0.5, size = 1.2) +
+  scale_color_manual(values = colors) +
+  theme_minimal() +
+  labs(title = "Global PCA: Uzbek Samples vs 1000 Genomes",
+       subtitle = "Ancestry context (PC1 vs PC2)",
+       x = "Principal Component 1",
+       y = "Principal Component 2") +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
+
+ggsave("Global_PCA_UZB.png", width = 10, height = 7, dpi = 300)
+EOF
+
+Rscript plot_global_pca.R
+                </div>
+                
+                <div class="success">
+                    <strong>Visualization Complete:</strong>
+                    <ul style="margin: 10px 0 0 15px;">
+                        <li>High-resolution PNG (300 dpi, 10×7 inches)</li>
+                        <li>Color-coded by 1000G superpopulation + UZB cohort</li>
+                        <li>Ready for publication or presentation</li>
+                    </ul>
+                </div>
+                
+                <h3 style="margin-top: 30px; color: #555;">Result: Global PCA Plot</h3>
+                <p style="color: #666; margin: 15px 0;">The global PCA shows where the Uzbek cohort positions relative to major continental ancestry groups. The clear separation from 1000G samples reflects the unique Central Asian ancestry of the Uzbek population.</p>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0;">
+                    <img src="../images/Global_PCA_UZB.png" alt="Global PCA: Uzbek vs 1000 Genomes" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                    <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 2: Global ancestry analysis showing Uzbek cohort (black) against 1000 Genomes reference populations. Superpopulations: AFR=African, AMR=American, EAS=East Asian, EUR=European, SAS=South Asian</p>
+                </div>
+                
+                <h2>Key Findings</h2>
+                <table>
+                    <tr>
+                        <th>Finding</th>
+                        <th>Interpretation</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Uzbek Position on PC1/PC2</strong></td>
+                        <td>Uzbek samples cluster distinctly, intermediate between EUR and SAS, reflecting Central Asian ancestry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Minimal Overlap with 1000G</strong></td>
+                        <td>Limited admixture with major continental groups; genetically distinct population</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Internal Cohort Structure</strong></td>
+                        <td>Visible substructure within Uzbek samples suggests regional or family-based clustering</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Quality</strong></td>
+                        <td>Clean separation from 1000G indicates successful imputation and QC</td>
+                    </tr>
+                </table>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-header">3. Output Data</h2>
+                    <div class="section-content">
+                <table>
+                    <tr>
+                        <th>File(s)</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td><code>KG_reference_final.{bed,bim,fam}</code></td>
+                        <td>1000G reference (83.6K variants)</td>
+                    </tr>
+                    <tr>
+                        <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>
+                        <td>Merged Uzbek + 1000G dataset</td>
+                    </tr>
+                    <tr>
+                        <td><code>GLOBAL_PCA.eigenvec</code></td>
+                        <td>PCA sample coordinates</td>
+                    </tr>
+                    <tr>
+                        <td><code>GLOBAL_PCA.eigenval</code></td>
+                        <td>PCA eigenvalues</td>
+                    </tr>
+                    <tr>
+                        <td><code>Global_PCA_UZB.png</code></td>
+                        <td>Publication-ready plot</td>
+                    </tr>
+                    <tr>
+                        <td><code>pop_mapping.txt</code></td>
+                        <td>Sample-to-population mapping</td>
+                    </tr>
+                </table>
+                    </div>
+                </div>
+                
+                <h2 class="section-header">Conclusions</h2>
+                <div class="success">
+                    <strong>Global Ancestry Context Established</strong>
+                    <ul style="margin: 10px 0 0 15px;">
+                        <li>Uzbek cohort successfully positioned within global ancestry framework</li>
+                        <li>Clear distinction from major 1000G superpopulations confirms Central Asian identity</li>
+                        <li>Internal structure visible in local PCA (Step 7) provides basis for stratified analyses</li>
+                        <li>Dataset ready for downstream association studies with ancestry-aware methods</li>
+                    </ul>
+                </div>
+                
+                <h2>Recommendations for GWAS</h2>
+                <ul>
+                    <li><strong>Ancestry Adjustment:</strong> Include PC1 and PC2 (global) as well as local PCs (from Step 7) as covariates</li>
+                    <li><strong>Population-Specific Analysis:</strong> Consider stratified GWAS by local PCA clusters if sufficient sample size</li>
+                    <li><strong>Fine-Mapping:</strong> Use global PCA to assess LD patterns and refine causal variant identification</li>
+                    <li><strong>Meta-Analysis:</strong> Compare results with 1000G populations for cross-population generalizability</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function searchAllSteps() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (input.length > 2) {
+                resultsDiv.classList.add('active');
+                resultsDiv.innerHTML = `<p>Search functionality for: "${input}" - <a href="../index.html#steps">View all steps</a></p>`;
+            } else {
+// Edit Mode Functionality
+        let isEditMode = false;
+        let originalContent = {};
+        
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const editableElements = document.querySelectorAll('h1, h2, h3, p, li, td:not(:first-child), strong');
+            const modeNotice = document.querySelector('.edit-mode-notice');
+            const toolbar = document.querySelector('.edit-toolbar');
+            
+            editableElements.forEach(el => {
+                if (el.closest('.sidebar') || el.closest('.search-bar')) return;
+                
+                if (isEditMode) {
+                    el.contentEditable = 'true';
+                    originalContent[el.textContent] = el.innerHTML;
+                } else {
+                    el.contentEditable = 'false';
+                }
+            });
+            
+            if (isEditMode) {
+                modeNotice?.classList.add('active');
+                toolbar?.classList.add('active');
+            } else {
+                modeNotice?.classList.remove('active');
+                toolbar?.classList.remove('active');
+            }
+        }
+        
+        function saveChanges() {
+            if (!isEditMode) return;
+            
+            const confirmSave = confirm('Save all changes to this page? Changes will be stored in your browser session.');
+            if (confirmSave) {
+                // Store in localStorage
+                const pageTitle = document.title;
+                const editableElements = document.querySelectorAll('[contenteditable="true"]');
+                const changes = {};
+                
+                editableElements.forEach((el, idx) => {
+                    changes[idx] = el.innerHTML;
+                });
+                
+                localStorage.setItem(`${pageTitle}_changes`, JSON.stringify(changes));
+                alert('Changes saved successfully to this browser session.');
+                toggleEditMode();
+            }
+        }
+        
+        function cancelEdit() {
+            if (!isEditMode) return;
+            
+            const confirmCancel = confirm('Discard all unsaved changes?');
+            if (confirmCancel) {
+                const editableElements = document.querySelectorAll('[contenteditable="true"]');
+                editableElements.forEach(el => {
+                    if (originalContent[el.textContent]) {
+                        el.innerHTML = originalContent[el.textContent];
+                    }
+                });
+                toggleEditMode();
+            }
+        }
+        
+        // Load saved changes on page load
+        window.addEventListener('load', function() {
+            const pageTitle = document.title;
+            const savedChanges = localStorage.getItem(`${pageTitle}_changes`);
+            
+            if (savedChanges) {
+                const changes = JSON.parse(savedChanges);
+                const editableElements = document.querySelectorAll('h1, h2, h3, p, li, td:not(:first-child), strong');
+                
+                Object.keys(changes).forEach(idx => {
+                    const element = editableElements[idx];
+                    if (element) {
+                        element.innerHTML = changes[idx];
+                    }
+                });
+            }
+        });
+        
+        // Add edit mode button to page
+        document.addEventListener('DOMContentLoaded', function() {
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit Page';
+            editBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; z-index: 999; font-weight: 600;';
+            editBtn.onclick = toggleEditMode;
+            
+            document.body.appendChild(editBtn);
+            
+            // Create toolbar
+            const toolbar = document.createElement('div');
+            toolbar.className = 'edit-toolbar';
+            toolbar.innerHTML = '<button class="save-btn" onclick="saveChanges()">Save Changes</button><button class="cancel-btn" onclick="cancelEdit()">Cancel</button>';
+            document.body.appendChild(toolbar);
+            
+            // Create edit mode notice
+            const notice = document.createElement('div');
+            notice.className = 'edit-mode-notice';
+            notice.textContent = 'Edit Mode Active: Click any text to edit it directly. Use Save Changes to save your edits, or Cancel to discard.';
+            const content = document.querySelector('.content');
+            if (content) {
+                content.insertBefore(notice, content.firstChild);
+            }
+        });
+    </script>
+</body>
+</html>

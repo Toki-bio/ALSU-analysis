@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 7: Local PCA on Uzbek Cohort - ALSU Pipeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .page-wrapper {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .sidebar h3 {
+            font-size: 1em;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #888;
+            padding-bottom: 10px;
+        }
+        
+        .roadmap-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .roadmap-mini a {
+            padding: 10px 12px;
+            background: #f5f5f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .roadmap-mini a:hover {
+            background: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        .roadmap-mini a.current {
+            background: #555;
+            color: white;
+            border-left-color: #333;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .search-bar {
+            background: #f5f5f5;
+            padding: 15px 30px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-results {
+            display: none;
+            padding: 20px 30px;
+            background: #e3f2fd;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .search-results.active {
+            display: block;
+        }
+        
+        .search-results a {
+            color: #1976d2;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        
+        .search-results a:hover {
+            text-decoration: underline;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
+            color: white;
+            padding: 30px;
+        }
+        
+        .back-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .back-link:hover {
+            color: white;
+        }
+        
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .step-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        @media (max-width: 1024px) {
+            .page-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                position: relative;
+                top: 0;
+            }
+        }
+        
+        .section-header {
+            color: #333;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #999;
+        }
+        
+        .section-content {
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .metric-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            background: white;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .metric-table th {
+            background: #f5f5f5;
+            padding: 8px;
+            text-align: left;
+            border-bottom: 2px solid #ccc;
+        }
+        
+        .metric-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .metric-table tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .footer {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #ddd;
+        }
+        
+    </style>
+</head>
+<body>
+<!--BACKUP OF BROKEN STEP7-->
+</body>
+</html>
