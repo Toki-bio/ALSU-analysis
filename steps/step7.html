@@ -185,16 +185,16 @@
                 <code>bcftools index UZB_test_chr19.vcf.gz</code>
             </div>
             
-            <div class="code-block">
-                <code>plink2 --vcf UZB_test_chr19.vcf.gz 'dosage=DS' \<br>
-&nbsp;&nbsp;--double-id \<br>
-&nbsp;&nbsp;--vcf-half-call missing \<br>
-&nbsp;&nbsp;--ref-from-fa /staging/Genomes/Human/chr/GRCh38.fa force \<br>
-&nbsp;&nbsp;--make-bed \<br>
-&nbsp;&nbsp;--out UZB_test_chr19 \<br>
-&nbsp;&nbsp;--threads 8 \<br>
-&nbsp;&nbsp;--memory 200000</code>
-            </div>
+                        <div class="code-block">
+plink2 --vcf UZB_test_chr19.vcf.gz 'dosage=DS' \
+    --double-id \
+    --vcf-half-call missing \
+    --ref-from-fa /staging/Genomes/Human/chr/GRCh38.fa force \
+    --make-bed \
+    --out UZB_test_chr19 \
+    --threads 8 \
+    --memory 200000
+                        </div>
             
             <div class="success">
                 <strong>Result:</strong> 212,050 variants scanned | 198,066 validated | 0 variants changed (perfect GRCh38 alignment)
@@ -264,16 +264,16 @@ grep rs429358 UZB_test_freq.afreq
             <h2 class="section-header">Step 2: Full Dataset Conversion</h2>
             <p>With validation complete, convert the full 10.8M-variant dataset from VCF to PLINK binary format.</p>
             
-            <div class="code-block">
-                <code>plink2 --vcf UZB_imputed_HQ_clean_ALL.vcf.gz 'dosage=DS' \<br>
-&nbsp;&nbsp;--double-id \<br>
-&nbsp;&nbsp;--vcf-half-call missing \<br>
-&nbsp;&nbsp;--fa /staging/Genomes/Human/chr/GRCh38.fa --ref-from-fa force \<br>
-&nbsp;&nbsp;--make-bed \<br>
-&nbsp;&nbsp;--out UZB_imputed_HQ_clean \<br>
-&nbsp;&nbsp;--threads 8 \<br>
-&nbsp;&nbsp;--memory 200000</code>
-            </div>
+                        <div class="code-block">
+plink2 --vcf UZB_imputed_HQ_clean_ALL.vcf.gz 'dosage=DS' \
+    --double-id \
+    --vcf-half-call missing \
+    --fa /staging/Genomes/Human/chr/GRCh38.fa --ref-from-fa force \
+    --make-bed \
+    --out UZB_imputed_HQ_clean \
+    --threads 8 \
+    --memory 200000
+                        </div>
             
             <div class="stat-box">
                 <span class="stat-label">Variants Scanned:</span>
@@ -313,16 +313,16 @@ grep rs429358 UZB_full_freq.afreq
             <h2 class="section-header">Step 3: Basic Quality Control</h2>
             <p>Apply standard post-imputation QC filters to remove low-quality variants and samples:</p>
             
-            <div class="code-block">
-                <code>plink2 --bfile UZB_imputed_HQ_clean \<br>
-&nbsp;&nbsp;--geno 0.05 \<br>
-&nbsp;&nbsp;--mind 0.05 \<br>
-&nbsp;&nbsp;--maf 0.01 \<br>
-&nbsp;&nbsp;--make-bed \<br>
-&nbsp;&nbsp;--out UZB_imputed_HQ_qc \<br>
-&nbsp;&nbsp;--threads 8 \<br>
-&nbsp;&nbsp;--memory 200000</code>
-            </div>
+                        <div class="code-block">
+plink2 --bfile UZB_imputed_HQ_clean \
+    --geno 0.05 \
+    --mind 0.05 \
+    --maf 0.01 \
+    --make-bed \
+    --out UZB_imputed_HQ_qc \
+    --threads 8 \
+    --memory 200000
+                        </div>
             
             <table class="metric-table">
                 <tr>
@@ -367,14 +367,14 @@ grep rs429358 UZB_full_freq.afreq
                 Assign unique IDs to all variants in the format <code>CHR:POS:REF:ALT</code> to handle potential duplicates and improve tractability.
             </p>
             
-            <div class="code-block">
-                <code>plink2 --bfile UZB_imputed_HQ_qc \<br>
-&nbsp;&nbsp;--set-all-var-ids '@:#:$r:$a' \<br>
-&nbsp;&nbsp;--new-id-max-allele-len 50 \<br>
-&nbsp;&nbsp;--make-bed \<br>
-&nbsp;&nbsp;--out UZB_imputed_HQ_unique \<br>
-&nbsp;&nbsp;--threads 8</code>
-            </div>
+                        <div class="code-block">
+plink2 --bfile UZB_imputed_HQ_qc \
+    --set-all-var-ids '@:#:$r:$a' \
+    --new-id-max-allele-len 50 \
+    --make-bed \
+    --out UZB_imputed_HQ_unique \
+    --threads 8
+                        </div>
             
             <div class="stat-box">
                 <span class="stat-label">Variants Processed:</span>
@@ -391,12 +391,12 @@ grep rs429358 UZB_full_freq.afreq
             </p>
             
             <h3>Pruning Parameters</h3>
-            <div class="code-block">
-                <code>plink2 --bfile UZB_imputed_HQ_unique \<br>
-&nbsp;&nbsp;--indep-pairwise 1000kb 1 0.05 \<br>
-&nbsp;&nbsp;--out UZB_pruned \<br>
-&nbsp;&nbsp;--threads 8</code>
-            </div>
+                        <div class="code-block">
+plink2 --bfile UZB_imputed_HQ_unique \
+    --indep-pairwise 1000kb 1 0.05 \
+    --out UZB_pruned \
+    --threads 8
+                        </div>
             
             <table class="metric-table">
                 <tr>
@@ -441,13 +441,13 @@ grep rs429358 UZB_full_freq.afreq
                 Calculate the first 10 principal components to visualize population structure and identify potential ancestry-driven subgroups within the Uzbek cohort.
             </p>
             
-            <div class="code-block">
-                <code>plink2 --bfile UZB_imputed_HQ_unique \<br>
-&nbsp;&nbsp;--extract UZB_pruned.prune.in \<br>
-&nbsp;&nbsp;--pca 10 \<br>
-&nbsp;&nbsp;--out UZB_final_pca \<br>
-&nbsp;&nbsp;--threads 8</code>
-            </div>
+                        <div class="code-block">
+plink2 --bfile UZB_imputed_HQ_unique \
+    --extract UZB_pruned.prune.in \
+    --pca 10 \
+    --out UZB_final_pca \
+    --threads 8
+                        </div>
             
             <div class="stat-box">
                 <span class="stat-label">Number of Components:</span>
@@ -471,40 +471,44 @@ grep rs429358 UZB_full_freq.afreq
             <h2 class="section-header">Step 7: PCA Visualization</h2>
             <p>Generate publication-quality plots showing PC1 vs PC2 to visualize population substructure.</p>
             
-            <div class="code-block">
-                <code>cat << 'EOF' > plot_pca.R<br>
-# Load ggplot2<br>
-if (!require("ggplot2", quietly = TRUE)) install.packages("ggplot2", repos="http://cran.us.r-project.org")<br>
-library(ggplot2)<br>
-<br>
-# Load data<br>
-eigenvec <- read.table("UZB_final_pca.eigenvec", header = TRUE, comment.char = "")<br>
-eigenval <- read.table("UZB_final_pca.eigenval", header = FALSE)<br>
-<br>
-# Rename columns<br>
-colnames(eigenvec)[1:2] <- c("FID", "IID")<br>
-<br>
-# Calculate Percentage of Variance Explained<br>
-pve <- data.frame(PC = 1:nrow(eigenval), pve = (eigenval$V1 / sum(eigenval$V1)) * 100)<br>
-<br>
-# Create plot<br>
-pca_plot <- ggplot(eigenvec, aes(x = PC1, y = PC2)) +<br>
-&nbsp;&nbsp;geom_point(alpha = 0.6, color = "darkblue", size = 1.5) +<br>
-&nbsp;&nbsp;theme_bw() +<br>
-&nbsp;&nbsp;labs(title = "PCA of UZB Imputed Data",<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "Calculated from 88,315 independent SNPs",<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x = paste0("PC1 (", round(pve$pve[1], 2), "%)"),<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = paste0("PC2 (", round(pve$pve[2], 2), "%)")) +<br>
-&nbsp;&nbsp;theme(plot.title = element_text(hjust = 0.5),<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plot.subtitle = element_text(hjust = 0.5))<br>
-<br>
-# Save outputs<br>
-ggsave("UZB_pca_plot.png", plot = pca_plot, width = 8, height = 6, dpi = 300)<br>
-ggsave("UZB_pca_plot.pdf", plot = pca_plot, width = 8, height = 6)<br>
-<br>
-cat("Success: UZB_pca_plot.png and UZB_pca_plot.pdf generated.\n")<br>
-EOF</code>
-            </div>
+                        <div class="code-block">
+cat << 'EOF' > plot_pca.R
+# Load ggplot2
+if (!require("ggplot2", quietly = TRUE)) install.packages("ggplot2", repos="http://cran.us.r-project.org")
+library(ggplot2)
+
+# Load data
+eigenvec <- read.table("UZB_final_pca.eigenvec", header = TRUE, comment.char = "")
+eigenval <- read.table("UZB_final_pca.eigenval", header = FALSE)
+
+# Rename columns
+colnames(eigenvec)[1:2] <- c("FID", "IID")
+
+# Calculate Percentage of Variance Explained
+pve <- data.frame(PC = 1:nrow(eigenval), pve = (eigenval$V1 / sum(eigenval$V1)) * 100)
+
+# Create plot
+pca_plot <- ggplot(eigenvec, aes(x = PC1, y = PC2)) +
+    geom_point(alpha = 0.6, color = "darkblue", size = 1.5) +
+    theme_bw() +
+    labs(
+        title = "PCA of UZB Imputed Data",
+        subtitle = "Calculated from 88,315 independent SNPs",
+        x = paste0("PC1 (", round(pve$pve[1], 2), "%)"),
+        y = paste0("PC2 (", round(pve$pve[2], 2), "%)")
+    ) +
+    theme(
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
+    )
+
+# Save outputs
+ggsave("UZB_pca_plot.png", plot = pca_plot, width = 8, height = 6, dpi = 300)
+ggsave("UZB_pca_plot.pdf", plot = pca_plot, width = 8, height = 6)
+
+cat("Success: UZB_pca_plot.png and UZB_pca_plot.pdf generated.\n")
+EOF
+                        </div>
             
             <div class="code-block">
                 <code>Rscript plot_pca.R</code>
