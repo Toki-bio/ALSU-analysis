@@ -373,11 +373,42 @@ Rscript plot_global_pca.R
                     </ul>
                 </div>
                 
-                <h3 style="margin-top: 30px; color: #555;">Result: Global PCA Plot</h3>
-                <p style="color: #666; margin: 15px 0;">The global PCA shows where the Uzbek cohort positions relative to major continental ancestry groups. The clear separation from 1000G samples reflects the unique Central Asian ancestry of the Uzbek population.</p>
+                <h3 style="margin-top: 30px; color: #555;">Result: Global PCA Plots</h3>
+                <p style="color: #666; margin: 15px 0;">The global PCA shows where the Uzbek cohort positions relative to major continental ancestry groups. The clear separation from 1000G samples reflects the unique Central Asian ancestry of the Uzbek population. Multiple PC combinations are shown below to reveal different aspects of population structure.</p>
+                
                 <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0;">
                     <img src="../images/Global_PCA_UZB.png" alt="Global PCA: Uzbek vs 1000 Genomes" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
-                    <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 2: Global ancestry analysis showing Uzbek cohort (black) against 1000 Genomes reference populations. Superpopulations: AFR=African, AMR=American, EAS=East Asian, EUR=European, SAS=South Asian</p>
+                    <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Global ancestry analysis showing Uzbek cohort (black) against 1000 Genomes reference populations. Superpopulations: AFR=African, AMR=American, EAS=East Asian, EUR=European, SAS=South Asian</p>
+                </div>
+
+                <h3 style="margin-top: 30px; color: #555;">Detailed PC Combinations</h3>
+                <p style="color: #666; margin: 15px 0;">Below are additional PC combinations (PC1-PC2, PC1-PC3, PC2-PC3, PC3-PC4, PC4-PC5) that capture different dimensions of genetic variation and provide a comprehensive view of population structure within the Uzbek cohort.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px; margin: 25px 0;">
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
+                        <img src="pca/Global_PCA_UZB_PC1_PC2.png" alt="Global PCA: PC1 vs PC2" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                        <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 2a: PC1 vs PC2 - Primary population structure axes</p>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
+                        <img src="pca/Global_PCA_UZB_PC1_PC3.png" alt="Global PCA: PC1 vs PC3" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                        <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 2b: PC1 vs PC3 - Alternative ancestry dimension</p>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
+                        <img src="pca/Global_PCA_UZB_PC2_PC3.png" alt="Global PCA: PC2 vs PC3" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                        <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 2c: PC2 vs PC3 - Secondary structure patterns</p>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
+                        <img src="pca/Global_PCA_UZB_PC3_PC4.png" alt="Global PCA: PC3 vs PC4" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                        <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 2d: PC3 vs PC4 - Finer population substructure</p>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
+                        <img src="pca/Global_PCA_UZB_PC4_PC5.png" alt="Global PCA: PC4 vs PC5" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                        <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 2e: PC4 vs PC5 - Fine-scale genetic variation</p>
+                    </div>
                 </div>
                 
                 <h2>Key Findings</h2>
