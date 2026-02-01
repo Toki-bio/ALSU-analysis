@@ -10,26 +10,100 @@
         
         .container { display: flex; flex-direction: column; height: 100vh; }
         .header { 
-            background: #2d3748; color: white; padding: 10px 15px; 
-            border-bottom: 1px solid #ccc; font-size: 14px;
+            background: #2d3748; color: white; padding: 4px 8px; 
+            border-bottom: 1px solid #ccc; font-size: 12px; line-height: 1.2;
         }
         
-        .content { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 150px; background: #f5f5f5; border-right: 1px solid #ccc; padding: 10px; overflow-y: auto; }
+        .content { display: flex; flex: 1; overflow: hidden; flex-direction: row-reverse; }
+        .sidebar { width: 200px; background: #f5f5f5; border-left: 1px solid #ccc; border-right: none; padding: 8px; overflow-y: auto; }
         .main { flex: 1; display: flex; flex-direction: column; }
-        #plot { flex: 1; }
+        #plot { 
+            flex: 1; 
+            cursor: default !important;
+            background: #fafafa;
+        }
         
-        .section { margin-bottom: 12px; }
+        #plot:hover {
+            cursor: default !important;
+        }
+
+        #plot .modebar {
+            z-index: 2000;
+            pointer-events: all;
+        }
+
+        #plot .modebar-btn,
+        #plot .modebar-group {
+            pointer-events: all;
+        }
+        
+        .section { margin-bottom: 10px; }
+        .section:last-child { margin-bottom: 0; }
         .section-label { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; text-transform: uppercase; }
         
         input[type="file"], select { width: 100%; padding: 5px; font-size: 11px; margin-bottom: 6px; border: 1px solid #999; }
         button { width: 100%; padding: 5px; font-size: 11px; background: #667eea; color: white; border: none; cursor: pointer; margin-bottom: 4px; }
         button:hover { background: #764ba2; }
         
-        .group-item { display: flex; align-items: center; gap: 6px; padding: 4px; margin-bottom: 3px; font-size: 11px; }
-        .group-item input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
-        .color-box { width: 12px; height: 12px; border: 1px solid #999; flex-shrink: 0; }
-        .group-item label { cursor: pointer; flex: 1; }
+        .dataset-item { 
+            display: block; width: 100%; padding: 5px 6px; font-size: 10px; 
+            background: #fff; border: 1px solid #ccc; cursor: pointer; 
+            margin-bottom: 3px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            transition: all 0.2s;
+            color: black;
+        }
+        .dataset-item:hover:not(.active) { background: #f5f5f5; }
+        .dataset-item.active { background: #764ba2; color: white; }
+        .dataset-item.active:hover { background: #764ba2; color: white; }
+        
+        .group-item { display: flex; align-items: center; gap: 6px; padding: 4px; margin-bottom: 3px; font-size: 11px; flex-wrap: wrap; }
+        .group-item input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+        .group-item-content { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 100px; }
+        .color-box { width: 20px; height: 20px; border: 1px solid #999; flex-shrink: 0; border-radius: 2px; }
+        .group-item label { cursor: pointer; min-width: 50px; }
+        .drag-handle {
+            font-size: 14px;
+            cursor: grab;
+            line-height: 1;
+            color: #666;
+            user-select: none;
+        }
+        .group-item.drag-over {
+            outline: 1px dashed #888;
+            background: #f0f0f0;
+        }
+        .customize-btn { 
+            width: 22px; height: 22px; padding: 2px; font-size: 11px; 
+            background: #667eea; color: white; border: 1px solid #555; cursor: pointer; 
+            flex-shrink: 0; border-radius: 3px; display: flex; align-items: center; justify-content: center;
+        }
+        .customize-btn:hover { background: #764ba2; border-color: #333; }
+        
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content { 
+            background: white; padding: 15px; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            max-width: 300px; width: 90%;
+        }
+        .modal-title { font-weight: bold; margin-bottom: 10px; font-size: 12px; }
+        .modal-section { margin-bottom: 12px; }
+        .modal-label { font-size: 10px; font-weight: bold; margin-bottom: 4px; }
+        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
+        .color-option { width: 30px; height: 30px; border: 2px solid #999; cursor: pointer; border-radius: 2px; }
+        .color-option.selected { border: 3px solid #000; }
+        .shape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+        .shape-option { padding: 6px; border: 1px solid #ccc; cursor: pointer; text-align: center; font-size: 10px; border-radius: 2px; }
+        .shape-option:hover { background: #f5f5f5; }
+        .shape-option.selected { background: #667eea; color: white; }
+        .size-control { display: flex; gap: 6px; align-items: center; }
+        .size-control input { width: 50px; }
+        .modal-buttons { display: flex; gap: 6px; margin-top: 10px; }
+        .modal-buttons button { flex: 1; padding: 6px; font-size: 10px; }
+        .modal-close { background: #ccc; color: black; }
+        .modal-close:hover { background: #999; }
     </style>
 </head>
 <body>
@@ -37,11 +111,15 @@
         <div class="header">PCA Viewer</div>
         
         <div class="content">
-            <div class="sidebar">
+            <div class="sidebar" style="border-right: none; border-left: 1px solid #ccc;">
                 <div class="section">
-                    <div class="section-label">File</div>
+                    <div class="section-label">Data Sets</div>
+                    <div id="datasetList" style="font-size: 10px;"></div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-label">Upload File</div>
                     <input type="file" id="csvInput" accept=".csv,.eigenvec">
-                    <button id="autoLoadBtn">Auto-load</button>
                     <div id="loadStatus" style="font-size: 10px; color: #666; margin-top: 4px;"></div>
                 </div>
                 
@@ -63,13 +141,63 @@
                 </div>
                 
                 <div class="section">
+                    <div class="section-label">Plot Controls</div>
+                    <div id="dimensionControls" style="display: none;">
+                        <label style="font-size: 10px; display: block; margin-bottom: 4px;">
+                            Width (px):
+                            <input type="number" id="plotWidth" value="" style="width: 60px; font-size: 10px; padding: 2px;">
+                        </label>
+                        <label style="font-size: 10px; display: block;">
+                            Height (px):
+                            <input type="number" id="plotHeight" value="" style="width: 60px; font-size: 10px; padding: 2px;">
+                        </label>
+                    </div>
+                    <p style="font-size: 9px; color: #666; margin-top: 6px;">📌 Use Plotly toolbar to autoscale</p>
+                </div>
+                
+                <div class="section">
                     <div class="section-label">Groups</div>
                     <div id="groupFilters" style="font-size: 11px;"></div>
+                </div>
+                
+                <div class="section" style="background: #f0f0f0; padding: 6px; border-radius: 3px; min-height: 80px;">
+                    <div class="section-label">Sample Info</div>
+                    <div id="sampleInfo" style="font-size: 10px; color: #333; line-height: 1.4; min-height: 60px; word-wrap: break-word;">
+                        <span style="color: #999;">Hover over a dot</span>
+                    </div>
                 </div>
             </div>
             
             <div class="main">
                 <div id="plot" style="position: relative;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="customizeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Customize: <span id="modalGroupName"></span></div>
+            
+            <div class="modal-section">
+                <div class="modal-label">Color</div>
+                <input type="color" id="colorPicker" value="#667eea" style="width: 100%; height: 28px; border: 1px solid #999; background: #fff;">
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-label">Shape</div>
+                <div class="shape-grid" id="shapeGrid"></div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-label">Size</div>
+                <div class="size-control">
+                    <input type="number" id="sizeInput" min="1" max="20" value="4" style="font-size: 10px;">
+                    <span>px</span>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-close" type="button">Close</button>
             </div>
         </div>
     </div>
@@ -82,10 +210,20 @@
         let rawData = [];
         let groupColors = {};
         let availablePCs = [];
+        let currentDataset = null;
+        let popMapping = {};
+        let groupCustomization = {};
+        let groupOrder = [];
+        let currentCustomizingGroup = null;
+        let autoscaleEnabled = true;
+        let plotWidth = null;
+        let plotHeight = null;
+        
+        const shapeOptions = ['circle', 'square', 'diamond', 'cross', 'triangle-up', 'triangle-down'];
         
         const elements = {
             csvInput: document.getElementById('csvInput'),
-            autoLoadBtn: document.getElementById('autoLoadBtn'),
+            datasetList: document.getElementById('datasetList'),
             loadStatus: document.getElementById('loadStatus'),
             plot: document.getElementById('plot'),
             groupFilters: document.getElementById('groupFilters'),
@@ -103,13 +241,11 @@
             '#ff6b6b', '#4ecdc4', '#45b7d1', '#f38181'
         ];
         
-        const candidatePaths = [
-            'pca_data/UZB_final_pca.eigenvec',
-            'pca_data/GLOBAL_PCA.eigenvec',
-            'UZB_final_pca.eigenvec',
-            'GLOBAL_PCA.eigenvec',
-            'pca.eigenvec',
-            'data/pca.csv'
+        const knownDatasets = [
+            { name: 'UZB Final PCA', path: 'pca_data/UZB_final_pca.eigenvec' },
+            { name: 'Global PCA', path: 'pca_data/GLOBAL_PCA.eigenvec' },
+            { name: 'UZB PCA (alt)', path: 'pca_data/pca.eigenvec' },
+            { name: 'CSV Data', path: 'data/pca.csv' }
         ];
         
         function init() {
@@ -118,32 +254,124 @@
                 xaxis: { title: 'PC1' },
                 yaxis: { title: 'PC2' },
                 hovermode: 'closest',
-                dragmode: 'zoom'
-            }, { responsive: true });
+                dragmode: 'zoom',
+                showlegend: false
+            }, {
+                responsive: true,
+                displayModeBar: true,
+                displaylogo: false,
+                modeBarButtonsToRemove: ['autoScale2d', 'resetScale2d', 'resetCameraDefault3d', 'resetCameraLastSave3d']
+            });
+            
+            // Ensure cursor is visible on plot
+            elements.plot.style.cursor = 'default';
+            elements.plot.addEventListener('mouseenter', () => {
+                elements.plot.style.cursor = 'default';
+            });
             
             elements.csvInput.addEventListener('change', handleFileUpload);
-            elements.autoLoadBtn.addEventListener('click', tryAutoLoad);
             elements.dimensionSelect.addEventListener('change', updatePlot);
             elements.xAxisSelect.addEventListener('change', updatePlot);
             elements.yAxisSelect.addEventListener('change', updatePlot);
             elements.zAxisSelect.addEventListener('change', updatePlot);
             
-            tryAutoLoad();
+            // Dimension controls always hidden - use Plotly's native autoscale
+            document.getElementById('dimensionControls').style.display = 'none';
+            
+            document.getElementById('plotWidth').addEventListener('change', updatePlot);
+            document.getElementById('plotHeight').addEventListener('change', updatePlot);
+            
+            loadPopulationMapping();
+            initializeDatasets();
         }
         
-        async function tryAutoLoad() {
-            setStatus('Loading...');
-            for (const path of candidatePaths) {
+        async function loadPopulationMapping() {
+            try {
+                const response = await fetch('data/pop_mapping.txt', { cache: 'no-store' });
+                if (response.ok) {
+                    const text = await response.text();
+                    text.split('\n').forEach(line => {
+                        const parts = line.trim().split(/\s+/);
+                        if (parts.length >= 2) {
+                            popMapping[parts[0]] = parts[1];
+                        }
+                    });
+                }
+            } catch (err) {
+                console.log('Population mapping file not found');
+            }
+        }
+        
+        async function initializeDatasets() {
+            setStatus('Discovering datasets...');
+            await populateDatasetList();
+            tryAutoLoadFirst();
+        }
+        
+        async function populateDatasetList() {
+            elements.datasetList.innerHTML = '';
+            const availableDatasets = [];
+            
+            for (const dataset of knownDatasets) {
                 try {
-                    const response = await fetch(path, { cache: 'no-store' });
+                    const response = await fetch(dataset.path, { method: 'HEAD', cache: 'no-store' });
+                    if (response.ok) {
+                        availableDatasets.push(dataset);
+                    }
+                } catch (err) {}
+            }
+            
+            if (availableDatasets.length === 0) {
+                elements.datasetList.innerHTML = '<div style="font-size: 10px; color: #999;">No datasets found</div>';
+                return;
+            }
+            
+            availableDatasets.forEach(dataset => {
+                const btn = document.createElement('button');
+                btn.className = 'dataset-item';
+                btn.textContent = dataset.name;
+                btn.dataset.path = dataset.path;
+                btn.addEventListener('click', () => loadDataset(dataset.path, dataset.name));
+                elements.datasetList.appendChild(btn);
+            });
+        }
+        
+        async function tryAutoLoadFirst() {
+            for (const dataset of knownDatasets) {
+                try {
+                    const response = await fetch(dataset.path, { cache: 'no-store' });
                     if (response.ok) {
                         const text = await response.text();
-                        parseData(text, path);
+                        parseData(text, dataset.name);
+                        markDatasetActive(dataset.path);
                         return;
                     }
                 } catch (err) {}
             }
-            setStatus('No data found. Upload file.');
+            setStatus('No data found. Upload or select dataset.');
+        }
+        
+        async function loadDataset(path, name) {
+            setStatus('Loading ' + name + '...');
+            try {
+                const response = await fetch(path, { cache: 'no-store' });
+                if (!response.ok) throw new Error('Failed to load');
+                const text = await response.text();
+                parseData(text, name);
+                markDatasetActive(path);
+            } catch (err) {
+                setStatus('Failed to load: ' + err.message);
+            }
+        }
+        
+        function markDatasetActive(path) {
+            document.querySelectorAll('.dataset-item').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.path === path) {
+                    btn.classList.add('active');
+                    currentDataset = path;
+                }
+            });
         }
         
         function handleFileUpload(event) {
@@ -151,7 +379,10 @@
             if (!file) return;
             
             const reader = new FileReader();
-            reader.onload = (e) => parseData(e.target.result, file.name);
+            reader.onload = (e) => {
+                parseData(e.target.result, file.name);
+                document.querySelectorAll('.dataset-item').forEach(btn => btn.classList.remove('active'));
+            };
             reader.readAsText(file);
         }
         
@@ -212,7 +443,11 @@
             
             const headers = Object.keys(data[0]);
             const idCol = headers.find(h => h.toLowerCase() === 'iid') || headers[0];
-            const pcCols = headers.filter(h => h.toLowerCase().startsWith('pc')).sort();
+            const pcCols = headers.filter(h => h.toLowerCase().startsWith('pc')).sort((a, b) => {
+                const numA = parseInt(a.match(/\d+/)[0]);
+                const numB = parseInt(b.match(/\d+/)[0]);
+                return numA - numB;
+            });
             
             if (pcCols.length < 2) {
                 setStatus('Need at least 2 PCs');
@@ -222,12 +457,23 @@
             const groupCol = headers.find(h => h.toLowerCase() === 'group');
             
             rawData = data.map((row, idx) => {
+                const iid = String(row[idCol] || `s${idx}`);
                 const point = {
                     __idx: idx,
-                    id: String(row[idCol] || `s${idx}`),
-                    group: groupCol ? String(row[groupCol]) : 'All',
+                    id: iid,
+                    group: null,
                     pcs: {}
                 };
+                
+                // Determine group: use pop mapping first, then group column, then default
+                if (popMapping[iid]) {
+                    point.group = popMapping[iid];
+                } else if (groupCol && row[groupCol]) {
+                    point.group = String(row[groupCol]);
+                } else {
+                    // Default based on ID pattern
+                    point.group = iid.match(/^HG|^NA/) ? '1000G' : 'UZB';
+                }
                 
                 pcCols.forEach(pc => {
                     const val = parseFloat(row[pc]);
@@ -240,14 +486,24 @@
             availablePCs = pcCols.map(pc => pc.toLowerCase());
             
             const groups = [...new Set(rawData.map(p => p.group))];
+            groupColors = {};
+            groupCustomization = {};
+            groupOrder = groups.slice();
             groups.forEach((g, i) => {
                 groupColors[g] = colorPalette[i % colorPalette.length];
             });
             
             populatePCSelectors();
             updateGroupFilters();
+            
+            // Initialize dimension controls with current plot dimensions
+            if (!plotWidth) plotWidth = elements.plot.offsetWidth || 800;
+            if (!plotHeight) plotHeight = elements.plot.offsetHeight || 600;
+            document.getElementById('plotWidth').value = plotWidth;
+            document.getElementById('plotHeight').value = plotHeight;
+            
             updatePlot();
-            setStatus(`Loaded ${rawData.length} samples`);
+            setStatus(`Loaded ${rawData.length} samples from ${filename}`);
         }
         
         function populatePCSelectors() {
@@ -264,32 +520,7 @@
             if (availablePCs.length >= 1) elements.xAxisSelect.value = availablePCs[0];
             if (availablePCs.length >= 2) elements.yAxisSelect.value = availablePCs[1];
             if (availablePCs.length >= 3) elements.zAxisSelect.value = availablePCs[2];
-        }
-        
-        function updateGroupFilters() {
-            elements.groupFilters.innerHTML = '';
-            Object.keys(groupColors).forEach(group => {
-                const div = document.createElement('div');
-                div.className = 'group-item';
-                
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = true;
-                checkbox.dataset.group = group;
-                checkbox.addEventListener('change', updatePlot);
-                
-                const colorBox = document.createElement('div');
-                colorBox.className = 'color-box';
-                colorBox.style.backgroundColor = groupColors[group];
-                
-                const label = document.createElement('label');
-                label.textContent = group;
-                
-                div.appendChild(checkbox);
-                div.appendChild(colorBox);
-                div.appendChild(label);
-                elements.groupFilters.appendChild(div);
-            });
+            else if (availablePCs.length >= 2) elements.yAxisSelect.value = availablePCs[1];
         }
         
         function updatePlot() {
@@ -315,7 +546,16 @@
                 }
             });
             
-            const traces = Object.entries(groupedData).map(([group, points]) => {
+            const traces = groupOrder
+                .filter(group => groupedData[group])
+                .map(group => {
+                const points = groupedData[group];
+                const customization = groupCustomization[group] || {
+                    color: groupColors[group],
+                    shape: 'circle',
+                    size: 4
+                };
+                
                 const trace = {
                     x: points.map(p => p.pcs[xAxis]),
                     y: points.map(p => p.pcs[yAxis]),
@@ -324,8 +564,9 @@
                     type: is3D ? 'scatter3d' : 'scattergl',
                     name: group,
                     marker: {
-                        size: 4,
-                        color: groupColors[group],
+                        size: customization.size,
+                        color: customization.color,
+                        symbol: customization.shape,
                         opacity: 0.7
                     }
                 };
@@ -343,20 +584,262 @@
                 yaxis: { title: yAxis.toUpperCase() },
                 hovermode: 'closest',
                 dragmode: 'zoom',
-                autosize: true
+                showlegend: false
             };
             
+            // Always enable autosize - use Plotly's native autoscale button
+            layout.autosize = true;
+            
+            const xRange = getAxisRange(xAxis);
+            const yRange = getAxisRange(yAxis);
+
+            layout.xaxis.range = xRange;
+            layout.yaxis.range = yRange;
+            layout.xaxis.autorange = false;
+            layout.yaxis.autorange = false;
+
             if (is3D) {
+                const zRange = getAxisRange(zAxis);
                 layout.scene = {
-                    xaxis: { title: xAxis.toUpperCase() },
-                    yaxis: { title: yAxis.toUpperCase() },
-                    zaxis: { title: zAxis.toUpperCase() }
+                    xaxis: { title: xAxis.toUpperCase(), range: xRange, autorange: false },
+                    yaxis: { title: yAxis.toUpperCase(), range: yRange, autorange: false },
+                    zaxis: { title: zAxis.toUpperCase(), range: zRange, autorange: false }
                 };
                 delete layout.xaxis;
                 delete layout.yaxis;
             }
             
-            Plotly.newPlot(elements.plot, traces, layout, { responsive: true });
+            Plotly.newPlot(elements.plot, traces, layout, {
+                responsive: true,
+                displayModeBar: true,
+                displaylogo: false,
+                modeBarButtonsToRemove: ['autoScale2d', 'resetScale2d', 'resetCameraDefault3d', 'resetCameraLastSave3d']
+            });
+            
+            // Add hover event listeners using Plotly's event system
+            elements.plot.removeEventListener('plotly_hover', hoverHandler);
+            elements.plot.removeEventListener('plotly_unhover', unhoverHandler);
+            
+            window.hoverHandler = (data) => {
+                if (data.points && data.points.length > 0) {
+                    const point = data.points[0];
+                    const sampleId = point.text || 'N/A';
+                    const group = point.fullData.name || 'N/A';
+                    const x = point.x;
+                    const y = point.y;
+                    const z = point.z;
+                    
+                    let info = `<strong>${sampleId}</strong><br>`;
+                    info += `Group: <strong>${group}</strong><br>`;
+                    info += `${xAxis.toUpperCase()}: ${x.toFixed(6)}<br>`;
+                    info += `${yAxis.toUpperCase()}: ${y.toFixed(6)}`;
+                    if (z !== undefined) {
+                        info += `<br>${zAxis.toUpperCase()}: ${z.toFixed(6)}`;
+                    }
+                    document.getElementById('sampleInfo').innerHTML = info;
+                }
+            };
+            
+            window.unhoverHandler = () => {
+                document.getElementById('sampleInfo').innerHTML = '<span style="color: #999;">Hover over a dot</span>';
+            };
+            
+            elements.plot.addEventListener('plotly_hover', window.hoverHandler);
+            elements.plot.addEventListener('plotly_unhover', window.unhoverHandler);
+        }
+
+        function updateGroupFilters() {
+            const previouslyChecked = new Set();
+            document.querySelectorAll('.group-item input[type="checkbox"]').forEach(cb => {
+                if (cb.checked) previouslyChecked.add(cb.dataset.group);
+            });
+
+            elements.groupFilters.innerHTML = '';
+            groupOrder.forEach(group => {
+                const div = document.createElement('div');
+                div.className = 'group-item';
+                div.dataset.group = group;
+
+                const handle = document.createElement('span');
+                handle.className = 'drag-handle';
+                handle.textContent = '≡';
+                handle.title = 'Drag to reorder';
+                handle.draggable = true;
+                handle.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', group);
+                });
+                handle.addEventListener('dragend', () => {
+                    document.querySelectorAll('.group-item.drag-over').forEach(el => {
+                        el.classList.remove('drag-over');
+                    });
+                });
+
+                div.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    div.classList.add('drag-over');
+                });
+
+                div.addEventListener('dragleave', () => {
+                    div.classList.remove('drag-over');
+                });
+
+                div.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    div.classList.remove('drag-over');
+                    const draggedGroup = e.dataTransfer.getData('text/plain');
+                    const targetGroup = div.dataset.group;
+                    if (!draggedGroup || draggedGroup === targetGroup) return;
+
+                    const fromIndex = groupOrder.indexOf(draggedGroup);
+                    const toIndex = groupOrder.indexOf(targetGroup);
+                    if (fromIndex === -1 || toIndex === -1) return;
+
+                    groupOrder.splice(fromIndex, 1);
+                    groupOrder.splice(toIndex, 0, draggedGroup);
+                    updateGroupFilters();
+                    updatePlot();
+                });
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = previouslyChecked.size === 0 || previouslyChecked.has(group);
+                checkbox.dataset.group = group;
+                checkbox.addEventListener('change', updatePlot);
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = groupCustomization[group]?.color || groupColors[group];
+                
+                const label = document.createElement('label');
+                label.textContent = group;
+                
+                const customizeBtn = document.createElement('button');
+                customizeBtn.className = 'customize-btn';
+                customizeBtn.textContent = '⚙️';
+                customizeBtn.title = 'Customize';
+                customizeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openCustomizeModal(group);
+                });
+                
+                div.appendChild(handle);
+                div.appendChild(checkbox);
+                div.appendChild(colorBox);
+                div.appendChild(label);
+                div.appendChild(customizeBtn);
+                elements.groupFilters.appendChild(div);
+            });
+        }
+        
+        function openCustomizeModal(group) {
+            currentCustomizingGroup = group;
+            document.getElementById('modalGroupName').textContent = group;
+            
+            // Initialize customization if not exists
+            if (!groupCustomization[group]) {
+                groupCustomization[group] = {
+                    color: groupColors[group],
+                    shape: 'circle',
+                    size: 4
+                };
+            }
+            
+            initShapeGrid();
+            document.getElementById('sizeInput').value = groupCustomization[group].size;
+            const colorPicker = document.getElementById('colorPicker');
+            if (colorPicker) {
+                colorPicker.value = groupCustomization[group].color;
+            }
+            
+            document.getElementById('customizeModal').classList.add('active');
+        }
+        
+        function closeCustomizeModal() {
+            document.getElementById('customizeModal').classList.remove('active');
+            updatePlot();
+            updateGroupFilters();
+        }
+        
+        // Modal event handlers - set up immediately
+        const modal = document.getElementById('customizeModal');
+        const colorPicker = document.getElementById('colorPicker');
+        
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeCustomizeModal();
+            }
+        });
+        
+        // Close on backdrop click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeCustomizeModal();
+            }
+        });
+
+        if (colorPicker) {
+            colorPicker.addEventListener('input', (e) => {
+                if (currentCustomizingGroup) {
+                    groupCustomization[currentCustomizingGroup].color = e.target.value;
+                    updateGroupFilters();
+                    updatePlot();
+                }
+            });
+        }
+
+        const modalCloseBtn = modal.querySelector('.modal-close');
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeCustomizeModal();
+            });
+        }
+        
+        function getAxisRange(axisKey) {
+            const values = rawData
+                .map(p => p.pcs[axisKey])
+                .filter(v => Number.isFinite(v));
+
+            if (values.length === 0) return [-1, 1];
+
+            let min = Math.min(...values);
+            let max = Math.max(...values);
+            if (min === max) {
+                min -= 1;
+                max += 1;
+            }
+            const pad = (max - min) * 0.05;
+            return [min - pad, max + pad];
+        }
+        
+        function initShapeGrid() {
+            const grid = document.getElementById('shapeGrid');
+            grid.innerHTML = '';
+            shapeOptions.forEach(shape => {
+                const option = document.createElement('div');
+                option.className = 'shape-option';
+                option.textContent = shape;
+                if (groupCustomization[currentCustomizingGroup].shape === shape) {
+                    option.classList.add('selected');
+                }
+                option.addEventListener('click', () => {
+                    groupCustomization[currentCustomizingGroup].shape = shape;
+                    initShapeGrid();
+                });
+                grid.appendChild(option);
+            });
+        }
+        
+        const sizeInput = document.getElementById('sizeInput');
+        if (sizeInput) {
+            sizeInput.addEventListener('change', () => {
+                if (currentCustomizingGroup) {
+                    groupCustomization[currentCustomizingGroup].size = parseInt(sizeInput.value);
+                }
+            });
         }
         
         function setStatus(msg) {

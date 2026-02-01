@@ -19,7 +19,6 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         h2 { color: #333; margin-bottom: 20px; }
-        .footer { background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd; }
 
         /* Roadmap and steps styles copied from original file */
         .roadmap-graph { background: #f9f9f9; padding: 40px 20px; border-radius: 5px; overflow-x: auto; }
@@ -39,7 +38,7 @@
         /* PCA iframe styling */
         #pca-iframe {
             width: 100%;
-            height: calc(100vh - 250px); /* leave space for header/footer */
+            height: calc(100vh - 200px);
             border: none;
             border-radius: 6px;
             box-shadow: 0 6px 18px rgba(0,0,0,0.06);
@@ -205,10 +204,6 @@
 
                 <iframe id="pca-iframe" src="pca_viewer_enhanced.html" title="PCA Viewer (Enhanced)"></iframe>
             </div>
-        </div>
-
-        <div class="footer">
-            Last updated: January 2, 2026 | ALSU Genotyping Project
         </div>
     </div>
 
