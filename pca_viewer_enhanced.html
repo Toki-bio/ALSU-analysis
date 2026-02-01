@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced PCA Viewer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            font-weight: 600;
+        }
+        
+        .header-info {
+            text-align: right;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr 350px;
+            gap: 0;
+            height: calc(100vh - 200px);
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            background: #f7fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .sidebar-right {
+            background: #f7fafc;
+            border-left: 1px solid #e2e8f0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .plot-area {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #cbd5e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #f7fafc;
+            border-color: #a0aec0;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 10px 16px;
+            background: white;
+            border: 2px dashed #cbd5e0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            color: #4a5568;
+        }
+        
+        .file-input-label:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+        
+        .group-filter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        
+        .group-filter:hover {
+            background: #edf2f7;
+        }
+        
+        .group-filter input[type="checkbox"] {
+            cursor: pointer;
+        }
+        
+        .group-filter label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.9em;
+            color: #2d3748;
+        }
+        
+        .color-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+        
+        #plot {
+            flex: 1;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stat-label {
+            font-size: 0.75em;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-top: 4px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        
+        .status-info {
+            background: #ebf8ff;
+            color: #2c5282;
+            border-left: 4px solid #3182ce;
+        }
+        
+        .status-success {
+            background: #f0fff4;
+            color: #22543d;
+            border-left: 4px solid #38a169;
+        }
+        
+        .status-error {
+            background: #fff5f5;
+            color: #742a2a;
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .data-table {
+            width: 100%;
+            font-size: 0.85em;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .data-table th {
+            background: #edf2f7;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #cbd5e0;
+            position: sticky;
+            top: 0;
+        }
+        
+        .data-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table tbody tr:hover {
+            background: #f7fafc;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+        
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        select {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .variance-info {
+            background: #edf2f7;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+        
+        .variance-info div {
+            margin-bottom: 6px;
+        }
+        
+        .variance-info strong {
+            color: #2d3748;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #718096;
+        }
+        
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>📊 Enhanced PCA Viewer</h1>
+                <p style="margin-top: 8px; opacity: 0.9;">Interactive Principal Component Analysis Visualization</p>
+            </div>
+            <div class="header-info">
+                <div id="dataInfo">No data loaded</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- LEFT SIDEBAR -->
+            <div class="sidebar">
+                <div class="section">
+                    <div class="section-title">📁 Data Source</div>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="csvInput" accept=".csv,.eigenvec,.tsv" />
+                        <label for="csvInput" class="file-input-label">
+                            📂 Choose CSV File
+                        </label>
+                    </div>
+                    <button class="btn btn-small" id="autoLoadBtn" style="width: 100%; margin-top: 10px;">
+                        🔄 Auto-load from Common Paths
+                    </button>
+                    <div id="loadStatus" style="margin-top: 10px; font-size: 0.85em; color: #718096;"></div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">📊 Plot Configuration</div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85em; color: #4a5568;">Dimension</label>
+                        <select id="dimensionSelect">
+                            <option value="2d">2D Plot (PC1 vs PC2)</option>
+                            <option value="3d">3D Plot (PC1-PC2-PC3)</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85em; color: #4a5568;">X Axis</label>
+                        <select id="xAxisSelect"></select>
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85em; color: #4a5568;">Y Axis</label>
+                        <select id="yAxisSelect"></select>
+                    </div>
+                    
+                    <div id="zAxisContainer" style="margin-bottom: 12px; display: none;">
+                        <label style="display: block; margin-bottom: 6px; font-size: 0.85em; color: #4a5568;">Z Axis</label>
+                        <select id="zAxisSelect"></select>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🎨 Groups/Populations</div>
+                    <div id="groupFilters">
+                        <div class="empty-state" style="padding: 20px;">
+                            <div style="font-size: 2em; opacity: 0.3;">👥</div>
+                            <div style="font-size: 0.85em;">No groups loaded</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🎯 Interaction Mode</div>
+                    <div class="btn-group" style="flex-direction: column;">
+                        <button class="btn active" id="modeZoom">🔍 Zoom/Pan</button>
+                        <button class="btn" id="modeLasso">⭕ Lasso Select</button>
+                        <button class="btn" id="modeBox">▢ Box Select</button>
+                    </div>
+                    <button class="btn btn-small" id="resetView" style="width: 100%; margin-top: 10px;">
+                        ↺ Reset View
+                    </button>
+                </div>
+            </div>
+            
+            <!-- CENTER - PLOT AREA -->
+            <div class="plot-area">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <div>Loading data...</div>
+                </div>
+                <div id="plot"></div>
+            </div>
+            
+            <!-- RIGHT SIDEBAR -->
+            <div class="sidebar-right">
+                <div class="section">
+                    <div class="section-title">📈 Statistics</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Points</div>
+                            <div class="stat-value" id="statTotal">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Groups</div>
+                            <div class="stat-value" id="statGroups">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Selected</div>
+                            <div class="stat-value" id="statSelected">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Visible</div>
+                            <div class="stat-value" id="statVisible">0</div>
+                        </div>
+                    </div>
+                    
+                    <div id="varianceInfo" class="variance-info" style="display: none;">
+                        <div><strong>Variance Explained:</strong></div>
+                        <div id="variancePC1">PC1: --</div>
+                        <div id="variancePC2">PC2: --</div>
+                        <div id="variancePC3" style="display: none;">PC3: --</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">✅ Selected Points</div>
+                    <input type="text" class="search-box" id="searchBox" placeholder="Search selected points...">
+                    <div class="btn-group" style="margin-bottom: 10px;">
+                        <button class="btn btn-small" id="downloadSelectedCSV" disabled>
+                            💾 Download CSV
+                        </button>
+                        <button class="btn btn-small" id="clearSelection" disabled>
+                            ✖ Clear
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="selectedTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Group</th>
+                                    <th>PC1</th>
+                                    <th>PC2</th>
+                                </tr>
+                            </thead>
+                            <tbody id="selectedTableBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #a0aec0; padding: 20px;">
+                                        No points selected
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">💾 Export Options</div>
+                    <div class="btn-group" style="flex-direction: column;">
+                        <button class="btn btn-small" id="downloadAllCSV" disabled>
+                            📊 Download All Data (CSV)
+                        </button>
+                        <button class="btn btn-small" id="downloadPlotPNG" disabled>
+                            🖼️ Download Plot (PNG)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    
+    <script>
+    (function() {
+        // State
+        let rawData = [];
+        let selectedIndices = new Set();
+        let groupColors = {};
+        let availablePCs = [];
+        let varianceExplained = {};
+        
+        // DOM elements
+        const elements = {
+            csvInput: document.getElementById('csvInput'),
+            autoLoadBtn: document.getElementById('autoLoadBtn'),
+            loadStatus: document.getElementById('loadStatus'),
+            plot: document.getElementById('plot'),
+            loading: document.getElementById('loading'),
+            dataInfo: document.getElementById('dataInfo'),
+            groupFilters: document.getElementById('groupFilters'),
+            dimensionSelect: document.getElementById('dimensionSelect'),
+            xAxisSelect: document.getElementById('xAxisSelect'),
+            yAxisSelect: document.getElementById('yAxisSelect'),
+            zAxisSelect: document.getElementById('zAxisSelect'),
+            zAxisContainer: document.getElementById('zAxisContainer'),
+            modeZoom: document.getElementById('modeZoom'),
+            modeLasso: document.getElementById('modeLasso'),
+            modeBox: document.getElementById('modeBox'),
+            resetView: document.getElementById('resetView'),
+            statTotal: document.getElementById('statTotal'),
+            statGroups: document.getElementById('statGroups'),
+            statSelected: document.getElementById('statSelected'),
+            statVisible: document.getElementById('statVisible'),
+            searchBox: document.getElementById('searchBox'),
+            selectedTableBody: document.getElementById('selectedTableBody'),
+            downloadSelectedCSV: document.getElementById('downloadSelectedCSV'),
+            clearSelection: document.getElementById('clearSelection'),
+            downloadAllCSV: document.getElementById('downloadAllCSV'),
+            downloadPlotPNG: document.getElementById('downloadPlotPNG'),
+            varianceInfo: document.getElementById('varianceInfo'),
+            variancePC1: document.getElementById('variancePC1'),
+            variancePC2: document.getElementById('variancePC2'),
+            variancePC3: document.getElementById('variancePC3')
+        };
+        
+        // Candidate paths for auto-loading
+        const candidatePaths = [
+            'data/pca.csv',
+            'pca/pca.csv',
+            'results/pca/pca.csv',
+            'results/pca_coords.csv',
+            'pca/pca_coords.csv',
+            'pca.csv',
+            'data/pca_coords.csv',
+            'step7/pca.eigenvec',
+            'step8/pca.eigenvec'
+        ];
+        
+        // Color palette for groups
+        const colorPalette = [
+            '#667eea', '#764ba2', '#f093fb', '#4facfe',
+            '#43e97b', '#fa709a', '#fee140', '#30cfd0',
+            '#a8edea', '#fed6e3', '#c471f5', '#fa71cd',
+            '#ff6b6b', '#4ecdc4', '#45b7d1', '#f38181'
+        ];
+        
+        // Initialize
+        function init() {
+            initializePlot();
+            attachEventListeners();
+            tryAutoLoad();
+        }
+        
+        function initializePlot() {
+            const layout = {
+                margin: { t: 40, l: 60, r: 30, b: 60 },
+                xaxis: { title: 'PC1' },
+                yaxis: { title: 'PC2' },
+                hovermode: 'closest',
+                dragmode: 'zoom',
+                showlegend: true,
+                legend: { orientation: 'h', y: -0.15 }
+            };
+            
+            Plotly.newPlot(elements.plot, [], layout, { responsive: true });
+        }
+        
+        function attachEventListeners() {
+            elements.csvInput.addEventListener('change', handleFileUpload);
+            elements.autoLoadBtn.addEventListener('click', tryAutoLoad);
+            
+            elements.dimensionSelect.addEventListener('change', updatePlot);
+            elements.xAxisSelect.addEventListener('change', updatePlot);
+            elements.yAxisSelect.addEventListener('change', updatePlot);
+            elements.zAxisSelect.addEventListener('change', updatePlot);
+            
+            elements.modeZoom.addEventListener('click', () => setMode('zoom'));
+            elements.modeLasso.addEventListener('click', () => setMode('lasso'));
+            elements.modeBox.addEventListener('click', () => setMode('select'));
+            elements.resetView.addEventListener('click', resetView);
+            
+            elements.searchBox.addEventListener('input', filterSelectedTable);
+            elements.downloadSelectedCSV.addEventListener('click', downloadSelected);
+            elements.clearSelection.addEventListener('click', clearSelection);
+            elements.downloadAllCSV.addEventListener('click', downloadAllData);
+            elements.downloadPlotPNG.addEventListener('click', downloadPlotImage);
+            
+            // Plotly events
+            elements.plot.on('plotly_selected', handleSelection);
+            elements.plot.on('plotly_doubleclick', clearSelection);
+        }
+        
+        async function tryAutoLoad() {
+            elements.loading.classList.add('active');
+            setStatus('Searching for PCA data in common locations...', 'info');
+            
+            for (const path of candidatePaths) {
+                try {
+                    const response = await fetch(path, { cache: 'no-store' });
+                    if (response.ok) {
+                        const text = await response.text();
+                        parseData(text, path);
+                        return;
+                    }
+                } catch (err) {
+                    // Continue to next path
+                }
+            }
+            
+            elements.loading.classList.remove('active');
+            setStatus('No PCA data found. Please upload a CSV file.', 'info');
+        }
+        
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            elements.loading.classList.add('active');
+            
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: (results) => {
+                    parseData(Papa.unparse(results.data), file.name);
+                },
+                error: (error) => {
+                    elements.loading.classList.remove('active');
+                    setStatus(`Error parsing file: ${error.message}`, 'error');
+                }
+            });
+        }
+        
+        function parseData(csvText, filename) {
+            Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                dynamicTyping: false,
+                complete: (results) => {
+                    processData(results.data, filename);
+                },
+                error: (error) => {
+                    elements.loading.classList.remove('active');
+                    setStatus(`Error parsing data: ${error.message}`, 'error');
+                }
+            });
+        }
+        
+        function processData(data, filename) {
+            if (!data || data.length === 0) {
+                elements.loading.classList.remove('active');
+                setStatus('No valid data found in file', 'error');
+                return;
+            }
+            
+            // Detect columns
+            const firstRow = data[0];
+            const headers = Object.keys(firstRow);
+            
+            // Find ID column
+            const idCol = headers.find(h => 
+                h.toLowerCase() === 'id' || 
+                h.toLowerCase() === 'iid' ||
+                h.toLowerCase() === 'sample'
+            ) || headers[0];
+            
+            // Find PC columns
+            const pcCols = headers.filter(h => 
+                h.toLowerCase().startsWith('pc') ||
+                h.toLowerCase().match(/^pc\d+$/) ||
+                h.toLowerCase().match(/^pc_\d+$/)
+            ).sort();
+            
+            if (pcCols.length < 2) {
+                elements.loading.classList.remove('active');
+                setStatus('Could not find at least 2 PC columns (PC1, PC2)', 'error');
+                return;
+            }
+            
+            // Find group column
+            const groupCol = headers.find(h => 
+                h.toLowerCase() === 'group' || 
+                h.toLowerCase() === 'population' ||
+                h.toLowerCase() === 'pop' ||
+                h.toLowerCase() === 'superpop'
+            );
+            
+            // Process rows
+            rawData = data.map((row, idx) => {
+                const point = {
+                    __idx: idx,
+                    id: String(row[idCol] || `sample_${idx}`),
+                    group: groupCol ? String(row[groupCol]) : 'All',
+                    pcs: {}
+                };
+                
+                pcCols.forEach(pc => {
+                    const value = parseFloat(row[pc]);
+                    if (!isNaN(value)) {
+                        point.pcs[pc.toLowerCase()] = value;
+                    }
+                });
+                
+                return point;
+            }).filter(p => Object.keys(p.pcs).length >= 2);
+            
+            availablePCs = pcCols.map(pc => pc.toLowerCase());
+            
+            // Assign colors to groups
+            const groups = [...new Set(rawData.map(p => p.group))];
+            groups.forEach((group, idx) => {
+                groupColors[group] = colorPalette[idx % colorPalette.length];
+            });
+            
+            elements.loading.classList.remove('active');
+            setStatus(`Loaded ${rawData.length} samples from ${filename}`, 'success');
+            
+            populatePCSelectors();
+            updatePlot();
+            updateGroupFilters();
+            updateStats();
+            
+            // Enable export buttons
+            elements.downloadAllCSV.disabled = false;
+            elements.downloadPlotPNG.disabled = false;
+        }
+        
+        function populatePCSelectors() {
+            const selectors = [elements.xAxisSelect, elements.yAxisSelect, elements.zAxisSelect];
+            
+            selectors.forEach(select => {
+                select.innerHTML = '';
+                availablePCs.forEach((pc, idx) => {
+                    const option = document.createElement('option');
+                    option.value = pc;
+                    option.textContent = pc.toUpperCase();
+                    select.appendChild(option);
+                });
+            });
+            
+            // Set defaults
+            if (availablePCs.length >= 1) elements.xAxisSelect.value = availablePCs[0];
+            if (availablePCs.length >= 2) elements.yAxisSelect.value = availablePCs[1];
+            if (availablePCs.length >= 3) elements.zAxisSelect.value = availablePCs[2];
+        }
+        
+        function updatePlot() {
+            if (rawData.length === 0) return;
+            
+            const is3D = elements.dimensionSelect.value === '3d';
+            const xAxis = elements.xAxisSelect.value;
+            const yAxis = elements.yAxisSelect.value;
+            const zAxis = is3D ? elements.zAxisSelect.value : null;
+            
+            elements.zAxisContainer.style.display = is3D ? 'block' : 'none';
+            elements.variancePC3.style.display = is3D ? 'block' : 'none';
+            
+            // Group data by group
+            const groupedData = {};
+            rawData.forEach(point => {
+                if (!groupedData[point.group]) {
+                    groupedData[point.group] = [];
+                }
+                groupedData[point.group].push(point);
+            });
+            
+            // Create traces
+            const traces = Object.entries(groupedData).map(([group, points]) => {
+                const trace = {
+                    x: points.map(p => p.pcs[xAxis]),
+                    y: points.map(p => p.pcs[yAxis]),
+                    text: points.map(p => p.id),
+                    customdata: points.map(p => p.__idx),
+                    mode: 'markers',
+                    type: is3D ? 'scatter3d' : 'scattergl',
+                    name: group,
+                    marker: {
+                        size: 6,
+                        color: groupColors[group],
+                        line: { width: 0.5, color: 'white' }
+                    },
+                    visible: true,
+                    hovertemplate: '<b>%{text}</b><br>' +
+                                   `${xAxis.toUpperCase()}: %{x:.4f}<br>` +
+                                   `${yAxis.toUpperCase()}: %{y:.4f}` +
+                                   (is3D ? `<br>${zAxis.toUpperCase()}: %{z:.4f}` : '') +
+                                   '<extra></extra>'
+                };
+                
+                if (is3D) {
+                    trace.z = points.map(p => p.pcs[zAxis]);
+                }
+                
+                return trace;
+            });
+            
+            const layout = {
+                margin: { t: 40, l: 60, r: 30, b: 60 },
+                xaxis: { title: xAxis.toUpperCase() },
+                yaxis: { title: yAxis.toUpperCase() },
+                hovermode: 'closest',
+                dragmode: 'zoom',
+                showlegend: true,
+                legend: { orientation: 'h', y: -0.15 }
+            };
+            
+            if (is3D) {
+                layout.scene = {
+                    xaxis: { title: xAxis.toUpperCase() },
+                    yaxis: { title: yAxis.toUpperCase() },
+                    zaxis: { title: zAxis.toUpperCase() }
+                };
+                delete layout.xaxis;
+                delete layout.yaxis;
+            }
+            
+            Plotly.newPlot(elements.plot, traces, layout, { responsive: true });
+        }
+        
+        function updateGroupFilters() {
+            const groups = Object.keys(groupColors);
+            
+            elements.groupFilters.innerHTML = '';
+            
+            groups.forEach(group => {
+                const div = document.createElement('div');
+                div.className = 'group-filter';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = true;
+                checkbox.id = `group_${group}`;
+                checkbox.addEventListener('change', () => toggleGroup(group, checkbox.checked));
+                
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'color-indicator';
+                colorDiv.style.background = groupColors[group];
+                
+                const label = document.createElement('label');
+                label.htmlFor = `group_${group}`;
+                label.textContent = group;
+                
+                const count = rawData.filter(p => p.group === group).length;
+                const countSpan = document.createElement('span');
+                countSpan.textContent = ` (${count})`;
+                countSpan.style.color = '#a0aec0';
+                countSpan.style.fontSize = '0.85em';
+                
+                label.appendChild(countSpan);
+                
+                div.appendChild(checkbox);
+                div.appendChild(colorDiv);
+                div.appendChild(label);
+                
+                elements.groupFilters.appendChild(div);
+            });
+        }
+        
+        function toggleGroup(group, visible) {
+            const traces = elements.plot.data;
+            const traceIndex = traces.findIndex(t => t.name === group);
+            
+            if (traceIndex !== -1) {
+                Plotly.restyle(elements.plot, { visible: visible }, [traceIndex]);
+            }
+            
+            updateStats();
+        }
+        
+        function setMode(mode) {
+            const modes = { zoom: 'zoom', lasso: 'lasso', select: 'select' };
+            Plotly.relayout(elements.plot, { dragmode: modes[mode] });
+            
+            [elements.modeZoom, elements.modeLasso, elements.modeBox].forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (mode === 'zoom') elements.modeZoom.classList.add('active');
+            if (mode === 'lasso') elements.modeLasso.classList.add('active');
+            if (mode === 'select') elements.modeBox.classList.add('active');
+        }
+        
+        function resetView() {
+            Plotly.relayout(elements.plot, {
+                'xaxis.autorange': true,
+                'yaxis.autorange': true,
+                'scene.xaxis.autorange': true,
+                'scene.yaxis.autorange': true,
+                'scene.zaxis.autorange': true
+            });
+        }
+        
+        function handleSelection(eventData) {
+            if (!eventData || !eventData.points) {
+                return;
+            }
+            
+            selectedIndices = new Set(eventData.points.map(p => p.customdata));
+            updateSelectedTable();
+            updateStats();
+        }
+        
+        function clearSelection() {
+            selectedIndices.clear();
+            updateSelectedTable();
+            updateStats();
+        }
+        
+        function updateSelectedTable() {
+            const tbody = elements.selectedTableBody;
+            tbody.innerHTML = '';
+            
+            if (selectedIndices.size === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #a0aec0; padding: 20px;">No points selected</td></tr>';
+                elements.downloadSelectedCSV.disabled = true;
+                elements.clearSelection.disabled = true;
+                return;
+            }
+            
+            const selectedPoints = Array.from(selectedIndices)
+                .map(idx => rawData[idx])
+                .filter(p => p);
+            
+            selectedPoints.forEach(point => {
+                const row = document.createElement('tr');
+                
+                const xAxis = elements.xAxisSelect.value;
+                const yAxis = elements.yAxisSelect.value;
+                
+                row.innerHTML = `
+                    <td>${point.id}</td>
+                    <td><span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${groupColors[point.group]}; margin-right: 4px;"></span>${point.group}</td>
+                    <td>${point.pcs[xAxis]?.toFixed(4) || 'N/A'}</td>
+                    <td>${point.pcs[yAxis]?.toFixed(4) || 'N/A'}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            elements.downloadSelectedCSV.disabled = false;
+            elements.clearSelection.disabled = false;
+        }
+        
+        function filterSelectedTable() {
+            const searchTerm = elements.searchBox.value.toLowerCase();
+            const rows = elements.selectedTableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+        
+        function updateStats() {
+            elements.statTotal.textContent = rawData.length;
+            elements.statGroups.textContent = Object.keys(groupColors).length;
+            elements.statSelected.textContent = selectedIndices.size;
+            
+            // Count visible points
+            const traces = elements.plot.data || [];
+            const visibleCount = traces.reduce((sum, trace) => {
+                return sum + (trace.visible !== false && trace.visible !== 'legendonly' ? trace.x.length : 0);
+            }, 0);
+            elements.statVisible.textContent = visibleCount;
+            
+            elements.dataInfo.textContent = `${rawData.length} samples · ${availablePCs.length} PCs`;
+        }
+        
+        function downloadSelected() {
+            if (selectedIndices.size === 0) return;
+            
+            const selectedPoints = Array.from(selectedIndices)
+                .map(idx => rawData[idx])
+                .filter(p => p);
+            
+            const rows = selectedPoints.map(p => {
+                const row = { id: p.id, group: p.group };
+                availablePCs.forEach(pc => {
+                    row[pc] = p.pcs[pc];
+                });
+                return row;
+            });
+            
+            const csv = Papa.unparse(rows);
+            downloadCSV(csv, 'pca_selected.csv');
+        }
+        
+        function downloadAllData() {
+            const rows = rawData.map(p => {
+                const row = { id: p.id, group: p.group };
+                availablePCs.forEach(pc => {
+                    row[pc] = p.pcs[pc];
+                });
+                return row;
+            });
+            
+            const csv = Papa.unparse(rows);
+            downloadCSV(csv, 'pca_all_data.csv');
+        }
+        
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+        
+        function downloadPlotImage() {
+            Plotly.downloadImage(elements.plot, {
+                format: 'png',
+                width: 1200,
+                height: 800,
+                filename: 'pca_plot'
+            });
+        }
+        
+        function setStatus(message, type = 'info') {
+            elements.loadStatus.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+        }
+        
+        // Initialize on load
+        init();
+    })();
+    </script>
+</body>
+</html>
