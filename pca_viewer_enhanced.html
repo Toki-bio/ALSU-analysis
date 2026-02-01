@@ -45,7 +45,7 @@
         
         .main-content {
             display: grid;
-            grid-template-columns: 250px 1fr 350px;
+            grid-template-columns: 220px 1fr 280px;
             gap: 0;
             height: calc(100vh - 200px);
             min-height: 600px;
@@ -54,36 +54,36 @@
         .sidebar {
             background: #f7fafc;
             border-right: 1px solid #e2e8f0;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
         }
         
         .sidebar-right {
             background: #f7fafc;
             border-left: 1px solid #e2e8f0;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
         }
         
         .plot-area {
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
         
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .section-title {
-            font-size: 0.85em;
+            font-size: 0.75em;
             font-weight: 600;
             color: #4a5568;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
             border-bottom: 2px solid #e2e8f0;
         }
         
@@ -211,23 +211,23 @@
         
         .stat-card {
             background: white;
-            padding: 12px;
+            padding: 8px;
             border-radius: 6px;
             border: 1px solid #e2e8f0;
         }
         
         .stat-label {
-            font-size: 0.75em;
+            font-size: 0.7em;
             color: #718096;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
         
         .stat-value {
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: 600;
             color: #2d3748;
-            margin-top: 4px;
+            margin-top: 2px;
         }
         
         .loading {
@@ -396,7 +396,7 @@
             <!-- LEFT SIDEBAR -->
             <div class="sidebar">
                 <div class="section">
-                    <div class="section-title">📁 Data Source</div>
+                    <div class="section-title">📁 Load Data</div>
                     <div class="file-input-wrapper">
                         <input type="file" id="csvInput" accept=".csv,.eigenvec,.tsv,.txt" />
                         <label for="csvInput" class="file-input-label">
@@ -413,7 +413,7 @@
                 </div>
                 
                 <div class="section">
-                    <div class="section-title">📊 Plot Configuration</div>
+                    <div class="section-title">📊 Config</div>
                     
                     <div style="margin-bottom: 12px;">
                         <label style="display: block; margin-bottom: 6px; font-size: 0.85em; color: #4a5568;">Dimension</label>
@@ -440,7 +440,7 @@
                 </div>
                 
                 <div class="section">
-                    <div class="section-title">🎨 Groups/Populations</div>
+                    <div class="section-title">🎨 Groups</div>
                     <div id="groupFilters">
                         <div class="empty-state" style="padding: 20px;">
                             <div style="font-size: 2em; opacity: 0.3;">👥</div>
@@ -450,7 +450,7 @@
                 </div>
                 
                 <div class="section">
-                    <div class="section-title">🎯 Interaction Mode</div>
+                    <div class="section-title">🎯 Mode</div>
                     <div class="btn-group" style="flex-direction: column;">
                         <button class="btn active" id="modeZoom">🔍 Zoom/Pan</button>
                         <button class="btn" id="modeLasso">⭕ Lasso Select</button>
@@ -474,7 +474,7 @@
             <!-- RIGHT SIDEBAR -->
             <div class="sidebar-right">
                 <div class="section">
-                    <div class="section-title">📈 Statistics</div>
+                    <div class="section-title">📈 Stats</div>
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-label">Total Points</div>
@@ -503,7 +503,7 @@
                 </div>
                 
                 <div class="section">
-                    <div class="section-title">✅ Selected Points</div>
+                    <div class="section-title">✅ Selection</div>
                     <input type="text" class="search-box" id="searchBox" placeholder="Search selected points...">
                     <div class="btn-group" style="margin-bottom: 10px;">
                         <button class="btn btn-small" id="downloadSelectedCSV" disabled>
@@ -535,7 +535,7 @@
                 </div>
                 
                 <div class="section">
-                    <div class="section-title">💾 Export Options</div>
+                    <div class="section-title">💾 Export</div>
                     <div class="btn-group" style="flex-direction: column;">
                         <button class="btn btn-small" id="downloadAllCSV" disabled>
                             📊 Download All Data (CSV)
@@ -597,10 +597,15 @@
         
         // Candidate paths for auto-loading
         const candidatePaths = [
-            'data/pca.csv',
+            'eigen/pca.eigenvec',
+            'eigen/UZB_final_pca.eigenvec',
+            'eigen/pca_local.eigenvec',
+            'eigen/pca_global.eigenvec',
+            'data/pca.eigenvec',
             'data/UZB_final_pca.eigenvec',
             'data/pca_local.eigenvec',
             'data/pca_global.eigenvec',
+            'data/pca.csv',
             'pca/pca.csv',
             'pca/UZB_final_pca.eigenvec',
             'results/pca/pca.csv',
@@ -921,9 +926,11 @@
                     type: is3D ? 'scatter3d' : 'scattergl',
                     name: group,
                     marker: {
-                        size: 6,
+                        size: 5,
                         color: groupColors[group],
-                        line: { width: 0.5, color: 'white' }
+                        opacity: 0.8,
+                        line: { width: 0, color: 'white' },
+                        sizemode: 'diameter'
                     },
                     visible: true,
                     hovertemplate: '<b>%{text}</b><br>' +
@@ -941,13 +948,26 @@
             });
             
             const layout = {
-                margin: { t: 40, l: 60, r: 30, b: 60 },
-                xaxis: { title: xAxis.toUpperCase() },
-                yaxis: { title: yAxis.toUpperCase() },
+                margin: { t: 30, l: 50, r: 20, b: 50 },
+                xaxis: { 
+                    title: xAxis.toUpperCase(),
+                    zeroline: false,
+                    showgrid: true,
+                    gridcolor: '#f0f0f0'
+                },
+                yaxis: { 
+                    title: yAxis.toUpperCase(),
+                    zeroline: false,
+                    showgrid: true,
+                    gridcolor: '#f0f0f0'
+                },
                 hovermode: 'closest',
                 dragmode: 'zoom',
                 showlegend: true,
-                legend: { orientation: 'h', y: -0.15 }
+                legend: { orientation: 'h', y: -0.15 },
+                autosize: true,
+                plot_bgcolor: 'white',
+                paper_bgcolor: 'white'
             };
             
             if (is3D) {
@@ -960,7 +980,12 @@
                 delete layout.yaxis;
             }
             
-            Plotly.newPlot(elements.plot, traces, layout, { responsive: true });
+            Plotly.newPlot(elements.plot, traces, layout, { 
+                responsive: true,
+                displayModeBar: true,
+                modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+                displaylogo: false
+            });
         }
         
         function updateGroupFilters() {
