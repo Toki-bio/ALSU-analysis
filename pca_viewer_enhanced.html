@@ -758,15 +758,20 @@
                 const pcs = cols.slice(2);
                 
                 // Determine group based on ID patterns
+                // NOTE: These patterns are heuristics and may need adjustment for specific datasets
                 let group = 'Unknown';
                 if (iid.match(/^UZB/i) || iid.match(/^узб/i)) {
                     group = 'UZB';
                 } else if (iid.match(/^HG\d+/)) {
+                    // 1000G samples - HG prefix typically indicates European ancestry
+                    // Note: This is a simplification; actual populations vary
                     group = '1000G_EUR';
                 } else if (iid.match(/^NA\d+/)) {
+                    // 1000G samples - NA prefix typically indicates African ancestry
+                    // Note: This includes both African and American populations
                     group = '1000G_AFR';
                 } else if (iid.match(/^\d+_\d+-\d+/)) {
-                    // Pattern like 2_01-02, 3_01-03, etc. - likely UZB samples
+                    // Pattern like 2_01-02, 3_01-03, etc. - appears to be UZB samples based on dataset
                     group = 'UZB';
                 } else if (fid.match(/^UZB/i)) {
                     group = 'UZB';
@@ -778,8 +783,8 @@
                         group = '1000G_AFR';
                     }
                 } else if (iid.match(/^\d+$/)) {
-                    // Purely numeric IDs - may be local cohort
-                    group = 'UZB';
+                    // Purely numeric IDs - default to Other for uncertain cases
+                    group = 'Other';
                 } else {
                     group = 'Other';
                 }
