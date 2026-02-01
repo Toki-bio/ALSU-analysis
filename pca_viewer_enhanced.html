@@ -398,10 +398,13 @@
                 <div class="section">
                     <div class="section-title">📁 Data Source</div>
                     <div class="file-input-wrapper">
-                        <input type="file" id="csvInput" accept=".csv,.eigenvec,.tsv" />
+                        <input type="file" id="csvInput" accept=".csv,.eigenvec,.tsv,.txt" />
                         <label for="csvInput" class="file-input-label">
-                            📂 Choose CSV File
+                            📂 Choose File (CSV/EIGENVEC)
                         </label>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.75em; color: #718096;">
+                        Supports: .csv, .eigenvec, .tsv
                     </div>
                     <button class="btn btn-small" id="autoLoadBtn" style="width: 100%; margin-top: 10px;">
                         🔄 Auto-load from Common Paths
@@ -595,14 +598,20 @@
         // Candidate paths for auto-loading
         const candidatePaths = [
             'data/pca.csv',
+            'data/UZB_final_pca.eigenvec',
+            'data/pca_local.eigenvec',
+            'data/pca_global.eigenvec',
             'pca/pca.csv',
+            'pca/UZB_final_pca.eigenvec',
             'results/pca/pca.csv',
+            'results/pca/UZB_final_pca.eigenvec',
             'results/pca_coords.csv',
             'pca/pca_coords.csv',
             'pca.csv',
             'data/pca_coords.csv',
-            'step7/pca.eigenvec',
-            'step8/pca.eigenvec'
+            'UZB_final_pca.eigenvec',
+            'pca_local.eigenvec',
+            'pca_global.eigenvec'
         ];
         
         // Color palette for groups
@@ -686,20 +695,89 @@
             
             elements.loading.classList.add('active');
             
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: (results) => {
-                    parseData(Papa.unparse(results.data), file.name);
-                },
-                error: (error) => {
-                    elements.loading.classList.remove('active');
-                    setStatus(`Error parsing file: ${error.message}`, 'error');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                parseData(text, file.name);
+            };
+            reader.readAsText(file);
+        }
+        
+        function isEigenvecFormat(text) {
+            // Check if this is PLINK .eigenvec format
+            // Format: FID IID PC1 PC2 PC3 ... (space or tab separated)
+            const lines = text.trim().split('\n');
+            if (lines.length === 0) return false;
+            
+            const firstLine = lines[0].trim();
+            
+            // If first line starts with #FID or FID, it has a header
+            if (firstLine.startsWith('#FID') || firstLine.startsWith('FID') || firstLine.startsWith('#IID')) {
+                return true;
+            }
+            
+            // Check if first line has at least 4 columns (FID IID PC1 PC2)
+            const cols = firstLine.split(/\s+/);
+            if (cols.length < 4) return false;
+            
+            // Check if columns 3+ are numbers (PCs)
+            const hasNumericPCs = cols.slice(2).every(col => !isNaN(parseFloat(col)));
+            
+            return hasNumericPCs;
+        }
+        
+        function convertEigenvecToCSV(text) {
+            const lines = text.trim().split('\n');
+            let dataLines = lines;
+            
+            // Check if first line is a header
+            const firstLine = lines[0].trim();
+            if (firstLine.startsWith('#FID') || firstLine.startsWith('FID') || firstLine.startsWith('#IID')) {
+                dataLines = lines.slice(1);
+            }
+            
+            // Determine number of PCs from first data line
+            const firstDataLine = dataLines[0].trim().split(/\s+/);
+            const numPCs = firstDataLine.length - 2; // Subtract FID and IID
+            
+            // Build CSV header
+            const pcHeaders = Array.from({length: numPCs}, (_, i) => `pc${i + 1}`).join(',');
+            const csvHeader = `fid,iid,${pcHeaders},group\n`;
+            
+            // Convert data lines
+            const csvLines = dataLines.map(line => {
+                const cols = line.trim().split(/\s+/);
+                const fid = cols[0];
+                const iid = cols[1];
+                const pcs = cols.slice(2);
+                
+                // Determine group based on ID patterns
+                let group = 'Unknown';
+                if (iid.match(/^UZB/i) || iid.match(/^узб/i)) {
+                    group = 'UZB';
+                } else if (iid.match(/^HG/)) {
+                    group = '1000G_EUR';
+                } else if (iid.match(/^NA/)) {
+                    group = '1000G_AFR';
+                } else if (fid.match(/^UZB/i)) {
+                    group = 'UZB';
+                } else {
+                    group = 'UZB'; // Default to UZB for local cohort
                 }
-            });
+                
+                return `${fid},${iid},${pcs.join(',')},${group}`;
+            }).join('\n');
+            
+            return csvHeader + csvLines;
         }
         
         function parseData(csvText, filename) {
+            // Check if this is .eigenvec format
+            if (filename.endsWith('.eigenvec') || isEigenvecFormat(csvText)) {
+                setStatus(`Detected PLINK .eigenvec format, converting...`, 'info');
+                csvText = convertEigenvecToCSV(csvText);
+            }
+            
             Papa.parse(csvText, {
                 header: true,
                 skipEmptyLines: true,
