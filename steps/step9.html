@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 9: Fst Analysis (Uzbek vs EUR) - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        
+        .search-results { display: none; padding: 20px 30px; background: #e3f2fd; border-bottom: 1px solid #ddd; }
+        .search-results.active { display: block; }
+        .search-results a { color: #1976d2; text-decoration: none; margin-right: 15px; }
+        .search-results a:hover { text-decoration: underline; }
+        
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        
+        .content { padding: 30px; }
+        
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .warning { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; border-radius: 5px; margin: 20px 0; }
+        .warning strong { color: #721c24; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+        
+        .section-header {
+            color: #333;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #999;
+        }
+        
+        .section-content {
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .section {
+            margin: 20px 0;
+        }
+        
+        /* Editable Content Styles */
+        [contenteditable="true"] { 
+            outline: 2px dashed #667eea; 
+            outline-offset: 2px;
+            cursor: text;
+            padding: 2px 4px;
+        }
+        [contenteditable="true"]:focus { 
+            outline: 2px solid #1976d2; 
+            background: #f0f7ff;
+        }
+        .edit-toolbar { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            background: white; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+            z-index: 1000;
+            display: none;
+        }
+        .edit-toolbar.active { display: block; }
+        .edit-toolbar button { 
+            padding: 8px 15px; 
+            margin: 5px 5px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: 600;
+        }
+        .save-btn { background: #28a745; color: white; }
+        .save-btn:hover { background: #218838; }
+        .cancel-btn { background: #6c757d; color: white; }
+        .cancel-btn:hover { background: #5a6268; }
+        .edit-mode-notice { 
+            background: #fff3cd; 
+            padding: 12px 15px; 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            display: none; 
+        }
+        .edit-mode-notice.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+                <a href="step7.html">Step 7: PCA Analysis</a>
+                <a href="step8.html">Step 8: Global PCA</a>
+                <a href="step9.html" class="current">Step 9: Fst Analysis</a>
+            </div>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search across all steps..." onkeyup="searchAllSteps()">
+            </div>
+            <div class="search-results" id="searchResults"></div>
+            
+            <div class="header">
+                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <h1>Step 9: Genome-Wide F<sub>ST</sub> Analysis (Uzbek vs EUR)</h1>
+                <p>Quantify population differentiation between Uzbek cohort and 1000 Genomes European reference</p>
+                <span class="step-badge">Completed — October 23 (pilot) &amp; November 17 (genome-wide), 2025</span>
+            </div>
+        
+            <div class="content">
+                <!-- ==================== OVERVIEW ==================== -->
+                <div class="section">
+                    <h2 class="section-header">1. Overview</h2>
+                    <div class="section-content">
+                        <p>
+                            <strong>F<sub>ST</sub></strong> (fixation index) measures allele frequency differentiation between populations. Values range from 0 (no differentiation — identical allele frequencies) to 1 (complete fixation of different alleles). This step computes genome-wide Weir &amp; Cockerham F<sub>ST</sub> between our Uzbek cohort and 1000 Genomes Phase 3 European (EUR) samples to:
+                        </p>
+                        <ul>
+                            <li><strong>Quantify genetic distance</strong> — how differentiated are Uzbek samples from Europeans?</li>
+                            <li><strong>Identify highly differentiated loci</strong> — SNPs with extreme F<sub>ST</sub> may be under population-specific selection or linked to ancestry-informative markers</li>
+                            <li><strong>Contextualize GWAS findings</strong> — if a GWAS hit has high F<sub>ST</sub>, it may reflect population stratification rather than true disease association</li>
+                        </ul>
+                        <h3>Interpretation Guide</h3>
+                        <table>
+                            <tr><th>F<sub>ST</sub> Range</th><th>Interpretation</th><th>Example</th></tr>
+                            <tr><td>0.00–0.05</td><td>Little differentiation</td><td>Populations within same continental group</td></tr>
+                            <tr><td>0.05–0.15</td><td>Moderate differentiation</td><td>EUR vs SAS (~0.05), EUR vs AMR (~0.06)</td></tr>
+                            <tr><td>0.15–0.25</td><td>Great differentiation</td><td>EUR vs EAS (~0.11), EUR vs AFR (~0.15)</td></tr>
+                            <tr><td>>0.25</td><td>Very great differentiation</td><td>Extreme outlier loci under selection</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== INPUT DATA ==================== -->
+                <div class="section">
+                    <h2 class="section-header">2. Input Data</h2>
+                    <div class="section-content">
+                        <table>
+                            <tr>
+                                <th>Source</th>
+                                <th>File(s)</th>
+                                <th>Description</th>
+                            </tr>
+                            <tr>
+                                <td>Uzbek Data</td>
+                                <td><code>uzbek_data.ped/.map</code></td>
+                                <td>1,199 Uzbek samples, 650,181 genotyped variants (hg38/GRCh38)</td>
+                            </tr>
+                            <tr>
+                                <td>1000G Reference</td>
+                                <td><code>ALL.chr*.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz</code></td>
+                                <td>Phase 3 VCFs (hg19/GRCh37), all 2,504 samples</td>
+                            </tr>
+                            <tr>
+                                <td>EUR Sample List</td>
+                                <td><code>european_samples.txt</code></td>
+                                <td>503 EUR samples (CEU, GBR, FIN, TSI, IBS)</td>
+                            </tr>
+                            <tr>
+                                <td>LiftOver Chain</td>
+                                <td><code>hg38ToHg19.over.chain</code></td>
+                                <td>UCSC chain file for hg38 → hg19 coordinate conversion</td>
+                            </tr>
+                        </table>
+
+                        <div class="important">
+                            <strong>Note on Sample Count:</strong> This analysis used 1,199 Uzbek samples from the pre-QC genotyped dataset (<code>uzbek_data.ped</code>), not the 1,074 post-imputation final dataset. The Fst analysis was performed in October–November 2025, concurrent with the QC pipeline (Steps 1–6). The 125 additional samples include those later removed for missingness, IBD duplicates, and other QC filters. For downstream analyses requiring consistency with the GWAS dataset, F<sub>ST</sub> should be recalculated on the final 1,074 samples.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== STEP 1: LIFTOVER ==================== -->
+                <div class="section">
+                    <h2 class="section-header">3. Coordinate Liftover (hg38 → hg19)</h2>
+                    <div class="section-content">
+                        <p>
+                            The 1000 Genomes Phase 3 reference data uses hg19 (GRCh37) coordinates, while our Uzbek genotyping data was called on hg38 (GRCh38). To merge the datasets, we must convert Uzbek coordinates to hg19.
+                        </p>
+                        
+                        <h3>3.1 Convert PED/MAP to Binary PLINK</h3>
+                        <div class="code-block">cd /staging/ALSU-analysis/Fst_analysis
+
+# Convert PED/MAP to binary format
+plink --file uzbek_data --make-bed --out uzbek_data_hg38</div>
+                        <div class="command-output">650181 variants loaded from .bim file.
+1199 people (0 males, 0 females, 1199 ambiguous) loaded from .fam.
+Warning: Variant 1 (post-sort) triallelic; setting rarest alleles missing.
+[multiple triallelic warnings omitted]
+Total genotyping rate is 0.96741.
+--make-bed to uzbek_data_hg38.bed + uzbek_data_hg38.bim + uzbek_data_hg38.fam ... done.</div>
+
+                        <h3>3.2 Run UCSC LiftOver</h3>
+                        <p>Extract BED-format positions from the BIM file and convert coordinates using the UCSC liftOver tool:</p>
+                        <div class="code-block"># Create BED file from BIM (chr, start, end, SNP_ID)
+awk '{print "chr"$1, $4-1, $4, $2}' OFS='\t' uzbek_data_hg38.bim > uzbek_hg38_positions.bed
+
+# Run liftOver (downloads hg38ToHg19.over.chain from UCSC)
+liftOver uzbek_hg38_positions.bed hg38ToHg19.over.chain uzbek_hg19_lifted.bed unlifted.bed
+
+# Create position update file (old_ID → new_position)
+awk '{print $4, $3}' uzbek_hg19_lifted.bed > update_positions.txt
+
+# List of SNPs that successfully lifted
+awk '{print $4}' uzbek_hg19_lifted.bed > snps_to_keep.txt</div>
+
+                        <h3>3.3 Apply New Coordinates</h3>
+                        <div class="code-block"># Extract only liftable SNPs
+plink --bfile uzbek_data_hg38 \
+    --extract snps_to_keep.txt \
+    --make-bed \
+    --out uzbek_data_hg19_temp</div>
+                        <div class="command-output">650181 variants loaded from .bim file.
+1199 people loaded from .fam.
+--extract: 647854 variants remaining.
+--make-bed to uzbek_data_hg19_temp.bed + uzbek_data_hg19_temp.bim + uzbek_data_hg19_temp.fam ... done.</div>
+
+                        <div class="code-block"># Update positions to hg19 coordinates
+plink --bfile uzbek_data_hg19_temp \
+    --update-map update_positions.txt \
+    --make-bed \
+    --out uzbek_data_hg19</div>
+                        <div class="command-output">647854 variants loaded from .bim file.
+1199 people loaded from .fam.
+--update-map: 647854 values updated.
+Warning: Base-pair positions are now unsorted!
+--make-bed to uzbek_data_hg19.bed + uzbek_data_hg19.bim + uzbek_data_hg19.fam ... done.</div>
+
+                        <div class="stat-box">
+                            <span class="stat-label">Variants Lifted:</span>
+                            <span class="stat-value">647,854 / 650,181 (99.6% success rate)</span><br><br>
+                            <span class="stat-label">Variants Lost:</span>
+                            <span class="stat-value">2,327 (unmappable between assemblies)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== STEP 2: CHR22 PILOT ==================== -->
+                <div class="section">
+                    <h2 class="section-header">4. Chromosome 22 Pilot (October 23, 2025)</h2>
+                    <div class="section-content">
+                        <p>
+                            Before processing all 22 chromosomes, a pilot was run on chr22 to validate the pipeline. The per-chromosome workflow has 7 steps:
+                        </p>
+                        
+                        <h3>4.1 Per-Chromosome Pipeline</h3>
+                        <div class="code-block"># [1/7] Convert 1000G VCF to PLINK (EUR samples only)
+plink --vcf 1000G_data/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz \
+    --keep 1000G_data/european_samples_fixed.txt \
+    --make-bed \
+    --out 1000G_data/1000G_EUR_chr22
+
+# [2/7] Extract Uzbek chr22
+plink --bfile uzbek_data_hg19 --chr 22 --make-bed --out uzbek_chr22
+
+# [3/7] Rename SNPs to chr:pos format (for matching across datasets)
+awk '{$2=$1":"$4; print}' OFS='\t' uzbek_chr22.bim > uzbek_chr22_renamed.bim
+cp uzbek_chr22.bed uzbek_chr22_renamed.bed
+cp uzbek_chr22.fam uzbek_chr22_renamed.fam
+
+awk '{$2=$1":"$4; print}' OFS='\t' 1000G_data/1000G_EUR_chr22.bim > 1000G_EUR_chr22_newnames.bim
+cp 1000G_data/1000G_EUR_chr22.bed 1000G_EUR_chr22_newnames.bed
+cp 1000G_data/1000G_EUR_chr22.fam 1000G_EUR_chr22_newnames.fam
+
+# [4/7] Find overlapping positions
+awk '{print $1":"$4}' uzbek_chr22_renamed.bim | sort > uzbek_chr22_pos.txt
+awk '{print $1":"$4}' 1000G_EUR_chr22_newnames.bim | sort > 1000G_chr22_pos.txt
+comm -12 uzbek_chr22_pos.txt 1000G_chr22_pos.txt > positions_chr22.txt
+
+# [5/7] Extract overlapping SNPs from both datasets
+plink --bfile uzbek_chr22_renamed --extract positions_chr22.txt --make-bed --out uzbek_chr22_matched
+plink --bfile 1000G_EUR_chr22_newnames --extract positions_chr22.txt --make-bed --out 1000G_EUR_chr22_matched
+
+# [6/7] Merge (with strand-flip handling)
+plink --bfile uzbek_chr22_matched --bmerge 1000G_EUR_chr22_matched \
+    --make-bed --out merged_chr22_temp
+
+# If 3+ allele conflicts arise, exclude problematic SNPs and re-merge:
+plink --bfile uzbek_chr22_matched --exclude merged_chr22_temp-merge.missnp \
+    --make-bed --out uzbek_chr22_clean
+plink --bfile 1000G_EUR_chr22_matched --exclude merged_chr22_temp-merge.missnp \
+    --make-bed --out 1000G_EUR_chr22_clean
+
+# [7/7] Final merge
+plink --bfile uzbek_chr22_clean --bmerge 1000G_EUR_chr22_clean \
+    --make-bed --out merged_uzbek_EUR_chr22</div>
+
+                        <h3>4.2 Pilot F<sub>ST</sub></h3>
+                        <div class="code-block"># Create population assignment file
+# Format: FID IID GROUP (tab-separated)
+# 1,199 Uzbek samples labeled "UZBEK"
+# 503 EUR samples labeled "EUR"
+# (populations.txt covers all 1,702 merged samples)
+
+plink --bfile merged_uzbek_EUR_chr22 \
+    --fst \
+    --within populations.txt \
+    --out uzbek_vs_eur_fst</div>
+                        <div class="command-output">5762 variants loaded from .bim file.
+1702 people (0 males, 0 females, 1702 ambiguous) loaded from .fam.
+--within: 2 clusters loaded, covering a total of 1702 people.
+5762 markers with valid Fst estimates.
+Mean Fst estimate: 0.0148483
+Weighted Fst estimate: 0.0181685</div>
+
+                        <div class="success">
+                            <strong>Chr22 Pilot Successful:</strong> 5,762 overlapping SNPs between Uzbek and EUR, Mean F<sub>ST</sub> = 0.0148, Weighted F<sub>ST</sub> = 0.0182. Pipeline validated.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== STEP 3: GENOME-WIDE ==================== -->
+                <div class="section">
+                    <h2 class="section-header">5. Genome-Wide Processing (November 17, 2025)</h2>
+                    <div class="section-content">
+                        <p>
+                            The validated per-chromosome pipeline was automated across all 22 autosomes using two shell scripts. The first script (<code>process_all_chromosomes.sh</code>) processed chr1–14 (skipping chr22 which was already done), and the second (<code>continue_processing.sh</code>) processed chr15–21.
+                        </p>
+                        
+                        <h3>5.1 Automated Pipeline Script</h3>
+                        <div class="code-block">#!/bin/bash
+set -e
+
+echo "===== Processing all chromosomes for genome-wide Fst ====="
+echo "Start time: $(date)"
+
+for chr in {1..22}; do
+    echo ""
+    echo "===== CHROMOSOME ${chr} ====="
+
+    # Skip chr22 (already done in pilot)
+    if [ $chr -eq 22 ]; then
+        echo "  Chr22 already processed, using existing files"
+        continue
+    fi
+
+    echo "  [1/7] Converting 1000G VCF to PLINK..."
+    plink --vcf 1000G_data/ALL.chr${chr}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz \
+          --keep 1000G_data/european_samples_fixed.txt \
+          --make-bed \
+          --out 1000G_data/1000G_EUR_chr${chr} \
+          --silent
+
+    echo "  [2/7] Extracting Uzbek chr${chr}..."
+    plink --bfile uzbek_data_hg19 \
+          --chr ${chr} \
+          --make-bed \
+          --out uzbek_chr${chr} \
+          --silent
+
+    echo "  [3/7] Renaming SNPs to chr:pos format..."
+    awk '{$2=$1":"$4; print}' OFS='\t' uzbek_chr${chr}.bim > uzbek_chr${chr}_renamed.bim
+    cp uzbek_chr${chr}.bed uzbek_chr${chr}_renamed.bed
+    cp uzbek_chr${chr}.fam uzbek_chr${chr}_renamed.fam
+
+    awk '{$2=$1":"$4; print}' OFS='\t' 1000G_data/1000G_EUR_chr${chr}.bim > 1000G_EUR_chr${chr}_newnames.bim
+    cp 1000G_data/1000G_EUR_chr${chr}.bed 1000G_EUR_chr${chr}_newnames.bed
+    cp 1000G_data/1000G_EUR_chr${chr}.fam 1000G_EUR_chr${chr}_newnames.fam
+
+    echo "  [4/7] Finding overlapping SNPs..."
+    awk '{print $1":"$4}' uzbek_chr${chr}_renamed.bim | sort > uzbek_chr${chr}_pos.txt
+    awk '{print $1":"$4}' 1000G_EUR_chr${chr}_newnames.bim | sort > 1000G_chr${chr}_pos.txt
+    comm -12 uzbek_chr${chr}_pos.txt 1000G_chr${chr}_pos.txt > positions_chr${chr}.txt
+
+    overlap=$(wc -l < positions_chr${chr}.txt)
+    echo "    Found ${overlap} overlapping SNPs"
+
+    echo "  [5/7] Extracting overlapping SNPs..."
+    plink --bfile uzbek_chr${chr}_renamed \
+          --extract positions_chr${chr}.txt \
+          --make-bed \
+          --out uzbek_chr${chr}_matched \
+          --silent
+
+    plink --bfile 1000G_EUR_chr${chr}_newnames \
+          --extract positions_chr${chr}.txt \
+          --make-bed \
+          --out 1000G_EUR_chr${chr}_matched \
+          --silent
+
+    echo "  [6/7] Attempting merge..."
+    plink --bfile uzbek_chr${chr}_matched \
+          --bmerge 1000G_EUR_chr${chr}_matched \
+          --make-bed \
+          --out merged_chr${chr}_temp \
+          --silent 2>&1 | grep -q "3+ alleles" && {
+        echo "    Merge conflicts detected, excluding problem SNPs..."
+        plink --bfile uzbek_chr${chr}_matched \
+              --exclude merged_chr${chr}_temp-merge.missnp \
+              --make-bed \
+              --out uzbek_chr${chr}_clean \
+              --silent
+
+        plink --bfile 1000G_EUR_chr${chr}_matched \
+              --exclude merged_chr${chr}_temp-merge.missnp \
+              --make-bed \
+              --out 1000G_EUR_chr${chr}_clean \
+              --silent
+
+        echo "  [7/7] Final merge..."
+        plink --bfile uzbek_chr${chr}_clean \
+              --bmerge 1000G_EUR_chr${chr}_clean \
+              --make-bed \
+              --out merged_chr${chr} \
+              --silent
+    } || {
+        echo "  [7/7] Merge successful!"
+        mv merged_chr${chr}_temp.bed merged_chr${chr}.bed
+        mv merged_chr${chr}_temp.bim merged_chr${chr}.bim
+        mv merged_chr${chr}_temp.fam merged_chr${chr}.fam
+    }
+
+    snps=$(wc -l < merged_chr${chr}.bim)
+    echo "  ✓ Chr${chr} complete: ${snps} SNPs"
+
+    # Cleanup intermediate files
+    rm -f uzbek_chr${chr}.* uzbek_chr${chr}_renamed.* uzbek_chr${chr}_matched.* uzbek_chr${chr}_clean.*
+    rm -f 1000G_EUR_chr${chr}_newnames.* 1000G_EUR_chr${chr}_matched.* 1000G_EUR_chr${chr}_clean.*
+    rm -f uzbek_chr${chr}_pos.txt 1000G_chr${chr}_pos.txt positions_chr${chr}.txt
+    rm -f merged_chr${chr}_temp.*
+done
+
+echo ""
+echo "===== All chromosomes processed! ====="
+echo "End time: $(date)"</div>
+
+                        <h3>5.2 Merge All Chromosomes</h3>
+                        <div class="code-block"># Create merge list (chr2-chr22, using chr1 as base)
+cat > merge_list.txt << 'EOF'
+merged_chr2
+merged_chr3
+merged_chr4
+merged_chr5
+merged_chr6
+merged_chr7
+merged_chr8
+merged_chr9
+merged_chr10
+merged_chr11
+merged_chr12
+merged_chr13
+merged_chr14
+merged_chr15
+merged_chr16
+merged_chr17
+merged_chr18
+merged_chr19
+merged_chr20
+merged_chr21
+merged_chr22
+EOF
+
+# Merge all chromosomes into one dataset
+plink --bfile merged_chr1 \
+    --merge-list merge_list.txt \
+    --make-bed \
+    --out merged_all_chrs</div>
+                        <div class="command-output">376208 variants and 1702 people pass filters and QC.
+--make-bed to merged_all_chrs.bed + merged_all_chrs.bim + merged_all_chrs.fam ... done.</div>
+                    </div>
+                </div>
+
+                <!-- ==================== STEP 4: GENOME-WIDE FST ==================== -->
+                <div class="section">
+                    <h2 class="section-header">6. Genome-Wide F<sub>ST</sub> Calculation</h2>
+                    <div class="section-content">
+                        <h3>6.1 Population Assignment File</h3>
+                        <p>The <code>populations.txt</code> file assigns each sample to either <code>UZBEK</code> or <code>EUR</code>:</p>
+                        <div class="code-block"># Format: FID  IID  GROUP
+# Example entries:
+01-02   01-02   UZBEK
+01-03   01-03   UZBEK
+01-07   01-07   UZBEK
+...
+HG00096 HG00096 EUR
+HG00097 HG00097 EUR
+NA20832 NA20832 EUR</div>
+                        <div class="stat-box">
+                            <span class="stat-label">UZBEK samples:</span>
+                            <span class="stat-value">1,199</span><br><br>
+                            <span class="stat-label">EUR samples (1000G):</span>
+                            <span class="stat-value">503 (CEU=99, GBR=91, FIN=99, TSI=107, IBS=107)</span><br><br>
+                            <span class="stat-label">Total merged:</span>
+                            <span class="stat-value">1,702</span>
+                        </div>
+
+                        <h3>6.2 Run F<sub>ST</sub></h3>
+                        <div class="code-block"># Weir & Cockerham Fst (PLINK --fst)
+plink --bfile merged_all_chrs \
+    --fst \
+    --within populations.txt \
+    --out genomewide_uzbek_vs_eur_fst</div>
+                        <div class="command-output">PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+Options in effect:
+  --bfile merged_all_chrs
+  --fst
+  --within populations.txt
+  --out genomewide_uzbek_vs_eur_fst
+
+376208 variants loaded from .bim file.
+1702 people (0 males, 0 females, 1702 ambiguous) loaded from .fam.
+--within: 2 clusters loaded, covering a total of 1702 people.
+Total genotyping rate is 0.978817.
+376208 variants and 1702 people pass filters and QC.
+Writing --fst report (2 populations) to genomewide_uzbek_vs_eur_fst.fst ... done.
+376206 markers with valid Fst estimates (2 excluded).
+Mean Fst estimate: 0.0160089
+Weighted Fst estimate: 0.0204295</div>
+
+                        <div class="success">
+                            <strong>Genome-wide F<sub>ST</sub> Complete:</strong>
+                            <ul style="margin: 10px 0 0 15px;">
+                                <li><strong>Mean F<sub>ST</sub></strong> = 0.0160 (unweighted average across all SNPs)</li>
+                                <li><strong>Weighted F<sub>ST</sub></strong> = 0.0204 (weighted by expected heterozygosity — more robust)</li>
+                                <li><strong>Valid markers:</strong> 376,206 (2 excluded due to invariant alleles)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== RESULTS ==================== -->
+                <div class="section">
+                    <h2 class="section-header">7. Results</h2>
+                    <div class="section-content">
+                        
+                        <h3>7.1 F<sub>ST</sub> Distribution</h3>
+                        <table>
+                            <tr>
+                                <th>F<sub>ST</sub> Range</th>
+                                <th>Number of SNPs</th>
+                                <th>Percentage</th>
+                                <th>Interpretation</th>
+                            </tr>
+                            <tr>
+                                <td>≥ 0.50</td>
+                                <td>256</td>
+                                <td>0.07%</td>
+                                <td>Extreme differentiation — potential selection targets</td>
+                            </tr>
+                            <tr>
+                                <td>0.30 – 0.50</td>
+                                <td>193</td>
+                                <td>0.05%</td>
+                                <td>Very high differentiation</td>
+                            </tr>
+                            <tr>
+                                <td>0.10 – 0.30</td>
+                                <td>4,094</td>
+                                <td>1.09%</td>
+                                <td>Moderate to high differentiation</td>
+                            </tr>
+                            <tr>
+                                <td>0.05 – 0.10</td>
+                                <td>24,194</td>
+                                <td>6.43%</td>
+                                <td>Moderate differentiation</td>
+                            </tr>
+                            <tr>
+                                <td>0.00 – 0.05</td>
+                                <td>285,433</td>
+                                <td>75.86%</td>
+                                <td>Low differentiation (background level)</td>
+                            </tr>
+                            <tr style="background: #fef3f3;">
+                                <td>&lt; 0.00</td>
+                                <td>62,038</td>
+                                <td>16.49%</td>
+                                <td>Negative F<sub>ST</sub> (sampling noise; treated as ~0)</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="important">
+                            <strong>About Negative F<sub>ST</sub>:</strong> Weir &amp; Cockerham's estimator can produce slightly negative values when within-population variance exceeds between-population variance — this reflects sampling noise at loci with very similar allele frequencies. The 16.5% of negative values are expected for closely related populations and are biologically equivalent to zero.
+                        </div>
+
+                        <h3>7.2 Top 30 Most Differentiated Loci</h3>
+                        <table>
+                            <tr><th>Rank</th><th>Chr</th><th>Position (hg19)</th><th>SNP ID</th><th>F<sub>ST</sub></th><th>N (non-missing)</th></tr>
+                            <tr><td>1</td><td>9</td><td>14,776,145</td><td>9:14776145</td><td><strong>0.9982</strong></td><td>1,701</td></tr>
+                            <tr><td>2</td><td>1</td><td>40,954,877</td><td>1:40954877</td><td><strong>0.9982</strong></td><td>1,701</td></tr>
+                            <tr><td>3</td><td>14</td><td>23,893,148</td><td>14:23893148</td><td>0.9877</td><td>1,696</td></tr>
+                            <tr><td>4</td><td>21</td><td>19,169,133</td><td>21:19169133</td><td>0.9870</td><td>1,691</td></tr>
+                            <tr><td>5</td><td>9</td><td>104,189,856</td><td>9:104189856</td><td>0.9869</td><td>1,699</td></tr>
+                            <tr><td>6</td><td>8</td><td>24,813,391</td><td>8:24813391</td><td>0.9853</td><td>1,695</td></tr>
+                            <tr><td>7</td><td>14</td><td>50,100,242</td><td>14:50100242</td><td>0.9847</td><td>1,694</td></tr>
+                            <tr><td>8</td><td>17</td><td>48,275,339</td><td>17:48275339</td><td>0.9787</td><td>1,692</td></tr>
+                            <tr><td>9</td><td>4</td><td>69,530,098</td><td>4:69530098</td><td>0.9782</td><td>1,684</td></tr>
+                            <tr><td>10</td><td>11</td><td>47,355,475</td><td>11:47355475</td><td>0.9728</td><td>1,681</td></tr>
+                            <tr><td>11</td><td>2</td><td>179,642,589</td><td>2:179642589</td><td>0.9711</td><td>1,683</td></tr>
+                            <tr><td>12</td><td>6</td><td>30,585,771</td><td>6:30585771</td><td>0.9686</td><td>1,693</td></tr>
+                            <tr><td>13</td><td>1</td><td>36,934,805</td><td>1:36934805</td><td>0.9668</td><td>1,688</td></tr>
+                            <tr><td>14</td><td>4</td><td>187,003,729</td><td>4:187003729</td><td>0.9629</td><td>1,675</td></tr>
+                            <tr><td>15</td><td>13</td><td>95,672,265</td><td>13:95672265</td><td>0.9602</td><td>1,670</td></tr>
+                            <tr><td>16</td><td>1</td><td>161,199,431</td><td>1:161199431</td><td>0.9588</td><td>1,688</td></tr>
+                            <tr><td>17</td><td>6</td><td>29,640,785</td><td>6:29640785</td><td>0.9584</td><td>1,696</td></tr>
+                            <tr><td>18</td><td>8</td><td>48,701,786</td><td>8:48701786</td><td>0.9580</td><td>1,671</td></tr>
+                            <tr><td>19</td><td>1</td><td>146,661,814</td><td>1:146661814</td><td>0.9552</td><td>1,676</td></tr>
+                            <tr><td>20</td><td>4</td><td>70,354,534</td><td>4:70354534</td><td>0.9532</td><td>1,670</td></tr>
+                            <tr><td>21</td><td>2</td><td>152,580,815</td><td>2:152580815</td><td>0.9521</td><td>1,691</td></tr>
+                            <tr><td>22</td><td>16</td><td>89,833,576</td><td>16:89833576</td><td>0.9518</td><td>1,695</td></tr>
+                            <tr><td>23</td><td>11</td><td>34,999,682</td><td>11:34999682</td><td>0.9494</td><td>1,672</td></tr>
+                            <tr><td>24</td><td>6</td><td>31,059,825</td><td>6:31059825</td><td>0.9490</td><td>1,695</td></tr>
+                            <tr><td>25</td><td>2</td><td>21,238,413</td><td>2:21238413</td><td>0.9486</td><td>1,673</td></tr>
+                            <tr><td>26</td><td>5</td><td>162,896,759</td><td>5:162896759</td><td>0.9418</td><td>1,675</td></tr>
+                            <tr><td>27</td><td>8</td><td>145,639,681</td><td>8:145639681</td><td>0.9417</td><td>1,659</td></tr>
+                            <tr><td>28</td><td>10</td><td>96,818,119</td><td>10:96818119</td><td>0.9406</td><td>1,698</td></tr>
+                            <tr><td>29</td><td>6</td><td>32,704,884</td><td>6:32704884</td><td>0.9388</td><td>1,676</td></tr>
+                            <tr><td>30</td><td>11</td><td>17,476,460</td><td>11:17476460</td><td>0.9387</td><td>1,693</td></tr>
+                        </table>
+
+                        <div class="important">
+                            <strong>Notable observation about chr6 hits:</strong> Three of the top 30 hits (ranks 12, 17, 24, 29) are on chromosome 6 at positions 29.6–32.7 Mb. This region corresponds to the <strong>HLA/MHC complex</strong> (6p21.3), which is one of the most polymorphic regions of the human genome and is well-known for extreme population differentiation. The HLA region is also of potential relevance to pregnancy loss (immune tolerance of fetal alloantigens).
+                        </div>
+
+                        <h3>7.3 Per-Chromosome Summary</h3>
+                        <table>
+                            <tr><th>Chromosome</th><th>Overlapping SNPs</th><th>Mean F<sub>ST</sub></th></tr>
+                            <tr><td>Chr 1</td><td>29,115</td><td>0.0163</td></tr>
+                            <tr><td>Chr 2</td><td>31,144</td><td>0.0166</td></tr>
+                            <tr><td>Chr 3</td><td>26,057</td><td>0.0157</td></tr>
+                            <tr><td>Chr 4</td><td>24,077</td><td>0.0159</td></tr>
+                            <tr><td>Chr 5</td><td>21,920</td><td>0.0151</td></tr>
+                            <tr style="background: #fff3cd;"><td><strong>Chr 6</strong></td><td><strong>26,972</strong></td><td><strong>0.0192</strong></td></tr>
+                            <tr><td>Chr 7</td><td>21,175</td><td>0.0160</td></tr>
+                            <tr><td>Chr 8</td><td>19,717</td><td>0.0157</td></tr>
+                            <tr><td>Chr 9</td><td>17,831</td><td>0.0162</td></tr>
+                            <tr><td>Chr 10</td><td>19,386</td><td>0.0153</td></tr>
+                            <tr><td>Chr 11</td><td>18,107</td><td>0.0158</td></tr>
+                            <tr><td>Chr 12</td><td>18,472</td><td>0.0163</td></tr>
+                            <tr><td>Chr 13</td><td>13,812</td><td>0.0155</td></tr>
+                            <tr><td>Chr 14</td><td>12,418</td><td>0.0154</td></tr>
+                            <tr><td>Chr 15</td><td>11,874</td><td>0.0164</td></tr>
+                            <tr><td>Chr 16</td><td>12,777</td><td>0.0159</td></tr>
+                            <tr><td>Chr 17</td><td>10,945</td><td>0.0159</td></tr>
+                            <tr><td>Chr 18</td><td>11,173</td><td>0.0143</td></tr>
+                            <tr><td>Chr 19</td><td>8,244</td><td>0.0143</td></tr>
+                            <tr><td>Chr 20</td><td>9,704</td><td>0.0155</td></tr>
+                            <tr><td>Chr 21</td><td>5,526</td><td>0.0149</td></tr>
+                            <tr><td>Chr 22</td><td>5,762</td><td>0.0148</td></tr>
+                        </table>
+                        <p style="margin-top: 10px;">
+                            <strong>Chr 6 stands out</strong> with the highest per-chromosome mean F<sub>ST</sub> (0.0192), driven by the HLA/MHC region. Chromosomes 18 and 19 have the lowest mean F<sub>ST</sub> (0.0143).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ==================== INTERPRETATION ==================== -->
+                <div class="section">
+                    <h2 class="section-header">8. Interpretation</h2>
+                    <div class="section-content">
+                        <h3>8.1 Population Context</h3>
+                        <p>
+                            The weighted F<sub>ST</sub> of <strong>0.0204</strong> between Uzbek and EUR populations indicates <strong>low but non-trivial genetic differentiation</strong>. For context:
+                        </p>
+                        <table>
+                            <tr><th>Population Pair</th><th>Typical F<sub>ST</sub></th><th>Source</th></tr>
+                            <tr><td>Within-European (e.g., CEU vs TSI)</td><td>0.002–0.006</td><td>1000 Genomes</td></tr>
+                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (this study)</strong></td><td><strong>0.020</strong></td><td><strong>This analysis</strong></td></tr>
+                            <tr><td>EUR vs SAS (South Asian)</td><td>~0.035–0.05</td><td>1000 Genomes</td></tr>
+                            <tr><td>EUR vs EAS (East Asian)</td><td>~0.10–0.11</td><td>1000 Genomes</td></tr>
+                            <tr><td>EUR vs AFR (African)</td><td>~0.12–0.15</td><td>1000 Genomes</td></tr>
+                        </table>
+                        <p>
+                            The Uzbek cohort is genetically <strong>closer to Europeans than South Asians are</strong>, consistent with Central Asia's geographic and historical position as a crossroads between Europe and Asia. This aligns with the global PCA results (Step 8) where Uzbek samples cluster between EUR and SAS.
+                        </p>
+
+                        <h3>8.2 Implications for GWAS</h3>
+                        <ul>
+                            <li><strong>Population stratification is modest but real:</strong> F<sub>ST</sub> = 0.02 means ~2% of allele frequency variance is between populations. This is enough to inflate GWAS test statistics if not corrected.</li>
+                            <li><strong>PCA covariates essential:</strong> Include global PCA components (from Step 8) as covariates in association models to control for this differentiation.</li>
+                            <li><strong>High-F<sub>ST</sub> SNPs require caution:</strong> The 449 loci with F<sub>ST</sub> &gt; 0.3 are ancestry-informative markers. If these appear in GWAS results, they likely reflect population structure rather than disease biology.</li>
+                            <li><strong>HLA region needs special handling:</strong> The chr6 HLA hits are both population-differentiated AND biologically relevant to pregnancy. Cross-reference with GWAS hits carefully.</li>
+                        </ul>
+
+                        <h3>8.3 Highly Differentiated Loci — Potential Biology</h3>
+                        <p>
+                            SNPs with F<sub>ST</sub> near 1.0 are essentially fixed for different alleles in Uzbek vs EUR. While many reflect genetic drift and founder effects, some may overlap known selection signals. The top loci on <strong>chr9 (14.8 Mb)</strong> and <strong>chr1 (40.9 Mb)</strong> with F<sub>ST</sub> = 0.998 warrant gene annotation to identify nearby genes and potential functional consequences.
+                        </p>
+                        
+                        <div class="warning">
+                            <strong>Action Required:</strong> Annotate the top F<sub>ST</sub> hits (F<sub>ST</sub> &gt; 0.5) with nearest gene(s) and cross-reference against known selection scans in Central Asian populations. Tools: ANNOVAR, Ensembl VEP, or UCSC Genome Browser.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== OUTPUT FILES ==================== -->
+                <div class="section">
+                    <h2 class="section-header">9. Output Files</h2>
+                    <div class="section-content">
+                        <table>
+                            <tr>
+                                <th>File</th>
+                                <th>Location</th>
+                                <th>Description</th>
+                            </tr>
+                            <tr>
+                                <td><code>uzbek_data_hg19.{bed,bim,fam}</code></td>
+                                <td rowspan="8"><code>/staging/ALSU-analysis/Fst_analysis/</code></td>
+                                <td>Uzbek genotypes in hg19 coordinates (647,854 variants)</td>
+                            </tr>
+                            <tr>
+                                <td><code>merged_all_chrs.{bed,bim,fam}</code></td>
+                                <td>Merged Uzbek + EUR dataset (376,208 variants, 1,702 people)</td>
+                            </tr>
+                            <tr>
+                                <td><code>populations.txt</code></td>
+                                <td>Population assignments (FID IID GROUP): 1,199 UZBEK + 503 EUR</td>
+                            </tr>
+                            <tr>
+                                <td><code>genomewide_uzbek_vs_eur_fst.fst</code></td>
+                                <td>Per-SNP F<sub>ST</sub> values (CHR SNP POS NMISS FST)</td>
+                            </tr>
+                            <tr>
+                                <td><code>genomewide_uzbek_vs_eur_fst.log</code></td>
+                                <td>PLINK log with summary statistics</td>
+                            </tr>
+                            <tr>
+                                <td><code>uzbek_vs_eur_fst.fst</code></td>
+                                <td>Chr22 pilot F<sub>ST</sub> results</td>
+                            </tr>
+                            <tr>
+                                <td><code>process_all_chromosomes.sh</code></td>
+                                <td>Automated pipeline script (chr1–14)</td>
+                            </tr>
+                            <tr>
+                                <td><code>continue_processing.sh</code></td>
+                                <td>Continuation script (chr15–21)</td>
+                            </tr>
+                        </table>
+                        
+                        <h3>F<sub>ST</sub> Output File Format</h3>
+                        <div class="code-block"># genomewide_uzbek_vs_eur_fst.fst
+# Columns: CHR  SNP  POS  NMISS  FST
+CHR     SNP     POS     NMISS   FST
+1       1:727841        727841  1673    -0.000559429
+1       1:846808        846808  1669    -3.48052e-05
+...
+9       9:14776145      14776145        1701    0.998236
+1       1:40954877      40954877        1701    0.998236</div>
+                    </div>
+                </div>
+
+                <!-- ==================== KEY FINDINGS ==================== -->
+                <div class="section">
+                    <h2 class="section-header">10. Key Findings</h2>
+                    <div class="section-content">
+                        <table>
+                            <tr>
+                                <th>Finding</th>
+                                <th>Value</th>
+                                <th>Significance</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Genome-wide Weighted F<sub>ST</sub></strong></td>
+                                <td>0.0204</td>
+                                <td>Uzbek are closer to EUR than SAS, reflecting shared Eurasian ancestry</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Extreme outliers (F<sub>ST</sub> &gt; 0.5)</strong></td>
+                                <td>256 loci</td>
+                                <td>Potential selection targets or ancestry-informative markers to flag in GWAS</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chr 6 enrichment</strong></td>
+                                <td>Highest per-chr mean (0.0192)</td>
+                                <td>HLA/MHC complex drives elevated F<sub>ST</sub>; relevant to immune-mediated pregnancy loss</td>
+                            </tr>
+                            <tr>
+                                <td><strong>376,206 overlapping markers</strong></td>
+                                <td>Genome-wide coverage</td>
+                                <td>Sufficient density for population genetics analysis from genotyped (non-imputed) variants</td>
+                            </tr>
+                            <tr>
+                                <td><strong>16.5% negative F<sub>ST</sub></strong></td>
+                                <td>62,038 loci</td>
+                                <td>Expected for closely related populations; reflects sampling noise</td>
+                            </tr>
+                        </table>
+
+                        <div class="success">
+                            <strong>Summary:</strong> The Uzbek cohort shows low population differentiation from Europeans (F<sub>ST</sub> ≈ 0.02), consistent with Central Asian geography. Approximately 450 loci show extreme differentiation (F<sub>ST</sub> &gt; 0.3), concentrated in the HLA region and scattered across the genome. These results inform population stratification correction and highlight regions requiring careful interpretation in downstream GWAS.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== NEXT STEPS ==================== -->
+                <div class="section">
+                    <h2 class="section-header">11. Next Steps</h2>
+                    <div class="section-content">
+                        <ul>
+                            <li><strong>Gene Annotation:</strong> Annotate the 256 extreme F<sub>ST</sub> loci (F<sub>ST</sub> &gt; 0.5) with nearest genes using ANNOVAR/VEP</li>
+                            <li><strong>Fst Manhattan Plot:</strong> Create a genome-wide Manhattan plot of F<sub>ST</sub> values for visual identification of differentiation peaks</li>
+                            <li><strong>Recalculate on Final Dataset:</strong> Re-run F<sub>ST</sub> using the post-QC 1,074 samples for consistency with GWAS</li>
+                            <li><strong>Cross-reference with GWAS:</strong> Flag any GWAS hits that overlap with high-F<sub>ST</sub> regions</li>
+                            <li><strong>Compare with EAS/SAS:</strong> Calculate F<sub>ST</sub> against East Asian and South Asian 1000G populations to decompose Uzbek ancestry components</li>
+                            <li><strong>ADMIXTURE Integration:</strong> Combine F<sub>ST</sub> with ADMIXTURE results (Step 10) for comprehensive ancestry characterization</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function searchAllSteps() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (input.length > 2) {
+                resultsDiv.classList.add('active');
+                resultsDiv.innerHTML = `<p>Search functionality for: "${input}" - <a href="../index.html#steps">View all steps</a></p>`;
+            } else {
+                resultsDiv.classList.remove('active');
+            }
+        }
+
+        // Edit Mode Functionality
+        let isEditMode = false;
+        let originalContent = {};
+        
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const editableElements = document.querySelectorAll('h1, h2, h3, p, li, td:not(:first-child), strong');
+            const modeNotice = document.querySelector('.edit-mode-notice');
+            const toolbar = document.querySelector('.edit-toolbar');
+            
+            editableElements.forEach(el => {
+                if (el.closest('.sidebar') || el.closest('.search-bar')) return;
+                
+                if (isEditMode) {
+                    el.contentEditable = 'true';
+                    originalContent[el.textContent] = el.innerHTML;
+                } else {
+                    el.contentEditable = 'false';
+                }
+            });
+            
+            if (isEditMode) {
+                modeNotice?.classList.add('active');
+                toolbar?.classList.add('active');
+            } else {
+                modeNotice?.classList.remove('active');
+                toolbar?.classList.remove('active');
+            }
+        }
+        
+        function saveChanges() {
+            if (!isEditMode) return;
+            
+            const confirmSave = confirm('Save all changes to this page? Changes will be stored in your browser session.');
+            if (confirmSave) {
+                const pageTitle = document.title;
+                const editableElements = document.querySelectorAll('[contenteditable="true"]');
+                const changes = {};
+                
+                editableElements.forEach((el, idx) => {
+                    changes[idx] = el.innerHTML;
+                });
+                
+                localStorage.setItem(`${pageTitle}_changes`, JSON.stringify(changes));
+                alert('Changes saved successfully to this browser session.');
+                toggleEditMode();
+            }
+        }
+        
+        function cancelEdit() {
+            if (!isEditMode) return;
+            
+            const confirmCancel = confirm('Discard all unsaved changes?');
+            if (confirmCancel) {
+                const editableElements = document.querySelectorAll('[contenteditable="true"]');
+                editableElements.forEach(el => {
+                    if (originalContent[el.textContent]) {
+                        el.innerHTML = originalContent[el.textContent];
+                    }
+                });
+                toggleEditMode();
+            }
+        }
+        
+        // Load saved changes on page load
+        window.addEventListener('load', function() {
+            const pageTitle = document.title;
+            const savedChanges = localStorage.getItem(`${pageTitle}_changes`);
+            
+            if (savedChanges) {
+                const changes = JSON.parse(savedChanges);
+                const editableElements = document.querySelectorAll('h1, h2, h3, p, li, td:not(:first-child), strong');
+                
+                Object.keys(changes).forEach(idx => {
+                    const element = editableElements[idx];
+                    if (element) {
+                        element.innerHTML = changes[idx];
+                    }
+                });
+            }
+        });
+        
+        // Add edit mode button to page
+        document.addEventListener('DOMContentLoaded', function() {
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit Page';
+            editBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; z-index: 999; font-weight: 600;';
+            editBtn.onclick = toggleEditMode;
+            
+            document.body.appendChild(editBtn);
+            
+            // Create toolbar
+            const toolbar = document.createElement('div');
+            toolbar.className = 'edit-toolbar';
+            toolbar.innerHTML = '<button class="save-btn" onclick="saveChanges()">Save Changes</button><button class="cancel-btn" onclick="cancelEdit()">Cancel</button>';
+            document.body.appendChild(toolbar);
+            
+            // Create edit mode notice
+            const notice = document.createElement('div');
+            notice.className = 'edit-mode-notice';
+            notice.textContent = 'Edit Mode Active: Click any text to edit it directly. Use Save Changes to save your edits, or Cancel to discard.';
+            const content = document.querySelector('.content');
+            if (content) {
+                content.insertBefore(notice, content.firstChild);
+            }
+        });
+    </script>
+</body>
+</html>
