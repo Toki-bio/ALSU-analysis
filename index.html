@@ -69,7 +69,7 @@
             <!-- ROADMAP TAB - DATA FLOW GRAPH -->
             <div id="roadmap" class="tab-content active">
                 <div class="roadmap-graph" style="overflow-y: auto; padding: 40px 20px;">
-                    <svg width="600" height="1420" style="display: block; margin: 0 auto;">
+                    <svg width="600" height="1590" style="display: block; margin: 0 auto;">
                         <!-- Full roadmap SVG (Steps 1-8) preserved -->
                         <!-- STEP 1 -->
                         <a href="steps/step1.html">
@@ -158,6 +158,16 @@
                             <text x="300" y="1315" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + 1000G EUR (376K SNPs)</text>
                             <text x="300" y="1335" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: Genome-wide Fst = 0.020 | Oct–Nov</text>
                         </a>
+
+                        <line x1="300" y1="1380" x2="300" y2="1420" stroke="#1b5e20" stroke-width="3"/>
+
+                        <!-- STEP 10 -->
+                        <a href="steps/step10.html">
+                            <rect x="150" y="1420" width="300" height="120" fill="#2e7d32" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
+                            <text x="300" y="1450" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 10: Multi-Pop &amp; PBS</text>
+                            <text x="300" y="1475" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + EUR/EAS/SAS/AFR (376K SNPs)</text>
+                            <text x="300" y="1495" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: PBS + Uzbek-specific SNPs | Feb 2026</text>
+                        </a>
                     </svg>
                 </div>
             </div>
@@ -179,6 +189,17 @@
                         <div class="view-details"><a href="steps/step1.html">View Details →</a></div>
                     </div>
                     <!-- other steps omitted here for brevity but should be present in your file -->
+                    
+                    <div class="step-card" onclick="window.location.href='steps/step10.html'" style="border-left-color: #2e7d32;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #2e7d32;">10</span>
+                            <span class="step-title">Multi-Population Analysis &amp; PBS</span>
+                            <span class="step-date">Feb 16</span>
+                        </div>
+                        <div class="step-description">PBS, multi-pop F<sub>ST</sub>, delta-AF vs EUR/EAS/SAS/AFR. Identify Uzbek-specific SNPs via 3-tier approach.</div>
+                        <div class="step-status" style="color: #e65100;">⟳ Running</div>
+                        <div class="view-details"><a href="steps/step10.html" style="color: #2e7d32;">View Details →</a></div>
+                    </div>
                 </div>
             </div>
 

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 10: Multi-Pop Analysis & Uzbek-Specific SNPs - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        
+        .search-results { display: none; padding: 20px 30px; background: #e3f2fd; border-bottom: 1px solid #ddd; }
+        .search-results.active { display: block; }
+        .search-results a { color: #1976d2; text-decoration: none; margin-right: 15px; }
+        .search-results a:hover { text-decoration: underline; }
+        
+        .header { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        
+        .content { padding: 30px; }
+        
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #2e7d32; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul { margin-left: 25px; }
+        ol { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
+        .stat-box { background: #e8f5e9; padding: 15px 20px; border-left: 4px solid #2e7d32; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #2e7d32; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .warning { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; border-radius: 5px; margin: 20px 0; }
+        .warning strong { color: #721c24; }
+        .info { background: #e3f2fd; padding: 15px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .info strong { color: #0d47a1; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #e8f5e9; font-weight: 600; color: #1b5e20; }
+        tr:hover { background: #f9f9f9; }
+        
+        .formula { background: #f0f4f8; border: 1px solid #ccc; padding: 15px 20px; border-radius: 5px; margin: 15px 0; text-align: center; font-family: 'Cambria Math', 'Times New Roman', serif; font-size: 1.15em; color: #333; }
+        .formula .label { font-size: 0.85em; color: #666; display: block; margin-top: 8px; }
+
+        .tier-box { border: 2px solid #ccc; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .tier-box h4 { margin-top: 0; margin-bottom: 10px; }
+        .tier1 { border-color: #c62828; background: #ffebee; }
+        .tier1 h4 { color: #c62828; }
+        .tier2 { border-color: #e65100; background: #fff3e0; }
+        .tier2 h4 { color: #e65100; }
+        .tier3 { border-color: #1565c0; background: #e3f2fd; }
+        .tier3 h4 { color: #1565c0; }
+
+        .pipeline-flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 20px 0; }
+        .pipeline-step { background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 8px; padding: 12px 18px; font-size: 0.9em; text-align: center; min-width: 140px; }
+        .pipeline-arrow { font-size: 1.5em; color: #2e7d32; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+                <a href="step7.html">Step 7: PCA Analysis</a>
+                <a href="step8.html">Step 8: Global PCA</a>
+                <a href="step9.html">Step 9: F<sub>ST</sub> Analysis</a>
+                <a href="step10.html" class="current">Step 10: Multi-Pop &amp; PBS</a>
+            </div>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search across all steps..." onkeyup="searchAllSteps()">
+            </div>
+            <div class="search-results" id="searchResults"></div>
+            
+            <div class="header">
+                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <h1>Step 10: Multi-Population Analysis &amp; Uzbek-Specific SNPs</h1>
+                <p>PBS, multi-population F<sub>ST</sub>, delta allele frequencies, and identification of Uzbek-specific variants</p>
+                <span class="step-badge">Running — February 16, 2026</span>
+            </div>
+        
+            <div class="content">
+
+                <!-- ==================== OVERVIEW ==================== -->
+                <div class="section">
+                    <h2>1. Overview &amp; Rationale</h2>
+                    
+                    <p>
+                        Step 9 established genome-wide F<sub>ST</sub> between Uzbek and European (EUR) populations (mean weighted F<sub>ST</sub> = 0.020). However, <strong>pairwise F<sub>ST</sub> alone cannot distinguish selection-driven differentiation from drift</strong>. A high F<sub>ST</sub> between UZB and EUR could simply reflect their geographic distance rather than Uzbek-specific selection.
+                    </p>
+                    
+                    <p>
+                        This step adds <strong>three additional reference populations</strong> from 1000 Genomes Phase 3 to create a multi-population framework that isolates <em>Uzbek-specific</em> allele frequency shifts:
+                    </p>
+                    
+                    <table>
+                        <tr>
+                            <th>Population</th>
+                            <th>Abbreviation</th>
+                            <th>Samples</th>
+                            <th>1000G Sub-populations</th>
+                        </tr>
+                        <tr>
+                            <td>Uzbek cohort</td>
+                            <td><strong>UZB</strong></td>
+                            <td>1,199</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>European</td>
+                            <td><strong>EUR</strong></td>
+                            <td>503</td>
+                            <td>CEU, TSI, FIN, GBR, IBS</td>
+                        </tr>
+                        <tr>
+                            <td>East Asian</td>
+                            <td><strong>EAS</strong></td>
+                            <td>504</td>
+                            <td>CHB, JPT, CHS, CDX, KHV</td>
+                        </tr>
+                        <tr>
+                            <td>South Asian</td>
+                            <td><strong>SAS</strong></td>
+                            <td>489</td>
+                            <td>GIH, PJL, BEB, STU, ITU</td>
+                        </tr>
+                        <tr>
+                            <td>African</td>
+                            <td><strong>AFR</strong></td>
+                            <td>661</td>
+                            <td>YRI, LWK, GWD, MSL, ESN, ACB, ASW</td>
+                        </tr>
+                    </table>
+
+                    <h3>Why these populations?</h3>
+                    <ul>
+                        <li><strong>EUR</strong> — closest major reference panel; already used in Step 9. Shared post-Neolithic ancestry.</li>
+                        <li><strong>EAS</strong> — Uzbek populations have documented East Asian admixture (Turkic migrations). Required for PBS outgroup triangle.</li>
+                        <li><strong>SAS</strong> — geographically and genetically adjacent; shared Indo-Iranian heritage. Key comparison for distinguishing Central Asian vs broader South-Central Asian patterns.</li>
+                        <li><strong>AFR</strong> — deep outgroup that captures ancestral vs derived allele states. Any allele rare in ALL non-UZB populations including AFR is a strong candidate for Uzbek-specific selection.</li>
+                    </ul>
+                </div>
+
+                <!-- ==================== METHODS ==================== -->
+                <div class="section">
+                    <h2>2. Methods</h2>
+
+                    <h3>2.1. Three-Tier Identification Strategy</h3>
+                    <p>We use three complementary approaches to identify Uzbek-specific variants, each capturing different aspects of population differentiation:</p>
+
+                    <div class="tier-box tier1">
+                        <h4>Tier 1: Population Branch Statistic (PBS)</h4>
+                        <p>PBS isolates <strong>branch-specific evolution</strong> using a three-population tree. High PBS on the Uzbek branch → allele frequency change specific to the Uzbek lineage, not simply shared divergence between EUR and EAS.</p>
+                        <div class="formula">
+                            T<sub>XY</sub> = −log(1 − F<sub>ST(XY)</sub>)
+                            <br><br>
+                            PBS<sub>UZB</sub> = (T<sub>UZB-EUR</sub> + T<sub>UZB-EAS</sub> − T<sub>EUR-EAS</sub>) / 2
+                            <span class="label">Yi et al. 2010, Science — originally used to detect high-altitude adaptation in Tibetans</span>
+                        </div>
+                        <p><strong>Threshold:</strong> PBS ≥ 0.3 (~top 0.1% genome-wide in most populations)</p>
+                    </div>
+
+                    <div class="tier-box tier2">
+                        <h4>Tier 2: Multi-Population Delta Allele Frequency</h4>
+                        <p>Computes |AF<sub>UZB</sub> − AF<sub>X</sub>| for X ∈ {EUR, EAS, SAS, AFR}. SNPs where UZB differs from <strong>every</strong> major reference population by ≥ 0.3 are strong candidates.</p>
+                        <p><strong>Threshold:</strong> min(ΔAF) ≥ 0.3 across all four comparisons</p>
+                    </div>
+
+                    <div class="tier-box tier3">
+                        <h4>Tier 3: Near-Private Variants</h4>
+                        <p>Identifies alleles that are <strong>common in UZB but rare everywhere else</strong>: MAF ≥ 5% in Uzbek, MAF ≤ 1% in EUR, EAS, SAS, and AFR. These are potential novel or recently selected variants.</p>
+                        <p><strong>Threshold:</strong> UZB MAF ≥ 0.05, all others MAF ≤ 0.01</p>
+                    </div>
+
+                    <h3>2.2. Pipeline Architecture</h3>
+                    
+                    <div class="pipeline-flow">
+                        <div class="pipeline-step"><strong>1000G VCFs</strong><br>(chr1–22, per pop)</div>
+                        <span class="pipeline-arrow">→</span>
+                        <div class="pipeline-step"><strong>PLINK convert</strong><br>(--keep EAS/SAS/AFR)</div>
+                        <span class="pipeline-arrow">→</span>
+                        <div class="pipeline-step"><strong>SNP overlap</strong><br>(376K target set)</div>
+                        <span class="pipeline-arrow">→</span>
+                        <div class="pipeline-step"><strong>Merge chr1–22</strong><br>(per population)</div>
+                        <span class="pipeline-arrow">→</span>
+                        <div class="pipeline-step"><strong>Pairwise F<sub>ST</sub></strong><br>(5 pairs)</div>
+                        <span class="pipeline-arrow">→</span>
+                        <div class="pipeline-step"><strong>Frequencies</strong><br>(5 populations)</div>
+                        <span class="pipeline-arrow">→</span>
+                        <div class="pipeline-step"><strong>PBS + ΔAF</strong><br>(Python analysis)</div>
+                    </div>
+
+                    <h3>2.3. Input Data</h3>
+                    <ul>
+                        <li><strong>Uzbek genotype data</strong> — 1,199 samples × 376,206 SNPs (from Step 9 hg19 merged dataset)</li>
+                        <li><strong>1000G Phase 3 VCFs</strong> — 22 chromosome files, GRCh37/hg19, same SNP set as Uzbek after overlap extraction</li>
+                        <li><strong>Population panel</strong> — <code>integrated_call_samples_v3.20130502.ALL.panel</code></li>
+                        <li><strong>Existing UZB-EUR F<sub>ST</sub></strong> — from Step 9 (<code>genomewide_uzbek_vs_eur_fst.fst</code>)</li>
+                    </ul>
+                </div>
+
+                <!-- ==================== PHASE 1 ==================== -->
+                <div class="section">
+                    <h2>3. Phase 1: Multi-Population Extraction</h2>
+
+                    <h3>3.1. Script: <code>01_extract_multipop.sh</code></h3>
+                    <p>270 lines. Automated pipeline that:</p>
+                    <ol>
+                        <li>Creates sample lists for EAS (504), SAS (489), AFR (661) from the 1000G panel file</li>
+                        <li>Extracts target SNP positions from UZB-EUR merged dataset (376,208 SNPs)</li>
+                        <li>For each population × each chromosome (3 × 22 = 66 PLINK conversions):
+                            <ul>
+                                <li>Converts 1000G VCF → PLINK binary format, keeping only target population samples</li>
+                                <li>Renames SNP IDs to <code>chr:pos</code> format (matching Uzbek data convention)</li>
+                                <li>Extracts only the 376K target SNPs that overlap with UZB-EUR set</li>
+                            </ul>
+                        </li>
+                        <li>Merges all 22 chromosomes per population</li>
+                        <li>Computes allele frequencies for all 5 populations</li>
+                        <li>Computes pairwise F<sub>ST</sub> for 5 population pairs:
+                            <ul>
+                                <li>UZB vs EAS, UZB vs SAS, UZB vs AFR (new)</li>
+                                <li>EUR vs EAS (needed for PBS triangle)</li>
+                                <li>UZB vs EUR (symlink to Step 9 output)</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <div class="important">
+                        <strong>Merge conflict handling:</strong> When merging UZB with each 1000G population, strand/allele-coding mismatches may occur. The script automatically detects these via PLINK's <code>-merge.missnp</code> output and re-runs the merge excluding conflicting SNPs.
+                    </div>
+
+                    <h3>3.2. Execution</h3>
+                    <div class="code-block"># Launch with reduced threads (8) to coexist with ADMIXTURE (32 threads)
+cd /staging/ALSU-analysis/admixture_analysis/pop_specific
+export OMP_NUM_THREADS=8
+nohup bash scripts/run_uzb_specific_pipeline.sh > pipeline.log 2>&1 &
+
+# Monitor progress
+tail -f pipeline.log</div>
+
+                    <div class="stat-box">
+                        <span class="stat-label">Server context:</span>
+                        <span class="stat-value">ADMIXTURE K=2–8 running concurrently (32 threads, ~30 load average). Pipeline limited to 8 threads via OMP_NUM_THREADS to avoid overloading the 64-core server.</span>
+                    </div>
+                </div>
+
+                <!-- ==================== PHASE 2 ==================== -->
+                <div class="section">
+                    <h2>4. Phase 2: PBS &amp; Uzbek-Specific SNP Analysis</h2>
+
+                    <h3>4.1. Script: <code>02_calculate_pbs.py</code></h3>
+                    <p>407 lines. Python analysis that:</p>
+                    <ol>
+                        <li><strong>Loads all pairwise F<sub>ST</sub> files</strong> — 5 files, PLINK format (CHR / SNP / POS / NMISS / FST). Negative F<sub>ST</sub> values clamped to 0.</li>
+                        <li><strong>Loads per-population allele frequencies</strong> — 5 <code>.frq</code> files. Handles allele orientation differences by checking A1/A2 consistency and flipping if needed.</li>
+                        <li><strong>Computes PBS</strong> — For every SNP present in UZB-EUR, UZB-EAS, and EUR-EAS F<sub>ST</sub> files (inner join on SNP ID):
+                            <ul>
+                                <li>Convert each pairwise F<sub>ST</sub> to divergence time: T = −log(1 − F<sub>ST</sub>)</li>
+                                <li>PBS<sub>UZB</sub> = (T<sub>UZB-EUR</sub> + T<sub>UZB-EAS</sub> − T<sub>EUR-EAS</sub>) / 2</li>
+                                <li>F<sub>ST</sub> capped at 0.999 to avoid log(0)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Computes delta allele frequencies</strong> — |AF<sub>UZB</sub> − AF<sub>X</sub>| for all 4 reference populations, with allele alignment correction</li>
+                        <li><strong>Three-tier identification</strong>:
+                            <ul>
+                                <li><strong>Tier 1</strong>: PBS ≥ 0.3</li>
+                                <li><strong>Tier 2</strong>: min(ΔAF<sub>EUR</sub>, ΔAF<sub>EAS</sub>, ΔAF<sub>SAS</sub>, ΔAF<sub>AFR</sub>) ≥ 0.3</li>
+                                <li><strong>Tier 3</strong>: UZB MAF ≥ 5% AND EUR/EAS/SAS/AFR MAF ≤ 1%</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <h3>4.2. Output Files</h3>
+                    <table>
+                        <tr>
+                            <th>File</th>
+                            <th>Description</th>
+                            <th>Key Columns</th>
+                        </tr>
+                        <tr>
+                            <td><code>pbs_results.tsv</code></td>
+                            <td>PBS score for every SNP in the three-pop overlap</td>
+                            <td>CHR, SNP, POS, PBS, FST_UZB_EUR, FST_UZB_EAS, FST_EUR_EAS</td>
+                        </tr>
+                        <tr>
+                            <td><code>uzbek_specific_snps.tsv</code></td>
+                            <td>Union of all three tier hits with tier annotation</td>
+                            <td>All PBS + ΔAF columns, TIER label</td>
+                        </tr>
+                        <tr>
+                            <td><code>delta_af_all.tsv</code></td>
+                            <td>ΔAF for every SNP across all 4 comparisons</td>
+                            <td>CHR, SNP, MAF_UZB, MAF_EUR, MAF_EAS, MAF_SAS, MAF_AFR, dAF_*</td>
+                        </tr>
+                        <tr>
+                            <td><code>near_private_variants.tsv</code></td>
+                            <td>Tier 3 near-private variants only</td>
+                            <td>Same as delta_af_all, filtered</td>
+                        </tr>
+                        <tr>
+                            <td><code>summary_stats.txt</code></td>
+                            <td>Human-readable summary of all results</td>
+                            <td>—</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- ==================== THEORY ==================== -->
+                <div class="section">
+                    <h2>5. Theoretical Background</h2>
+
+                    <h3>5.1. Population Branch Statistic (PBS)</h3>
+                    <p>
+                        Developed by <strong>Yi et al. (2010)</strong> to detect high-altitude adaptation in Tibetans (identifying <em>EPAS1</em>), PBS extends pairwise F<sub>ST</sub> into a three-population phylogenetic framework. The key insight: by using three populations (target + two outgroups), you can decompose total divergence into branch-specific components.
+                    </p>
+                    
+                    <p>
+                        For our analysis, the three populations are:
+                    </p>
+                    <ul>
+                        <li><strong>A (target)</strong> = UZB — the branch we want to measure</li>
+                        <li><strong>B (outgroup 1)</strong> = EUR — geographically western reference</li>
+                        <li><strong>C (outgroup 2)</strong> = EAS — geographically eastern reference</li>
+                    </ul>
+                    <p>
+                        UZB is geographically situated between EUR and EAS, making this triangle geopolitically and genetically meaningful. Any allele frequency shift specific to the Uzbek lineage (not shared with EUR or EAS) produces a high PBS<sub>UZB</sub>.
+                    </p>
+
+                    <div class="info">
+                        <strong>Interpretation guide:</strong>
+                        <ul>
+                            <li><strong>PBS ≥ 0.3</strong> — Strong signal; comparable to empirical top 0.1% genome-wide in many populations</li>
+                            <li><strong>PBS 0.1–0.3</strong> — Moderate signal; warrants investigation especially if clustered with neighboring SNPs</li>
+                            <li><strong>PBS &lt; 0.1</strong> — Background drift, no evidence of directional selection</li>
+                            <li><strong>PBS &lt; 0</strong> — Shared divergence between outgroups (EUR-EAS branch is longer); not meaningful for UZB selection</li>
+                        </ul>
+                    </div>
+
+                    <h3>5.2. Why Three Tiers?</h3>
+                    <p>Each tier captures different evolutionary scenarios:</p>
+                    <table>
+                        <tr><th>Tier</th><th>What it detects</th><th>Limitation</th></tr>
+                        <tr>
+                            <td><strong>1 (PBS)</strong></td>
+                            <td>Recent positive selection on UZB branch — allele frequency changed <em>specifically</em> in UZB relative to both EUR and EAS</td>
+                            <td>Requires all three populations to share the SNP. Two-outgroup design may miss selection events on shared branches.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2 (ΔAF)</strong></td>
+                            <td>SNPs where UZB is a frequency outlier vs <em>all</em> global populations — captures drift + selection + founder effects</td>
+                            <td>Doesn't distinguish selection from strong drift. More permissive.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3 (Near-private)</strong></td>
+                            <td>Alleles common in UZB (≥5%) but nearly absent elsewhere (≤1%) — potential novel variants or recent sweeps</td>
+                            <td>Small numbers expected. Could be genotyping artifacts, structural variant tagging, or sequencing batch effects.</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- ==================== SERVER CONTEXT ==================== -->
+                <div class="section">
+                    <h2>6. Server &amp; Computational Context</h2>
+
+                    <h3>6.1. Resource Management</h3>
+                    <table>
+                        <tr><th>Resource</th><th>Total</th><th>ADMIXTURE</th><th>This pipeline</th><th>Available</th></tr>
+                        <tr><td>CPU cores</td><td>64</td><td>32 (−j32)</td><td>8 (OMP_NUM_THREADS)</td><td>~24 idle</td></tr>
+                        <tr><td>RAM</td><td>515 GB</td><td>&lt;1 GB</td><td>&lt;5 GB</td><td>~451 GB free</td></tr>
+                        <tr><td>Disk</td><td>14 TB</td><td>negligible</td><td>~50 GB temp</td><td>7.6 TB free</td></tr>
+                    </table>
+
+                    <h3>6.2. ABySS Beetle Genome Assembly — Status Report</h3>
+                    <div class="warning">
+                        <strong>ABySS is NOT running.</strong> No processes found as of Feb 16, 2026.
+                    </div>
+                    <p>Investigation of <code>/staging/Sergei/beetlejuice/</code> reveals:</p>
+                    <ul>
+                        <li><strong>Full dataset</strong>: SRR21381257 paired-end reads — <strong>49 GB</strong> compressed (25G + 24G FASTQ.gz)</li>
+                        <li><strong>Failed full run (Feb 13)</strong>: ABySS 2.3.10 with k=64, 4 MPI processors. The <code>abyss_debug.log</code> shows it stalled during the <em>initial read-loading step</em> — only reached 1.6M reads per processor before the log ends. OpenIB/InfiniBand MPI warnings suggest network fabric issues on this single-node server (not a cluster).</li>
+                        <li><strong>Successful mini-test (Feb 13)</strong>: A <code>test_minimal</code> ABySS run completed successfully on subsampled data, producing scaffolds. The <code>test_minimal-stats.tab</code> contains assembly statistics.</li>
+                        <li><strong>20× subsampling (Feb 14)</strong>: Created <code>beetle_20x_1.fastq.gz</code> (2.3G) and <code>beetle_20x_2.fastq.gz</code> (2.2G) + coverage histogram. No assembly was run on this data yet.</li>
+                        <li><strong>SPAdes assembly exists</strong>: <code>spades_assembly/</code> directory from Feb 13, 10:45 — a separate assembler run that may have completed.</li>
+                    </ul>
+
+                    <div class="info">
+                        <strong>Diagnosis:</strong> The full ABySS run likely crashed due to:
+                        <ol>
+                            <li><strong>MPI fabric misconfiguration</strong> — OpenIB BTL errors indicate ABySS tried to use InfiniBand, which isn't available on a single server</li>
+                            <li><strong>Memory/time</strong> — 49 GB of reads with k=64 requires enormous hash table. At 4 processors processing ~3K reads/sec each, reading all reads alone would take many hours</li>
+                            <li>The process was likely killed or crashed ~Feb 13 13:21 (log timestamp)</li>
+                        </ol>
+                        <strong>Recommendation:</strong> Use the 20× subsampled data or switch to SPAdes (which already has results). If ABySS is required, add <code>--mpi-no-ib</code> flag and increase processors.
+                    </div>
+                </div>
+
+                <!-- ==================== CONCURRENT ADMIXTURE ==================== -->
+                <div class="section">
+                    <h2>7. Concurrent ADMIXTURE Analysis</h2>
+                    <p>Running in parallel in <code>/staging/ALSU-analysis/admixture_analysis/</code>:</p>
+                    
+                    <table>
+                        <tr>
+                            <th>K</th>
+                            <th>Status (as of Feb 16 18:00)</th>
+                            <th>Notes</th>
+                        </tr>
+                        <tr>
+                            <td>K=2</td>
+                            <td style="color: #2e7d32; font-weight: 600;">✓ Complete</td>
+                            <td>UZB_for_admixture.2.Q written 17:26</td>
+                        </tr>
+                        <tr>
+                            <td>K=3</td>
+                            <td style="color: #e65100; font-weight: 600;">Running (block 17, delta=16.1)</td>
+                            <td>Converging — delta dropped from 158→75→52→9.6→16.1. Should complete soon.</td>
+                        </tr>
+                        <tr>
+                            <td>K=4–8</td>
+                            <td>Queued</td>
+                            <td>Sequential execution after K=3</td>
+                        </tr>
+                    </table>
+
+                    <div class="stat-box">
+                        <span class="stat-label">ADMIXTURE input:</span>
+                        <span class="stat-value">1,074 Uzbek samples × 380,376 LD-pruned SNPs (MAF > 5%, r² < 0.1, window 50 SNPs step 10)</span>
+                    </div>
+                </div>
+
+                <!-- ==================== FILE LISTING ==================== -->
+                <div class="section">
+                    <h2>8. Output Directory Structure</h2>
+<div class="code-block">/staging/ALSU-analysis/admixture_analysis/pop_specific/
+├── scripts/
+│   ├── 01_extract_multipop.sh           # Phase 1: multi-pop extraction (270 lines)
+│   ├── 02_calculate_pbs.py              # Phase 2: PBS + ΔAF analysis (407 lines)
+│   └── run_uzb_specific_pipeline.sh     # Master wrapper script
+├── pipeline.log                         # stdout/stderr from nohup run
+│
+├── # Population sample lists
+├── eas_samples.txt                      # 504 EAS sample IDs
+├── sas_samples.txt                      # 489 SAS sample IDs
+├── afr_samples.txt                      # 661 AFR sample IDs
+│
+├── # Per-population merged PLINK files
+├── 1000G_EAS_all.{bed,bim,fam}          # Merged EAS (504 samples × ~376K SNPs)
+├── 1000G_SAS_all.{bed,bim,fam}          # Merged SAS (489 samples × ~376K SNPs)
+├── 1000G_AFR_all.{bed,bim,fam}          # Merged AFR (661 samples × ~376K SNPs)
+│
+├── # Allele frequencies
+├── freq_UZB.frq                         # Uzbek allele frequencies
+├── freq_EUR.frq                         # European allele frequencies
+├── freq_EAS.frq                         # East Asian allele frequencies
+├── freq_SAS.frq                         # South Asian allele frequencies
+├── freq_AFR.frq                         # African allele frequencies
+│
+├── # Pairwise Fst
+├── fst_UZB_vs_EUR.fst → genomewide_uzbek_vs_eur_fst.fst  # Symlink to Step 9
+├── fst_UZB_vs_EAS.fst
+├── fst_UZB_vs_SAS.fst
+├── fst_UZB_vs_AFR.fst
+├── fst_EUR_vs_EAS.fst                   # Outgroup pair for PBS
+│
+├── # Analysis results
+├── pbs_results.tsv                      # PBS scores (all SNPs)
+├── uzbek_specific_snps.tsv              # Three-tier Uzbek-specific candidates
+├── delta_af_all.tsv                     # ΔAF across all populations
+├── near_private_variants.tsv            # Tier 3 near-private variants
+└── summary_stats.txt                    # Human-readable summary</div>
+                </div>
+
+                <!-- ==================== SCRIPTS ==================== -->
+                <div class="section">
+                    <h2>9. Complete Scripts</h2>
+
+                    <h3>9.1. Master Wrapper — <code>run_uzb_specific_pipeline.sh</code></h3>
+<div class="code-block">#!/bin/bash
+# Master script: Run the complete Uzbek-specific SNP identification pipeline
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+OUTDIR="/staging/ALSU-analysis/admixture_analysis/pop_specific"
+FST_DIR="/staging/ALSU-analysis/Fst_analysis"
+
+echo "===== Uzbek-Specific SNP Pipeline ====="
+echo "Start time: $(date)"
+
+# Phase 1: Extract populations and compute pairwise Fst
+bash "${SCRIPT_DIR}/01_extract_multipop.sh"
+
+# Symlink existing UZB-EUR Fst to output directory
+if [ ! -f "${OUTDIR}/fst_UZB_vs_EUR.fst" ]; then
+    ln -s "${FST_DIR}/genomewide_uzbek_vs_eur_fst.fst" "${OUTDIR}/fst_UZB_vs_EUR.fst"
+fi
+
+# Phase 2: PBS &amp; Uzbek-specific SNP analysis
+python3 "${SCRIPT_DIR}/02_calculate_pbs.py" \
+    --outdir "${OUTDIR}" \
+    --pbs-threshold 0.3 \
+    --delta-af-threshold 0.3
+
+echo "===== Pipeline Complete! ====="
+echo "End time: $(date)"</div>
+
+                    <h3>9.2. Phase 1 — <code>01_extract_multipop.sh</code> (key sections)</h3>
+<div class="code-block"># Per-chromosome VCF → PLINK conversion for each population
+for POP in EAS SAS AFR; do
+    for chr in {1..22}; do
+        # Convert VCF keeping only target population samples
+        plink --vcf "${BASEDIR}/1000G_data/ALL.chr${chr}...vcf.gz" \
+              --keep "${pop_lower}_samples.txt" \
+              --make-bed --out "1000G_${POP}_chr${chr}_raw" --silent
+
+        # Rename SNP IDs to chr:pos format (matching UZB-EUR convention)
+        awk '{$2=$1":"$4; print}' OFS='\t' "1000G_${POP}_chr${chr}_raw.bim" > \
+            "1000G_${POP}_chr${chr}.bim"
+
+        # Extract only the 376K target SNPs
+        plink --bfile "1000G_${POP}_chr${chr}" \
+              --extract target_snps.txt \
+              --make-bed --out "1000G_${POP}_chr${chr}_matched" --silent
+    done
+    
+    # Merge all chromosomes
+    plink --bfile "1000G_${POP}_chr1_matched" \
+          --merge-list "merge_list_${POP}.txt" \
+          --make-bed --out "1000G_${POP}_all" --silent
+    
+    # Compute frequencies
+    plink --bfile "1000G_${POP}_all" --freq --out "freq_${POP}" --silent
+done
+
+# Pairwise Fst with merge-conflict handling
+for POP in EAS SAS AFR; do
+    plink --bfile "merged_UZB_${POP}" \
+          --fst --within "pop_UZB_${POP}.txt" \
+          --out "fst_UZB_vs_${POP}" --silent
+done</div>
+
+                    <h3>9.3. Phase 2 — <code>02_calculate_pbs.py</code> (key functions)</h3>
+<div class="code-block">def fst_to_time(fst):
+    """Convert Fst to divergence time: T = -log(1 - Fst)."""
+    fst = np.clip(fst, 0, 0.999)
+    return -np.log(1 - fst)
+
+def calculate_pbs(t_ab, t_ac, t_bc):
+    """PBS_A = (T_AB + T_AC - T_BC) / 2"""
+    return (t_ab + t_ac - t_bc) / 2
+
+# Three-tier identification:
+# Tier 1: PBS ≥ 0.3
+tier1 = pbs_df[pbs_df['PBS'] >= args.pbs_threshold]
+
+# Tier 2: min(ΔAF) ≥ 0.3 across all populations  
+daf_cols = ['dAF_EUR', 'dAF_EAS', 'dAF_SAS', 'dAF_AFR']
+tier2 = merged[merged[daf_cols].min(axis=1) >= args.delta_af_threshold]
+
+# Tier 3: UZB MAF ≥ 5%, all others MAF ≤ 1%
+tier3 = merged[(merged['MAF_UZB'] >= 0.05) &amp; 
+               (merged['MAF_EUR'] <= 0.01) &amp;
+               (merged['MAF_EAS'] <= 0.01) &amp;
+               (merged['MAF_SAS'] <= 0.01) &amp;
+               (merged['MAF_AFR'] <= 0.01)]</div>
+                </div>
+
+                <!-- ==================== RESULTS PLACEHOLDER ==================== -->
+                <div class="section">
+                    <h2>10. Results</h2>
+                    
+                    <div class="important">
+                        <strong>Pipeline running.</strong> Results will be populated once execution completes. Launched Feb 16 17:59 PST.
+                    </div>
+
+                    <h3>10.1. Pairwise F<sub>ST</sub> Summary</h3>
+                    <p><em>To be filled with weighted mean F<sub>ST</sub> for each pair:</em></p>
+                    <table>
+                        <tr><th>Pair</th><th>Mean F<sub>ST</sub></th><th>Weighted F<sub>ST</sub></th><th>SNPs</th></tr>
+                        <tr><td>UZB vs EUR</td><td>0.0160</td><td>0.0204</td><td>376,206</td></tr>
+                        <tr><td>UZB vs EAS</td><td colspan="3"><em>pending...</em></td></tr>
+                        <tr><td>UZB vs SAS</td><td colspan="3"><em>pending...</em></td></tr>
+                        <tr><td>UZB vs AFR</td><td colspan="3"><em>pending...</em></td></tr>
+                        <tr><td>EUR vs EAS</td><td colspan="3"><em>pending...</em></td></tr>
+                    </table>
+
+                    <h3>10.2. PBS Distribution</h3>
+                    <p><em>Pending pipeline completion.</em></p>
+
+                    <h3>10.3. Uzbek-Specific SNP Counts</h3>
+                    <table>
+                        <tr><th>Tier</th><th>Criterion</th><th>Count</th></tr>
+                        <tr><td>1 (PBS)</td><td>PBS ≥ 0.3</td><td><em>pending...</em></td></tr>
+                        <tr><td>2 (ΔAF)</td><td>min ΔAF ≥ 0.3</td><td><em>pending...</em></td></tr>
+                        <tr><td>3 (near-private)</td><td>UZB MAF ≥ 5%, others ≤ 1%</td><td><em>pending...</em></td></tr>
+                        <tr><td colspan="2"><strong>Total unique SNPs</strong></td><td><em>pending...</em></td></tr>
+                    </table>
+
+                    <h3>10.4. Top PBS Hits</h3>
+                    <p><em>Top 20 SNPs by PBS score will be listed here after pipeline completion.</em></p>
+                </div>
+
+                <!-- ==================== INTERPRETATION ==================== -->
+                <div class="section">
+                    <h2>11. Interpretation Guide</h2>
+
+                    <h3>What to expect from PBS values for Uzbek samples</h3>
+                    <p>
+                        Uzbek populations represent a <strong>Central Asian admixture zone</strong> between European and East Asian ancestry (confirmed by our PCA in Steps 7–8). This means:
+                    </p>
+                    <ul>
+                        <li><strong>Most SNPs will have low PBS</strong> (< 0.1) — reflecting gradual clinal variation rather than discrete differentiation</li>
+                        <li><strong>High PBS hits may cluster in known selection targets</strong> — skin pigmentation genes (<em>SLC24A5</em>, <em>SLC45A2</em>), immunity (<em>HLA</em> region), metabolic adaptation, altitude/diet adaptation</li>
+                        <li><strong>HLA/MHC region (chr6p21)</strong> — already showed highest mean F<sub>ST</sub> in Step 9 (0.0192). Expect elevated PBS here due to pathogen-driven selection.</li>
+                        <li><strong>Uzbek-specific hits</strong> may reflect Silk Road population history: admixture from multiple sources, repeated population turnover, and pathogen exposure unique to Central Asian trading routes</li>
+                    </ul>
+
+                    <h3>Caveats</h3>
+                    <ul>
+                        <li><strong>PBS assumes a tree-like population history</strong>. Uzbek ancestry is admixed (EUR + EAS), violating this assumption. High PBS could reflect admixture dynamics rather than selection.</li>
+                        <li><strong>Ascertainment bias</strong>: The 376K SNP set was filtered for UZB-EUR overlap, potentially missing UZB-specific variants not on the original genotyping array.</li>
+                        <li><strong>Sample size imbalance</strong>: UZB (1,199) vs EUR (503) vs EAS (504) affects F<sub>ST</sub> estimation variance.</li>
+                        <li><strong>No linkage information</strong>: Extended haplotype analyses (iHS, nSL) would complement PBS but require phased data.</li>
+                    </ul>
+                </div>
+
+                <!-- ==================== NEXT STEPS ==================== -->
+                <div class="section">
+                    <h2>12. Next Steps</h2>
+                    <ul>
+                        <li><strong>After results</strong>: Annotate top PBS/ΔAF hits with gene names (nearest gene, functional annotation via ANNOVAR or VEP)</li>
+                        <li><strong>ADMIXTURE integration</strong>: Use K=optimal ADMIXTURE results to determine ancestry-adjusted PBS (stratify by admixture proportion)</li>
+                        <li><strong>Pathway enrichment</strong>: Test whether Uzbek-specific SNPs are enriched in particular biological pathways (KEGG, GO)</li>
+                        <li><strong>Phenotype association</strong>: Cross-reference top hits with pregnancy loss phenotype data (Step 11: GWAS / case-control)</li>
+                        <li><strong>Extended haplotype analysis</strong>: Phase genotypes and compute iHS/nSL for top PBS regions to confirm selection signals</li>
+                    </ul>
+                </div>
+                
+            </div> <!-- /content -->
+        </div> <!-- /main-content -->
+    </div> <!-- /page-wrapper -->
+
+    <!-- SEARCH SCRIPT -->
+    <script>
+    const stepPages = [
+        { title: 'Step 1: Missingness', url: 'step1.html', keywords: 'missingness quality control mind geno' },
+        { title: 'Step 2: IBD Dedup', url: 'step2.html', keywords: 'ibd relatedness duplicates pihat' },
+        { title: 'Step 3: SNP QC', url: 'step3.html', keywords: 'snp quality control hwe maf' },
+        { title: 'Step 4: Imputation', url: 'step4.html', keywords: 'imputation beagle phasing reference' },
+        { title: 'Step 5: ID Normalize', url: 'step5.html', keywords: 'id normalize rename samples' },
+        { title: 'Step 6: Final QC', url: 'step6.html', keywords: 'final quality control filtering' },
+        { title: 'Step 7: PCA Analysis', url: 'step7.html', keywords: 'pca principal component uzbek' },
+        { title: 'Step 8: Global PCA', url: 'step8.html', keywords: 'global pca 1000genomes populations' },
+        { title: 'Step 9: Fst Analysis', url: 'step9.html', keywords: 'fst fixation differentiation eur' },
+        { title: 'Step 10: Multi-Pop & PBS', url: 'step10.html', keywords: 'pbs multi-population delta af uzbek-specific near-private selection eas sas afr' }
+    ];
+    
+    function searchAllSteps() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const resultsDiv = document.getElementById('searchResults');
+        
+        if (query.length < 2) { resultsDiv.className = 'search-results'; return; }
+        
+        const matches = stepPages.filter(p => 
+            p.title.toLowerCase().includes(query) || p.keywords.includes(query)
+        );
+        
+        if (matches.length > 0) {
+            resultsDiv.innerHTML = '<strong>Found in:</strong> ' + 
+                matches.map(m => `<a href="${m.url}">${m.title}</a>`).join(' ');
+            resultsDiv.className = 'search-results active';
+        } else {
+            resultsDiv.className = 'search-results';
+        }
+    }
+    </script>
+</body>
+</html>
