@@ -83,7 +83,7 @@
         .pipeline-arrow { font-size: 1.5em; color: #2e7d32; font-weight: bold; }
         
         /* Interactive chart styles */
-        .chart-container { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; background: #fafafa; }
+        .chart-container { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; background: #fafafa; position: relative; }
         .chart-toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
         .chart-toolbar button { padding: 8px 16px; border: 2px solid #2e7d32; background: white; color: #2e7d32; border-radius: 5px; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: all 0.2s; }
         .chart-toolbar button:hover { background: #e8f5e9; }
@@ -92,7 +92,7 @@
         .chart-toolbar .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.85em; color: #555; }
         .legend-swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); }
         
-        canvas { display: block; margin: 0 auto; cursor: crosshair; }
+        canvas { display: block; margin: 0 auto; cursor: crosshair; max-width: 100%; }
         .tooltip-box { position: absolute; background: rgba(0,0,0,0.85); color: white; padding: 10px 14px; border-radius: 6px; font-size: 0.85em; pointer-events: none; z-index: 100; white-space: nowrap; line-height: 1.5; }
         
         .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
@@ -1916,8 +1916,11 @@ print(f"Exported {len(ids)} samples, JSON size: {len(json.dumps(data))} bytes")<
         
         canvas.addEventListener('mousemove', function(e) {
             const rect = canvas.getBoundingClientRect();
-            const mx = e.clientX - rect.left;
-            const my = e.clientY - rect.top;
+            // Scale mouse position to canvas internal coordinates
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const mx = (e.clientX - rect.left) * scaleX;
+            const my = (e.clientY - rect.top) * scaleY;
             const plotW = canvas.width - pad.l - pad.r;
             const n = ADMIX_DATA.sort_order.length;
             const barW = plotW / n;
@@ -1941,10 +1944,14 @@ print(f"Exported {len(ids)} samples, JSON size: {len(json.dumps(data))} bytes")<
             tooltip.innerHTML = html;
             tooltip.style.display = 'block';
             
+            // Position tooltip relative to the container
             const containerRect = container.getBoundingClientRect();
             let tx = e.clientX - containerRect.left + 15;
             let ty = e.clientY - containerRect.top - 10;
-            if (tx + 250 > containerRect.width) tx = tx - 270;
+            // Prevent overflow on right edge
+            const tooltipW = tooltip.offsetWidth || 220;
+            if (tx + tooltipW + 10 > containerRect.width) tx = tx - tooltipW - 30;
+            if (ty < 0) ty = 5;
             tooltip.style.left = tx + 'px';
             tooltip.style.top = ty + 'px';
         });
