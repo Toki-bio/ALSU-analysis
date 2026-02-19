@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Steps: Planned Analyses - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        
+        .search-results { display: none; padding: 20px 30px; background: #e3f2fd; border-bottom: 1px solid #ddd; }
+        .search-results.active { display: block; }
+        .search-results a { color: #1976d2; text-decoration: none; margin-right: 15px; }
+        .search-results a:hover { text-decoration: underline; }
+        
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        
+        .content { padding: 30px; }
+        
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        h4 { color: #444; margin-top: 18px; margin-bottom: 8px; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul, ol { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .info { background: #e3f2fd; padding: 15px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .info strong { color: #0d47a1; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .warning { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; border-radius: 5px; margin: 20px 0; }
+        .warning strong { color: #721c24; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+
+        .formula { background: #f0f7ff; padding: 20px; border-radius: 8px; border-left: 4px solid #1976d2; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.95em; line-height: 1.8; }
+        .formula .label { font-family: 'Segoe UI', sans-serif; color: #666; font-style: italic; font-size: 0.9em; }
+
+        .priority-high { border-left-color: #c62828; }
+        .priority-med { border-left-color: #f57f17; }
+        .priority-low { border-left-color: #2e7d32; }
+
+        .status-done { color: #2e7d32; font-weight: 600; }
+        .status-next { color: #c62828; font-weight: 600; }
+        .status-planned { color: #f57f17; font-weight: 600; }
+        .status-future { color: #1565c0; font-weight: 600; }
+
+        .tier-card { background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .tier-card h4 { margin-top: 0; color: #333; }
+
+        .chart-container { position: relative; margin: 20px 0; }
+        canvas { max-width: 100%; border: 1px solid #e0e0e0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+                <a href="step7.html">Step 7: PCA Analysis</a>
+                <a href="step8.html">Step 8: Global PCA</a>
+                <a href="step9.html">Step 9: Fst Analysis</a>
+                <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+                <a href="next_steps.html" class="current">Next Steps</a>
+            </div>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search all steps..." oninput="searchAllSteps()">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            
+            <div class="header">
+                <a href="../index.html" class="back-link">&larr; Back to Main</a>
+                <h1>Next Steps: Planned Analyses</h1>
+                <p>Roadmap for Uzbek population genetics and pregnancy loss association study</p>
+                <span class="step-badge">Updated: February 2026</span>
+            </div>
+            
+            <div class="content">
+
+<!-- ═══════════════════════════ OVERVIEW ═══════════════════════════ -->
+<h2>1. Current Status Summary</h2>
+
+<div class="success">
+    <strong>Completed (Steps 1&ndash;10):</strong>
+    <ul style="margin-top:8px;">
+        <li>QC pipeline: missingness &rarr; IBD dedup &rarr; SNP filtering &rarr; imputation &rarr; normalization &rarr; final QC</li>
+        <li>PCA: Uzbek-internal + global (1000 Genomes) &mdash; Uzbek sits on EUR&ndash;EAS cline</li>
+        <li>F<sub>ST</sub>: UZB closest to SAS (0.018), then EUR (0.020), then EAS (0.049)</li>
+        <li>ADMIXTURE K=2&ndash;8: K=2 optimal (CV monotonically increases), two-component West&ndash;East admixture</li>
+        <li>PBS multi-population analysis: 490 Uzbek-specific SNPs, 456 with PBS &ge; 0.3</li>
+        <li>LD pruning: 10.8M &rarr; 380K independent SNPs for population genetics</li>
+    </ul>
+</div>
+
+
+<!-- ═══════════════════════════ TIER A: POPULATION GENETICS ════════ -->
+<h2>2. Uzbek Population Genetics Analyses</h2>
+
+<!-- ── 2.1 Evanno Delta-K ── -->
+<h3>2.1. Evanno &Delta;K Correction (Evanno et al. 2005)</h3>
+
+<div class="info">
+    <strong>Reference:</strong> Evanno G, Regnaut S, Goudet J (2005). Detecting the number of clusters of individuals using the software STRUCTURE: a simulation study. <em>Molecular Ecology</em>, 14(8), 2611&ndash;2620. <a href="https://doi.org/10.1111/j.1365-294X.2005.02553.x" target="_blank">doi:10.1111/j.1365-294X.2005.02553.x</a>
+</div>
+
+<p>
+    The Evanno method uses the <strong>second-order rate of change</strong> of the log-likelihood L(K) to find the &ldquo;true&rdquo; K. Instead of looking at CV error alone, it computes:
+</p>
+
+<div class="formula">
+    L&prime;(K) = L(K) &minus; L(K&minus;1) &nbsp;&nbsp;&nbsp; <span class="label">(first derivative: rate of improvement)</span><br>
+    |L&Prime;(K)| = |L(K+1) &minus; 2&middot;L(K) + L(K&minus;1)| &nbsp;&nbsp;&nbsp; <span class="label">(second derivative: where improvement plateaus)</span><br>
+    &Delta;K = mean(|L&Prime;(K)|) / sd(L(K)) &nbsp;&nbsp;&nbsp; <span class="label">(normalized by variance across runs)</span>
+</div>
+
+<h4>Our ADMIXTURE log-likelihoods:</h4>
+<table>
+    <tr>
+        <th>K</th>
+        <th>Log-likelihood L(K)</th>
+        <th>CV Error</th>
+        <th>L&prime;(K)</th>
+        <th>|L&Prime;(K)|</th>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td><strong>2</strong></td>
+        <td>-353,410,112</td>
+        <td><strong>0.51335</strong></td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td><strong>3</strong></td>
+        <td>-352,954,902</td>
+        <td>0.51343</td>
+        <td>+455,209</td>
+        <td style="color:#c62828; font-weight:600;">143,051 &larr; peak</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>-352,642,744</td>
+        <td>0.51579</td>
+        <td>+312,158</td>
+        <td>5,464</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>-352,336,050</td>
+        <td>0.51636</td>
+        <td>+306,694</td>
+        <td>34,278</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>-352,063,633</td>
+        <td>0.51682</td>
+        <td>+272,417</td>
+        <td>10,310</td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>-351,780,907</td>
+        <td>0.51885</td>
+        <td>+282,726</td>
+        <td>19,557</td>
+    </tr>
+    <tr>
+        <td>8</td>
+        <td>-351,517,738</td>
+        <td>0.51974</td>
+        <td>+263,169</td>
+        <td>&mdash;</td>
+    </tr>
+</table>
+
+<div class="chart-container">
+    <canvas id="evannoCanvas" width="700" height="350"></canvas>
+</div>
+
+<div class="important">
+    <strong>Interpretation:</strong>
+    <p style="margin-top:8px;">
+        The |L&Prime;(K)| peaks sharply at <strong>K=3</strong> (143,051 vs. 5,464&ndash;34,278 for K=4&ndash;7). In the Evanno framework, this means the largest &ldquo;elbow&rdquo; in likelihood improvement occurs between K=2 and K=3 &mdash; i.e., K=2 is where the primary structure is captured, and K=3 adds the last meaningful component.
+    </p>
+    <p>
+        <strong>Caveat:</strong> The full &Delta;K formula requires <em>multiple independent runs per K</em> to compute sd(L(K)). With our single run per K, we can only examine |L&Prime;(K)| directly. For a rigorous Evanno analysis, re-run ADMIXTURE 10&ndash;20 times per K with different random seeds. This can be done with <code>admixture --cv file.bed K -j32 -s $RANDOM</code>.
+    </p>
+    <p>
+        <strong>Bottom line:</strong> Both CV error (minimum at K=2) and the Evanno second derivative (peak at K=3) agree: <strong>the Uzbek cohort has 2 major ancestry components</strong>, with a possible 3rd minor component that does not significantly improve model fit.
+    </p>
+</div>
+
+
+<!-- ── 2.2 ROH ── -->
+<h3>2.2. Runs of Homozygosity (ROH)</h3>
+
+<div class="tier-card">
+    <h4><span class="status-next">HIGH PRIORITY</span> &mdash; Directly relevant to pregnancy loss</h4>
+    <p>
+        Central Asian populations often have elevated rates of consanguineous marriages, leading to long runs of homozygosity (ROH). Homozygosity for recessive lethal alleles is a <strong>major cause of recurrent pregnancy loss</strong>.
+    </p>
+    <p><strong>Method:</strong></p>
+    <div class="code-block">plink --bfile UZB_final_QC \
+    --homozyg \
+    --homozyg-window-snp 50 \
+    --homozyg-snp 30 \
+    --homozyg-kb 500 \
+    --homozyg-density 50 \
+    --homozyg-gap 1000 \
+    --out UZB_ROH</div>
+    <p><strong>Key metrics to compute:</strong></p>
+    <ul>
+        <li><strong>F<sub>ROH</sub></strong> = total ROH length / genome length (inbreeding coefficient)</li>
+        <li>Count of long ROH (&gt;5 Mb) &rarr; recent inbreeding (parents are 2nd&ndash;3rd cousins)</li>
+        <li>Count of moderate ROH (1&ndash;5 Mb) &rarr; population bottleneck or background relatedness</li>
+        <li>Distribution across the cohort &mdash; are some individuals dramatically more homozygous?</li>
+    </ul>
+    <p><strong>Clinical relevance:</strong> F<sub>ROH</sub> can be used as a covariate in the pregnancy loss GWAS, and ROH burden itself may differ between cases and controls.</p>
+</div>
+
+
+<!-- ── 2.3 Local Ancestry ── -->
+<h3>2.3. Local Ancestry Inference</h3>
+
+<div class="tier-card">
+    <h4><span class="status-planned">MEDIUM PRIORITY</span> &mdash; Enables ancestry-specific association testing</h4>
+    <p>
+        ADMIXTURE gives <em>genome-wide</em> ancestry proportions. <strong>Local ancestry inference</strong> (RFMix, LAMP-LD, or ELAI) estimates ancestry at <em>each chromosomal position</em>: &ldquo;this chunk is Western, that chunk is Eastern.&rdquo;
+    </p>
+    <p><strong>Why it matters:</strong></p>
+    <ul>
+        <li>A SNP&rsquo;s effect on pregnancy loss may depend on its local ancestry background</li>
+        <li>Enables <strong>admixture mapping</strong>: test whether cases have more Western or Eastern ancestry at specific loci</li>
+        <li>Provides a chromosome-level &ldquo;painting&rdquo; of each individual&rsquo;s genome</li>
+    </ul>
+    <p><strong>Requirements:</strong> Phased data (from Step 4 BEAGLE output) + reference panels (EUR and EAS from 1000 Genomes)</p>
+</div>
+
+
+<!-- ── 2.4 IBD stratified ── -->
+<h3>2.4. IBD Analysis Stratified by Ancestry</h3>
+
+<div class="tier-card">
+    <h4><span class="status-planned">MEDIUM PRIORITY</span> &mdash; Social structure within the cohort</h4>
+    <p>
+        Re-evaluate IBD segments (from Step 2) in light of ADMIXTURE results:
+    </p>
+    <ul>
+        <li>Do related pairs share predominantly <strong>Western or Eastern</strong> ancestry? &rarr; reveals whether endogamy follows ethnic subgroups</li>
+        <li>IBD segment length distribution: long segments (&gt;5 cM) = recent common ancestors; short (&lt;1 cM) = ancient</li>
+        <li><strong>IBDNe</strong>: reconstruct effective population size (N<sub>e</sub>) trajectory over time &mdash; could show Silk Road expansion, Mongol invasion bottleneck, Soviet-era recovery</li>
+    </ul>
+</div>
+
+
+<!-- ── 2.5 Gene annotation ── -->
+<h3>2.5. Gene Annotation of 490 Uzbek-Specific SNPs</h3>
+
+<div class="tier-card">
+    <h4><span class="status-planned">MEDIUM PRIORITY</span> &mdash; Biological interpretation</h4>
+    <p>Map each of the 490 Uzbek-specific SNPs (from Step 10) to functional elements:</p>
+    <ul>
+        <li><strong>ANNOVAR or VEP:</strong> nearest gene, exonic/intronic/intergenic, amino acid changes</li>
+        <li><strong>GWAS Catalog overlap:</strong> check if any are known hits for fertility, immune, or metabolic traits</li>
+        <li><strong>Pathway enrichment:</strong> KEGG/GO/Reactome &mdash; do Uzbek-specific variants cluster in immune, metabolic, or reproductive pathways?</li>
+        <li><strong>eQTL lookup:</strong> GTEx &mdash; are these SNPs associated with gene expression changes in relevant tissues (uterus, placenta, blood)?</li>
+    </ul>
+</div>
+
+
+<!-- ── 2.6 iHS/nSL ── -->
+<h3>2.6. Extended Haplotype Homozygosity (iHS/nSL)</h3>
+
+<div class="tier-card">
+    <h4><span class="status-future">LOWER PRIORITY</span> &mdash; Confirms positive selection signals</h4>
+    <p>
+        For top PBS regions, compute <strong>iHS</strong> (integrated haplotype score) to independently confirm recent positive selection (vs. drift):
+    </p>
+    <ul>
+        <li>Requires phased data (BEAGLE, Step 4)</li>
+        <li>Software: <code>selscan</code> for iHS and nSL computation</li>
+        <li>A SNP with both high PBS <em>and</em> extreme iHS is a strong selection candidate</li>
+    </ul>
+</div>
+
+
+<!-- ── 2.7 DAPC ── -->
+<h3>2.7. DAPC (Discriminant Analysis of Principal Components)</h3>
+
+<div class="info">
+    <strong>What is DAPC?</strong>
+    <p style="margin-top:8px;">
+        DAPC (Jombart et al., 2010) is a <strong>model-free alternative</strong> to ADMIXTURE that combines PCA with Linear Discriminant Analysis. Unlike ADMIXTURE (which assumes Hardy&ndash;Weinberg equilibrium within ancestral populations), DAPC makes no assumptions about the underlying population model.
+    </p>
+</div>
+
+<p><strong>How it works:</strong></p>
+<ol>
+    <li>Run PCA to reduce dimensionality (retain ~40 PCs covering &ge;80% variance)</li>
+    <li>Use K-means clustering on the PCs to find groups (using BIC to select K)</li>
+    <li>Run Discriminant Analysis on the PCs to maximize between-group separation</li>
+</ol>
+
+<p><strong>Advantages over ADMIXTURE:</strong></p>
+<table>
+    <tr><th>Feature</th><th>ADMIXTURE</th><th>DAPC</th></tr>
+    <tr><td>Model</td><td>Parametric (HWE assumption)</td><td>Non-parametric (no HWE assumption)</td></tr>
+    <tr><td>Speed</td><td>Hours per K</td><td>Minutes total</td></tr>
+    <tr><td>Cluster assignment</td><td>Soft (ancestry proportions)</td><td>Hard (group membership) + posterior probabilities</td></tr>
+    <tr><td>K selection</td><td>CV error or &Delta;K</td><td>BIC curve</td></tr>
+    <tr><td>Best for</td><td>Admixed populations</td><td>Discrete clusters</td></tr>
+</table>
+
+<p><strong>Implementation:</strong></p>
+<div class="code-block"># R code using adegenet package
+library(adegenet)
+library(vcfR)
+
+# Load data
+vcf &lt;- read.vcfR("UZB_pruned.vcf.gz")
+gl &lt;- vcfR2genlight(vcf)
+
+# Find optimal K using BIC
+grp &lt;- find.clusters(gl, max.n.clust=10, n.pca=100)
+
+# Run DAPC
+dapc_result &lt;- dapc(gl, grp$grp, n.pca=40, n.da=5)
+
+# Plot
+scatter(dapc_result, posi.da="bottomright")
+compoplot(dapc_result)  # ancestry-like bar plot</div>
+
+<div class="important">
+    <strong>For our data:</strong> Since the Uzbek cohort is admixed (not discrete clusters), DAPC may show a continuous cline rather than distinct groups &mdash; similar to what ADMIXTURE K=2 shows. DAPC is most informative as a <strong>complement</strong> to ADMIXTURE: if both methods agree on 2 components, this is robust evidence. If DAPC finds more structure, it may reflect LD patterns that ADMIXTURE misses.
+</div>
+
+
+<!-- ── 2.8 Fst visualization ── -->
+<h3>2.8. F<sub>ST</sub> Graphical Visualization</h3>
+
+<p>Several ways to <strong>visualize the F<sub>ST</sub> matrix</strong> (from Step 9):</p>
+
+<h4>A. Heatmap</h4>
+<p>The pairwise F<sub>ST</sub> matrix as a color-coded heatmap:</p>
+
+<div class="chart-container">
+    <canvas id="fstHeatmap" width="500" height="420"></canvas>
+</div>
+
+<h4>B. Neighbor-Joining Tree</h4>
+<p>
+    Convert F<sub>ST</sub> to distances and build a neighbor-joining (NJ) tree using the <code>ape</code> package in R. This shows the phylogenetic relationships:
+</p>
+<div class="code-block"># R code
+library(ape)
+fst_matrix &lt;- matrix(c(
+  0.0000, 0.0179, 0.0204, 0.0493, 0.1094,
+  0.0179, 0.0000, 0.0354, 0.0412, 0.0824,
+  0.0204, 0.0354, 0.0000, 0.1061, 0.1491,
+  0.0493, 0.0412, 0.1061, 0.0000, 0.1345,
+  0.1094, 0.0824, 0.1491, 0.1345, 0.0000
+), nrow=5, dimnames=list(
+  c("UZB","SAS","EUR","EAS","AFR"),
+  c("UZB","SAS","EUR","EAS","AFR")))
+tree &lt;- nj(as.dist(fst_matrix))
+plot(tree, type="unrooted", main="NJ Tree from Fst")</div>
+
+<h4>C. Multi-Dimensional Scaling (MDS)</h4>
+<p>
+    Project the F<sub>ST</sub> distance matrix into 2D space:
+</p>
+<div class="code-block"># R code
+mds &lt;- cmdscale(as.dist(fst_matrix), k=2)
+plot(mds, pch=19, cex=2, xlab="Dim 1", ylab="Dim 2",
+     main="MDS from Fst distances")
+text(mds, labels=rownames(mds), pos=3)</div>
+
+<div class="chart-container">
+    <canvas id="fstMDS" width="500" height="400"></canvas>
+</div>
+
+
+<!-- ═══════════════════════════ ADMIXTURE: CONTINUOUS VS DISCRETE ═══ -->
+<h2>3. ADMIXTURE Bar Plots: Continuous or Divisible?</h2>
+
+<div class="info">
+    <strong>Question:</strong> Can we divide the ADMIXTURE bar plots into discrete vertical groups, or is the data a continuous gradient?
+</div>
+
+<p><strong>Short answer: Our data is a continuous admixture cline &mdash; not discrete clusters.</strong></p>
+
+<p>Here&rsquo;s why:</p>
+
+<ul>
+    <li><strong>K=2 structure:</strong> Most individuals fall on a smooth gradient from ~100% Western to ~100% Eastern, with the majority around 65/35. There are no large &ldquo;gaps&rdquo; in the distribution that would indicate distinct groups.</li>
+    <li><strong>This is expected for Central Asia:</strong> The Uzbek population formed through continuous gene flow between Indo-Iranian (Western) and Turkic/Mongol (Eastern) populations along the Silk Road. Unlike, say, an African-American + European dataset (which would show a bimodal distribution), the Uzbek individuals represent a true admixture <em>cline</em>.</li>
+</ul>
+
+<p>However, there <strong>are</strong> some ways to create meaningful vertical divisions:</p>
+
+<table>
+    <tr><th>Method</th><th>How</th><th>Biological meaning</th></tr>
+    <tr>
+        <td>Outlier groups</td>
+        <td>Mark individuals with &gt;95% single component</td>
+        <td>&ldquo;Nearly pure&rdquo; Eastern or Western individuals (likely ethnic minorities in cohort: Tajik/Russian vs. Kazakh/Kyrgyz)</td>
+    </tr>
+    <tr>
+        <td>Quartile split</td>
+        <td>Divide into 4 bins by K=2 Component&nbsp;1 proportion</td>
+        <td>Arbitrary but useful for stratified analysis (e.g., compare pregnancy loss rates across ancestry quartiles)</td>
+    </tr>
+    <tr>
+        <td>K-means on Q</td>
+        <td>Cluster individuals by ancestry proportions</td>
+        <td>Data-driven grouping, but may not produce cleanly separated clusters if the cline is smooth</td>
+    </tr>
+    <tr>
+        <td>Self-reported ethnicity</td>
+        <td>If available in phenotype data, overlay ethnic labels</td>
+        <td>Most informative &mdash; shows whether genetic clusters match self-identification</td>
+    </tr>
+</table>
+
+<div class="important">
+    <strong>Recommendation:</strong> For the pregnancy loss GWAS, <strong>do not split into discrete groups</strong>. Instead, use the continuous K=2 ancestry proportion (Q1) as a covariate in logistic regression. This preserves all information and avoids arbitrary cutoffs. If you want visual grouping, overlay self-reported ethnicity labels (if available in the phenotype data) on the sorted ADMIXTURE plot.
+</div>
+
+
+<!-- ═══════════════════════════ TIER B: PREGNANCY LOSS ═══════════ -->
+<h2>4. Pregnancy Loss Association Study</h2>
+
+<!-- ── 4.1 ID Mapping ── -->
+<h3>4.1. Phenotype&ndash;Genotype ID Mapping</h3>
+
+<div class="tier-card priority-high">
+    <h4><span class="status-next">IMMEDIATE BLOCKER</span></h4>
+    <p>
+        The phenotype CSV (1,815 rows &times; 246 columns, from the &ldquo;GWAS ot 27.08&rdquo; file) uses a different sample ID scheme than the genotype files. Before any association testing, we must:
+    </p>
+    <ol>
+        <li>Map phenotype IDs &harr; genotype IDs (the genotype IDs are like <code>2_01-02</code>, <code>12_02-81</code>)</li>
+        <li>Verify and fix the reportedly <strong>inverted case/control labels</strong></li>
+        <li>Determine which of the 246 phenotype columns are relevant covariates</li>
+    </ol>
+</div>
+
+
+<!-- ── 4.2 Case/Control ── -->
+<h3>4.2. Case/Control Definition</h3>
+
+<div class="tier-card priority-high">
+    <h4><span class="status-next">HIGH PRIORITY</span></h4>
+    <p>Preliminary criteria for separating cases from controls:</p>
+    <table>
+        <tr><th></th><th>Cases</th><th>Controls</th></tr>
+        <tr>
+            <td><strong>Primary criterion</strong></td>
+            <td>&ge;2 pregnancy losses (recurrent)</td>
+            <td>&ge;1 live birth, 0 losses</td>
+        </tr>
+        <tr>
+            <td><strong>Strict criterion</strong></td>
+            <td>&ge;3 consecutive losses (RPL by ESHRE definition)</td>
+            <td>&ge;2 live births, 0 losses</td>
+        </tr>
+    </table>
+    <p><strong>Sub-phenotypes to consider:</strong></p>
+    <ul>
+        <li><strong>Early loss</strong> (&lt;12 weeks) &mdash; most common, often chromosomal/hormonal</li>
+        <li><strong>Late loss</strong> (13&ndash;20 weeks) &mdash; often structural/immunological</li>
+        <li><strong>Stillbirth</strong> (&gt;20 weeks) &mdash; placental/vascular causes</li>
+        <li><strong>Recurrent early</strong> vs. <strong>single late</strong> &mdash; different genetic architectures</li>
+    </ul>
+</div>
+
+
+<!-- ── 4.3 Covariates ── -->
+<h3>4.3. Covariates for Association Testing</h3>
+
+<div class="tier-card priority-high">
+    <h4><span class="status-next">HIGH PRIORITY</span> &mdash; Must include in GWAS model</h4>
+    <table>
+        <tr><th>Category</th><th>Covariate</th><th>Rationale</th></tr>
+        <tr>
+            <td rowspan="2"><strong>Population structure</strong></td>
+            <td>K=2 ancestry Q1 (continuous)</td>
+            <td>Primary admixture axis; prevents false positives from population stratification</td>
+        </tr>
+        <tr>
+            <td>PC1&ndash;PC3 from PCA</td>
+            <td>Captures residual structure not modeled by ADMIXTURE</td>
+        </tr>
+        <tr>
+            <td rowspan="3"><strong>Demographic</strong></td>
+            <td>Maternal age at loss/birth</td>
+            <td>Strong risk factor; aneuploidy risk increases exponentially after 35</td>
+        </tr>
+        <tr>
+            <td>BMI</td>
+            <td>Obesity associated with miscarriage (OR ~1.3&ndash;1.7)</td>
+        </tr>
+        <tr>
+            <td>Parity (gravidity)</td>
+            <td>More pregnancies = more opportunities for loss</td>
+        </tr>
+        <tr>
+            <td rowspan="3"><strong>Clinical</strong></td>
+            <td>Thrombophilia history</td>
+            <td>Factor V Leiden, antiphospholipid syndrome &rarr; placental thrombosis</td>
+        </tr>
+        <tr>
+            <td>Thyroid disorders</td>
+            <td>Both hypo- and hyperthyroidism increase loss risk</td>
+        </tr>
+        <tr>
+            <td>Diabetes (pre-existing or gestational)</td>
+            <td>Uncontrolled glucose &rarr; embryotoxic</td>
+        </tr>
+        <tr>
+            <td rowspan="2"><strong>Genetic</strong></td>
+            <td>F<sub>ROH</sub> (inbreeding coefficient)</td>
+            <td>Homozygosity burden &mdash; especially in a population with consanguinity</td>
+        </tr>
+        <tr>
+            <td>Total CNV burden</td>
+            <td>If available from SNP array intensity data</td>
+        </tr>
+    </table>
+</div>
+
+
+<!-- ── 4.4 Association Framework ── -->
+<h3>4.4. Association Testing Framework</h3>
+
+<div class="tier-card">
+    <h4><span class="status-planned">AFTER ID MAPPING</span></h4>
+    <p><strong>Model:</strong></p>
+    <div class="formula">
+        logit(P[case]) = &beta;<sub>0</sub> + &beta;<sub>SNP</sub>&middot;genotype + &beta;<sub>Q1</sub>&middot;ancestry + &beta;<sub>age</sub>&middot;age + &beta;<sub>BMI</sub>&middot;BMI + &beta;<sub>PC1</sub>&middot;PC1 + &beta;<sub>PC2</sub>&middot;PC2 + &beta;<sub>PC3</sub>&middot;PC3
+    </div>
+
+    <p><strong>Two-tier testing strategy:</strong></p>
+    <table>
+        <tr><th>Tier</th><th>SNP set</th><th>Threshold</th><th>Rationale</th></tr>
+        <tr>
+            <td><strong>1. Targeted</strong></td>
+            <td>490 Uzbek-specific SNPs</td>
+            <td>p &lt; 1.0 &times; 10<sup>&minus;4</sup> (Bonferroni for 490)</td>
+            <td>Hypothesis: population-specific variants may affect fitness-related phenotypes</td>
+        </tr>
+        <tr>
+            <td><strong>2. Genome-wide</strong></td>
+            <td>All QC&rsquo;d SNPs</td>
+            <td>p &lt; 5 &times; 10<sup>&minus;8</sup> (standard GWAS)</td>
+            <td>Hypothesis-free scan; requires large sample size for power</td>
+        </tr>
+    </table>
+
+    <p><strong>Command:</strong></p>
+    <div class="code-block">plink2 --bfile UZB_final_QC \
+    --pheno pregnancy_loss.pheno \
+    --covar covariates.txt \
+    --glm hide-covar cols=chrom,pos,ref,alt,a1freq,test,nobs,beta,se,p \
+    --out UZB_GWAS_results</div>
+</div>
+
+
+<!-- ── 4.5 Mendelian Screen ── -->
+<h3>4.5. Known Pregnancy Loss Gene Screen</h3>
+
+<div class="tier-card">
+    <h4><span class="status-planned">QUICK WIN</span> &mdash; Can be done immediately</h4>
+    <p>Check allele frequencies of known recurrent pregnancy loss (RPL) variants in the Uzbek cohort vs. published European frequencies:</p>
+    <table>
+        <tr><th>Gene</th><th>Variant</th><th>EUR frequency</th><th>RPL association</th></tr>
+        <tr><td>F5 (Factor V)</td><td>rs6025 (Leiden)</td><td>~3&ndash;5%</td><td>OR 2.0&ndash;3.5 for RPL</td></tr>
+        <tr><td>F2 (Prothrombin)</td><td>rs1799963 (G20210A)</td><td>~1&ndash;3%</td><td>OR 2.0&ndash;2.5</td></tr>
+        <tr><td>MTHFR</td><td>rs1801133 (C677T)</td><td>~25&ndash;35%</td><td>OR 1.2&ndash;1.5 (homozygous)</td></tr>
+        <tr><td>SERPINE1 (PAI-1)</td><td>rs1799889 (4G/5G)</td><td>~50%</td><td>OR 1.3&ndash;1.5</td></tr>
+        <tr><td>HLA-G</td><td>Various</td><td>Variable</td><td>Immune tolerance at maternal&ndash;fetal interface</td></tr>
+        <tr><td>SYCP3</td><td>Rare</td><td>&lt;1%</td><td>Meiotic segregation errors</td></tr>
+    </table>
+    <p><strong>What&rsquo;s unknown:</strong> The frequencies of these variants in Central Asian populations are poorly characterized. Even a simple frequency comparison is <strong>publication-worthy</strong>.</p>
+</div>
+
+
+<!-- ── 4.6 Ancestry-Specific ── -->
+<h3>4.6. Ancestry-Specific Risk Analysis</h3>
+
+<div class="tier-card">
+    <h4><span class="status-future">EXPLORATORY</span></h4>
+    <p>
+        Tests unique to admixed populations:
+    </p>
+    <ul>
+        <li><strong>Dose-response:</strong> Does more Eastern/Western ancestry proportion correlate with pregnancy loss risk?</li>
+        <li><strong>Interaction:</strong> Does a SNP&rsquo;s effect differ depending on the individual&rsquo;s global ancestry?</li>
+        <li><strong>Admixture mapping:</strong> Using local ancestry, test whether pregnancy loss cases have excess Western or Eastern ancestry at specific chromosomal regions</li>
+    </ul>
+</div>
+
+
+<!-- ═══════════════════════════ PRIORITY ROADMAP ═══════════════════ -->
+<h2>5. Priority Roadmap</h2>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>Task</th>
+        <th>Priority</th>
+        <th>Depends on</th>
+        <th>Time estimate</th>
+    </tr>
+    <tr style="background:#ffebee;">
+        <td>1</td>
+        <td>Phenotype&ndash;genotype ID mapping</td>
+        <td class="status-next">IMMEDIATE</td>
+        <td>&mdash;</td>
+        <td>1&ndash;2 days</td>
+    </tr>
+    <tr style="background:#ffebee;">
+        <td>2</td>
+        <td>Case/control definition</td>
+        <td class="status-next">IMMEDIATE</td>
+        <td>#1</td>
+        <td>1 day</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>3</td>
+        <td>ROH analysis (F<sub>ROH</sub>)</td>
+        <td class="status-planned">HIGH</td>
+        <td>&mdash;</td>
+        <td>1 day</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>4</td>
+        <td>Covariate preparation</td>
+        <td class="status-planned">HIGH</td>
+        <td>#1, #3</td>
+        <td>1 day</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>5</td>
+        <td>GWAS (targeted 490 + genome-wide)</td>
+        <td class="status-planned">HIGH</td>
+        <td>#2, #4</td>
+        <td>1&ndash;2 days</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>6</td>
+        <td>Known RPL variant screening</td>
+        <td class="status-planned">HIGH</td>
+        <td>&mdash;</td>
+        <td>2 hours</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>7</td>
+        <td>Gene annotation (ANNOVAR/VEP)</td>
+        <td class="status-future">MEDIUM</td>
+        <td>&mdash;</td>
+        <td>1 day</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>8</td>
+        <td>IBD stratified by ancestry</td>
+        <td class="status-future">MEDIUM</td>
+        <td>&mdash;</td>
+        <td>1 day</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>9</td>
+        <td>DAPC analysis</td>
+        <td class="status-future">MEDIUM</td>
+        <td>&mdash;</td>
+        <td>0.5 day</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>10</td>
+        <td>Evanno &Delta;K (multiple ADMIXTURE runs)</td>
+        <td class="status-future">LOW</td>
+        <td>&mdash;</td>
+        <td>2&ndash;3 days compute</td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td>11</td>
+        <td>Local ancestry inference</td>
+        <td class="status-future">LATER</td>
+        <td>&mdash;</td>
+        <td>2&ndash;3 days</td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td>12</td>
+        <td>iHS/nSL selection scans</td>
+        <td class="status-future">LATER</td>
+        <td>&mdash;</td>
+        <td>1&ndash;2 days</td>
+    </tr>
+</table>
+
+
+            </div> <!-- /content -->
+        </div> <!-- /main-content -->
+    </div> <!-- /page-wrapper -->
+
+    <script>
+    // ── Evanno ΔK Chart ────────────────────────────────────────────────────
+    (function() {
+        const canvas = document.getElementById('evannoCanvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        const pad = {l: 80, r: 80, t: 30, b: 50};
+        const plotW = W - pad.l - pad.r;
+        const plotH = H - pad.t - pad.b;
+
+        // Data
+        const cvK = [2, 3, 4, 5, 6, 7, 8];
+        const cvErr = [0.51335, 0.51343, 0.51579, 0.51636, 0.51682, 0.51885, 0.51974];
+        const dK = [3, 4, 5, 6, 7];
+        const dKvals = [143051, 5464, 34278, 10310, 19557];
+
+        // Background
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, W, H);
+
+        // ── Left axis: CV error ──
+        const cvMin = 0.512, cvMax = 0.521;
+        const cvRange = cvMax - cvMin;
+
+        // Draw CV error line
+        ctx.strokeStyle = '#1976d2';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i < cvK.length; i++) {
+            const x = pad.l + ((cvK[i] - 2) / 6) * plotW;
+            const y = pad.t + plotH - ((cvErr[i] - cvMin) / cvRange) * plotH;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // CV error points
+        for (let i = 0; i < cvK.length; i++) {
+            const x = pad.l + ((cvK[i] - 2) / 6) * plotW;
+            const y = pad.t + plotH - ((cvErr[i] - cvMin) / cvRange) * plotH;
+            ctx.fillStyle = i === 0 ? '#c62828' : '#1976d2';
+            ctx.beginPath();
+            ctx.arc(x, y, i === 0 ? 6 : 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // ── Right axis: |L''(K)| bars ──
+        const dkMax = 160000;
+        ctx.globalAlpha = 0.4;
+        const barW = plotW / 6 * 0.5;
+        for (let i = 0; i < dK.length; i++) {
+            const x = pad.l + ((dK[i] - 2) / 6) * plotW - barW / 2;
+            const barH = (dKvals[i] / dkMax) * plotH;
+            const y = pad.t + plotH - barH;
+            ctx.fillStyle = i === 0 ? '#c62828' : '#90a4ae';
+            ctx.fillRect(x, y, barW, barH);
+        }
+        ctx.globalAlpha = 1.0;
+
+        // ── Axes ──
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, pad.t);
+        ctx.lineTo(pad.l, pad.t + plotH);
+        ctx.lineTo(pad.l + plotW, pad.t + plotH);
+        ctx.lineTo(pad.l + plotW, pad.t);
+        ctx.stroke();
+
+        // Left Y-axis labels (CV error)
+        ctx.fillStyle = '#1976d2';
+        ctx.font = '11px Segoe UI';
+        ctx.textAlign = 'right';
+        for (let v = 0.513; v <= 0.521; v += 0.002) {
+            const y = pad.t + plotH - ((v - cvMin) / cvRange) * plotH;
+            ctx.fillText(v.toFixed(3), pad.l - 5, y + 4);
+        }
+        ctx.save();
+        ctx.translate(15, pad.t + plotH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.font = '12px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText('CV Error (blue line)', 0, 0);
+        ctx.restore();
+
+        // Right Y-axis labels (|L''(K)|)
+        ctx.fillStyle = '#666';
+        ctx.textAlign = 'left';
+        ctx.font = '11px Segoe UI';
+        for (let v = 0; v <= 160000; v += 40000) {
+            const y = pad.t + plotH - (v / dkMax) * plotH;
+            ctx.fillText((v / 1000).toFixed(0) + 'k', pad.l + plotW + 5, y + 4);
+        }
+        ctx.save();
+        ctx.translate(W - 10, pad.t + plotH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillStyle = '#666';
+        ctx.font = '12px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText("|L''(K)| (bars)", 0, 0);
+        ctx.restore();
+
+        // X-axis labels
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'center';
+        ctx.font = '12px Segoe UI';
+        for (let k = 2; k <= 8; k++) {
+            const x = pad.l + ((k - 2) / 6) * plotW;
+            ctx.fillText('K=' + k, x, pad.t + plotH + 20);
+        }
+        ctx.fillText('Number of ancestral populations (K)', pad.l + plotW / 2, H - 5);
+
+        // Star for K=2
+        ctx.fillStyle = '#c62828';
+        ctx.font = 'bold 11px Segoe UI';
+        const starX = pad.l + 0;
+        const starY = pad.t + plotH - ((cvErr[0] - cvMin) / cvRange) * plotH;
+        ctx.fillText('★ optimal', starX + 10, starY - 10);
+
+        // Peak label
+        const peakX = pad.l + (1 / 6) * plotW;
+        const peakY = pad.t + plotH - (dKvals[0] / dkMax) * plotH;
+        ctx.fillText('peak ΔK', peakX, peakY - 5);
+    })();
+
+
+    // ── Fst Heatmap ────────────────────────────────────────────────────────
+    (function() {
+        const canvas = document.getElementById('fstHeatmap');
+        const ctx = canvas.getContext('2d');
+        const pops = ['UZB', 'SAS', 'EUR', 'EAS', 'AFR'];
+        const fst = [
+            [0.0000, 0.0179, 0.0204, 0.0493, 0.1094],
+            [0.0179, 0.0000, 0.0354, 0.0412, 0.0824],
+            [0.0204, 0.0354, 0.0000, 0.1061, 0.1491],
+            [0.0493, 0.0412, 0.1061, 0.0000, 0.1345],
+            [0.1094, 0.0824, 0.1491, 0.1345, 0.0000]
+        ];
+        const pad = {l: 60, t: 60, r: 60};
+        const cellSize = 70;
+        const n = pops.length;
+
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                const v = fst[i][j];
+                const x = pad.l + j * cellSize;
+                const y = pad.t + i * cellSize;
+
+                // Color: white (0) -> blue (0.05) -> red (0.15)
+                let r, g, b;
+                if (v === 0) {
+                    r = 240; g = 240; b = 240;
+                } else if (v < 0.05) {
+                    const t = v / 0.05;
+                    r = Math.round(230 - t * 200);
+                    g = Math.round(240 - t * 130);
+                    b = Math.round(250);
+                } else {
+                    const t = Math.min((v - 0.05) / 0.10, 1);
+                    r = Math.round(30 + t * 168);
+                    g = Math.round(110 - t * 82);
+                    b = Math.round(250 - t * 210);
+                }
+                ctx.fillStyle = `rgb(${r},${g},${b})`;
+                ctx.fillRect(x, y, cellSize, cellSize);
+
+                // Border
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, cellSize, cellSize);
+
+                // Value text
+                ctx.fillStyle = v > 0.08 ? '#fff' : '#333';
+                ctx.font = v === 0 ? '11px Segoe UI' : 'bold 12px Segoe UI';
+                ctx.textAlign = 'center';
+                ctx.fillText(v === 0 ? '—' : v.toFixed(4), x + cellSize / 2, y + cellSize / 2 + 5);
+            }
+        }
+
+        // Labels
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 13px Segoe UI';
+        ctx.textAlign = 'center';
+        for (let i = 0; i < n; i++) {
+            ctx.fillText(pops[i], pad.l + i * cellSize + cellSize / 2, pad.t - 15);
+            ctx.textAlign = 'right';
+            ctx.fillText(pops[i], pad.l - 10, pad.t + i * cellSize + cellSize / 2 + 5);
+            ctx.textAlign = 'center';
+        }
+
+        // Title
+        ctx.font = 'bold 14px Segoe UI';
+        ctx.fillText('Pairwise Fst Heatmap', pad.l + n * cellSize / 2, 25);
+
+        // Color bar
+        const barX = pad.l + n * cellSize + 15;
+        const barH = n * cellSize;
+        const barW = 15;
+        for (let p = 0; p < barH; p++) {
+            const v = (1 - p / barH) * 0.15;
+            let r2, g2, b2;
+            if (v < 0.05) {
+                const t = v / 0.05;
+                r2 = Math.round(230 - t * 200);
+                g2 = Math.round(240 - t * 130);
+                b2 = 250;
+            } else {
+                const t = Math.min((v - 0.05) / 0.10, 1);
+                r2 = Math.round(30 + t * 168);
+                g2 = Math.round(110 - t * 82);
+                b2 = Math.round(250 - t * 210);
+            }
+            ctx.fillStyle = `rgb(${r2},${g2},${b2})`;
+            ctx.fillRect(barX, pad.t + p, barW, 1);
+        }
+        ctx.strokeStyle = '#999';
+        ctx.strokeRect(barX, pad.t, barW, barH);
+        ctx.fillStyle = '#333';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'left';
+        ctx.fillText('0.15', barX + barW + 3, pad.t + 10);
+        ctx.fillText('0.10', barX + barW + 3, pad.t + barH / 3 + 4);
+        ctx.fillText('0.05', barX + barW + 3, pad.t + 2 * barH / 3 + 4);
+        ctx.fillText('0.00', barX + barW + 3, pad.t + barH);
+    })();
+
+
+    // ── Fst MDS Plot ───────────────────────────────────────────────────────
+    (function() {
+        const canvas = document.getElementById('fstMDS');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        const pad = {l: 60, r: 30, t: 30, b: 50};
+        const plotW = W - pad.l - pad.r;
+        const plotH = H - pad.t - pad.b;
+
+        // Pre-computed MDS coordinates from Fst matrix (cmdscale)
+        // Computed via: numpy eigendecomposition of centered distance matrix
+        const pops = ['UZB', 'SAS', 'EUR', 'EAS', 'AFR'];
+        const mds = [
+            [-0.018, 0.013],   // UZB
+            [-0.012, -0.004],  // SAS
+            [-0.041, 0.045],   // EUR
+            [0.018, -0.055],   // EAS
+            [0.053, 0.001]     // AFR
+        ];
+        const colors = ['#e91e63', '#ff9800', '#2196f3', '#4caf50', '#795548'];
+
+        // Find ranges
+        let xMin = -0.06, xMax = 0.07, yMin = -0.07, yMax = 0.06;
+
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, W, H);
+
+        // Grid
+        ctx.strokeStyle = '#eee';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, pad.t + plotH / 2);
+        ctx.lineTo(pad.l + plotW, pad.t + plotH / 2);
+        ctx.moveTo(pad.l + plotW * (0 - xMin) / (xMax - xMin), pad.t);
+        ctx.lineTo(pad.l + plotW * (0 - xMin) / (xMax - xMin), pad.t + plotH);
+        ctx.stroke();
+
+        // Points
+        for (let i = 0; i < pops.length; i++) {
+            const x = pad.l + ((mds[i][0] - xMin) / (xMax - xMin)) * plotW;
+            const y = pad.t + plotH - ((mds[i][1] - yMin) / (yMax - yMin)) * plotH;
+
+            ctx.fillStyle = colors[i];
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Label
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText(pops[i], x, y - 16);
+        }
+
+        // Draw lines between close populations
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        // UZB-SAS
+        for (const [a, b] of [[0,1], [0,2], [1,3]]) {
+            const x1 = pad.l + ((mds[a][0] - xMin) / (xMax - xMin)) * plotW;
+            const y1 = pad.t + plotH - ((mds[a][1] - yMin) / (yMax - yMin)) * plotH;
+            const x2 = pad.l + ((mds[b][0] - xMin) / (xMax - xMin)) * plotW;
+            const y2 = pad.t + plotH - ((mds[b][1] - yMin) / (yMax - yMin)) * plotH;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+        ctx.setLineDash([]);
+
+        // Axes
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, pad.t + plotH);
+        ctx.lineTo(pad.l + plotW, pad.t + plotH);
+        ctx.moveTo(pad.l, pad.t);
+        ctx.lineTo(pad.l, pad.t + plotH);
+        ctx.stroke();
+
+        // Axis labels
+        ctx.fillStyle = '#333';
+        ctx.font = '12px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText('MDS Dimension 1 (from Fst)', pad.l + plotW / 2, H - 10);
+        ctx.save();
+        ctx.translate(15, pad.t + plotH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('MDS Dimension 2', 0, 0);
+        ctx.restore();
+
+        // Note
+        ctx.fillStyle = '#999';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'left';
+        ctx.fillText('Dashed lines = closest populations', pad.l + 5, pad.t + 15);
+    })();
+
+
+    // ── Search ─────────────────────────────────────────────────────────────
+    const stepPages = [
+        { title: 'Step 1: Missingness', url: 'step1.html', keywords: 'missingness quality control mind geno' },
+        { title: 'Step 2: IBD Dedup', url: 'step2.html', keywords: 'ibd relatedness duplicates pihat' },
+        { title: 'Step 3: SNP QC', url: 'step3.html', keywords: 'snp quality control hwe maf' },
+        { title: 'Step 4: Imputation', url: 'step4.html', keywords: 'imputation beagle phasing reference' },
+        { title: 'Step 5: ID Normalize', url: 'step5.html', keywords: 'id normalize rename samples' },
+        { title: 'Step 6: Final QC', url: 'step6.html', keywords: 'final quality control filtering' },
+        { title: 'Step 7: PCA Analysis', url: 'step7.html', keywords: 'pca principal component uzbek' },
+        { title: 'Step 8: Global PCA', url: 'step8.html', keywords: 'global pca 1000genomes populations' },
+        { title: 'Step 9: Fst Analysis', url: 'step9.html', keywords: 'fst fixation differentiation eur' },
+        { title: 'Step 10: Multi-Pop PBS ADMIXTURE', url: 'step10.html', keywords: 'pbs admixture delta af uzbek-specific selection' },
+        { title: 'Next Steps', url: 'next_steps.html', keywords: 'next steps roh dapc evanno gwas pregnancy loss covariates case control fst heatmap mds annotation ibs nsl' }
+    ];
+
+    function searchAllSteps() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const resultsDiv = document.getElementById('searchResults');
+        if (query.length < 2) { resultsDiv.className = 'search-results'; return; }
+        const matches = stepPages.filter(p => p.title.toLowerCase().includes(query) || p.keywords.includes(query));
+        if (matches.length > 0) {
+            resultsDiv.innerHTML = '<strong>Found in:</strong> ' + matches.map(m => '<a href="' + m.url + '">' + m.title + '</a>').join(' ');
+            resultsDiv.className = 'search-results active';
+        } else {
+            resultsDiv.className = 'search-results';
+        }
+    }
+    </script>
+</body>
+</html>
