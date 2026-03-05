@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 11: Global ADMIXTURE with 1000 Genomes - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        .content { padding: 30px; }
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .info-box { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; border-radius: 5px; margin: 20px 0; }
+        .info-box strong { color: #0d47a1; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+        .chart-container { margin: 25px 0; position: relative; }
+        canvas { max-width: 100%; border: 1px solid #e0e0e0; border-radius: 5px; }
+        .k-selector { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
+        .k-btn { padding: 8px 18px; border: 2px solid #ddd; background: white; border-radius: 5px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .k-btn:hover { border-color: #666; }
+        .k-btn.active { background: #333; color: white; border-color: #333; }
+        .k-btn.optimal { border-color: #28a745; }
+        .k-btn.optimal.active { background: #28a745; border-color: #28a745; }
+        .legend-box { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0; padding: 10px; background: #fafafa; border-radius: 5px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.85em; color: #555; }
+        .legend-swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.15); }
+        .superpop-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.8em; font-weight: 600; color: white; }
+        .tag-afr { background: #e57373; }
+        .tag-eur { background: #64b5f6; }
+        .tag-sas { background: #81c784; }
+        .tag-eas { background: #ffb74d; }
+        .tag-uzb { background: #9575cd; }
+        .cv-optimal { font-weight: bold; color: #28a745; }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+        <h3>Pipeline Steps</h3>
+        <div class="roadmap-mini">
+            <a href="step1.html">Step 1: Missingness</a>
+            <a href="step2.html">Step 2: IBD Dedup</a>
+            <a href="step3.html">Step 3: SNP QC</a>
+            <a href="step4.html">Step 4: Imputation</a>
+            <a href="step5.html">Step 5: ID Normalize</a>
+            <a href="step6.html">Step 6: Final QC</a>
+            <a href="step7.html">Step 7: PCA Analysis</a>
+            <a href="step8.html">Step 8: Global PCA</a>
+            <a href="step9.html">Step 9: Fst Analysis</a>
+            <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+            <a href="step11.html" class="current">Step 11: Global ADMIXTURE</a>
+            <a href="step12.html">Step 12: PBS Annotation</a>
+            <a href="next_steps.html">Next Steps</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search across all steps...">
+        </div>
+
+        <div class="header">
+            <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
+            <h1>Step 11: Global ADMIXTURE with 1000 Genomes</h1>
+            <p>Unsupervised ancestry decomposition of the Uzbek cohort with continental reference populations</p>
+            <span class="step-badge">Completed &mdash; February 19, 2025</span>
+        </div>
+
+        <div class="content">
+
+            <!-- 1. OVERVIEW -->
+            <h2>1. Overview</h2>
+            <p>
+                While the <a href="step10.html">Uzbek-only ADMIXTURE</a> (Step 10) identified a West&ndash;East admixture cline <em>within</em> the cohort,
+                it could not assign those components to known continental ancestries. This step merges 1,078 Uzbek samples
+                with 1,017 individuals from the 1000 Genomes Project, enabling ADMIXTURE&rsquo;s unsupervised algorithm
+                to anchor components to known African, European, South Asian, and East Asian reference panels.
+            </p>
+
+            <div class="info-box">
+                <strong>Goal:</strong> Determine the continental ancestry composition of the Uzbek cohort and establish whether
+                the geographic cline observed in the Uzbek-only run corresponds to a EUR&harr;EAS gradient.
+            </div>
+
+            <!-- 2. PIPELINE -->
+            <h2>2. Pipeline &amp; QC</h2>
+
+            <h3>2.1 Reference Panel Selection</h3>
+            <table>
+                <tr><th>Superpopulation</th><th>Population</th><th>Full Name</th><th>N</th></tr>
+                <tr><td><span class="superpop-tag tag-afr">AFR</span></td><td>YRI</td><td>Yoruba in Ibadan, Nigeria</td><td>108</td></tr>
+                <tr><td rowspan="5"><span class="superpop-tag tag-eur">EUR</span></td><td>CEU</td><td>Utah residents (N. &amp; W. European)</td><td>99</td></tr>
+                <tr><td>GBR</td><td>British in England and Scotland</td><td>91</td></tr>
+                <tr><td>FIN</td><td>Finnish in Finland</td><td>99</td></tr>
+                <tr><td>IBS</td><td>Iberian in Spain</td><td>107</td></tr>
+                <tr><td>TSI</td><td>Toscani in Italia</td><td>107</td></tr>
+                <tr><td rowspan="2"><span class="superpop-tag tag-sas">SAS</span></td><td>GIH</td><td>Gujarati Indian in Houston</td><td>103</td></tr>
+                <tr><td>PJL</td><td>Punjabi in Lahore, Pakistan</td><td>96</td></tr>
+                <tr><td rowspan="2"><span class="superpop-tag tag-eas">EAS</span></td><td>CHB</td><td>Han Chinese in Beijing</td><td>103</td></tr>
+                <tr><td>JPT</td><td>Japanese in Tokyo</td><td>104</td></tr>
+                <tr><td><span class="superpop-tag tag-uzb">UZB</span></td><td>UZBEK</td><td>Uzbek cohort (this study)</td><td>1,078</td></tr>
+                <tr style="font-weight:600; background:#f0f0f0;"><td colspan="3">Total</td><td>2,095</td></tr>
+            </table>
+
+            <h3>2.2 Processing Pipeline</h3>
+            <div class="code-block">
+# Per-chromosome VCF extraction from 1000G Phase 3
+for chr in {1..22}; do
+    bcftools view -S ref_samples.txt -R uzbek_snps_chr${chr}.txt \
+        1000G_chr${chr}.vcf.gz -Oz -o ref_chr${chr}.vcf.gz
+done
+
+# Merge with Uzbek data per chromosome, then genome-wide merge
+for chr in {1..22}; do
+    plink --vcf ref_chr${chr}.vcf.gz --bmerge uzbek_chr${chr} --make-bed --out merged_chr${chr}
+done
+plink --merge-list chr_list.txt --make-bed --out global_merged
+
+# QC: MAF > 0.01, geno < 0.02, HWE 1e-6
+plink --bfile global_merged --maf 0.01 --geno 0.02 --hwe 1e-6 --make-bed --out global_qc
+
+# LD pruning: window=50, step=5, r²=0.3
+plink --bfile global_qc --indep-pairwise 50 5 0.3 --out global_prune
+plink --bfile global_qc --extract global_prune.prune.in --make-bed --out global_for_admixture
+
+# ADMIXTURE K=2–8 with 32 threads and cross-validation
+for K in {2..8}; do
+    admixture --cv -j32 global_for_admixture.bed $K | tee log_K${K}.out
+done</div>
+
+            <div class="stat-box">
+                <span class="stat-label">Final dataset:</span>
+                <span class="stat-value">2,095 samples &times; 380,376 LD-pruned SNPs</span>
+            </div>
+
+            <!-- 3. CV ERROR -->
+            <h2>3. Cross-Validation Error</h2>
+            <p>
+                ADMIXTURE&rsquo;s 5-fold cross-validation error measures predictive accuracy. The lowest CV error
+                indicates the best-fitting number of ancestral populations.
+            </p>
+
+            <div class="chart-container">
+                <canvas id="cvChart" width="700" height="320"></canvas>
+            </div>
+
+            <table>
+                <tr><th>K</th><th>CV Error</th><th>Note</th></tr>
+                <tr><td>2</td><td>0.39900</td><td>EUR+EAS vs AFR split</td></tr>
+                <tr><td>3</td><td>0.39020</td><td>AFR separates</td></tr>
+                <tr><td>4</td><td>0.38790</td><td>SAS separates</td></tr>
+                <tr><td>5</td><td>0.38620</td><td>Central Asian component emerges</td></tr>
+                <tr><td>6</td><td>0.38580</td><td>EUR splits (N vs S)</td></tr>
+                <tr class="cv-optimal"><td>7</td><td>0.38530</td><td>&larr; Optimal (minimum CV)</td></tr>
+                <tr><td>8</td><td>0.38540</td><td>Uptick &mdash; overfitting begins</td></tr>
+            </table>
+
+            <div class="success">
+                <strong>K = 7 is optimal.</strong> The CV error reaches its minimum at K=7 (0.38530) with a slight uptick
+                at K=8 (0.38540), confirming 7 distinguishable ancestral components in this dataset.
+            </div>
+
+            <!-- 4. ADMIXTURE RESULTS -->
+            <h2>4. Population Structure (Interactive)</h2>
+
+            <p>Select a K value to see the mean ancestry proportions for each population:</p>
+
+            <div class="k-selector">
+                <button class="k-btn" data-k="2" onclick="showK(2)">K=2</button>
+                <button class="k-btn" data-k="3" onclick="showK(3)">K=3</button>
+                <button class="k-btn" data-k="4" onclick="showK(4)">K=4</button>
+                <button class="k-btn" data-k="5" onclick="showK(5)">K=5</button>
+                <button class="k-btn" data-k="6" onclick="showK(6)">K=6</button>
+                <button class="k-btn optimal" data-k="7" onclick="showK(7)">K=7 &#9733;</button>
+                <button class="k-btn" data-k="8" onclick="showK(8)">K=8</button>
+            </div>
+
+            <div id="componentLegend" class="legend-box"></div>
+
+            <div class="chart-container">
+                <canvas id="admixtureChart" width="900" height="420"></canvas>
+            </div>
+
+            <div id="kInterpretation" class="info-box"></div>
+
+            <!-- 5. K=7 COMPOSITION TABLE -->
+            <h2>5. Ancestry Composition at K=7 (Optimal)</h2>
+
+            <h3>5.1 Component Assignment</h3>
+            <table>
+                <tr><th>Component</th><th>Color</th><th>Dominant in</th><th>Interpretation</th></tr>
+                <tr><td>Q1</td><td style="background:#e57373;color:white;text-align:center;">&#9632;</td><td>IBS (88.6%), TSI (93.2%)</td><td>Southern European</td></tr>
+                <tr><td>Q2</td><td style="background:#9575cd;color:white;text-align:center;">&#9632;</td><td>UZBEK (70.2%)</td><td>Central Asian (Uzbek core)</td></tr>
+                <tr><td>Q3</td><td style="background:#a1887f;color:white;text-align:center;">&#9632;</td><td>UZBEK (4.4%)</td><td>Central Asian minor subdivision</td></tr>
+                <tr><td>Q4</td><td style="background:#64b5f6;color:white;text-align:center;">&#9632;</td><td>FIN (88.9%), CEU (33.1%), GBR (32.0%)</td><td>Northern European / Finnic</td></tr>
+                <tr><td>Q5</td><td style="background:#4db6ac;color:white;text-align:center;">&#9632;</td><td>YRI (99.99%)</td><td>African</td></tr>
+                <tr><td>Q6</td><td style="background:#ffb74d;color:white;text-align:center;">&#9632;</td><td>CHB (99.6%), JPT (100%)</td><td>East Asian</td></tr>
+                <tr><td>Q7</td><td style="background:#81c784;color:white;text-align:center;">&#9632;</td><td>GIH (93.5%), PJL (81.5%)</td><td>South Asian</td></tr>
+            </table>
+
+            <h3>5.2 Uzbek Cohort Ancestry Breakdown</h3>
+            <div class="chart-container">
+                <canvas id="uzbekPieChart" width="500" height="350"></canvas>
+            </div>
+
+            <table>
+                <tr><th>Component</th><th>Ancestry</th><th>Uzbek Mean</th><th>Interpretation</th></tr>
+                <tr><td>Q2</td><td>Central Asian</td><td><strong>70.2%</strong></td><td>Core Uzbek / Turkic component</td></tr>
+                <tr><td>Q6</td><td>East Asian</td><td><strong>12.3%</strong></td><td>Steppe / Mongol-period introgression</td></tr>
+                <tr><td>Q4</td><td>Northern European</td><td>4.5%</td><td>Ancient Steppe / Indo-European substrate</td></tr>
+                <tr><td>Q3</td><td>Central Asian (minor)</td><td>4.4%</td><td>Sub-structure within Central Asian ancestry</td></tr>
+                <tr><td>Q1</td><td>Southern European</td><td>4.3%</td><td>Mediterranean / Silk Road contact</td></tr>
+                <tr><td>Q7</td><td>South Asian</td><td>3.9%</td><td>Indo-Aryan substrate / trade contact</td></tr>
+                <tr><td>Q5</td><td>African</td><td>0.4%</td><td>Minimal &mdash; effectively absent</td></tr>
+            </table>
+
+            <div class="important">
+                <strong>Central Asian complexity:</strong> The Uzbek cohort is ~70% a distinct Central Asian component not found in
+                any 1000G reference population, with ~12% East Asian ancestry (Mongol/Turkic steppe heritage) and ~13%
+                Western Eurasian ancestry split between Northern European (4.5%), Southern European (4.3%), and South Asian (3.9%).
+                The ~0.4% African is consistent with noise / deep shared ancestry.
+            </div>
+
+            <!-- 6. COVARIATE VALIDATION -->
+            <h2>6. Covariate Validation</h2>
+            <p>
+                Kruskal&ndash;Wallis tests assessed whether self-reported ethnicity or birthplace within the Uzbek cohort
+                predicts any ADMIXTURE component (1,068 matched samples).
+            </p>
+
+            <h3>6.1 Ethnicity</h3>
+            <table>
+                <tr><th>K</th><th>Components tested</th><th>Any significant?</th><th>Conclusion</th></tr>
+                <tr><td>2</td><td>Q1, Q2</td><td>No (all ns)</td><td rowspan="7" style="vertical-align:middle; background:#d4edda; font-weight:600;">
+                    Ethnicity is <em>completely non-significant</em> at every K and every component. ADMIXTURE
+                    components do not reflect ethnic self-identification.</td></tr>
+                <tr><td>3</td><td>Q1&ndash;Q3</td><td>No (all ns)</td></tr>
+                <tr><td>4</td><td>Q1&ndash;Q4</td><td>No (all ns)</td></tr>
+                <tr><td>5</td><td>Q1&ndash;Q5</td><td>No (all ns)</td></tr>
+                <tr><td>6</td><td>Q1&ndash;Q6</td><td>No (all ns)</td></tr>
+                <tr><td>7</td><td>Q1&ndash;Q7</td><td>No (all ns)</td></tr>
+                <tr><td>8</td><td>Q1&ndash;Q8</td><td>No (all ns)</td></tr>
+            </table>
+
+            <h3>6.2 Birthplace (Geographic Origin)</h3>
+            <table>
+                <tr><th>K</th><th>Most significant component</th><th>p-value</th><th>&eta;&sup2;</th></tr>
+                <tr><td>2</td><td>Q1 / Q2</td><td>2.25 &times; 10<sup>&minus;22</sup></td><td>0.073</td></tr>
+                <tr><td>3</td><td>Q3</td><td>1.47 &times; 10<sup>&minus;22</sup></td><td>0.074</td></tr>
+                <tr><td>4</td><td>Q4</td><td>3.13 &times; 10<sup>&minus;22</sup></td><td>0.074</td></tr>
+                <tr><td>5</td><td>Q3</td><td>8.83 &times; 10<sup>&minus;23</sup></td><td>0.074</td></tr>
+                <tr><td>6</td><td>Q6</td><td>1.82 &times; 10<sup>&minus;22</sup></td><td>0.073</td></tr>
+                <tr><td>7</td><td>Q6</td><td>3.24 &times; 10<sup>&minus;23</sup></td><td>0.068</td></tr>
+                <tr><td>8</td><td>Q6</td><td>1.78 &times; 10<sup>&minus;23</sup></td><td>0.063</td></tr>
+            </table>
+
+            <div class="success">
+                <strong>Key finding:</strong> Even with 1000G references anchoring continental ancestry components,
+                self-reported ethnicity remains <strong>non-significant</strong> across ALL K values. Birthplace
+                (region within Uzbekistan) remains <strong>highly significant</strong> (p &sim; 10<sup>&minus;22</sup>).
+                This definitively confirms that ADMIXTURE components capture <em>geographic structure</em>, not
+                ethnic self-identification. The admixture cline is genuine and geographically driven.
+            </div>
+
+            <h3>6.3 Geographic Cline at K=7</h3>
+            <p>Mean East Asian component (Q6) by birthplace reveals the geographic gradient:</p>
+
+            <div class="chart-container">
+                <canvas id="geoChart" width="800" height="350"></canvas>
+            </div>
+
+            <table>
+                <tr><th>Region</th><th>N</th><th>Central Asian (Q2)</th><th>East Asian (Q6)</th><th>S. European (Q1)</th><th>Interpretation</th></tr>
+                <tr><td>Jizzakh</td><td>84</td><td>73.9%</td><td style="background:#fff3cd;"><strong>19.6%</strong></td><td>1.3%</td><td>Most Eastern-shifted</td></tr>
+                <tr><td>Andijan</td><td>18</td><td>71.6%</td><td style="background:#fff3cd;"><strong>19.9%</strong></td><td>2.9%</td><td>Eastern</td></tr>
+                <tr><td>Tashkent region</td><td>160</td><td>70.6%</td><td>15.5%</td><td>3.1%</td><td>Central</td></tr>
+                <tr><td>Tashkent city</td><td>461</td><td>69.5%</td><td>11.0%</td><td>4.8%</td><td>Central-Western</td></tr>
+                <tr><td>Karakalpakstan</td><td>42</td><td>79.6%</td><td>5.1%</td><td>7.2%</td><td>Western-shifted</td></tr>
+                <tr><td>Fergana</td><td>30</td><td>76.3%</td><td style="background:#d4edda;"><strong>2.7%</strong></td><td style="background:#d4edda;"><strong>8.2%</strong></td><td>Most Western-shifted</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Geographic interpretation:</strong> The East Asian component ranges from ~2.7% (Fergana) to ~19.9% (Andijan),
+                a 7.4-fold difference across Uzbekistan. Fergana Valley individuals carry the highest Southern European
+                ancestry (8.2%), consistent with the region&rsquo;s historical role as a Sogdian/Greek cultural hub.
+                Eastern regions (Jizzakh, Andijan) show stronger steppe/Turkic-Mongol introgression, consistent
+                with proximity to the Kazakh steppe and historical nomadic corridors.
+            </div>
+
+            <!-- 7. KEY FINDINGS -->
+            <h2>7. Key Findings &amp; Biological Interpretation</h2>
+
+            <div class="stat-box">
+                <span class="stat-label">Finding 1:</span>
+                <span class="stat-value">The Uzbek cohort harbors a <strong>unique Central Asian ancestral component</strong> (70.2%)
+                not captured by any 1000G reference population &mdash; this justifies population-specific reference panels.</span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-label">Finding 2:</span>
+                <span class="stat-value">East Asian ancestry (~12.3% mean) represents <strong>Turkic-Mongol steppe heritage</strong>,
+                varying 7.4-fold across regions. This variation is a potential confounder for disease association studies.</span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-label">Finding 3:</span>
+                <span class="stat-value">Western Eurasian admixture (EUR + SAS, ~12.7%) reflects the <strong>Silk Road
+                Indo-European substrate</strong> with Sogdian and Indo-Aryan contributions, strongest in Fergana Valley.</span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-label">Finding 4:</span>
+                <span class="stat-value">Ethnicity is NOT a confounder &mdash; all 56 Kruskal&ndash;Wallis tests
+                (7 K-values &times; up to 8 components each) returned <strong>non-significant</strong> p-values.</span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-label">Implication for RPL GWAS:</span>
+                <span class="stat-value">Birthplace-based ancestry proportions at K=7 should be used as <strong>covariates in
+                any genome-wide association study</strong> to control for population stratification. Ethnic labels are uninformative.</span>
+            </div>
+
+            <!-- 8. FILES -->
+            <h2>8. Output Files</h2>
+            <table>
+                <tr><th>File</th><th>Description</th></tr>
+                <tr><td><code>global_for_admixture.bed/bim/fam</code></td><td>LD-pruned merged dataset (2,095 &times; 380,376)</td></tr>
+                <tr><td><code>admix_results/K{2-8}.Q</code></td><td>ADMIXTURE Q-matrices for each K</td></tr>
+                <tr><td><code>global_pop_labels.txt</code></td><td>Population and superpopulation labels</td></tr>
+                <tr><td><code>validation/validation_results.json</code></td><td>Covariate test results (JSON)</td></tr>
+                <tr><td><code>validation/ethnicity_q_values.tsv</code></td><td>Ethnicity &times; Q-value means per group</td></tr>
+                <tr><td><code>validation/birthplace_q_values.tsv</code></td><td>Birthplace &times; Q-value means per region</td></tr>
+                <tr><td><code>validation/per_sample_covariates.tsv</code></td><td>Per-sample Q-values with covariates</td></tr>
+            </table>
+
+            <p style="text-align:center; margin-top: 30px;">
+                <a href="step10.html" style="color:#555; text-decoration:none;">&larr; Step 10: Multi-Pop PBS</a>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="next_steps.html" style="color:#555; text-decoration:none;">Next Steps &rarr;</a>
+            </p>
+
+        </div><!-- /content -->
+    </div><!-- /main-content -->
+</div><!-- /page-wrapper -->
+
+<script>
+// ===== DATA =====
+const cvErrors = [
+    {k:2, cv:0.39900}, {k:3, cv:0.39020}, {k:4, cv:0.38790},
+    {k:5, cv:0.38620}, {k:6, cv:0.38580}, {k:7, cv:0.38530},
+    {k:8, cv:0.38540}
+];
+
+// Population-level mean Q-values for K=2-8
+// Order: YRI, CEU, FIN, GBR, IBS, TSI, GIH, PJL, CHB, JPT, UZBEK
+const popNames = ['YRI','CEU','FIN','GBR','IBS','TSI','GIH','PJL','CHB','JPT','UZBEK'];
+const popN     = [108, 99, 99, 91, 107, 107, 103, 96, 103, 104, 1078];
+const popSuper = ['AFR','EUR','EUR','EUR','EUR','EUR','SAS','SAS','EAS','EAS','UZB'];
+
+const qData = {
+    2: [
+        [0.0003,0.9997],[0.9990,0.0010],[0.9395,0.0605],[0.9998,0.0002],[0.9763,0.0237],
+        [0.9799,0.0201],[0.6449,0.3551],[0.6640,0.3360],[0.0002,0.9998],[0.0000,1.0000],
+        [0.6253,0.3747]
+    ],
+    3: [
+        [0.0000,0.9999,0.0001],[0.9918,0.0075,0.0007],[0.9247,0.0005,0.0748],[0.9932,0.0063,0.0005],
+        [0.9654,0.0342,0.0004],[0.9707,0.0280,0.0013],[0.6422,0.0737,0.2841],[0.6608,0.0698,0.2693],
+        [0.0005,0.0014,0.9981],[0.0000,0.0000,1.0000],[0.6162,0.0134,0.3703]
+    ],
+    4: [
+        [0.0000,0.9999,0.0000,0.0001],[0.9637,0.0106,0.0248,0.0010],[0.9139,0.0013,0.0007,0.0840],
+        [0.9659,0.0095,0.0235,0.0012],[0.9428,0.0387,0.0177,0.0007],[0.9078,0.0266,0.0656,0.0000],
+        [0.0441,0.0145,0.9392,0.0023],[0.1165,0.0201,0.8460,0.0173],
+        [0.0001,0.0021,0.0016,0.9962],[0.0000,0.0000,0.0000,1.0000],[0.4350,0.0037,0.2615,0.2998]
+    ],
+    5: [
+        [0.0000,0.0000,0.0001,0.0000,0.9999],[0.9359,0.0568,0.0018,0.0007,0.0048],
+        [0.8969,0.0109,0.0910,0.0008,0.0004],[0.9374,0.0568,0.0023,0.0001,0.0034],
+        [0.9148,0.0516,0.0019,0.0001,0.0317],[0.8831,0.0929,0.0000,0.0024,0.0216],
+        [0.0390,0.9397,0.0024,0.0165,0.0023],[0.0986,0.8276,0.0177,0.0494,0.0066],
+        [0.0000,0.0023,0.9962,0.0004,0.0012],[0.0000,0.0000,1.0000,0.0000,0.0000],
+        [0.0838,0.0475,0.1518,0.7126,0.0042]
+    ],
+    6: [
+        [0.0000,0.9999,0.0000,0.0000,0.0000,0.0001],[0.0001,0.0013,0.0125,0.3293,0.6566,0.0001],
+        [0.0003,0.0008,0.0099,0.8917,0.0494,0.0480],[0.0000,0.0005,0.0112,0.3186,0.6695,0.0001],
+        [0.0000,0.0232,0.0058,0.0807,0.8875,0.0027],[0.0039,0.0133,0.0402,0.0089,0.9334,0.0004],
+        [0.0156,0.0021,0.9374,0.0102,0.0323,0.0023],[0.0480,0.0060,0.8209,0.0178,0.0900,0.0173],
+        [0.0004,0.0011,0.0023,0.0000,0.0000,0.9962],[0.0000,0.0000,0.0000,0.0000,0.0000,0.9999],
+        [0.7006,0.0040,0.0447,0.0494,0.0522,0.1491]
+    ],
+    7: [
+        [0.0000,0.0000,0.0000,0.0000,0.9999,0.0001,0.0000],
+        [0.6540,0.0003,0.0000,0.3309,0.0013,0.0002,0.0134],
+        [0.0482,0.0004,0.0000,0.8894,0.0008,0.0509,0.0103],
+        [0.6668,0.0000,0.0000,0.3202,0.0005,0.0002,0.0121],
+        [0.8861,0.0001,0.0000,0.0820,0.0231,0.0030,0.0057],
+        [0.9323,0.0059,0.0000,0.0094,0.0131,0.0004,0.0389],
+        [0.0311,0.0195,0.0000,0.0102,0.0020,0.0023,0.9348],
+        [0.0881,0.0558,0.0001,0.0179,0.0057,0.0175,0.8150],
+        [0.0000,0.0005,0.0000,0.0000,0.0012,0.9960,0.0023],
+        [0.0000,0.0000,0.0000,0.0000,0.0000,0.9999,0.0000],
+        [0.0430,0.7024,0.0439,0.0452,0.0040,0.1232,0.0385]
+    ],
+    8: [
+        [0.0000,0.0000,0.0000,0.0000,0.0000,0.0001,0.0000,0.9999],
+        [0.0001,0.0000,0.0019,0.6564,0.0120,0.0002,0.3281,0.0013],
+        [0.0002,0.0000,0.0016,0.0475,0.0095,0.0515,0.8888,0.0008],
+        [0.0000,0.0000,0.0013,0.6699,0.0108,0.0002,0.3172,0.0005],
+        [0.0000,0.0000,0.0019,0.8884,0.0047,0.0028,0.0792,0.0230],
+        [0.0025,0.0000,0.0164,0.9264,0.0339,0.0003,0.0077,0.0128],
+        [0.0142,0.0000,0.0064,0.0302,0.9346,0.0024,0.0103,0.0020],
+        [0.0434,0.0001,0.0141,0.0865,0.8151,0.0172,0.0180,0.0057],
+        [0.0005,0.0000,0.0002,0.0000,0.0022,0.9960,0.0000,0.0012],
+        [0.0000,0.0000,0.0000,0.0000,0.0000,0.9999,0.0000,0.0000],
+        [0.6363,0.0431,0.0798,0.0419,0.0392,0.1102,0.0455,0.0039]
+    ]
+};
+
+// Color palettes per K
+const kColors = {
+    2: ['#64b5f6','#ffb74d'],
+    3: ['#64b5f6','#4db6ac','#ffb74d'],
+    4: ['#64b5f6','#4db6ac','#81c784','#ffb74d'],
+    5: ['#64b5f6','#81c784','#ffb74d','#9575cd','#4db6ac'],
+    6: ['#9575cd','#4db6ac','#81c784','#64b5f6','#e57373','#ffb74d'],
+    7: ['#e57373','#9575cd','#a1887f','#64b5f6','#4db6ac','#ffb74d','#81c784'],
+    8: ['#9575cd','#a1887f','#81c784','#e57373','#66bb6a','#ffb74d','#64b5f6','#4db6ac']
+};
+
+// Component labels at K=7
+const k7Labels = ['S.European','Central Asian','CA minor','N.European','African','E.Asian','S.Asian'];
+
+// K interpretations
+const kInterpretations = {
+    2: '<strong>K=2:</strong> First split separates West Eurasia (EUR, SAS, UZB) from East Asia + Africa. Uzbeks are 62.5% Western, 37.5% Eastern. The cohort sits between EUR and EAS, confirming its admixed Silk Road heritage.',
+    3: '<strong>K=3:</strong> African ancestry (YRI) separates as a distinct component. Uzbeks show 1.3% AFR — effectively noise. The EUR↔EAS gradient remains dominant.',
+    4: '<strong>K=4:</strong> South Asian ancestry separates from European. Uzbeks show 26.2% SAS component alongside 43.5% EUR and 30.0% EAS — revealing the three-way continental admixture that defines Central Asia.',
+    5: '<strong>K=5:</strong> A distinct Central Asian / Uzbek component (71.3%) emerges for the first time — not present in any reference population. This is the core Turkic/Sogdian ancestry unique to Uzbekistan.',
+    6: '<strong>K=6:</strong> European ancestry splits into Northern (FIN-dominant) and Southern (IBS/TSI) sub-components. The Uzbek cohort carries approximately equal proportions of each (~5%).',
+    7: '<strong>K=7 (Optimal):</strong> Seven distinct ancestral components resolved. The Uzbek cohort is 70.2% Central Asian, 12.3% East Asian (steppe heritage), 4.5% Northern European, 4.3% Southern European, 3.9% South Asian, with a 4.4% minor Central Asian subdivision. This represents the full resolution of ancestry for this dataset.',
+    8: '<strong>K=8:</strong> An eighth component appears but CV error increases, indicating overfitting. The additional component does not correspond to a known reference population.'
+};
+
+// Geographic data at K=7 (region, N, Q2=Central Asian, Q6=East Asian, Q1=S.European)
+const geoData = [
+    {region:'Fergana', n:30, q2:0.7630, q6:0.0273, q1:0.0818},
+    {region:'Karakalpakstan', n:42, q2:0.7960, q6:0.0514, q1:0.0716},
+    {region:'Samarkand', n:49, q2:0.7150, q6:0.1094, q1:0.0301},
+    {region:'Kashkadarya', n:61, q2:0.6902, q6:0.1173, q1:0.0380},
+    {region:'Tashkent city', n:461, q2:0.6948, q6:0.1095, q1:0.0475},
+    {region:'Navoi', n:28, q2:0.7480, q6:0.1156, q1:0.0335},
+    {region:'Namangan', n:19, q2:0.7299, q6:0.1083, q1:0.0304},
+    {region:'Tashkent region', n:160, q2:0.7058, q6:0.1549, q1:0.0313},
+    {region:'Syrdarya', n:30, q2:0.7216, q6:0.1415, q1:0.0304},
+    {region:'Khorezm', n:13, q2:0.6814, q6:0.1746, q1:0.0385},
+    {region:'Jizzakh', n:84, q2:0.7395, q6:0.1959, q1:0.0130},
+    {region:'Andijan', n:18, q2:0.7164, q6:0.1989, q1:0.0291}
+];
+// Sort by East Asian proportion
+geoData.sort((a,b) => a.q6 - b.q6);
+
+// ===== CV ERROR CHART =====
+function drawCVChart() {
+    const canvas = document.getElementById('cvChart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = {top:30, right:30, bottom:50, left:70};
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const minCV = 0.384, maxCV = 0.401;
+    const kMin = 2, kMax = 8;
+
+    function xPos(k) { return pad.left + (k - kMin) / (kMax - kMin) * plotW; }
+    function yPos(cv) { return pad.top + (1 - (cv - minCV) / (maxCV - minCV)) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+    for (let cv = 0.385; cv <= 0.400; cv += 0.005) {
+        ctx.beginPath(); ctx.moveTo(pad.left, yPos(cv)); ctx.lineTo(W-pad.right, yPos(cv)); ctx.stroke();
+        ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(cv.toFixed(3), pad.left - 8, yPos(cv) + 4);
+    }
+
+    // X axis labels
+    ctx.fillStyle = '#555'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    for (let k = 2; k <= 8; k++) {
+        ctx.fillText('K=' + k, xPos(k), H - pad.bottom + 25);
+    }
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('Number of ancestral populations (K)', W/2, H - 5);
+
+    // Y axis label
+    ctx.save(); ctx.translate(15, H/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = '#555'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('CV Error', 0, 0); ctx.restore();
+
+    // Line
+    ctx.strokeStyle = '#333'; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    cvErrors.forEach((d, i) => {
+        const x = xPos(d.k), y = yPos(d.cv);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Points
+    cvErrors.forEach(d => {
+        const x = xPos(d.k), y = yPos(d.cv);
+        const isOpt = d.k === 7;
+        ctx.beginPath(); ctx.arc(x, y, isOpt ? 8 : 5, 0, Math.PI * 2);
+        ctx.fillStyle = isOpt ? '#28a745' : '#333'; ctx.fill();
+        ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+        // Value label
+        ctx.fillStyle = isOpt ? '#28a745' : '#555';
+        ctx.font = isOpt ? 'bold 12px sans-serif' : '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(d.cv.toFixed(4), x, y - (isOpt ? 14 : 10));
+    });
+
+    // Optimal arrow
+    const ox = xPos(7), oy = yPos(0.38530);
+    ctx.fillStyle = '#28a745'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('← Optimal', ox + 12, oy + 5);
+}
+
+// ===== ADMIXTURE STACKED BAR CHART =====
+let currentK = 7;
+
+function showK(k) {
+    currentK = k;
+    document.querySelectorAll('.k-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.k-btn[data-k="${k}"]`).classList.add('active');
+    drawAdmixtureChart();
+    updateLegend();
+    updateInterpretation();
+}
+
+function drawAdmixtureChart() {
+    const canvas = document.getElementById('admixtureChart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = {top:20, right:20, bottom:80, left:60};
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const k = currentK;
+    const data = qData[k];
+    const colors = kColors[k];
+    const nPops = popNames.length;
+    const barW = plotW / nPops * 0.7;
+    const gap = plotW / nPops * 0.3;
+
+    // Background bands for superpopulations
+    const superGroups = [{name:'AFR',start:0,end:1,color:'rgba(229,115,115,0.08)'},
+                         {name:'EUR',start:1,end:6,color:'rgba(100,181,246,0.08)'},
+                         {name:'SAS',start:6,end:8,color:'rgba(129,199,132,0.08)'},
+                         {name:'EAS',start:8,end:10,color:'rgba(255,183,77,0.08)'},
+                         {name:'UZB',start:10,end:11,color:'rgba(149,117,205,0.08)'}];
+
+    superGroups.forEach(g => {
+        const x1 = pad.left + g.start * (plotW / nPops);
+        const x2 = pad.left + g.end * (plotW / nPops);
+        ctx.fillStyle = g.color;
+        ctx.fillRect(x1, pad.top, x2 - x1, plotH);
+        // Superpop label
+        ctx.fillStyle = '#aaa'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(g.name, (x1 + x2) / 2, pad.top + 14);
+    });
+
+    // Y-axis
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+    for (let y = 0; y <= 1; y += 0.25) {
+        const py = pad.top + plotH * (1 - y);
+        ctx.beginPath(); ctx.moveTo(pad.left, py); ctx.lineTo(W - pad.right, py); ctx.stroke();
+        ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText((y * 100).toFixed(0) + '%', pad.left - 8, py + 4);
+    }
+
+    // Stacked bars
+    for (let i = 0; i < nPops; i++) {
+        const x = pad.left + i * (plotW / nPops) + gap / 2;
+        let cumY = 0;
+        for (let q = 0; q < k; q++) {
+            const val = data[i][q];
+            const barH = val * plotH;
+            ctx.fillStyle = colors[q];
+            ctx.fillRect(x, pad.top + plotH - cumY - barH, barW, barH);
+            cumY += barH;
+        }
+
+        // Population label
+        ctx.save();
+        ctx.translate(x + barW / 2, pad.top + plotH + 8);
+        ctx.rotate(-Math.PI / 4);
+        ctx.fillStyle = popSuper[i] === 'UZB' ? '#9575cd' : '#555';
+        ctx.font = popSuper[i] === 'UZB' ? 'bold 12px sans-serif' : '11px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(popNames[i] + ' (' + popN[i] + ')', 0, 0);
+        ctx.restore();
+    }
+
+    // Y-axis label
+    ctx.save(); ctx.translate(15, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#555'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Ancestry Proportion', 0, 0); ctx.restore();
+}
+
+function updateLegend() {
+    const k = currentK;
+    const colors = kColors[k];
+    const labels = k === 7 ? k7Labels : Array.from({length: k}, (_, i) => 'Q' + (i + 1));
+    const box = document.getElementById('componentLegend');
+    box.innerHTML = labels.map((lbl, i) =>
+        `<div class="legend-item"><div class="legend-swatch" style="background:${colors[i]}"></div>${lbl}</div>`
+    ).join('');
+}
+
+function updateInterpretation() {
+    document.getElementById('kInterpretation').innerHTML = kInterpretations[currentK];
+}
+
+// ===== UZBEK PIE CHART (K=7) =====
+function drawUzbekPie() {
+    const canvas = document.getElementById('uzbekPieChart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W * 0.35, cy = H / 2, r = Math.min(cx, cy) - 30;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const values = [0.7024, 0.1232, 0.0452, 0.0439, 0.0430, 0.0385, 0.0040];
+    const colors = ['#9575cd','#ffb74d','#64b5f6','#a1887f','#e57373','#81c784','#4db6ac'];
+    const labels = ['Central Asian (70.2%)','East Asian (12.3%)','N. European (4.5%)',
+                     'CA minor (4.4%)','S. European (4.3%)','South Asian (3.9%)','African (0.4%)'];
+
+    let startAngle = -Math.PI / 2;
+    values.forEach((val, i) => {
+        const sliceAngle = val * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        startAngle += sliceAngle;
+    });
+
+    // Legend on the right
+    const lx = W * 0.62, ly = 40;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillStyle = '#333';
+    ctx.fillText('UZBEK (n=1,078)', lx, ly);
+    labels.forEach((lbl, i) => {
+        const y = ly + 25 + i * 28;
+        ctx.fillStyle = colors[i];
+        ctx.fillRect(lx, y - 10, 16, 16);
+        ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+        ctx.strokeRect(lx, y - 10, 16, 16);
+        ctx.fillStyle = '#555';
+        ctx.font = '12px sans-serif';
+        ctx.fillText(lbl, lx + 22, y + 3);
+    });
+}
+
+// ===== GEOGRAPHIC CHART =====
+function drawGeoChart() {
+    const canvas = document.getElementById('geoChart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = {top:30, right:30, bottom:100, left:60};
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    ctx.clearRect(0, 0, W, H);
+    const n = geoData.length;
+    const barW = plotW / n * 0.65;
+
+    // Y axis
+    const maxY = 0.25;
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+    for (let y = 0; y <= maxY; y += 0.05) {
+        const py = pad.top + plotH * (1 - y / maxY);
+        ctx.beginPath(); ctx.moveTo(pad.left, py); ctx.lineTo(W - pad.right, py); ctx.stroke();
+        ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText((y * 100).toFixed(0) + '%', pad.left - 8, py + 4);
+    }
+
+    // Bars
+    geoData.forEach((d, i) => {
+        const x = pad.left + i * (plotW / n) + (plotW / n - barW) / 2;
+        const barH = (d.q6 / maxY) * plotH;
+        const y = pad.top + plotH - barH;
+
+        // Gradient fill from blue (low EAS) to orange (high EAS)
+        const ratio = d.q6 / 0.20;
+        const r = Math.round(100 + ratio * 155);
+        const g = Math.round(181 - ratio * 100);
+        const b = Math.round(246 - ratio * 200);
+        ctx.fillStyle = `rgb(${r},${g},${b})`;
+        ctx.fillRect(x, y, barW, barH);
+
+        // Value on top
+        ctx.fillStyle = '#333'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText((d.q6 * 100).toFixed(1) + '%', x + barW / 2, y - 6);
+
+        // Region label
+        ctx.save();
+        ctx.translate(x + barW / 2, pad.top + plotH + 10);
+        ctx.rotate(-Math.PI / 3);
+        ctx.fillStyle = '#555'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(d.region + ' (' + d.n + ')', 0, 0);
+        ctx.restore();
+    });
+
+    // Axis labels
+    ctx.save(); ctx.translate(15, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#555'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('East Asian Ancestry (Q6)', 0, 0); ctx.restore();
+
+    // Arrow annotation
+    ctx.fillStyle = '#888'; ctx.font = 'italic 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('← Most Western                           Most Eastern →', W / 2, H - 5);
+}
+
+// ===== INIT =====
+window.addEventListener('load', () => {
+    drawCVChart();
+    showK(7);
+    drawUzbekPie();
+    drawGeoChart();
+});
+</script>
+
+</body>
+</html>

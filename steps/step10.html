@@ -128,6 +128,8 @@
                 <a href="step8.html">Step 8: Global PCA</a>
                 <a href="step9.html">Step 9: F<sub>ST</sub> Analysis</a>
                 <a href="step10.html" class="current">Step 10: Multi-Pop &amp; PBS</a>
+                <a href="step11.html">Step 11: Global ADMIXTURE</a>
+                <a href="step12.html">Step 12: PBS Annotation</a>
                 <a href="next_steps.html">Next Steps</a>
             </div>
         </aside>
@@ -1735,11 +1737,19 @@ print(f"Exported {len(ids)} samples, JSON size: {len(json.dumps(data))} bytes")<
 
 <!-- ═══════════════════════════ 11. NEXT STEPS ═══════════════════════════ -->
 <h2>11. Next Steps</h2>
+
+<div class="success" style="margin-bottom:18px">
+    <strong>→ Step 12 available:</strong> The 490 Uzbek-specific SNPs have been cross-referenced against
+    <strong>GWAS Catalog</strong>, <strong>ClinVar</strong>, and <strong>GTEx v8</strong> via public REST APIs.
+    Interactive results are available in
+    <a href="step12.html" style="color:#155724;font-weight:600">Step 12: PBS Functional Annotation</a>.
+</div>
+
 <ol>
-    <li><strong>Gene annotation</strong>: Map the 490 Uzbek-specific SNPs to nearest genes using ANNOVAR or VEP; check for enrichment in known selection targets.</li>
+    <li><strong>Functional annotation (Step 12)</strong>: GWAS Catalog, ClinVar, and GTEx eQTL annotation of all 490 Uzbek-specific SNPs — <a href="step12.html">view results →</a></li>
     <li><strong>IBD re-analysis</strong>: Use ADMIXTURE ancestry to stratify IBD segments &mdash; do related individuals share more Western or Eastern ancestry?</li>
     <li><strong>Pathway enrichment</strong>: Test if Uzbek-specific SNPs are enriched in KEGG/GO pathways (immunity, metabolism, etc.).</li>
-    <li><strong>Case-control design</strong> (Step 11): Define pregnancy loss criteria, map phenotype IDs to genotype IDs, and test the 490 candidate SNPs for association with pregnancy loss.</li>
+    <li><strong>Case-control design</strong>: Define pregnancy loss criteria, map phenotype IDs to genotype IDs, and test the 490 candidate SNPs for association with pregnancy loss.</li>
     <li><strong>Extended haplotype analysis</strong>: Phase genotypes and compute iHS/nSL for top PBS regions to confirm recent selection signals.</li>
 </ol>
 
@@ -2010,7 +2020,9 @@ print(f"Exported {len(ids)} samples, JSON size: {len(json.dumps(data))} bytes")<
         { title: 'Step 7: PCA Analysis', url: 'step7.html', keywords: 'pca principal component uzbek' },
         { title: 'Step 8: Global PCA', url: 'step8.html', keywords: 'global pca 1000genomes populations' },
         { title: 'Step 9: Fst Analysis', url: 'step9.html', keywords: 'fst fixation differentiation eur' },
-        { title: 'Step 10: Multi-Pop PBS ADMIXTURE', url: 'step10.html', keywords: 'pbs admixture multi-population delta af uzbek-specific near-private selection eas sas afr ancestry' }
+        { title: 'Step 10: Multi-Pop PBS ADMIXTURE', url: 'step10.html', keywords: 'pbs admixture multi-population delta af uzbek-specific near-private selection eas sas afr ancestry' },
+        { title: 'Step 11: Global ADMIXTURE', url: 'step11.html', keywords: 'global admixture k7 cv error covariate validation ancestry components' },
+        { title: 'Step 12: PBS Functional Annotation', url: 'step12.html', keywords: 'gwas catalog clinvar gtex eqtl annotation functional missense spi1 abca1 hla pbs uzbek' }
     ];
     
     function searchAllSteps() {
