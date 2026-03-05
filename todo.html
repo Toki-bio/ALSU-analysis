@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALSU Analysis — Todo &amp; Task Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page-wrapper { display: flex; gap: 20px; max-width: 1300px; margin: 0 auto; }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 240px; flex-shrink: 0;
+            background: white; border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 20px; height: fit-content;
+            position: sticky; top: 20px;
+        }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 12px; border-bottom: 2px solid #888; padding-bottom: 8px; }
+        .sidebar-links { display: flex; flex-direction: column; gap: 6px; }
+        .sidebar-links a {
+            padding: 9px 12px; background: #f5f5f5; color: #333;
+            text-decoration: none; border-radius: 5px;
+            border-left: 4px solid transparent;
+            font-size: 0.88em; transition: all 0.2s;
+        }
+        .sidebar-links a:hover { background: #ebebeb; border-left-color: #666; }
+        .sidebar-links a.current { background: #3949ab; color: white; border-left-color: #1a237e; font-weight: 600; }
+
+        .sidebar-stats { margin-top: 18px; }
+        .stat-pill {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 7px 10px; border-radius: 6px; margin-bottom: 5px; font-size: 0.82em;
+        }
+        .stat-pill .label { color: #555; }
+        .stat-pill .badge {
+            font-weight: 700; padding: 2px 8px; border-radius: 10px; font-size: 0.85em;
+        }
+        .stat-pill.done  .badge { background: #e8f5e9; color: #2e7d32; }
+        .stat-pill.prog  .badge { background: #fff9c4; color: #f57f17; }
+        .stat-pill.todo  .badge { background: #e3f2fd; color: #1565c0; }
+        .stat-pill.block .badge { background: #fce4ec; color: #b71c1c; }
+
+        /* ── Main content ── */
+        .main-content {
+            flex: 1; background: white; border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
+            color: white; padding: 28px 30px;
+        }
+        .page-header a.back { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9em; display: inline-block; margin-bottom: 10px; }
+        .page-header a.back:hover { color: white; }
+        .page-header h1 { font-size: 1.9em; margin-bottom: 6px; }
+        .page-header p { opacity: 0.85; font-size: 0.95em; }
+
+        /* toolbar */
+        .toolbar {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            padding: 14px 24px; background: #f9f9f9; border-bottom: 1px solid #e0e0e0;
+        }
+        .toolbar input[type=text] {
+            flex: 1; min-width: 200px; max-width: 340px;
+            padding: 9px 14px; border: 2px solid #ddd; border-radius: 6px;
+            font-size: 0.9em; transition: border-color 0.2s;
+        }
+        .toolbar input[type=text]:focus { outline: none; border-color: #3949ab; }
+        .filter-grp { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 7px 14px; border: 1.5px solid #ccc; border-radius: 20px;
+            background: white; cursor: pointer; font-size: 0.83em; color: #555;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: #999; color: #333; }
+        .filter-btn.active { background: #3949ab; color: white; border-color: #3949ab; }
+
+        .content { padding: 20px 24px 40px; }
+
+        /* ── Section headers ── */
+        .section-header {
+            display: flex; align-items: center; gap: 12px;
+            margin: 28px 0 12px; cursor: pointer; user-select: none;
+        }
+        .section-header h2 {
+            font-size: 1.1em; font-weight: 700; color: #333;
+            border: none; padding: 0; margin: 0;
+        }
+        .section-header .toggle { color: #999; font-size: 0.9em; }
+        .section-header .cnt {
+            margin-left: auto;
+            font-size: 0.78em; color: #888; background: #f0f0f0;
+            padding: 2px 8px; border-radius: 10px;
+        }
+        .section-divider { border: none; border-top: 2px solid #eeeeee; margin: 0 0 10px; }
+        .section-body { display: block; }
+        .section-body.collapsed { display: none; }
+
+        /* ── Task rows ── */
+        .task-row {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 11px 14px; border-radius: 8px;
+            margin-bottom: 6px; border: 1px solid #e8e8e8;
+            transition: box-shadow 0.15s, opacity 0.2s;
+            background: white;
+        }
+        .task-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .task-row.done { opacity: 0.55; }
+        .task-row.done .task-title { text-decoration: line-through; color: #aaa; }
+        .task-row.hidden { display: none; }
+
+        /* checkbox */
+        .task-cb {
+            appearance: none; -webkit-appearance: none;
+            width: 19px; height: 19px; border: 2px solid #bbb;
+            border-radius: 4px; cursor: pointer; flex-shrink: 0; margin-top: 1px;
+            position: relative; transition: all 0.15s;
+        }
+        .task-cb:checked { background: #2e7d32; border-color: #2e7d32; }
+        .task-cb:checked::after {
+            content: '✓'; position: absolute; color: white;
+            font-size: 12px; top: 0px; left: 2px; font-weight: 700;
+        }
+
+        .task-body { flex: 1; min-width: 0; }
+        .task-title { font-size: 0.93em; color: #333; line-height: 1.4; font-weight: 500; }
+        .task-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+
+        /* chips */
+        .chip {
+            font-size: 0.72em; padding: 2px 8px; border-radius: 10px;
+            font-weight: 600; white-space: nowrap;
+        }
+        .chip-priority-high   { background: #fce4ec; color: #b71c1c; }
+        .chip-priority-medium { background: #fff9c4; color: #f57f17; }
+        .chip-priority-low    { background: #e8f5e9; color: #1b5e20; }
+        .chip-status-done       { background: #e8f5e9; color: #2e7d32; }
+        .chip-status-inprogress { background: #fff9c4; color: #e65100; }
+        .chip-status-blocked    { background: #fce4ec; color: #b71c1c; }
+        .chip-status-todo       { background: #e3f2fd; color: #1565c0; }
+        .chip-cat { background: #f3e5f5; color: #6a1b9a; }
+
+        .task-note {
+            font-size: 0.82em; color: #777; margin-top: 5px; line-height: 1.5;
+            padding: 6px 10px; background: #fafafa; border-radius: 4px;
+            border-left: 3px solid #e0e0e0;
+        }
+
+        /* add-task form */
+        .add-form {
+            display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+            margin-top: 14px; padding: 12px 14px;
+            background: #f5f5f5; border-radius: 8px; border: 1px dashed #ccc;
+        }
+        .add-form input[type=text] {
+            flex: 1; min-width: 180px; padding: 8px 12px;
+            border: 1.5px solid #ddd; border-radius: 6px; font-size: 0.88em;
+        }
+        .add-form input[type=text]:focus { outline: none; border-color: #3949ab; }
+        .add-form select {
+            padding: 8px 10px; border: 1.5px solid #ddd; border-radius: 6px;
+            font-size: 0.85em; background: white; cursor: pointer;
+        }
+        .add-form button {
+            padding: 8px 18px; background: #3949ab; color: white;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 0.88em;
+            font-weight: 600; transition: background 0.2s;
+        }
+        .add-form button:hover { background: #1a237e; }
+
+        /* progress bar at top */
+        .progress-bar-wrap { padding: 0 24px 0; margin-bottom: 0; }
+        .progress-bar-track { background: #e0e0e0; border-radius: 6px; height: 8px; margin: 16px 0 4px; }
+        .progress-bar-fill { height: 8px; border-radius: 6px; background: linear-gradient(90deg,#43a047,#1b5e20); transition: width 0.4s; }
+        .progress-label { font-size: 0.8em; color: #888; margin-bottom: 6px; }
+
+        @media (max-width: 900px) {
+            .page-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; top: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <div class="sidebar">
+        <h3>Navigation</h3>
+        <div class="sidebar-links">
+            <a href="../index.html">🏠 Home</a>
+            <a href="next_steps.html">📋 Next Steps</a>
+            <a href="step10.html">Step 10 — PBS</a>
+            <a href="step11.html">Step 11 — ADMIXTURE</a>
+            <a href="step12.html">Step 12 — Annotation</a>
+            <a href="../todo.html" class="current">✅ Todo Tracker</a>
+        </div>
+
+        <div class="sidebar-stats">
+            <h3 style="margin-top:18px">Status</h3>
+            <div class="stat-pill done"><span class="label">Done</span><span class="badge" id="cnt-done">—</span></div>
+            <div class="stat-pill prog"><span class="label">In progress</span><span class="badge" id="cnt-prog">—</span></div>
+            <div class="stat-pill todo"><span class="label">Todo</span><span class="badge" id="cnt-todo">—</span></div>
+            <div class="stat-pill block"><span class="label">Blocked</span><span class="badge" id="cnt-block">—</span></div>
+        </div>
+    </div>
+
+    <!-- ── Main content ── -->
+    <div class="main-content">
+        <div class="page-header">
+            <a class="back" href="../index.html">← Back to Home</a>
+            <h1>Todo &amp; Task Tracker</h1>
+            <p>ALSU Genotyping Pipeline — active tasks, planned analyses, and follow-ups</p>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+            <div class="progress-label" id="progressLabel">Loading…</div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <input type="text" id="searchInput" placeholder="Search tasks…" oninput="renderAll()">
+            <div class="filter-grp">
+                <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+                <button class="filter-btn" onclick="setFilter('todo',this)">Todo</button>
+                <button class="filter-btn" onclick="setFilter('inprogress',this)">In Progress</button>
+                <button class="filter-btn" onclick="setFilter('done',this)">Done</button>
+                <button class="filter-btn" onclick="setFilter('blocked',this)">Blocked</button>
+            </div>
+            <div class="filter-grp">
+                <button class="filter-btn" onclick="setFilter('high',this)">🔴 High</button>
+                <button class="filter-btn" onclick="setFilter('medium',this)">🟡 Medium</button>
+                <button class="filter-btn" onclick="setFilter('low',this)">🟢 Low</button>
+            </div>
+        </div>
+
+        <div class="content">
+
+<!-- ══════════════════════════════════════════════
+     SECTION: Analysis Pipeline
+══════════════════════════════════════════════ -->
+<div class="section-header" onclick="toggleSection('analysis')">
+    <h2>🧬 Analysis Pipeline</h2>
+    <span class="toggle" id="tog-analysis">▼</span>
+    <span class="cnt" id="cnt-analysis"></span>
+</div>
+<hr class="section-divider">
+<div class="section-body" id="sec-analysis"></div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION: Bioinformatics / Server
+══════════════════════════════════════════════ -->
+<div class="section-header" onclick="toggleSection('server')">
+    <h2>🖥️ Server &amp; Bioinformatics</h2>
+    <span class="toggle" id="tog-server">▼</span>
+    <span class="cnt" id="cnt-server"></span>
+</div>
+<hr class="section-divider">
+<div class="section-body" id="sec-server"></div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION: Documentation / Website
+══════════════════════════════════════════════ -->
+<div class="section-header" onclick="toggleSection('docs')">
+    <h2>📄 Documentation &amp; Website</h2>
+    <span class="toggle" id="tog-docs">▼</span>
+    <span class="cnt" id="cnt-docs"></span>
+</div>
+<hr class="section-divider">
+<div class="section-body" id="sec-docs"></div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION: GWAS / Study Design
+══════════════════════════════════════════════ -->
+<div class="section-header" onclick="toggleSection('gwas')">
+    <h2>📊 GWAS &amp; Study Design</h2>
+    <span class="toggle" id="tog-gwas">▼</span>
+    <span class="cnt" id="cnt-gwas"></span>
+</div>
+<hr class="section-divider">
+<div class="section-body" id="sec-gwas"></div>
+
+        <!-- Quick-add form -->
+        <div class="add-form" id="addForm">
+            <input type="text" id="newTitle" placeholder="New task title…" onkeydown="if(event.key==='Enter')addTask()">
+            <select id="newSection">
+                <option value="analysis">Analysis Pipeline</option>
+                <option value="server">Server / Bioinformatics</option>
+                <option value="docs">Documentation</option>
+                <option value="gwas">GWAS / Study Design</option>
+            </select>
+            <select id="newPriority">
+                <option value="high">🔴 High</option>
+                <option value="medium" selected>🟡 Medium</option>
+                <option value="low">🟢 Low</option>
+            </select>
+            <button onclick="addTask()">+ Add Task</button>
+        </div>
+
+        </div><!-- /content -->
+    </div><!-- /main-content -->
+</div><!-- /page-wrapper -->
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// TASK DATA  (edit here or use the + Add Task form)
+// status: 'done' | 'inprogress' | 'todo' | 'blocked'
+// priority: 'high' | 'medium' | 'low'
+// section: 'analysis' | 'server' | 'docs' | 'gwas'
+// ─────────────────────────────────────────────────────────────────────────────
+let TASKS = [
+    // ── Analysis Pipeline ──────────────────────────────────────────────────
+    {
+        id: 1, section: 'analysis', priority: 'high', status: 'done',
+        title: 'PBS analysis — identify 490 Uzbek-specific SNPs',
+        note: 'Multi-pop Fst + PBS scores vs EUR/EAS/SAS/AFR. Completed Feb 2026.'
+    },
+    {
+        id: 2, section: 'analysis', priority: 'high', status: 'done',
+        title: 'ADMIXTURE K=2–8 on UZB + 1000G reference',
+        note: 'K=2 optimal by CV; interactive stacked-bar plots in step11.html.'
+    },
+    {
+        id: 3, section: 'analysis', priority: 'high', status: 'inprogress',
+        title: 'Evanno ΔK batch (70 replicate runs K=2–8)',
+        note: 'PID 4259 running on server. ~37/70 complete as of Mar 4. tmux session "evanno".'
+    },
+    {
+        id: 4, section: 'analysis', priority: 'high', status: 'done',
+        title: 'Ensembl VEP annotation of 490 PBS candidates',
+        note: '5 missense variants; 264 unique genes; 0 GWAS/GTEx hits (all novel/rare). Step 12.'
+    },
+    {
+        id: 5, section: 'analysis', priority: 'medium', status: 'todo',
+        title: 'Evanno ΔK: run delta-K script once batch completes',
+        note: 'Script at data/evanno.py. Needs Q-files from all 70 runs. Update step11.html with bar chart.'
+    },
+    {
+        id: 6, section: 'analysis', priority: 'medium', status: 'todo',
+        title: 'Fst heatmap — all 5 population pairs',
+        note: 'UZB vs EUR/EAS/SAS/AFR pairwise Fst matrix. Visualize as heatmap in next_steps.html or new page.'
+    },
+    {
+        id: 7, section: 'analysis', priority: 'medium', status: 'todo',
+        title: 'DAPC (Discriminant Analysis of Principal Components)',
+        note: 'adegenet/poppr in R. Identify allele clusters differentiating UZB from reference pops.'
+    },
+    {
+        id: 8, section: 'analysis', priority: 'low', status: 'todo',
+        title: 'ROH (Runs of Homozygosity) analysis',
+        note: 'PLINK --homozyg. Estimate inbreeding coefficient, population bottlenecks.'
+    },
+    {
+        id: 9, section: 'analysis', priority: 'low', status: 'todo',
+        title: 'MDS plot of pairwise Fst distances',
+        note: 'Classical multidimensional scaling on Fst matrix to visualize population relationships.'
+    },
+
+    // ── Server / Bioinformatics ────────────────────────────────────────────
+    {
+        id: 10, section: 'server', priority: 'high', status: 'inprogress',
+        title: 'Monitor Evanno batch on server (PID 4259)',
+        note: 'ssh copilot@100.104.25.22 · tail -f /staging/ALSU-analysis/admixture_analysis/evanno_runs/evanno_tmux.log'
+    },
+    {
+        id: 11, section: 'server', priority: 'medium', status: 'done',
+        title: 'Annotation pipeline script upload & run',
+        note: 'annotate_uzb_snps.py uploaded to /staging/.../annotation/. 490 SNPs queried. Results in checkpoint.json.'
+    },
+    {
+        id: 12, section: 'server', priority: 'medium', status: 'todo',
+        title: 'Download final annotation JSON from server',
+        note: 'Use base64 trick: base64 -w0 /tmp/snp_data_full.json | ssh output → decode locally. Save to data/.'
+    },
+    {
+        id: 13, section: 'server', priority: 'low', status: 'todo',
+        title: 'Set up persistent tmux session for future long jobs',
+        note: 'Server reboots periodically. Use tmux new-session -s main with screen-lock and auto-restart hook.'
+    },
+
+    // ── Documentation ──────────────────────────────────────────────────────
+    {
+        id: 14, section: 'docs', priority: 'high', status: 'done',
+        title: 'Create step12.html — PBS SNP annotation page',
+        note: 'Interactive filterable table (490 SNPs), consequence chart, damaging variant panel, HLA/MHC callout.'
+    },
+    {
+        id: 15, section: 'docs', priority: 'medium', status: 'done',
+        title: 'Fix index.html — missing step cards 2–9 & SVG roadmap',
+        note: 'Steps 2–9 were placeholder comments. SVG now extends to Steps 11+12. Fixed Mar 5.'
+    },
+    {
+        id: 16, section: 'docs', priority: 'medium', status: 'todo',
+        title: 'Update step11.html with Evanno ΔK results',
+        note: 'Add bar chart of ΔK vs K, optimal K callout box, and updated interpretation once batch completes.'
+    },
+    {
+        id: 17, section: 'docs', priority: 'low', status: 'todo',
+        title: 'Add Fst heatmap visualization page (step13?)',
+        note: 'Population-pair matrix heatmap. Canvas or SVG-based. Link from index.html and next_steps.'
+    },
+    {
+        id: 18, section: 'docs', priority: 'low', status: 'todo',
+        title: 'Add daily log for Mar 2026 annotation work',
+        note: 'Summarize Mar 4–5: annotation pipeline, step12 complete, index fix, todo page created.'
+    },
+
+    // ── GWAS / Study Design ────────────────────────────────────────────────
+    {
+        id: 19, section: 'gwas', priority: 'high', status: 'todo',
+        title: 'Define case/control criteria for pregnancy loss GWAS',
+        note: 'Recurrent miscarriage: ≥2 losses before 20 wks. Confirm ICD codes, exclusions (chromosomal, uterine).'
+    },
+    {
+        id: 20, section: 'gwas', priority: 'high', status: 'todo',
+        title: 'Covariate selection for GWAS (age, parity, PC1–10)',
+        note: 'See data/validate_admixture_covariates.py for initial check. Confirm ancestry PCs are uncorrelated with phenotype.'
+    },
+    {
+        id: 21, section: 'gwas', priority: 'medium', status: 'todo',
+        title: 'Power calculation for expected case/control sample size',
+        note: 'Use QUANTO or pwr R package. Target 80% power at α=5×10⁻⁸ for common variants (MAF≥0.05).'
+    },
+    {
+        id: 22, section: 'gwas', priority: 'low', status: 'todo',
+        title: 'Prepare GWAS analysis plan document',
+        note: 'Phenotype definitions, QC thresholds, analysis pipeline, primary + secondary endpoints.'
+    }
+];
+
+let nextId = Math.max(...TASKS.map(t => t.id)) + 1;
+let currentFilter = 'all';
+
+const SECTION_LABELS = {
+    analysis: '🧬 Analysis Pipeline',
+    server:   '🖥️ Server &amp; Bioinformatics',
+    docs:     '📄 Documentation',
+    gwas:     '📊 GWAS &amp; Study Design'
+};
+
+// ─── Persist to localStorage ──────────────────────────────────────────────
+function save() { localStorage.setItem('alsu_tasks', JSON.stringify(TASKS)); }
+function load() {
+    const s = localStorage.getItem('alsu_tasks');
+    if (s) { try { TASKS = JSON.parse(s); nextId = Math.max(...TASKS.map(t=>t.id)) + 1; } catch(e) {} }
+}
+
+// ─── Toggle section collapse ──────────────────────────────────────────────
+function toggleSection(id) {
+    const body = document.getElementById('sec-' + id);
+    const tog  = document.getElementById('tog-' + id);
+    const open = body.classList.toggle('collapsed');
+    tog.textContent = open ? '▶' : '▼';
+}
+
+// ─── Filter ───────────────────────────────────────────────────────────────
+function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderAll();
+}
+
+// ─── Toggle task done ─────────────────────────────────────────────────────
+function toggleDone(id) {
+    const t = TASKS.find(t => t.id === id);
+    if (!t) return;
+    t.status = (t.status === 'done') ? 'todo' : 'done';
+    save();
+    renderAll();
+}
+
+// ─── Add task ─────────────────────────────────────────────────────────────
+function addTask() {
+    const title = document.getElementById('newTitle').value.trim();
+    if (!title) return;
+    TASKS.push({
+        id: nextId++,
+        section:  document.getElementById('newSection').value,
+        priority: document.getElementById('newPriority').value,
+        status:   'todo',
+        title,
+        note: ''
+    });
+    document.getElementById('newTitle').value = '';
+    save();
+    renderAll();
+}
+
+// ─── Build one task row ───────────────────────────────────────────────────
+function buildRow(t) {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const matchesSearch = !q || (t.title + ' ' + (t.note||'')).toLowerCase().includes(q);
+
+    const matchesFilter =
+        currentFilter === 'all'        ? true :
+        currentFilter === 'done'       ? t.status === 'done' :
+        currentFilter === 'inprogress' ? t.status === 'inprogress' :
+        currentFilter === 'todo'       ? t.status === 'todo' :
+        currentFilter === 'blocked'    ? t.status === 'blocked' :
+        currentFilter === 'high'       ? t.priority === 'high' :
+        currentFilter === 'medium'     ? t.priority === 'medium' :
+        currentFilter === 'low'        ? t.priority === 'low' : true;
+
+    const vis = matchesSearch && matchesFilter ? '' : ' hidden';
+    const doneClass = t.status === 'done' ? ' done' : '';
+
+    const statusLabel = { done:'Done', inprogress:'In progress', todo:'Todo', blocked:'Blocked' }[t.status] || t.status;
+    const prioLabel   = { high:'High', medium:'Medium', low:'Low' }[t.priority] || t.priority;
+
+    const noteHtml = t.note ? `<div class="task-note">${t.note}</div>` : '';
+
+    return `<div class="task-row${doneClass}${vis}" data-id="${t.id}" data-status="${t.status}" data-priority="${t.priority}">
+        <input type="checkbox" class="task-cb" ${t.status==='done'?'checked':''} onchange="toggleDone(${t.id})">
+        <div class="task-body">
+            <div class="task-title">${t.title}</div>
+            <div class="task-meta">
+                <span class="chip chip-status-${t.status}">${statusLabel}</span>
+                <span class="chip chip-priority-${t.priority}">${prioLabel} priority</span>
+            </div>
+            ${noteHtml}
+        </div>
+    </div>`;
+}
+
+// ─── Render all sections ──────────────────────────────────────────────────
+function renderAll() {
+    const sections = ['analysis','server','docs','gwas'];
+    sections.forEach(sec => {
+        const rows  = TASKS.filter(t => t.section === sec);
+        const html  = rows.map(buildRow).join('');
+        document.getElementById('sec-' + sec).innerHTML = html;
+
+        const vis = rows.filter(t => {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const matchesSearch = !q || (t.title + ' ' + (t.note||'')).toLowerCase().includes(q);
+            const matchesFilter =
+                currentFilter === 'all'        ? true :
+                currentFilter === 'done'       ? t.status === 'done' :
+                currentFilter === 'inprogress' ? t.status === 'inprogress' :
+                currentFilter === 'todo'       ? t.status === 'todo' :
+                currentFilter === 'blocked'    ? t.status === 'blocked' :
+                currentFilter === 'high'       ? t.priority === 'high' :
+                currentFilter === 'medium'     ? t.priority === 'medium' :
+                currentFilter === 'low'        ? t.priority === 'low' : true;
+            return matchesSearch && matchesFilter;
+        });
+        document.getElementById('cnt-' + sec).textContent = vis.length + ' / ' + rows.length;
+    });
+
+    // Sidebar counts
+    const counts = { done:0, prog:0, todo:0, block:0 };
+    TASKS.forEach(t => {
+        if (t.status === 'done')        counts.done++;
+        else if (t.status === 'inprogress') counts.prog++;
+        else if (t.status === 'blocked') counts.block++;
+        else counts.todo++;
+    });
+    document.getElementById('cnt-done').textContent  = counts.done;
+    document.getElementById('cnt-prog').textContent  = counts.prog;
+    document.getElementById('cnt-todo').textContent  = counts.todo;
+    document.getElementById('cnt-block').textContent = counts.block;
+
+    // Progress bar
+    const pct = Math.round(counts.done / TASKS.length * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent =
+        `${counts.done} of ${TASKS.length} tasks complete (${pct}%)`;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+load();
+renderAll();
+</script>
+</body>
+</html>
