@@ -69,7 +69,7 @@
             <!-- ROADMAP TAB - DATA FLOW GRAPH -->
             <div id="roadmap" class="tab-content active">
                 <div class="roadmap-graph" style="overflow-y: auto; padding: 40px 20px;">
-                    <svg width="600" height="1590" style="display: block; margin: 0 auto;">
+                    <svg width="600" height="1960" style="display: block; margin: 0 auto;">
                         <!-- Full roadmap SVG (Steps 1-8) preserved -->
                         <!-- STEP 1 -->
                         <a href="steps/step1.html">
@@ -168,6 +168,26 @@
                             <text x="300" y="1475" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + EUR/EAS/SAS/AFR (376K SNPs)</text>
                             <text x="300" y="1495" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: PBS + Uzbek-specific SNPs | Feb 2026</text>
                         </a>
+
+                        <line x1="300" y1="1540" x2="300" y2="1580" stroke="#5c6bc0" stroke-width="3"/>
+
+                        <!-- STEP 11 -->
+                        <a href="steps/step11.html">
+                            <rect x="150" y="1580" width="300" height="120" fill="#3949ab" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
+                            <text x="300" y="1610" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 11: ADMIXTURE K=2–8</text>
+                            <text x="300" y="1635" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + 1000G (376K SNPs)</text>
+                            <text x="300" y="1655" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: K=2 optimal, Evanno &Delta;K | Mar 2026</text>
+                        </a>
+
+                        <line x1="300" y1="1700" x2="300" y2="1740" stroke="#6a1b9a" stroke-width="3"/>
+
+                        <!-- STEP 12 -->
+                        <a href="steps/step12.html">
+                            <rect x="150" y="1740" width="300" height="120" fill="#6a1b9a" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
+                            <text x="300" y="1770" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 12: PBS SNP Annotation</text>
+                            <text x="300" y="1795" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: 490 Uzbek-specific PBS SNPs</text>
+                            <text x="300" y="1815" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: VEP + GWAS + GTEx results | Mar 2026</text>
+                        </a>
                     </svg>
                 </div>
             </div>
@@ -188,8 +208,94 @@
                         <div class="step-status completed">✓ Completed</div>
                         <div class="view-details"><a href="steps/step1.html">View Details →</a></div>
                     </div>
-                    <!-- other steps omitted here for brevity but should be present in your file -->
-                    
+                    <div class="step-card" onclick="window.location.href='steps/step2.html'">
+                        <div class="step-header">
+                            <span class="step-number">2</span>
+                            <span class="step-title">IBD Deduplication &amp; Removal</span>
+                            <span class="step-date">Dec 16</span>
+                        </div>
+                        <div class="step-description">Identify and remove IBD-related duplicates. Result: 1,155 → 1,098 samples.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step2.html">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step3.html'">
+                        <div class="step-header">
+                            <span class="step-number">3</span>
+                            <span class="step-title">SNP QC &amp; VCF Export</span>
+                            <span class="step-date">Dec 17</span>
+                        </div>
+                        <div class="step-description">Variant-level QC (call rate, HWE, MAF) and conversion to VCF for imputation. 654K → 473K variants.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step3.html">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step4.html'" style="border-left-color: #ff9800;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #ff9800;">4</span>
+                            <span class="step-title">Michigan Imputation Server</span>
+                            <span class="step-date">Dec 18–22</span>
+                        </div>
+                        <div class="step-description">Phasing (Eagle2) + imputation (Minimac4) against TOPMed r2. 473K → 10.8M variants.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step4.html">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step5.html'" style="border-left-color: #764ba2;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #764ba2;">5</span>
+                            <span class="step-title">ID Normalization</span>
+                            <span class="step-date">Dec 23</span>
+                        </div>
+                        <div class="step-description">Harmonize sample IDs between genotype array and imputed dataset. Validate 1,098-sample merge.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step5.html">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step6.html'" style="border-left-color: #2e7d32;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #2e7d32;">6</span>
+                            <span class="step-title">Final QC &amp; Output</span>
+                            <span class="step-date">Dec 26</span>
+                        </div>
+                        <div class="step-description">Post-imputation QC (R²≥0.3, MAF, HWE). Final dataset: 1,074 samples, 10.8M variants.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step6.html">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step7.html'" style="border-left-color: #1976d2;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #1976d2;">7</span>
+                            <span class="step-title">Local PCA Analysis</span>
+                            <span class="step-date">Jan 3–4</span>
+                        </div>
+                        <div class="step-description">PLINK PCA on UZB cohort. PC1 vs PC2 scatter, outlier removal, population stratification assessment.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step7.html">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step8.html'" style="border-left-color: #d32f2f;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #d32f2f;">8</span>
+                            <span class="step-title">Global PCA + 1000 Genomes</span>
+                            <span class="step-date">Jan 4</span>
+                        </div>
+                        <div class="step-description">Project UZB onto 1000G reference panel. Ancestry inference: broad Central Asian cluster between EUR and SAS/EAS.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step8.html">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step9.html'" style="border-left-color: #c62828;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #c62828;">9</span>
+                            <span class="step-title">F<sub>ST</sub> Analysis (UZB vs EUR)</span>
+                            <span class="step-date">Oct–Nov</span>
+                        </div>
+                        <div class="step-description">Genome-wide Weir &amp; Cockerham F<sub>ST</sub> UZB vs 1000G EUR. Weighted F<sub>ST</sub> = 0.020. Top outlier regions identified.</div>
+                        <div class="step-status">✓ Completed</div>
+                        <div class="view-details"><a href="steps/step9.html">View Details →</a></div>
+                    </div>
+
                     <div class="step-card" onclick="window.location.href='steps/step10.html'" style="border-left-color: #2e7d32;">
                         <div class="step-header">
                             <span class="step-number" style="background: #2e7d32;">10</span>
@@ -199,6 +305,28 @@
                         <div class="step-description">PBS, multi-pop F<sub>ST</sub>, delta-AF vs EUR/EAS/SAS/AFR. 490 Uzbek-specific SNPs. ADMIXTURE K=2&ndash;8 complete.</div>
                         <div class="step-status" style="color: #2e7d32;">✓ Complete</div>
                         <div class="view-details"><a href="steps/step10.html" style="color: #2e7d32;">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step11.html'" style="border-left-color: #3949ab;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #3949ab;">11</span>
+                            <span class="step-title">ADMIXTURE K=2–8 Analysis</span>
+                            <span class="step-date">Mar 2026</span>
+                        </div>
+                        <div class="step-description">Unsupervised ADMIXTURE on UZB + 1000G reference. K=2 optimal by CV error; Evanno Δ<i>K</i> batch running. Interactive stacked-bar plots.</div>
+                        <div class="step-status" style="color: #3949ab;">✓ Complete</div>
+                        <div class="view-details"><a href="steps/step11.html" style="color: #3949ab;">View Details →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/step12.html'" style="border-left-color: #6a1b9a;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #6a1b9a;">12</span>
+                            <span class="step-title">PBS SNP Functional Annotation</span>
+                            <span class="step-date">Mar 2026</span>
+                        </div>
+                        <div class="step-description">Ensembl VEP annotation of 490 Uzbek-specific PBS candidates. 264 unique genes; 5 missense variants (4 damaging incl. SPI1, SLC6A2). HLA/MHC over-represented.</div>
+                        <div class="step-status" style="color: #6a1b9a;">✓ Complete</div>
+                        <div class="view-details"><a href="steps/step12.html" style="color: #6a1b9a;">View Details →</a></div>
                     </div>
 
                     <div class="step-card" onclick="window.location.href='steps/next_steps.html'" style="border-left-color: #9c27b0;">
