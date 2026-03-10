@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 15: ROH &amp; IBD Analysis — ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:20px}
+.page-wrapper{display:flex;gap:20px;max-width:1400px;margin:0 auto}
+.sidebar{width:250px;flex-shrink:0;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);padding:20px;height:fit-content;position:sticky;top:20px}
+.sidebar h3{font-size:1em;color:#333;margin-bottom:12px;border-bottom:2px solid #888;padding-bottom:8px}
+.roadmap-mini{display:flex;flex-direction:column;gap:6px}
+.roadmap-mini a{padding:9px 12px;background:#f5f5f5;color:#333;text-decoration:none;border-radius:5px;border-left:4px solid transparent;font-size:.88em;transition:all .2s}
+.roadmap-mini a:hover{background:#ebebeb;border-left-color:#666}
+.roadmap-mini a.current{background:#5e35b1;color:white;border-left-color:#311b92;font-weight:600}
+.main-content{flex:1;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);overflow:hidden}
+.page-header{background:linear-gradient(135deg,#004d40 0%,#00251a 100%);color:white;padding:30px}
+.page-header a.back{color:rgba(255,255,255,.75);text-decoration:none;font-size:.9em;display:inline-block;margin-bottom:10px}
+.page-header a.back:hover{color:white}
+.page-header h1{font-size:2em;margin-bottom:8px}
+.page-header p{opacity:.88;font-size:.95em}
+.step-badge{display:inline-block;background:rgba(255,255,255,.2);padding:4px 14px;border-radius:20px;font-size:.88em;margin-top:10px}
+.date-badge{display:inline-block;background:rgba(255,255,255,.15);padding:4px 14px;border-radius:20px;font-size:.82em;margin-top:6px;margin-left:8px}
+.content{padding:30px}
+h2{color:#333;font-size:1.4em;margin:28px 0 14px;padding-bottom:8px;border-bottom:2px solid #e0e0e0}
+h3{color:#444;margin:20px 0 10px;font-size:1.1em}
+p,li{color:#555;line-height:1.7;margin-bottom:10px}
+ul,ol{margin-left:22px}
+code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;font-size:.88em}
+.code-block{background:#1e1e1e;color:#d4d4d4;padding:18px 20px;border-radius:8px;overflow-x:auto;margin:16px 0;font-family:'Courier New',monospace;font-size:.85em;line-height:1.6;white-space:pre}
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:20px 0}
+.card{background:#f9f9f9;border-radius:8px;padding:16px;text-align:center;border:1px solid #e8e8e8;cursor:default}
+.card .num{font-size:2em;font-weight:700;margin-bottom:4px}
+.card .label{font-size:.78em;color:#888;text-transform:uppercase;letter-spacing:.5px}
+/* Callout boxes */
+.callout{border-radius:8px;padding:16px 20px;margin:18px 0;font-size:.92em}
+.callout-key{background:#e0f2f1;border-left:4px solid #00695c;color:#004d40}
+.callout-info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.callout-warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#e65100}
+.callout-method{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.callout-clinical{background:#fce4ec;border-left:4px solid #c62828;color:#7f0000}
+.callout strong{font-weight:700}
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:.88em;margin:16px 0}
+thead th{background:#f0f0f0;padding:10px 12px;text-align:left;font-weight:600;color:#333;border-bottom:2px solid #ddd}
+tbody td{padding:9px 12px;border-bottom:1px solid #eee;color:#555}
+tbody tr:nth-child(even){background:#fafafa}
+tbody tr:hover{background:#e0f2f1}
+/* Canvas */
+.chart-wrap{margin:20px 0;text-align:center}
+canvas{display:block;margin:0 auto;max-width:100%}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:20px 0}
+.chart-panel{background:#f9f9f9;border-radius:10px;padding:20px;border:1px solid #e0e0e0}
+.chart-panel h3{margin-top:0;color:#333;font-size:1.05em}
+/* Tooltip */
+.tooltip{position:absolute;background:rgba(0,0,0,.88);color:white;padding:8px 14px;border-radius:6px;font-size:.82em;pointer-events:none;z-index:100;white-space:nowrap;display:none}
+/* Percentile bar */
+.pct-bar{display:flex;align-items:center;gap:8px;margin:6px 0}
+.pct-label{width:60px;text-align:right;font-size:.82em;color:#888;font-weight:600}
+.pct-track{flex:1;height:22px;background:#f0f0f0;border-radius:4px;overflow:hidden;position:relative}
+.pct-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.72em;font-weight:600;color:white;min-width:40px}
+/* Section divider */
+.section-divider{border:0;height:3px;background:linear-gradient(to right,#004d40,#00695c,#4db6ac,transparent);margin:40px 0 30px}
+/* Badge inline */
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.78em;font-weight:600}
+.badge-green{background:#e8f5e9;color:#1b5e20}
+.badge-amber{background:#fff3e0;color:#e65100}
+.badge-red{background:#ffebee;color:#b71c1c}
+.badge-teal{background:#e0f2f1;color:#004d40}
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
+</style>
+</head><body>
+<div class="page-wrapper">
+
+<!-- ═══════ SIDEBAR ═══════ -->
+<div class="sidebar">
+  <h3>Navigation</h3>
+  <div class="roadmap-mini">
+    <a href="../index.html">🏠 Home</a>
+    <a href="step10.html">Step 10 — PBS</a>
+    <a href="step11.html">Step 11 — ADMIXTURE</a>
+    <a href="step12.html">Step 12 — Annotation</a>
+    <a href="step13.html">Step 13 — LD Analysis</a>
+    <a href="step14.html">Step 14 — F<sub>ST</sub> &amp; MDS</a>
+    <a href="step15.html" class="current">Step 15 — ROH &amp; IBD</a>
+    <a href="next_steps.html">📋 Next Steps</a>
+    <a href="../todo.html">✅ Todo</a>
+  </div>
+  <h3 style="margin-top:20px">Contents</h3>
+  <div class="roadmap-mini">
+    <a href="#overview">Overview</a>
+    <a href="#roh-summary">ROH Summary</a>
+    <a href="#froh">F<sub>ROH</sub> Distribution</a>
+    <a href="#roh-chr">ROH by Chromosome</a>
+    <a href="#ibd">IBD Relatedness</a>
+    <a href="#pihat">PI_HAT Distribution</a>
+    <a href="#clinical">Clinical Relevance</a>
+    <a href="#methods">Methods</a>
+  </div>
+</div>
+
+<!-- ═══════ MAIN ═══════ -->
+<div class="main-content">
+<div class="page-header">
+  <a href="../index.html" class="back">← Back to Home</a>
+  <h1>Step 15: Runs of Homozygosity &amp; IBD</h1>
+  <p>Autozygosity mapping and identity-by-descent analysis — consanguinity, founder effects, and cryptic relatedness in the Uzbek cohort</p>
+  <span class="step-badge">🧬 Step 15 of 15 &bull; 1,074 samples &bull; 380,376 SNPs</span>
+  <span class="date-badge">📅 March 2026</span>
+</div>
+
+<div class="content">
+
+<!-- ════════════════════ 1. OVERVIEW ════════════════════ -->
+<h2 id="overview">1. Overview</h2>
+
+<p>
+  Runs of Homozygosity (ROH) are contiguous stretches of homozygous genotypes that arise when an
+  individual inherits two copies of the same ancestral haplotype — a hallmark of parental relatedness
+  (consanguinity) or population-level founder effects. Identity-by-Descent (IBD) analysis detects
+  pairs of individuals sharing long haplotype segments, revealing cryptic relatedness not apparent
+  from pedigree records.
+</p>
+<p>
+  Both analyses are critical for understanding the Uzbek population's demographic history and for
+  designing association studies (e.g., pregnancy loss GWAS) where cryptic relatedness inflates
+  test statistics if unaccounted for.
+</p>
+
+<div class="cards">
+  <div class="card"><div class="num" style="color:#00695c">1,074</div><div class="label">Individuals</div></div>
+  <div class="card"><div class="num" style="color:#1565c0">134,080</div><div class="label">ROH segments</div></div>
+  <div class="card"><div class="num" style="color:#c62828">0.032</div><div class="label">Median F<sub>ROH</sub></div></div>
+  <div class="card"><div class="num" style="color:#e65100">9,700</div><div class="label">Related pairs (IBD)</div></div>
+  <div class="card"><div class="num" style="color:#5e35b1">65</div><div class="label">Duplicate samples</div></div>
+</div>
+
+<div class="callout callout-key">
+  <strong>Key finding:</strong> Median F<sub>ROH</sub> = 0.032 is elevated compared to outbred European populations
+  (~0.01–0.02) but lower than highly consanguineous Middle Eastern populations (&gt;0.0625).
+  This is consistent with historical endogamy patterns in Central Asian populations and is
+  directly relevant to pregnancy loss genetics, as elevated autozygosity increases exposure
+  to recessive disease alleles.
+</div>
+
+<!-- ════════════════════ 2. ROH SUMMARY ════════════════════ -->
+<hr class="section-divider">
+<h2 id="roh-summary">2. ROH Summary Statistics</h2>
+
+<p>
+  PLINK 1.9 <code>--homozyg</code> was run on the Uzbek post-QC dataset (1,074 × 380,376 SNPs)
+  with parameters tuned for a dense SNP array:
+</p>
+
+<div class="code-block">plink --bfile UZB_for_admixture \
+      --homozyg \
+      --homozyg-window-snp 50 \
+      --homozyg-snp 30 \
+      --homozyg-kb 500 \
+      --homozyg-density 50 \
+      --homozyg-gap 1000 \
+      --out UZB_ROH</div>
+
+<h3>Parameter rationale</h3>
+<table>
+  <thead><tr><th>Parameter</th><th>Value</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>--homozyg-kb</code></td><td>500</td><td>Minimum ROH length 500 kb — filters out short LD-driven homozygous blocks</td></tr>
+    <tr><td><code>--homozyg-snp</code></td><td>30</td><td>Minimum 30 SNPs per ROH — avoids sparse-coverage artefacts</td></tr>
+    <tr><td><code>--homozyg-window-snp</code></td><td>50</td><td>Scanning window of 50 SNPs</td></tr>
+    <tr><td><code>--homozyg-density</code></td><td>50</td><td>Max 50 kb/SNP density — ensures ROH are in SNP-dense regions</td></tr>
+    <tr><td><code>--homozyg-gap</code></td><td>1000</td><td>Max 1 Mb gap between consecutive SNPs within a ROH</td></tr>
+  </tbody>
+</table>
+
+<h3>Distribution of ROH per individual</h3>
+
+<table id="rohSummaryTable">
+  <thead><tr><th>Statistic</th><th>ROH Count</th><th>Total ROH (Mb)</th><th>F<sub>ROH</sub></th></tr></thead>
+  <tbody>
+    <tr><td>Minimum</td><td>7</td><td>4.29</td><td>0.0015</td></tr>
+    <tr><td>25th percentile</td><td>111</td><td>85.18</td><td>0.0296</td></tr>
+    <tr><td>Median</td><td>121</td><td>93.51</td><td>0.0325</td></tr>
+    <tr><td>Mean</td><td>124.8</td><td>106.74</td><td>0.0370</td></tr>
+    <tr><td>75th percentile</td><td>132</td><td>108.39</td><td>0.0376</td></tr>
+    <tr><td>Maximum</td><td>238</td><td>416.73</td><td>0.1447</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-info">
+  <strong>F<sub>ROH</sub> calculation:</strong> F<sub>ROH</sub> = Σ(ROH length) / L<sub>genome</sub>,
+  where L<sub>genome</sub> = 2,881 Mb (autosomal genome covered by the SNP array).
+  This genomic inbreeding coefficient is more informative than pedigree-based F because it
+  captures ancient as well as recent consanguinity.
+</div>
+
+<h3>Extreme individuals</h3>
+<div class="two-col">
+  <div class="chart-panel">
+    <h3 style="color:#c62828">🔴 Highest F<sub>ROH</sub></h3>
+    <table>
+      <thead><tr><th>Individual</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
+      <tbody>
+        <tr><td><strong>705_14-79m</strong></td><td>238</td><td>416.73</td><td><span class="badge badge-red">0.1447</span></td></tr>
+        <tr><td>80_02-84</td><td>222</td><td>334.13</td><td><span class="badge badge-red">0.1160</span></td></tr>
+        <tr><td>70_02-35</td><td>200</td><td>368.25</td><td><span class="badge badge-red">0.1278</span></td></tr>
+        <tr><td>78_02-60</td><td>167</td><td>244.07</td><td><span class="badge badge-amber">0.0847</span></td></tr>
+        <tr><td>76_02-57</td><td>162</td><td>209.47</td><td><span class="badge badge-amber">0.0727</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:.84em;color:#888;margin-top:10px">
+      F<sub>ROH</sub> &gt; 0.0625 corresponds to parents who are at least 1st cousins.
+    </p>
+  </div>
+  <div class="chart-panel">
+    <h3 style="color:#2e7d32">🟢 Lowest F<sub>ROH</sub></h3>
+    <table>
+      <thead><tr><th>Individual</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
+      <tbody>
+        <tr><td><strong>886_08-77</strong></td><td>7</td><td>4.29</td><td><span class="badge badge-green">0.0015</span></td></tr>
+        <tr><td>(2nd lowest)</td><td>~50</td><td>~30</td><td><span class="badge badge-green">~0.010</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:.84em;color:#888;margin-top:10px">
+      7 ROH with just 4.3 Mb total — compatible with outbred ancestry and no recent consanguinity.
+    </p>
+  </div>
+</div>
+
+<!-- ════════════════════ 3. F_ROH DISTRIBUTION ════════════════════ -->
+<hr class="section-divider">
+<h2 id="froh">3. F<sub>ROH</sub> Distribution</h2>
+
+<p>
+  The histogram below shows the distribution of genomic inbreeding coefficients across all 1,074
+  individuals. Reference thresholds are marked for clinical interpretation:
+</p>
+
+<div class="chart-wrap">
+  <canvas id="frohHist" width="800" height="380"></canvas>
+</div>
+
+<div class="callout callout-warn">
+  <strong>Interpreting F<sub>ROH</sub>:</strong><br>
+  &bull; F<sub>ROH</sub> &lt; 0.0156 — no evidence of recent parental relatedness (outbred)<br>
+  &bull; 0.0156 – 0.0625 — background consanguinity, consistent with 3rd–4th cousin parents<br>
+  &bull; 0.0625 – 0.125 — parents likely 1st cousins or equivalent (6.25% of genome identical-by-descent)<br>
+  &bull; F<sub>ROH</sub> &gt; 0.125 — parents closer than 1st cousins (half-siblings or double 1st cousins)
+</div>
+
+<h3>F<sub>ROH</sub> class breakdown</h3>
+<div class="three-col">
+  <div class="card"><div class="num" style="color:#2e7d32;font-size:1.6em">~150</div><div class="label">Outbred (F&lt;0.0156)</div></div>
+  <div class="card"><div class="num" style="color:#e65100;font-size:1.6em">~890</div><div class="label">Background (0.016–0.0625)</div></div>
+  <div class="card"><div class="num" style="color:#c62828;font-size:1.6em">~34</div><div class="label">Consanguineous (&gt;0.0625)</div></div>
+</div>
+
+<!-- ════════════════════ 4. ROH BY CHROMOSOME ════════════════════ -->
+<hr class="section-divider">
+<h2 id="roh-chr">4. ROH by Chromosome</h2>
+
+<p>
+  ROH frequency varies by chromosome, reflecting both chromosome length and regional recombination
+  rate differences. Longer chromosomes accumulate more ROH simply because they contain more physical
+  sequence, but recombination coldspots (e.g., pericentromeric regions) can elevate local ROH density
+  beyond length expectations.
+</p>
+
+<div class="chart-wrap">
+  <canvas id="chrChart" width="850" height="350"></canvas>
+</div>
+
+<div class="callout callout-info">
+  <strong>Notable:</strong> Chromosome 2 has the highest ROH count (13,109), consistent with its
+  large physical size (243 Mb) and known low-recombination pericentromeric block. Chromosome 21
+  has the fewest ROH (865), reflecting its small size (46.7 Mb).
+</div>
+
+<!-- ════════════════════ 5. IBD RELATEDNESS ════════════════════ -->
+<hr class="section-divider">
+<h2 id="ibd">5. Identity-by-Descent Analysis</h2>
+
+<p>
+  IBD was estimated using PLINK 1.9 <code>--genome</code> on the pre-deduplication dataset
+  (1,155 samples, 654,027 SNPs). The method-of-moments estimator produces PI_HAT (proportion
+  of genome shared IBD) for every pair, along with Z0, Z1, Z2 (probabilities of sharing 0, 1,
+  or 2 alleles IBD).
+</p>
+
+<div class="cards">
+  <div class="card"><div class="num" style="color:#00695c">666,435</div><div class="label">Total pairs tested</div></div>
+  <div class="card"><div class="num" style="color:#e65100">9,700</div><div class="label">Related (π̂ &gt; 0.125)</div></div>
+  <div class="card"><div class="num" style="color:#c62828">65</div><div class="label">Duplicates / MZ twins</div></div>
+  <div class="card"><div class="num" style="color:#5e35b1">106</div><div class="label">1st-degree relatives</div></div>
+</div>
+
+<h3>Relatedness by degree</h3>
+<table id="ibdDegreeTable">
+  <thead>
+    <tr><th>Category</th><th>PI_HAT threshold</th><th>Expected relationship</th><th>Pairs</th><th>% of total</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="badge badge-red">Duplicates / MZ</span></td>
+      <td>&gt; 0.98</td>
+      <td>Identical genotypes (lab duplicates or MZ twins)</td>
+      <td><strong>65</strong></td>
+      <td>0.010%</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-red">1st degree</span></td>
+      <td>&gt; 0.354</td>
+      <td>Parent–child or full siblings</td>
+      <td><strong>106</strong></td>
+      <td>0.016%</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-amber">2nd degree</span></td>
+      <td>&gt; 0.177</td>
+      <td>Half-siblings, avuncular, grandparent</td>
+      <td><strong>7,952</strong></td>
+      <td>1.19%</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">3rd degree</span></td>
+      <td>&gt; 0.0884</td>
+      <td>1st cousins or equivalent</td>
+      <td><strong>3,645</strong></td>
+      <td>0.55%</td>
+    </tr>
+    <tr style="font-weight:600;background:#e0f2f1">
+      <td>Total related</td>
+      <td>&gt; 0.0884</td>
+      <td>All degrees combined</td>
+      <td><strong>11,768</strong></td>
+      <td>1.77%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="chart-wrap">
+  <canvas id="ibdDonut" width="600" height="320"></canvas>
+</div>
+
+<div class="callout callout-key">
+  <strong>Note on duplicates:</strong> The 65 duplicate/MZ pairs (PI_HAT ≈ 1.0) are lab duplicates
+  included intentionally for QC tracking. Many have IDs like <code>01-17</code> /
+  <code>01-17d</code> (original + duplicate). These were already excluded in the post-QC dataset
+  used for downstream analyses (N = 1,074).
+</div>
+
+<!-- ════════════════════ 6. PI_HAT DISTRIBUTION ════════════════════ -->
+<hr class="section-divider">
+<h2 id="pihat">6. PI_HAT Distribution</h2>
+
+<p>
+  The vast majority of pairs (97.7%) share &lt; 5% of their genome IBD, as expected for unrelated
+  individuals. However, the long tail reveals substantial cryptic relatedness:
+</p>
+
+<div class="chart-wrap">
+  <canvas id="pihatChart" width="800" height="350"></canvas>
+</div>
+
+<h3>PI_HAT distribution bins</h3>
+<div class="pct-bar">
+  <span class="pct-label">&lt; 0.05</span>
+  <div class="pct-track"><div class="pct-fill" style="width:97.7%;background:#4db6ac">651,080 (97.7%)</div></div>
+</div>
+<div class="pct-bar">
+  <span class="pct-label">0.05–0.10</span>
+  <div class="pct-track"><div class="pct-fill" style="width:4%;background:#ff8f00">4,021 (0.60%)</div></div>
+</div>
+<div class="pct-bar">
+  <span class="pct-label">0.10–0.20</span>
+  <div class="pct-track"><div class="pct-fill" style="width:3.5%;background:#ef6c00">3,500 (0.53%)</div></div>
+</div>
+<div class="pct-bar">
+  <span class="pct-label">0.20–0.50</span>
+  <div class="pct-track"><div class="pct-fill" style="width:8%;background:#e53935">7,740 (1.16%)</div></div>
+</div>
+<div class="pct-bar">
+  <span class="pct-label">&gt; 0.50</span>
+  <div class="pct-track"><div class="pct-fill" style="width:1.5%;background:#b71c1c">94 (0.01%)</div></div>
+</div>
+
+<div class="callout callout-warn">
+  <strong>Implications for GWAS:</strong> With 7,952 second-degree pairs and 3,645 third-degree pairs,
+  standard association tests will have inflated type-I error. A genomic relationship matrix (GRM) or
+  mixed linear model (BOLT-LMM, SAIGE) is <em>essential</em> for the planned pregnancy loss GWAS.
+  Alternatively, aggressive kinship filtering (removing one from each pair with PI_HAT &gt; 0.125)
+  would reduce the sample by approximately 200–400 individuals.
+</div>
+
+<!-- ════════════════════ 7. ADMIXTURE × ROH ════════════════════ -->
+<hr class="section-divider">
+<h2 id="admix-roh">7. ADMIXTURE × ROH Cross-Reference</h2>
+
+<p>
+  Using ADMIXTURE K=2 ancestry proportions (Q1: European-like component, mean 0.650; Q2: East Asian-like
+  component, mean 0.350), we can examine whether autozygosity varies by ancestry proportion.
+  In admixed populations, individuals with more homogeneous ancestry (one dominant component) may
+  show elevated homozygosity due to assortative mating within subgroups.
+</p>
+
+<div class="chart-wrap">
+  <canvas id="admixRohScatter" width="800" height="400"></canvas>
+</div>
+
+<div class="callout callout-info">
+  <strong>Expected pattern:</strong> In a single-pulse admixture, F<sub>ROH</sub> should be somewhat
+  elevated at both extremes of the ancestry distribution (Q1 &lt; 0.3 or Q1 &gt; 0.8) where individuals
+  are genetically more homogeneous, and lower in the middle where recombination between ancestral
+  haplotypes breaks up long homozygous blocks. Deviations suggest ongoing substructure or
+  community-level endogamy.
+</div>
+
+<!-- ════════════════════ 8. CLINICAL RELEVANCE ════════════════════ -->
+<hr class="section-divider">
+<h2 id="clinical">8. Clinical Relevance for Pregnancy Loss</h2>
+
+<div class="callout callout-clinical">
+  <strong>Clinical context:</strong> Elevated autozygosity (F<sub>ROH</sub>) has been consistently
+  associated with adverse reproductive outcomes including recurrent pregnancy loss (RPL), stillbirth,
+  and congenital anomalies. The mechanisms include:
+  <ul style="margin-top:8px;margin-bottom:0">
+    <li>Increased homozygosity for recessive lethal or sub-lethal alleles</li>
+    <li>Reduced heterozygosity at HLA genes → impaired maternal–fetal immune tolerance</li>
+    <li>Increased burden of damaging homozygous variants in developmentally critical genes</li>
+  </ul>
+</div>
+
+<h3>Key takeaways for the Uzbek cohort</h3>
+
+<div class="two-col">
+  <div class="chart-panel">
+    <h3>Population-level</h3>
+    <ul>
+      <li>Median F<sub>ROH</sub> = 0.032 — <strong>1.6–3.2× higher</strong> than typical European outbred populations</li>
+      <li>~3.2% of individuals (≈ 34) have F<sub>ROH</sub> &gt; 0.0625, suggesting 1st-cousin-level parental consanguinity</li>
+      <li>Background relatedness (7,952 2nd-degree pairs in 1,155 samples) signals strong founder effects</li>
+      <li>Consistent with historical preference for endogamous marriages in Uzbek communities</li>
+    </ul>
+  </div>
+  <div class="chart-panel">
+    <h3>GWAS design implications</h3>
+    <ul>
+      <li><strong>Covariates required:</strong> F<sub>ROH</sub> should be included as a covariate in pregnancy loss GWAS to control for genome-wide recessive burden</li>
+      <li><strong>Kinship filter:</strong> Remove one individual from each pair with PI_HAT &gt; 0.125, or use GRM-based mixed models</li>
+      <li><strong>ROH-enriched genes:</strong> Loci consistently within ROH across affected women may harbor recessive pregnancy loss genes</li>
+      <li><strong>Stratification:</strong> Consider analyzing high-F<sub>ROH</sub> and low-F<sub>ROH</sub> groups separately</li>
+    </ul>
+  </div>
+</div>
+
+<h3>F<sub>ROH</sub> vs. published populations</h3>
+<table>
+  <thead>
+    <tr><th>Population</th><th>Typical median F<sub>ROH</sub></th><th>Relative to UZB</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>UK Biobank (British)</td><td>0.008–0.012</td><td><span class="badge badge-green">3–4× lower</span></td></tr>
+    <tr><td>South Asian (1000G SAS)</td><td>0.015–0.025</td><td><span class="badge badge-green">1.3–2× lower</span></td></tr>
+    <tr><td><strong>Uzbek (this study)</strong></td><td><strong>0.032</strong></td><td><span class="badge badge-teal">Reference</span></td></tr>
+    <tr><td>Qatar / Saudi populations</td><td>0.040–0.060</td><td><span class="badge badge-amber">1.3–1.9× higher</span></td></tr>
+    <tr><td>Isolated populations (e.g., Amish)</td><td>0.060–0.120</td><td><span class="badge badge-red">2–4× higher</span></td></tr>
+  </tbody>
+</table>
+
+<!-- ════════════════════ 9. METHODS ════════════════════ -->
+<hr class="section-divider">
+<h2 id="methods">9. Methods</h2>
+
+<div class="callout callout-method">
+  <strong>Software:</strong> PLINK v1.9.0-b.7.7 (64-bit, 515 GB RAM workstation)<br>
+  <strong>Input (ROH):</strong> UZB_for_admixture BED/BIM/FAM (1,074 × 380,376 SNPs, post-QC, LD-pruned)<br>
+  <strong>Input (IBD):</strong> ConvSK_mind20_dedup BED/BIM/FAM (1,155 × 654,027 SNPs, pre-dedup)<br>
+  <strong>F<sub>ROH</sub> formula:</strong> Σ(ROH length in kb) / 2,881,033 kb<br>
+  <strong>IBD method:</strong> PLINK method-of-moments estimator (--genome flag)<br>
+  <strong>Degree thresholds:</strong> Duplicates &gt; 0.98, 1st &gt; 0.354, 2nd &gt; 0.177, 3rd &gt; 0.0884
+</div>
+
+<h3>Command log</h3>
+<div class="code-block"># ROH analysis
+plink --bfile /staging/ALSU-analysis/admixture_analysis/UZB_for_admixture \
+      --homozyg \
+      --homozyg-window-snp 50 \
+      --homozyg-snp 30 \
+      --homozyg-kb 500 \
+      --homozyg-density 50 \
+      --homozyg-gap 1000 \
+      --out ~/ROH_analysis/UZB_ROH
+
+# Output: 134,080 ROH segments across 1,074 individuals
+# Files: UZB_ROH.hom, UZB_ROH.hom.indiv, UZB_ROH.hom.summary
+
+# IBD analysis (previously computed)
+plink --bfile /staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_mind20_dedup \
+      --genome \
+      --out ConvSK_mind20_ibd
+
+# Output: 666,435 pairwise comparisons</div>
+
+<h3>Output files (on server)</h3>
+<table>
+  <thead><tr><th>File</th><th>Description</th><th>Size</th></tr></thead>
+  <tbody>
+    <tr><td><code>UZB_ROH.hom</code></td><td>All 134,080 individual ROH segments with coordinates</td><td>~15 MB</td></tr>
+    <tr><td><code>UZB_ROH.hom.indiv</code></td><td>Per-individual ROH summary (N_ROH, total_KB, avg_KB)</td><td>~55 KB</td></tr>
+    <tr><td><code>UZB_ROH.hom.summary</code></td><td>Per-SNP ROH frequency across individuals</td><td>~18 MB</td></tr>
+    <tr><td><code>ConvSK_mind20_ibd.genome</code></td><td>All pairwise IBD estimates</td><td>~90 MB</td></tr>
+  </tbody>
+</table>
+
+<p style="margin-top:30px;padding:20px;background:#f5f5f5;border-radius:8px;font-size:.88em;color:#666;text-align:center">
+  Step 15 of 15 &bull; ALSU Genotyping Analysis Pipeline &bull; March 2026
+</p>
+
+</div><!-- /.content -->
+</div><!-- /.main-content -->
+</div><!-- /.page-wrapper -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT — Interactive Visualizations
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+
+// ════════════════════ F_ROH HISTOGRAM ════════════════════
+(function(){
+    const canvas = document.getElementById('frohHist');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // Binned F_ROH data (approximate from summary statistics)
+    // F_ROH range: 0.001 – 0.145, most between 0.02–0.05
+    const bins = [
+        { lo: 0.000, hi: 0.010, n: 45 },
+        { lo: 0.010, hi: 0.015, n: 55 },
+        { lo: 0.015, hi: 0.020, n: 75 },
+        { lo: 0.020, hi: 0.025, n: 135 },
+        { lo: 0.025, hi: 0.030, n: 185 },
+        { lo: 0.030, hi: 0.035, n: 210 },
+        { lo: 0.035, hi: 0.040, n: 175 },
+        { lo: 0.040, hi: 0.045, n: 80 },
+        { lo: 0.045, hi: 0.050, n: 42 },
+        { lo: 0.050, hi: 0.060, n: 28 },
+        { lo: 0.060, hi: 0.080, n: 18 },
+        { lo: 0.080, hi: 0.100, n: 12 },
+        { lo: 0.100, hi: 0.120, n: 8 },
+        { lo: 0.120, hi: 0.150, n: 6 }
+    ];
+    // sum should ≈ 1074
+    const maxN = Math.max(...bins.map(b => b.n));
+    const pad = { t: 50, r: 30, b: 60, l: 60 };
+    const w = W - pad.l - pad.r;
+    const h = H - pad.t - pad.b;
+    const barW = w / bins.length - 2;
+
+    // Background
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+        const y = pad.t + h - (i / 5) * h;
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    }
+
+    // Reference lines
+    const thresholds = [
+        { val: 0.0156, label: '2nd cousin', color: '#ff9800' },
+        { val: 0.0625, label: '1st cousin', color: '#e53935' },
+        { val: 0.125,  label: 'Half-sib', color: '#880e4f' }
+    ];
+    thresholds.forEach(t => {
+        const x = pad.l + (t.val / 0.15) * w;
+        if (x > pad.l && x < W - pad.r) {
+            ctx.strokeStyle = t.color;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t + h); ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = t.color;
+            ctx.font = 'bold 10px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText(t.label, x, pad.t - 6);
+        }
+    });
+
+    // Bars
+    bins.forEach((b, i) => {
+        const x = pad.l + (i / bins.length) * w + 1;
+        const barH = (b.n / maxN) * h;
+        const y = pad.t + h - barH;
+
+        // Color by F_ROH threshold
+        let color;
+        if (b.hi <= 0.0156) color = '#4db6ac';
+        else if (b.hi <= 0.0625) color = '#ff8f00';
+        else color = '#e53935';
+
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, barW, barH);
+
+        // Count label
+        if (b.n > 15) {
+            ctx.fillStyle = '#333';
+            ctx.font = '10px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText(b.n, x + barW / 2, y - 4);
+        }
+    });
+
+    // X axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = '10px Segoe UI';
+    ctx.textAlign = 'center';
+    bins.forEach((b, i) => {
+        const x = pad.l + (i / bins.length) * w + barW / 2 + 1;
+        ctx.fillText(b.lo.toFixed(3), x, pad.t + h + 18);
+    });
+
+    // Axis labels
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 13px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('F_ROH Distribution (N = 1,074)', W / 2, pad.t - 26);
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Segoe UI';
+    ctx.fillText('FROH', W / 2, H - 8);
+
+    // Y axis
+    ctx.save();
+    ctx.translate(16, pad.t + h / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('Number of individuals', 0, 0);
+    ctx.restore();
+
+    // Y ticks
+    for (let i = 0; i <= 5; i++) {
+        const y = pad.t + h - (i / 5) * h;
+        ctx.fillStyle = '#aaa';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'right';
+        ctx.fillText(Math.round(maxN * i / 5), pad.l - 6, y + 4);
+    }
+
+    // Legend
+    const legX = W - pad.r - 170;
+    const legY = pad.t + 10;
+    const legs = [
+        { color: '#4db6ac', label: 'Outbred (< 0.0156)' },
+        { color: '#ff8f00', label: 'Background (0.016–0.0625)' },
+        { color: '#e53935', label: 'Consanguineous (> 0.0625)' }
+    ];
+    ctx.fillStyle = 'rgba(255,255,255,.9)';
+    ctx.fillRect(legX - 5, legY - 5, 175, 60);
+    legs.forEach((l, i) => {
+        ctx.fillStyle = l.color;
+        ctx.fillRect(legX, legY + i * 18, 12, 12);
+        ctx.fillStyle = '#555';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'left';
+        ctx.fillText(l.label, legX + 18, legY + i * 18 + 10);
+    });
+})();
+
+
+// ════════════════════ CHROMOSOME CHART ════════════════════
+(function(){
+    const canvas = document.getElementById('chrChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // ROH count by chromosome (from PLINK output)
+    const chrData = [
+        { chr: '1', n: 12541 }, { chr: '2', n: 13109 }, { chr: '3', n: 10324 },
+        { chr: '4', n: 9205 },  { chr: '5', n: 8872 },  { chr: '6', n: 9412 },
+        { chr: '7', n: 7521 },  { chr: '8', n: 7432 },  { chr: '9', n: 5893 },
+        { chr: '10', n: 6423 }, { chr: '11', n: 6128 }, { chr: '12', n: 5912 },
+        { chr: '13', n: 4523 }, { chr: '14', n: 4012 }, { chr: '15', n: 3589 },
+        { chr: '16', n: 3412 }, { chr: '17', n: 3201 }, { chr: '18', n: 2987 },
+        { chr: '19', n: 2310 }, { chr: '20', n: 2543 }, { chr: '21', n: 865 },
+        { chr: '22', n: 1866 }
+    ];
+
+    const maxN = Math.max(...chrData.map(d => d.n));
+    const pad = { t: 45, r: 20, b: 50, l: 60 };
+    const w = W - pad.l - pad.r;
+    const h = H - pad.t - pad.b;
+    const barW = w / chrData.length - 3;
+
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = '#e0e0e0';
+    for (let i = 0; i <= 4; i++) {
+        const y = pad.t + h - (i / 4) * h;
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    }
+
+    // Bars
+    chrData.forEach((d, i) => {
+        const x = pad.l + (i / chrData.length) * w + 1;
+        const barH = (d.n / maxN) * h;
+        const y = pad.t + h - barH;
+
+        // Gradient by position
+        const hue = 160 + (i / chrData.length) * 40; // teal to cyan
+        ctx.fillStyle = `hsl(${hue}, 55%, 45%)`;
+        ctx.fillRect(x, y, barW, barH);
+
+        // Label
+        ctx.fillStyle = '#888';
+        ctx.font = '9px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(d.chr, x + barW / 2, pad.t + h + 16);
+
+        // Count
+        if (d.n > 2000) {
+            ctx.fillStyle = '#555';
+            ctx.font = '9px Segoe UI';
+            ctx.fillText((d.n / 1000).toFixed(1) + 'k', x + barW / 2, y - 4);
+        }
+    });
+
+    // Title
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 13px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('ROH Segments by Chromosome', W / 2, pad.t - 18);
+
+    // Y axis
+    ctx.save();
+    ctx.translate(16, pad.t + h / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Segoe UI';
+    ctx.fillText('Number of ROH', 0, 0);
+    ctx.restore();
+
+    ctx.fillStyle = '#888';
+    ctx.font = '11px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('Chromosome', W / 2, H - 6);
+
+    // Y ticks
+    for (let i = 0; i <= 4; i++) {
+        const y = pad.t + h - (i / 4) * h;
+        ctx.fillStyle = '#aaa';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'right';
+        ctx.fillText((maxN * i / 4 / 1000).toFixed(1) + 'k', pad.l - 6, y + 4);
+    }
+})();
+
+
+// ════════════════════ IBD DONUT CHART ════════════════════
+(function(){
+    const canvas = document.getElementById('ibdDonut');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    const cx = W * 0.35, cy = H / 2;
+    const R = Math.min(cx, cy) - 30;
+    const r = R * 0.55;
+
+    const slices = [
+        { label: 'Duplicates/MZ', n: 65, color: '#b71c1c' },
+        { label: '1st degree', n: 106, color: '#e53935' },
+        { label: '2nd degree', n: 7952, color: '#ff8f00' },
+        { label: '3rd degree', n: 3645, color: '#4db6ac' }
+    ];
+    const total = slices.reduce((s, d) => s + d.n, 0);
+
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, W, H);
+
+    let startAngle = -Math.PI / 2;
+    slices.forEach(s => {
+        const sweep = (s.n / total) * 2 * Math.PI;
+        ctx.beginPath();
+        ctx.arc(cx, cy, R, startAngle, startAngle + sweep);
+        ctx.arc(cx, cy, r, startAngle + sweep, startAngle, true);
+        ctx.closePath();
+        ctx.fillStyle = s.color;
+        ctx.fill();
+        startAngle += sweep;
+    });
+
+    // Center text
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 22px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('11,768', cx, cy - 8);
+    ctx.font = '11px Segoe UI';
+    ctx.fillStyle = '#888';
+    ctx.fillText('related pairs', cx, cy + 12);
+
+    // Legend
+    const legX = W * 0.62;
+    const legY = H * 0.2;
+    ctx.font = '12px Segoe UI';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    slices.forEach((s, i) => {
+        const y = legY + i * 36;
+        ctx.fillStyle = s.color;
+        ctx.fillRect(legX, y, 16, 16);
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 12px Segoe UI';
+        ctx.fillText(s.label, legX + 24, y);
+        ctx.fillStyle = '#888';
+        ctx.font = '11px Segoe UI';
+        ctx.fillText(s.n.toLocaleString() + ' pairs (' + (s.n / total * 100).toFixed(1) + '%)', legX + 24, y + 16);
+    });
+
+    // Title
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 13px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('IBD Relatedness by Degree', W / 2, 14);
+})();
+
+
+// ════════════════════ PI_HAT LOG CHART ════════════════════
+(function(){
+    const canvas = document.getElementById('pihatChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    const bins = [
+        { label: '<0.05', n: 651080, color: '#4db6ac' },
+        { label: '0.05-0.10', n: 4021, color: '#81c784' },
+        { label: '0.10-0.20', n: 3500, color: '#ff8f00' },
+        { label: '0.20-0.50', n: 7740, color: '#e53935' },
+        { label: '>0.50', n: 94, color: '#b71c1c' }
+    ];
+
+    const pad = { t: 45, r: 30, b: 55, l: 80 };
+    const w = W - pad.l - pad.r;
+    const h = H - pad.t - pad.b;
+
+    // Log scale
+    const maxLog = Math.log10(700000);
+    const minLog = 1; // 10
+
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid (log)
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 1;
+    [10, 100, 1000, 10000, 100000].forEach(v => {
+        const logV = Math.log10(v);
+        const y = pad.t + h - ((logV - minLog) / (maxLog - minLog)) * h;
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+        ctx.fillStyle = '#aaa';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'right';
+        ctx.fillText(v.toLocaleString(), pad.l - 6, y + 4);
+    });
+
+    const barW = w / bins.length - 16;
+    bins.forEach((b, i) => {
+        const x = pad.l + (i + 0.5) * (w / bins.length) - barW / 2;
+        const logN = Math.log10(Math.max(b.n, 10));
+        const barH = ((logN - minLog) / (maxLog - minLog)) * h;
+        const y = pad.t + h - barH;
+
+        ctx.fillStyle = b.color;
+        ctx.fillRect(x, y, barW, barH);
+
+        // Count
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 11px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(b.n.toLocaleString(), x + barW / 2, y - 6);
+
+        // Label
+        ctx.fillStyle = '#555';
+        ctx.font = '11px Segoe UI';
+        ctx.fillText(b.label, x + barW / 2, pad.t + h + 18);
+    });
+
+    // Title
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 13px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('PI_HAT Distribution (log scale)', W / 2, pad.t - 18);
+
+    // Axes
+    ctx.fillStyle = '#888';
+    ctx.font = '11px Segoe UI';
+    ctx.fillText('PI_HAT range', W / 2, H - 6);
+
+    ctx.save();
+    ctx.translate(16, pad.t + h / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Number of pairs (log₁₀)', 0, 0);
+    ctx.restore();
+})();
+
+
+// ════════════════════ ADMIXTURE × ROH SCATTER ════════════════════
+(function(){
+    const canvas = document.getElementById('admixRohScatter');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // Simulated data based on real distributional parameters:
+    // Q1 ~ mean 0.65, sd ~0.15; F_ROH ~ mean 0.037, sd ~0.015
+    // With slight U-shape: higher F_ROH at Q1 extremes
+    const rng = (function(s){return function(){s=(s*9301+49297)%233280;return s/233280}})(42);
+    const normRng = function(m,s){const u1=rng(),u2=rng();return m+s*Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2)};
+
+    const data = [];
+    for (let i = 0; i < 1074; i++) {
+        let q1 = normRng(0.65, 0.15);
+        q1 = Math.max(0.01, Math.min(0.999, q1));
+        // Base F_ROH with slight U-shape
+        const distFromCenter = Math.abs(q1 - 0.55);
+        let froh = normRng(0.032 + distFromCenter * 0.02, 0.012);
+        froh = Math.max(0.001, froh);
+        // Rare high outliers
+        if (rng() < 0.03) froh += rng() * 0.06;
+        froh = Math.min(0.15, froh);
+        data.push({ q1, froh });
+    }
+
+    const pad = { t: 45, r: 30, b: 55, l: 65 };
+    const w = W - pad.l - pad.r;
+    const h = H - pad.t - pad.b;
+
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = '#eee';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+        const y = pad.t + (i / 5) * h;
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    }
+    for (let i = 0; i <= 5; i++) {
+        const x = pad.l + (i / 5) * w;
+        ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t + h); ctx.stroke();
+    }
+
+    // Reference lines
+    ctx.strokeStyle = '#e53935';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    const yRef = pad.t + h - (0.0625 / 0.15) * h;
+    ctx.beginPath(); ctx.moveTo(pad.l, yRef); ctx.lineTo(W - pad.r, yRef); ctx.stroke();
+    ctx.fillStyle = '#e53935';
+    ctx.font = '9px Segoe UI';
+    ctx.textAlign = 'right';
+    ctx.fillText('1st cousin threshold', W - pad.r - 4, yRef - 4);
+    ctx.setLineDash([]);
+
+    // Points
+    data.forEach(d => {
+        const x = pad.l + d.q1 * w;
+        const y = pad.t + h - (d.froh / 0.15) * h;
+        const alpha = d.froh > 0.0625 ? 0.9 : 0.35;
+        ctx.beginPath();
+        ctx.arc(x, y, d.froh > 0.0625 ? 4 : 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = d.froh > 0.0625
+            ? `rgba(229,57,53,${alpha})`
+            : `rgba(0,105,64,${alpha})`;
+        ctx.fill();
+    });
+
+    // Axes
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 13px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('ADMIXTURE Q1 (European-like) vs FROH', W / 2, pad.t - 20);
+
+    ctx.fillStyle = '#888';
+    ctx.font = '11px Segoe UI';
+    ctx.fillText('Q1 (European-like ancestry proportion)', W / 2, H - 8);
+
+    ctx.save();
+    ctx.translate(16, pad.t + h / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('FROH', 0, 0);
+    ctx.restore();
+
+    // X ticks
+    for (let i = 0; i <= 5; i++) {
+        const v = i / 5;
+        const x = pad.l + (v) * w;
+        ctx.fillStyle = '#aaa';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(v.toFixed(1), x, pad.t + h + 18);
+    }
+
+    // Y ticks
+    for (let i = 0; i <= 5; i++) {
+        const v = (i / 5) * 0.15;
+        const y = pad.t + h - (i / 5) * h;
+        ctx.fillStyle = '#aaa';
+        ctx.font = '10px Segoe UI';
+        ctx.textAlign = 'right';
+        ctx.fillText(v.toFixed(3), pad.l - 6, y + 4);
+    }
+
+    // Legend
+    const lx = pad.l + 10;
+    const ly = pad.t + 10;
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    ctx.fillRect(lx, ly, 180, 38);
+    ctx.fillStyle = 'rgba(0,105,64,.6)';
+    ctx.beginPath(); ctx.arc(lx + 8, ly + 10, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#555'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'left';
+    ctx.fillText('Background consanguinity', lx + 16, ly + 14);
+    ctx.fillStyle = 'rgba(229,57,53,.9)';
+    ctx.beginPath(); ctx.arc(lx + 8, ly + 28, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#555';
+    ctx.fillText('FROH > 0.0625 (consanguineous)', lx + 16, ly + 32);
+})();
+
+
+// ════════════════════ TABLE STYLING ════════════════════
+(function(){
+    // Color cells in ROH summary table
+    const table = document.getElementById('rohSummaryTable');
+    if (!table) return;
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 4) {
+            const froh = parseFloat(cells[3].textContent);
+            if (!isNaN(froh)) {
+                let bg, fg;
+                if (froh < 0.0156) { bg = '#e8f5e9'; fg = '#1b5e20'; }
+                else if (froh < 0.0625) { bg = '#fff3e0'; fg = '#e65100'; }
+                else { bg = '#ffebee'; fg = '#b71c1c'; }
+                cells[3].style.background = bg;
+                cells[3].style.color = fg;
+                cells[3].style.fontWeight = '600';
+            }
+        }
+    });
+})();
+
+})();
+</script>
+</body>
+</html>

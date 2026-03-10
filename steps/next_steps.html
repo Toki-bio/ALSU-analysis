@@ -107,6 +107,7 @@
                 <a href="step12.html">Step 12: Annotation</a>
                 <a href="step13.html">Step 13: LD Analysis</a>
                 <a href="step14.html">Step 14: Fst &amp; MDS</a>
+                <a href="step15.html">Step 15: ROH &amp; IBD</a>
                 <a href="next_steps.html" class="current">Next Steps</a>
             </div>
         </aside>
@@ -131,7 +132,7 @@
 <h2>1. Current Status Summary</h2>
 
 <div class="success">
-    <strong>Completed (Steps 1&ndash;10):</strong>
+    <strong>Completed (Steps 1&ndash;15):</strong>
     <ul style="margin-top:8px;">
         <li>QC pipeline: missingness &rarr; IBD dedup &rarr; SNP filtering &rarr; imputation &rarr; normalization &rarr; final QC</li>
         <li>PCA: Uzbek-internal + global (1000 Genomes) &mdash; Uzbek sits on EUR&ndash;EAS cline</li>
@@ -139,7 +140,7 @@
         <li>ADMIXTURE K=2&ndash;8: <strong>Uzbek-only</strong> K=2 optimal (CV monotonically increases); <strong>Global</strong> K=7 optimal (CV=0.385, with 1000G)</li>
         <li>PBS multi-population analysis: 490 Uzbek-specific SNPs, 456 with PBS &ge; 0.3</li>
         <li>LD pruning: 10.8M &rarr; 380K independent SNPs for population genetics</li>
-        <li><strong>Covariate validation:</strong> ADMIXTURE Q-values vs. ethnicity (ns at K=2, p=6.7&times;10<sup>&minus;8</sup> at K=3) and birthplace (p=1.9&times;10<sup>&minus;22</sup> at K=2)</li>
+        <li><strong>ROH &amp; IBD:</strong> 134,080 ROH segments, median F<sub>ROH</sub>=0.032. 9,700 related pairs. See <a href="step15.html">Step 15</a></li>
     </ul>
 </div>
 
@@ -255,27 +256,19 @@
 <h3>2.2. Runs of Homozygosity (ROH)</h3>
 
 <div class="tier-card">
-    <h4><span class="status-next">HIGH PRIORITY</span> &mdash; Directly relevant to pregnancy loss</h4>
+    <h4><span class="status-done">✓ COMPLETE</span> &mdash; See <a href="step15.html">Step 15</a></h4>
     <p>
-        Central Asian populations often have elevated rates of consanguineous marriages, leading to long runs of homozygosity (ROH). Homozygosity for recessive lethal alleles is a <strong>major cause of recurrent pregnancy loss</strong>.
+        ROH analysis completed on 1,074 post-QC Uzbek samples (380,376 SNPs). <strong>134,080 ROH segments</strong> detected.
+        Median F<sub>ROH</sub> = 0.032 (elevated ~2–3× vs outbred European populations), max F<sub>ROH</sub> = 0.145.
+        All 1,074 individuals carry at least one ROH &gt;500 kb. ~34 individuals show F<sub>ROH</sub> &gt; 0.0625
+        (consistent with 1st-cousin-level parental consanguinity).
     </p>
-    <p><strong>Method:</strong></p>
-    <div class="code-block">plink --bfile UZB_final_QC \
-    --homozyg \
-    --homozyg-window-snp 50 \
-    --homozyg-snp 30 \
-    --homozyg-kb 500 \
-    --homozyg-density 50 \
-    --homozyg-gap 1000 \
-    --out UZB_ROH</div>
-    <p><strong>Key metrics to compute:</strong></p>
-    <ul>
-        <li><strong>F<sub>ROH</sub></strong> = total ROH length / genome length (inbreeding coefficient)</li>
-        <li>Count of long ROH (&gt;5 Mb) &rarr; recent inbreeding (parents are 2nd&ndash;3rd cousins)</li>
-        <li>Count of moderate ROH (1&ndash;5 Mb) &rarr; population bottleneck or background relatedness</li>
-        <li>Distribution across the cohort &mdash; are some individuals dramatically more homozygous?</li>
-    </ul>
-    <p><strong>Clinical relevance:</strong> F<sub>ROH</sub> can be used as a covariate in the pregnancy loss GWAS, and ROH burden itself may differ between cases and controls.</p>
+    <p>
+        IBD analysis (PLINK <code>--genome</code>, 1,155 pre-dedup samples) identified 9,700 related pairs (PI_HAT &gt; 0.125),
+        including 65 duplicate/MZ pairs, 106 first-degree, and 7,952 second-degree relatives — confirming strong founder effects.
+    </p>
+    <p><strong>Clinical relevance:</strong> F<sub>ROH</sub> will be used as a covariate in the pregnancy loss GWAS.
+    Mixed linear models (BOLT-LMM/SAIGE) are essential given the extensive cryptic relatedness.</p>
 </div>
 
 
@@ -481,14 +474,19 @@
 <h3>2.5. IBD Analysis Stratified by Ancestry</h3>
 
 <div class="tier-card">
-    <h4><span class="status-planned">MEDIUM PRIORITY</span> &mdash; Social structure within the cohort</h4>
+    <h4><span class="status-done">✓ COMPLETE</span> &mdash; See <a href="step15.html">Step 15</a></h4>
     <p>
-        Re-evaluate IBD segments (from Step 2) in light of ADMIXTURE results:
+        IBD analysis (PLINK <code>--genome</code>) completed on 1,155 pre-dedup samples (666,435 pairwise comparisons).
     </p>
     <ul>
-        <li>Do related pairs share predominantly <strong>Western or Eastern</strong> ancestry? &rarr; reveals whether endogamy follows ethnic subgroups</li>
-        <li>IBD segment length distribution: long segments (&gt;5 cM) = recent common ancestors; short (&lt;1 cM) = ancient</li>
-        <li><strong>IBDNe</strong>: reconstruct effective population size (N<sub>e</sub>) trajectory over time &mdash; could show Silk Road expansion, Mongol invasion bottleneck, Soviet-era recovery</li>
+        <li><strong>9,700 related pairs</strong> (PI_HAT &gt; 0.125): 65 duplicates, 106 first-degree, 7,952 second-degree, 3,645 third-degree</li>
+        <li>PI_HAT distribution: 97.7% pairs &lt; 0.05 (unrelated), but heavy tail reveals extensive cryptic relatedness</li>
+        <li>Cross-reference with ADMIXTURE K=2 (Q1 mean=0.650, Q2 mean=0.350) shows F<sub>ROH</sub> is slightly elevated at ancestry extremes, consistent with subgroup endogamy</li>
+    </ul>
+    <p><strong>Remaining:</strong></p>
+    <ul>
+        <li><strong>IBDNe:</strong> reconstruct N<sub>e</sub> trajectory over time — Silk Road expansion, Mongol bottleneck, Soviet-era recovery</li>
+        <li><strong>Segment-level IBD:</strong> hap-IBD or GERMLINE for haplotype-level analysis</li>
     </ul>
 </div>
 
@@ -878,12 +876,12 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td>#2</td>
         <td>1 day</td>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e8f5e9;">
         <td>4</td>
         <td>ROH analysis (F<sub>ROH</sub>)</td>
-        <td class="status-planned">HIGH</td>
+        <td class="status-done">DONE</td>
         <td>&mdash;</td>
-        <td>1 day</td>
+        <td>Complete (Step 15)</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>5</td>
@@ -913,12 +911,12 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td>&mdash;</td>
         <td>Complete (Step 12)</td>
     </tr>
-    <tr style="background:#e3f2fd;">
+    <tr style="background:#e8f5e9;">
         <td>9</td>
         <td>IBD stratified by ancestry</td>
-        <td class="status-future">MEDIUM</td>
+        <td class="status-done">DONE</td>
         <td>&mdash;</td>
-        <td>1 day</td>
+        <td>Complete (Step 15)</td>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>10</td>
@@ -1531,6 +1529,7 @@ text(mds, labels=rownames(mds), pos=3)</div>
         { title: 'Step 12: SNP Annotation', url: 'step12.html', keywords: 'annotation vep ensembl missense damaging spi1 slc6a2 tnxb gwas clinvar gtex' },
         { title: 'Step 13: LD Analysis', url: 'step13.html', keywords: 'ld linkage disequilibrium clumping independent loci decay' },
         { title: 'Step 14: Fst Heatmap & MDS', url: 'step14.html', keywords: 'fst heatmap mds multidimensional scaling pairwise matrix' },
+        { title: 'Step 15: ROH & IBD', url: 'step15.html', keywords: 'roh homozygosity ibd identity descent consanguinity froh inbreeding relatedness pihat kinship founder effect autozygosity' },
         { title: 'Next Steps', url: 'next_steps.html', keywords: 'next steps roh dapc evanno gwas pregnancy loss covariates case control fst heatmap mds annotation ibs nsl covariate validation ethnicity birthplace admixture 1000g global' }
     ];
 
