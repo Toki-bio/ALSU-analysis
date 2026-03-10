@@ -122,7 +122,7 @@
                 <a href="../index.html" class="back-link">&larr; Back to Main</a>
                 <h1>Next Steps: Planned Analyses</h1>
                 <p>Roadmap for Uzbek population genetics and pregnancy loss association study</p>
-                <span class="step-badge">Updated: February 2026</span>
+                <span class="step-badge">Updated: March 2026</span>
             </div>
             
             <div class="content">
@@ -136,7 +136,7 @@
         <li>QC pipeline: missingness &rarr; IBD dedup &rarr; SNP filtering &rarr; imputation &rarr; normalization &rarr; final QC</li>
         <li>PCA: Uzbek-internal + global (1000 Genomes) &mdash; Uzbek sits on EUR&ndash;EAS cline</li>
         <li>F<sub>ST</sub>: UZB closest to SAS (0.018), then EUR (0.020), then EAS (0.049)</li>
-        <li>ADMIXTURE K=2&ndash;8: K=2 optimal (CV monotonically increases), two-component West&ndash;East admixture</li>
+        <li>ADMIXTURE K=2&ndash;8: <strong>Uzbek-only</strong> K=2 optimal (CV monotonically increases); <strong>Global</strong> K=7 optimal (CV=0.385, with 1000G)</li>
         <li>PBS multi-population analysis: 490 Uzbek-specific SNPs, 456 with PBS &ge; 0.3</li>
         <li>LD pruning: 10.8M &rarr; 380K independent SNPs for population genetics</li>
         <li><strong>Covariate validation:</strong> ADMIXTURE Q-values vs. ethnicity (ns at K=2, p=6.7&times;10<sup>&minus;8</sup> at K=3) and birthplace (p=1.9&times;10<sup>&minus;22</sup> at K=2)</li>
@@ -144,10 +144,11 @@
 </div>
 
 <div class="tier-card">
-    <h4><span class="status-planned">RUNNING</span> &mdash; Background jobs on server</h4>
+    <h4><span class="status-done">FINALIZED</span> &mdash; All background jobs completed</h4>
     <ul>
-        <li><strong>Evanno &Delta;K</strong>: 70 ADMIXTURE runs (K=2&ndash;8 &times; 10 replicates) for proper &Delta;K with sd(L(K)) &mdash; ~26% complete</li>
-        <li><s>Global ADMIXTURE</s> &mdash; <span class="status-done">COMPLETE</span> (finished 2025-02-19). K=7 optimal (CV=0.385). See <a href="step11.html">Step 11</a></li>
+        <li><strong>Evanno &Delta;K</strong>: 51/70 runs completed (K=2&ndash;6 &times; 10 reps). K=7&ndash;8 cancelled (server reboot). sNMF independently validates. &Delta;K peaks at K=3. See <a href="step11.html">Step 11 &sect;3.1</a></li>
+        <li><strong>Global ADMIXTURE</strong> &mdash; <span class="status-done">COMPLETE</span> (finished 2025-02-19). K=7 optimal (CV=0.385). See <a href="step11.html">Step 11</a></li>
+        <li><strong>sNMF validation</strong> &mdash; <span class="status-done">COMPLETE</span>. Confirms K=7 global (CE plateau), K=2 Uzbek-only (monotonic CE increase). See <a href="step11.html">Step 11 &sect;3.2&ndash;3.3</a></li>
     </ul>
 </div>
 
@@ -242,7 +243,7 @@
         The |L&Prime;(K)| peaks sharply at <strong>K=3</strong> (143,051 vs. 5,464&ndash;34,278 for K=4&ndash;7). In the Evanno framework, this means the largest &ldquo;elbow&rdquo; in likelihood improvement occurs between K=2 and K=3 &mdash; i.e., K=2 is where the primary structure is captured, and K=3 adds the last meaningful component.
     </p>
     <p>
-        <strong>Caveat:</strong> The full &Delta;K formula requires <em>multiple independent runs per K</em> to compute sd(L(K)). With our single run per K, we can only examine |L&Prime;(K)| directly. For a rigorous Evanno analysis, re-run ADMIXTURE 10&ndash;20 times per K with different random seeds. This can be done with <code>admixture --cv file.bed K -j32 -s $RANDOM</code>.
+        <strong>Caveat:</strong> The table above shows <em>Uzbek-only</em> single-run log-likelihoods. For the global dataset, multi-run Evanno analysis (51/70 runs, K=2&ndash;6 &times; 10 replicates) was completed and confirms &Delta;K peaks at K=3. K=7&ndash;8 runs were cancelled after server reboot; <strong>sNMF independently validates K=7</strong> as optimal for the global dataset. See <a href="step11.html">Step 11 &sect;3</a> for full results.
     </p>
     <p>
         <strong>Bottom line:</strong> Both CV error (minimum at K=2) and the Evanno second derivative (peak at K=3) agree: <strong>the Uzbek cohort has 2 major ancestry components</strong>, with a possible 3rd minor component that does not significantly improve model fit.
@@ -496,13 +497,18 @@
 <h3>2.6. Gene Annotation of 490 Uzbek-Specific SNPs</h3>
 
 <div class="tier-card">
-    <h4><span class="status-planned">MEDIUM PRIORITY</span> &mdash; Biological interpretation</h4>
-    <p>Map each of the 490 Uzbek-specific SNPs (from Step 10) to functional elements:</p>
+    <h4><span class="status-done">COMPLETE</span> &mdash; Ensembl VEP annotation retrieved</h4>
+    <p>All 490 Uzbek-specific SNPs annotated via Ensembl VEP REST API (27 fields per SNP). Results in <a href="step12.html">Step 12</a>:</p>
     <ul>
-        <li><strong>ANNOVAR or VEP:</strong> nearest gene, exonic/intronic/intergenic, amino acid changes</li>
-        <li><strong>GWAS Catalog overlap:</strong> check if any are known hits for fertility, immune, or metabolic traits</li>
+        <li><strong>350/490 SNPs</strong> mapped to <strong>264 unique genes</strong></li>
+        <li><strong>5 missense variants</strong> (4 potentially damaging by SIFT/PolyPhen): SPI1, TNXB, SLC6A2, ATL2</li>
+        <li><strong>HLA/MHC region over-represented</strong>: 135 chr6 SNPs (33.7%)</li>
+        <li>GWAS Catalog + ClinVar + GTEx eQTL cross-referenced</li>
+    </ul>
+    <p><strong>Remaining:</strong></p>
+    <ul>
         <li><strong>Pathway enrichment:</strong> KEGG/GO/Reactome &mdash; do Uzbek-specific variants cluster in immune, metabolic, or reproductive pathways?</li>
-        <li><strong>eQTL lookup:</strong> GTEx &mdash; are these SNPs associated with gene expression changes in relevant tissues (uterus, placenta, blood)?</li>
+        <li><strong>eQTL deep dive:</strong> GTEx tissue-specific expression in uterus, placenta, blood</li>
     </ul>
 </div>
 
@@ -577,7 +583,7 @@ compoplot(dapc_result)  # ancestry-like bar plot</div>
 <!-- ── 2.9 Fst visualization ── -->
 <h3>2.9. F<sub>ST</sub> Graphical Visualization</h3>
 
-<p>Several ways to <strong>visualize the F<sub>ST</sub> matrix</strong> (from Step 9):</p>
+<p>Several ways to <strong>visualize the F<sub>ST</sub> matrix</strong> (from Step 9; see <a href="step14.html">Step 14</a> for the full interactive version):</p>
 
 <h4>A. Heatmap</h4>
 <p>The pairwise F<sub>ST</sub> matrix as a color-coded heatmap:</p>
@@ -594,10 +600,10 @@ compoplot(dapc_result)  # ancestry-like bar plot</div>
 library(ape)
 fst_matrix &lt;- matrix(c(
   0.0000, 0.0179, 0.0204, 0.0493, 0.1094,
-  0.0179, 0.0000, 0.0354, 0.0412, 0.0824,
-  0.0204, 0.0354, 0.0000, 0.1061, 0.1491,
-  0.0493, 0.0412, 0.1061, 0.0000, 0.1345,
-  0.1094, 0.0824, 0.1491, 0.1345, 0.0000
+  0.0179, 0.0000, 0.0279, 0.0653, 0.1306,
+  0.0204, 0.0279, 0.0000, 0.1061, 0.1448,
+  0.0493, 0.0653, 0.1061, 0.0000, 0.1681,
+  0.1094, 0.1306, 0.1448, 0.1681, 0.0000
 ), nrow=5, dimnames=list(
   c("UZB","SAS","EUR","EAS","AFR"),
   c("UZB","SAS","EUR","EAS","AFR")))
@@ -902,10 +908,10 @@ text(mds, labels=rownames(mds), pos=3)</div>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>8</td>
-        <td>Gene annotation (ANNOVAR/VEP)</td>
-        <td class="status-future">MEDIUM</td>
+        <td>Gene annotation (Ensembl VEP)</td>
+        <td class="status-done">DONE</td>
         <td>&mdash;</td>
-        <td>1 day</td>
+        <td>Complete (Step 12)</td>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>9</td>
@@ -923,10 +929,10 @@ text(mds, labels=rownames(mds), pos=3)</div>
     </tr>
     <tr style="background:#e8f5e9;">
         <td>11</td>
-        <td>Evanno &Delta;K (70 ADMIXTURE runs)</td>
-        <td class="status-planned">RUNNING</td>
+        <td>Evanno &Delta;K (51/70 runs + sNMF)</td>
+        <td class="status-done">DONE</td>
         <td>&mdash;</td>
-        <td>In progress</td>
+        <td>Complete</td>
     </tr>
     <tr style="background:#e8f5e9;">
         <td>12</td>
@@ -948,6 +954,13 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td class="status-future">LATER</td>
         <td>&mdash;</td>
         <td>1&ndash;2 days</td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td>15</td>
+        <td>F<sub>ST</sub> heatmap &amp; MDS visualization</td>
+        <td class="status-done">DONE</td>
+        <td>&mdash;</td>
+        <td>Complete (Step 14)</td>
     </tr>
 </table>
 
@@ -1514,6 +1527,10 @@ text(mds, labels=rownames(mds), pos=3)</div>
         { title: 'Step 8: Global PCA', url: 'step8.html', keywords: 'global pca 1000genomes populations' },
         { title: 'Step 9: Fst Analysis', url: 'step9.html', keywords: 'fst fixation differentiation eur' },
         { title: 'Step 10: Multi-Pop PBS ADMIXTURE', url: 'step10.html', keywords: 'pbs admixture delta af uzbek-specific selection' },
+        { title: 'Step 11: ADMIXTURE K=2-8', url: 'step11.html', keywords: 'admixture global 1000g evanno snmf sNMF k=7 ancestry components' },
+        { title: 'Step 12: SNP Annotation', url: 'step12.html', keywords: 'annotation vep ensembl missense damaging spi1 slc6a2 tnxb gwas clinvar gtex' },
+        { title: 'Step 13: LD Analysis', url: 'step13.html', keywords: 'ld linkage disequilibrium clumping independent loci decay' },
+        { title: 'Step 14: Fst Heatmap & MDS', url: 'step14.html', keywords: 'fst heatmap mds multidimensional scaling pairwise matrix' },
         { title: 'Next Steps', url: 'next_steps.html', keywords: 'next steps roh dapc evanno gwas pregnancy loss covariates case control fst heatmap mds annotation ibs nsl covariate validation ethnicity birthplace admixture 1000g global' }
     ];
 
