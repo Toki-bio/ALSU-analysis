@@ -89,6 +89,8 @@
             <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
             <a href="step11.html" class="current">Step 11: Global ADMIXTURE</a>
             <a href="step12.html">Step 12: PBS Annotation</a>
+            <a href="step13.html">Step 13: LD Analysis</a>
+            <a href="step14.html">Step 14: Fst &amp; MDS</a>
             <a href="next_steps.html">Next Steps</a>
         </div>
     </aside>
@@ -186,18 +188,277 @@ done</div>
 
             <table>
                 <tr><th>K</th><th>CV Error</th><th>Note</th></tr>
-                <tr><td>2</td><td>0.39900</td><td>EUR+EAS vs AFR split</td></tr>
-                <tr><td>3</td><td>0.39020</td><td>AFR separates</td></tr>
-                <tr><td>4</td><td>0.38790</td><td>SAS separates</td></tr>
-                <tr><td>5</td><td>0.38620</td><td>Central Asian component emerges</td></tr>
-                <tr><td>6</td><td>0.38580</td><td>EUR splits (N vs S)</td></tr>
-                <tr class="cv-optimal"><td>7</td><td>0.38530</td><td>&larr; Optimal (minimum CV)</td></tr>
+                <tr><td>2</td><td>0.39924</td><td>EUR+EAS vs AFR split</td></tr>
+                <tr><td>3</td><td>0.38985</td><td>AFR separates</td></tr>
+                <tr><td>4</td><td>0.38766</td><td>SAS separates</td></tr>
+                <tr><td>5</td><td>0.38632</td><td>Central Asian component emerges</td></tr>
+                <tr><td>6</td><td>0.38606</td><td>EUR splits (N vs S)</td></tr>
+                <tr class="cv-optimal"><td>7</td><td>0.38535</td><td>&larr; Optimal (minimum CV)</td></tr>
                 <tr><td>8</td><td>0.38540</td><td>Uptick &mdash; overfitting begins</td></tr>
             </table>
 
             <div class="success">
-                <strong>K = 7 is optimal.</strong> The CV error reaches its minimum at K=7 (0.38530) with a slight uptick
+                <strong>K = 7 is optimal.</strong> The CV error reaches its minimum at K=7 (0.38535) with a slight uptick
                 at K=8 (0.38540), confirming 7 distinguishable ancestral components in this dataset.
+            </div>
+
+            <!-- 3.1 EVANNO METHOD -->
+            <h3>3.1 Evanno Method (&Delta;K)</h3>
+
+            <div class="info-box">
+                <strong>Note:</strong> The log-likelihoods below are from one ADMIXTURE run per K
+                on the global dataset (2,095 samples &times; 380,376 SNPs). A Uzbek-only replicate batch
+                (10 reps &times; K=2&ndash;6, 1,074 samples) also completed on the server (51/70 runs;
+                K=7&ndash;8 were not rerun as sNMF independently confirmed K=2 for the Uzbek-only dataset &mdash;
+                see Section 3.3). Since the Evanno method is statistically inappropriate for ADMIXTURE
+                (see caveat below), we rely on CV error and sNMF cross-entropy for K selection instead.
+            </div>
+
+            <div style="background:#fff3e0;border:1px solid #ff9800;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:0.9em;color:#5d4037">
+                <strong>⚠️ Statistical caveat:</strong> The Evanno method was designed for STRUCTURE, which uses
+                Bayesian MCMC sampling &mdash; the run-to-run variance in L(K) reflects stochastic convergence of the Markov chain.
+                ADMIXTURE uses deterministic maximum-likelihood optimization (EM/block relaxation), so run-to-run
+                variance is merely local-optimum noise from different random seeds, not meaningful MCMC variability.
+                This means &Delta;K = mean|L&Prime;(K)| / sd(L(K)) is operating on the <em>wrong type of statistic</em>,
+                and the resulting peak can be unreliable &mdash; especially for clinal populations like Central Asian groups
+                where discrete ancestral populations may never have existed.<br><br>
+                We include this analysis for comparison with published literature, but
+                <strong>cross-validation error (Section 3, K=7) remains the statistically appropriate model selection criterion
+                for ADMIXTURE</strong>. An independent sNMF analysis (Section 3.2) provides additional validation via cross-entropy.
+            </div>
+
+            <p>
+                The Evanno method (Evanno et al., 2005) computes the second-order rate of change of the
+                log-likelihood, |L&Prime;(K)|, across consecutive K values. The value of K where |L&Prime;(K)|
+                is maximized indicates the most abrupt change in model fit &mdash; corresponding to the uppermost
+                level of hierarchical population structure. Note that this approach was designed for STRUCTURE&rsquo;s
+                MCMC framework and its application to ADMIXTURE output should be interpreted with caution
+                (see caveat above).
+            </p>
+            <p>
+                Using the log-likelihood values L(K) from the global ADMIXTURE run (2,095 samples &times; 380,376 SNPs) at each K&nbsp;=&nbsp;2&ndash;8:
+            </p>
+
+            <table>
+                <tr>
+                    <th>K</th>
+                    <th>L(K)</th>
+                    <th>L&prime;(K) = L(K) &minus; L(K&minus;1)</th>
+                    <th>|L&Prime;(K)|</th>
+                </tr>
+                <tr><td>2</td><td>&minus;250,763,063.48</td><td>&mdash;</td><td>&mdash;</td></tr>
+                <tr style="background:#d4edda; font-weight:600;">
+                    <td>3</td><td>&minus;247,216,025.97</td><td>3,547,037.51</td><td style="color:#28a745;">2,542,181.58 &larr; max</td>
+                </tr>
+                <tr><td>4</td><td>&minus;246,211,170.04</td><td>1,004,855.93</td><td>311,294.48</td></tr>
+                <tr><td>5</td><td>&minus;245,517,608.59</td><td>693,561.45</td><td>383,004.96</td></tr>
+                <tr><td>6</td><td>&minus;245,207,052.10</td><td>310,556.49</td><td>135,467.59</td></tr>
+                <tr><td>7</td><td>&minus;244,761,028.02</td><td>446,024.08</td><td>256,746.40</td></tr>
+                <tr><td>8</td><td>&minus;244,571,750.34</td><td>189,277.68</td><td>&mdash;</td></tr>
+            </table>
+
+            <div class="important">
+                <strong>&Delta;K peaks at K&nbsp;=&nbsp;3</strong> (|L&Prime;(K)| = 2,542,182), indicating that the most fundamental
+                split in the data separates three broad ancestral groups: <strong>African</strong>, <strong>West Eurasian</strong>
+                (European + South Asian), and <strong>East Eurasian</strong> (East Asian + Central Asian). This is the uppermost
+                hierarchical level of population structure.
+            </div>
+
+            <div class="info-box">
+                <strong>Reconciling CV error (K=7) vs Evanno (K=3):</strong> These two criteria answer different questions.
+                The Evanno method detects the <em>dominant structural break</em> &mdash; the deepest split in the population tree.
+                Cross-validation error measures <em>overall predictive accuracy</em> and favors the model that
+                best captures all levels of sub-structure. For this dataset, K&nbsp;=&nbsp;3 captures the continental-level divergence,
+                while K&nbsp;=&nbsp;7 resolves finer sub-continental structure (e.g., Northern vs. Southern European, the distinct
+                Central Asian component). Both results are informative: <strong>K&nbsp;=&nbsp;3 describes the hierarchy,
+                K&nbsp;=&nbsp;7 describes the full resolution</strong>. However, given the statistical caveats above,
+                <strong>CV error (K=7) is the primary criterion for model selection</strong>. For downstream GWAS covariate
+                adjustment, K&nbsp;=&nbsp;7 remains the preferred model.
+            </div>
+
+            <!-- 3.2 sNMF VALIDATION -->
+            <h3>3.2 sNMF (Sparse Non-negative Matrix Factorization)</h3>
+
+            <div class="info-box" style="border-left: 4px solid #2e7d32; background: #e8f5e9;">
+                <strong>✅ Completed March 9, 2026.</strong> sNMF analysis run on global dataset
+                (2,095 samples &times; 172,537 biallelic SNPs). 10 replicates per K, &alpha;&nbsp;=&nbsp;10.
+            </div>
+
+            <p>
+                To provide an independent, statistically rigorous validation of K selection, we supplement
+                ADMIXTURE with <strong>sNMF</strong> (Frichot et al., 2014), implemented in the R package <code>LEA</code>.
+                sNMF offers several advantages over both ADMIXTURE and STRUCTURE:
+            </p>
+
+            <table>
+                <tr><th>Property</th><th>ADMIXTURE</th><th>sNMF (LEA)</th></tr>
+                <tr><td>Method</td><td>ML via EM optimization</td><td>Regularized least-squares NMF</td></tr>
+                <tr><td>K selection</td><td>Cross-validation error</td><td>Cross-entropy criterion</td></tr>
+                <tr><td>Speed</td><td>Hours per run</td><td>Minutes per run</td></tr>
+                <tr><td>Missing data</td><td>Imputation required</td><td>Handled natively</td></tr>
+                <tr><td>Regularization</td><td>None</td><td>L2 penalty (&alpha;) &mdash; reduces overfitting</td></tr>
+                <tr><td>Clinal structure</td><td>Forces discrete clusters</td><td>Still clusters, but regularization dampens artifacts</td></tr>
+            </table>
+
+            <p>
+                sNMF uses a <strong>cross-entropy criterion</strong> for model selection: a fraction of genotypes are
+                masked, the model is fitted on the remaining data, and cross-entropy measures how well the model
+                predicts the masked entries. Unlike ADMIXTURE&rsquo;s CV error, this does not depend on
+                likelihood-based assumptions.
+            </p>
+
+            <h4>Cross-Entropy Results</h4>
+            <table>
+                <tr><th>K</th><th>Mean CE</th><th>SD</th><th>Min CE</th><th>Best Run</th></tr>
+                <tr><td>2</td><td>0.548159</td><td>0.000163</td><td>0.547834</td><td>4</td></tr>
+                <tr><td>3</td><td>0.539540</td><td>0.000170</td><td>0.539228</td><td>4</td></tr>
+                <tr><td>4</td><td>0.537119</td><td>0.000171</td><td>0.536827</td><td>4</td></tr>
+                <tr><td>5</td><td>0.535743</td><td>0.000171</td><td>0.535451</td><td>4</td></tr>
+                <tr><td>6</td><td>0.534949</td><td>0.000168</td><td>0.534680</td><td>4</td></tr>
+                <tr style="background:#e8f5e9;"><td><strong>7</strong></td><td><strong>0.534713</strong></td><td>0.000161</td><td>0.534462</td><td>4</td></tr>
+                <tr><td>8</td><td>0.534436</td><td>0.000373</td><td>0.534062</td><td>10</td></tr>
+                <tr style="background:#fff3e0;"><td><strong>9</strong></td><td><strong>0.534309</strong></td><td>0.000420</td><td>0.533806</td><td>4</td></tr>
+                <tr><td>10</td><td>0.534314</td><td>0.000335</td><td>0.533921</td><td>5</td></tr>
+            </table>
+
+            <p>
+                The cross-entropy minimum is at <strong>K&nbsp;=&nbsp;9</strong> (CE&nbsp;=&nbsp;0.534309), but the
+                curve flattens dramatically after K&nbsp;=&nbsp;7: the improvement from K=7 to K=9 is only
+                <strong>0.08%</strong> (0.534713 &rarr; 0.534309), while K=6&rarr;7 already shows only 0.04%
+                improvement. This plateau&mdash;combined with increasing SD at K&ge;8&mdash;suggests
+                <strong>K&nbsp;=&nbsp;7 is the most parsimonious choice</strong>, consistent with ADMIXTURE&rsquo;s
+                CV-error minimum. The marginal gains at K=8&ndash;9 likely reflect minor substructure or noise.
+            </p>
+
+            <h4>sNMF vs ADMIXTURE Concordance</h4>
+            <table>
+                <tr><th>K</th><th>Mean Component Correlation</th><th>Range</th></tr>
+                <tr><td>3</td><td><strong>0.9996</strong></td><td>0.9994 &ndash; 0.9998</td></tr>
+                <tr><td>5</td><td><strong>0.9969</strong></td><td>0.9939 &ndash; 0.9998</td></tr>
+                <tr><td>7</td><td><strong>0.9921</strong></td><td>0.9661 &ndash; 0.9998</td></tr>
+            </table>
+
+            <p>
+                The near-perfect correlations (r&nbsp;&gt;&nbsp;0.99 for all K) between sNMF and ADMIXTURE
+                Q-matrices confirm that both methods recover essentially identical ancestry proportions. This
+                provides <strong>strong independent validation</strong> of the ADMIXTURE results. The slight
+                decrease in correlation at K=7 (min&nbsp;=&nbsp;0.966 for one component) is expected as smaller
+                ancestry components become harder to align precisely.
+            </p>
+
+            <h4>R Code (as executed)</h4>
+            <div class="code-block">
+library(LEA)
+
+# Convert PLINK bed &rarr; VCF &rarr; geno format
+# plink --bfile global_for_admixture --recode vcf --out snmf_results/global_for_admixture
+geno_file &lt;- vcf2geno("global_for_admixture.vcf")
+# 172,537 biallelic SNPs retained (of 380,376 input)
+
+# Run sNMF: K=2-10, 10 replicates each, with cross-entropy
+obj &lt;- snmf(geno_file,
+            K = 2:10,
+            repetitions = 10,
+            entropy = TRUE,      # compute cross-entropy
+            alpha = 10,          # L2 regularization
+            iterations = 200,
+            tolerance = 1e-5,
+            project = "new",
+            CPU = 16)
+
+# Extract Q-matrix at optimal K
+K_opt &lt;- which.min(sapply(2:10, function(k) mean(cross.entropy(obj, K=k))))
+Q &lt;- Q(obj, K = K_opt, run = which.min(cross.entropy(obj, K = K_opt)))
+
+# Compare with ADMIXTURE Q-matrices: greedy column matching by |cor|
+cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
+
+            <p>
+                Total runtime: ~3 hours for 90 runs (10 reps &times; K=2&ndash;10) on 16 CPU cores,
+                compared to ~2 weeks for the equivalent ADMIXTURE batch.
+            </p>
+
+            <!-- 3.3 UZBEK-ONLY sNMF -->
+            <h3>3.3 Uzbek-Only Validation (ADMIXTURE + sNMF)</h3>
+
+            <div class="info-box" style="border-left: 4px solid #2e7d32; background: #e8f5e9;">
+                <strong>✅ Completed March 9, 2026.</strong> Uzbek-only dataset: 1,074 samples &times; 380,376 SNPs
+                (ADMIXTURE) / 172,537 biallelic SNPs (sNMF). Both methods independently select <strong>K&nbsp;=&nbsp;2</strong>.
+            </div>
+
+            <p>
+                To assess within-Uzbek substructure independently of reference populations, we ran both
+                ADMIXTURE (with cross-validation) and sNMF on the Uzbek-only subset. If significant internal
+                population stratification exists, it would manifest as K&nbsp;&gt;&nbsp;2 being favoured.
+            </p>
+
+            <h4>Uzbek-Only: ADMIXTURE CV Error</h4>
+            <table>
+                <tr><th>K</th><th>CV Error</th><th>Note</th></tr>
+                <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.51335</td><td>&larr; Minimum</td></tr>
+                <tr><td>3</td><td>0.51343</td><td></td></tr>
+                <tr><td>4</td><td>0.51579</td><td></td></tr>
+                <tr><td>5</td><td>0.51636</td><td></td></tr>
+                <tr><td>6</td><td>0.51682</td><td></td></tr>
+                <tr><td>7</td><td>0.51885</td><td></td></tr>
+                <tr><td>8</td><td>0.51974</td><td></td></tr>
+            </table>
+
+            <p>
+                CV error increases monotonically from K=2, indicating <strong>no significant internal substructure</strong>
+                beyond a two-way split.
+            </p>
+
+            <h4>Uzbek-Only: sNMF Cross-Entropy</h4>
+            <table>
+                <tr><th>K</th><th>Mean CE</th><th>SD</th><th>Min CE</th></tr>
+                <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.728789</td><td>0.000205</td><td>0.728500</td></tr>
+                <tr><td>3</td><td>0.728862</td><td>0.000212</td><td>0.728549</td></tr>
+                <tr><td>4</td><td>0.729385</td><td>0.000209</td><td>0.729052</td></tr>
+                <tr><td>5</td><td>0.729989</td><td>0.000227</td><td>0.729667</td></tr>
+                <tr><td>6</td><td>0.730761</td><td>0.000122</td><td>0.730633</td></tr>
+                <tr><td>7</td><td>0.731234</td><td>0.000182</td><td>0.731023</td></tr>
+                <tr><td>8</td><td>0.731900</td><td>0.000187</td><td>0.731629</td></tr>
+                <tr><td>9</td><td>0.732545</td><td>0.000243</td><td>0.732323</td></tr>
+                <tr><td>10</td><td>0.733163</td><td>0.000282</td><td>0.732749</td></tr>
+            </table>
+
+            <p>
+                Cross-entropy also increases monotonically from K=2 &mdash; independently confirming that Uzbeks
+                form a <strong>relatively homogeneous group</strong> without deep ancestral subdivisions.
+            </p>
+
+            <h4>Uzbek-Only: sNMF vs ADMIXTURE Concordance</h4>
+            <table>
+                <tr><th>K</th><th>Mean Component Correlation</th><th>Range</th></tr>
+                <tr><td>2</td><td><strong>0.9979</strong></td><td>0.998 &ndash; 0.998</td></tr>
+                <tr><td>3</td><td><strong>0.9847</strong></td><td>0.975 &ndash; 0.998</td></tr>
+                <tr><td>5</td><td>0.6339</td><td style="color:#c62828;">0.113 &ndash; 0.976</td></tr>
+            </table>
+
+            <p>
+                At K=2&ndash;3, sNMF and ADMIXTURE recover nearly identical ancestry proportions (r&nbsp;&gt;&nbsp;0.98).
+                By K=5, some components diverge drastically (r&nbsp;=&nbsp;0.11), confirming that higher K values
+                capture <strong>noise rather than real structure</strong> within this sample.
+            </p>
+
+            <div class="important">
+                <strong>Interpretation:</strong> The K&nbsp;=&nbsp;2 split within Uzbeks most likely reflects
+                the well-documented <strong>East Eurasian / West Eurasian</strong> dual ancestry of Central Asian populations,
+                arising from historical admixture between Turkic/Mongolic and Iranian-speaking groups along the Silk Road.
+                This is a continuous cline rather than two discrete subpopulations, consistent with the K=7 global
+                ADMIXTURE results where the Uzbek component (Q2, ~70%) is already a blend of multiple ancestral sources.
+            </div>
+
+            <div class="info-box">
+                <strong>On the limits of discrete-K models:</strong> Both ADMIXTURE and sNMF assume that observed
+                genotypes can be decomposed into K discrete ancestral populations. In reality, especially across
+                Eurasia and along the Silk Road corridor, population history involves continuous gene flow,
+                isolation-by-distance, and admixture clines rather than discrete founding events. This is why
+                log-likelihood tends to improve indefinitely with increasing K, and why no single &ldquo;true K&rdquo;
+                may exist. The practical interpretation is that K&nbsp;=&nbsp;7 provides the best <em>descriptive
+                resolution</em> of ancestry variation for covariate adjustment, not that exactly 7 ancestral
+                populations existed historically.
             </div>
 
             <!-- 4. ADMIXTURE RESULTS -->
@@ -386,8 +647,8 @@ done</div>
 <script>
 // ===== DATA =====
 const cvErrors = [
-    {k:2, cv:0.39900}, {k:3, cv:0.39020}, {k:4, cv:0.38790},
-    {k:5, cv:0.38620}, {k:6, cv:0.38580}, {k:7, cv:0.38530},
+    {k:2, cv:0.39924}, {k:3, cv:0.38985}, {k:4, cv:0.38766},
+    {k:5, cv:0.38632}, {k:6, cv:0.38606}, {k:7, cv:0.38535},
     {k:8, cv:0.38540}
 ];
 

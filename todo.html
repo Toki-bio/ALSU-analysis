@@ -193,12 +193,14 @@
     <div class="sidebar">
         <h3>Navigation</h3>
         <div class="sidebar-links">
-            <a href="../index.html">🏠 Home</a>
-            <a href="next_steps.html">📋 Next Steps</a>
-            <a href="step10.html">Step 10 — PBS</a>
-            <a href="step11.html">Step 11 — ADMIXTURE</a>
-            <a href="step12.html">Step 12 — Annotation</a>
-            <a href="../todo.html" class="current">✅ Todo Tracker</a>
+            <a href="index.html">🏠 Home</a>
+            <a href="steps/next_steps.html">📋 Next Steps</a>
+            <a href="steps/step10.html">Step 10 — PBS</a>
+            <a href="steps/step11.html">Step 11 — ADMIXTURE</a>
+            <a href="steps/step12.html">Step 12 — Annotation</a>
+            <a href="steps/step13.html">Step 13 — LD Analysis</a>
+            <a href="steps/step14.html">Step 14 — Fst &amp; MDS</a>
+            <a href="todo.html" class="current">✅ Todo Tracker</a>
         </div>
 
         <div class="sidebar-stats">
@@ -213,7 +215,7 @@
     <!-- ── Main content ── -->
     <div class="main-content">
         <div class="page-header">
-            <a class="back" href="../index.html">← Back to Home</a>
+            <a class="back" href="index.html">← Back to Home</a>
             <h1>Todo &amp; Task Tracker</h1>
             <p>ALSU Genotyping Pipeline — active tasks, planned analyses, and follow-ups</p>
         </div>
@@ -325,12 +327,12 @@ let TASKS = [
     {
         id: 2, section: 'analysis', priority: 'high', status: 'done',
         title: 'ADMIXTURE K=2–8 on UZB + 1000G reference',
-        note: 'K=2 optimal by CV; interactive stacked-bar plots in step11.html.'
+        note: 'Global: K=7 optimal by CV. Uzbek-only: K=2 optimal. Interactive stacked-bar plots in step11.html.'
     },
     {
-        id: 3, section: 'analysis', priority: 'high', status: 'inprogress',
-        title: 'Evanno ΔK batch (70 replicate runs K=2–8)',
-        note: 'PID 4259 running on server. ~37/70 complete as of Mar 4. tmux session "evanno".'
+        id: 3, section: 'analysis', priority: 'high', status: 'done',
+        title: 'Evanno ΔK batch (51/70 runs completed)',
+        note: 'K=2-6 all 10 reps done, K=7 1 rep done. K=7-8 reruns cancelled — sNMF validated K selection independently. ΔK peaks at K=3 (global). Mar 9.'
     },
     {
         id: 4, section: 'analysis', priority: 'high', status: 'done',
@@ -338,14 +340,14 @@ let TASKS = [
         note: '5 missense variants; 264 unique genes; 0 GWAS/GTEx hits (all novel/rare). Step 12.'
     },
     {
-        id: 5, section: 'analysis', priority: 'medium', status: 'todo',
-        title: 'Evanno ΔK: run delta-K script once batch completes',
-        note: 'Script at data/evanno.py. Needs Q-files from all 70 runs. Update step11.html with bar chart.'
+        id: 5, section: 'analysis', priority: 'medium', status: 'done',
+        title: 'sNMF validation (global + Uzbek-only)',
+        note: 'Global sNMF: K=7-9 (plateau), r>0.99 vs ADMIXTURE. Uzbek sNMF: K=2 (monotonic increase). Both confirm ADMIXTURE. Mar 9.'
     },
     {
-        id: 6, section: 'analysis', priority: 'medium', status: 'todo',
-        title: 'Fst heatmap — all 5 population pairs',
-        note: 'UZB vs EUR/EAS/SAS/AFR pairwise Fst matrix. Visualize as heatmap in next_steps.html or new page.'
+        id: 6, section: 'analysis', priority: 'medium', status: 'done',
+        title: 'Fst heatmap — all 10 population pairs',
+        note: 'Full 5×5 matrix computed (10 pairs). Step 14 created with interactive heatmap, MDS, bar chart. Mar 9.'
     },
     {
         id: 7, section: 'analysis', priority: 'medium', status: 'todo',
@@ -358,16 +360,16 @@ let TASKS = [
         note: 'PLINK --homozyg. Estimate inbreeding coefficient, population bottlenecks.'
     },
     {
-        id: 9, section: 'analysis', priority: 'low', status: 'todo',
+        id: 9, section: 'analysis', priority: 'low', status: 'done',
         title: 'MDS plot of pairwise Fst distances',
-        note: 'Classical multidimensional scaling on Fst matrix to visualize population relationships.'
+        note: 'Classical MDS via eigendecomposition of doubly-centered D² matrix. Implemented in step14.html JS. Mar 9.'
     },
 
     // ── Server / Bioinformatics ────────────────────────────────────────────
     {
-        id: 10, section: 'server', priority: 'high', status: 'inprogress',
-        title: 'Monitor Evanno batch on server (PID 4259)',
-        note: 'ssh copilot@100.104.25.22 · tail -f /staging/ALSU-analysis/admixture_analysis/evanno_runs/evanno_tmux.log'
+        id: 10, section: 'server', priority: 'high', status: 'done',
+        title: 'Evanno + sNMF server runs complete',
+        note: 'Evanno 51/70 done (K=7-8 cancelled). sNMF global + Uzbek complete. Results in snmf_results/ and snmf_results_uzbek/. Mar 9.'
     },
     {
         id: 11, section: 'server', priority: 'medium', status: 'done',
@@ -375,9 +377,9 @@ let TASKS = [
         note: 'annotate_uzb_snps.py uploaded to /staging/.../annotation/. 490 SNPs queried. Results in checkpoint.json.'
     },
     {
-        id: 12, section: 'server', priority: 'medium', status: 'todo',
+        id: 12, section: 'server', priority: 'medium', status: 'done',
         title: 'Download final annotation JSON from server',
-        note: 'Use base64 trick: base64 -w0 /tmp/snp_data_full.json | ssh output → decode locally. Save to data/.'
+        note: 'Downloaded via base64+markers trick. Saved as data/snp_data_full.json (242,957 bytes, 490 SNPs, 27 fields). Mar 9.'
     },
     {
         id: 13, section: 'server', priority: 'low', status: 'todo',
@@ -397,41 +399,41 @@ let TASKS = [
         note: 'Steps 2–9 were placeholder comments. SVG now extends to Steps 11+12. Fixed Mar 5.'
     },
     {
-        id: 16, section: 'docs', priority: 'medium', status: 'todo',
-        title: 'Update step11.html with Evanno ΔK results',
-        note: 'Add bar chart of ΔK vs K, optimal K callout box, and updated interpretation once batch completes.'
+        id: 16, section: 'docs', priority: 'medium', status: 'done',
+        title: 'Update step11.html — Evanno + sNMF + Uzbek-only',
+        note: 'Added §3.1 Evanno with caveat, §3.2 sNMF global results, §3.3 Uzbek-only validation. All data final. Mar 9.'
     },
     {
-        id: 17, section: 'docs', priority: 'low', status: 'todo',
-        title: 'Add Fst heatmap visualization page (step13?)',
-        note: 'Population-pair matrix heatmap. Canvas or SVG-based. Link from index.html and next_steps.'
+        id: 17, section: 'docs', priority: 'low', status: 'done',
+        title: 'Add Fst heatmap visualization page (step14)',
+        note: 'Created step14.html — interactive heatmap, MDS, bar chart, ranking tables, published comparison. Added to index.html. Mar 9.'
     },
     {
-        id: 18, section: 'docs', priority: 'low', status: 'todo',
-        title: 'Add daily log for Mar 2026 annotation work',
-        note: 'Summarize Mar 4–5: annotation pipeline, step12 complete, index fix, todo page created.'
+        id: 18, section: 'docs', priority: 'low', status: 'done',
+        title: 'Add daily log for March 9, 2026',
+        note: 'Created daily/2026-03-09.html documenting: sNMF validation, Evanno finalization, Fst matrix completion, step14 page, annotation download. Mar 9.'
     },
 
     // ── GWAS / Study Design ────────────────────────────────────────────────
     {
         id: 19, section: 'gwas', priority: 'high', status: 'todo',
         title: 'Define case/control criteria for pregnancy loss GWAS',
-        note: 'Recurrent miscarriage: ≥2 losses before 20 wks. Confirm ICD codes, exclusions (chromosomal, uterine).'
+        note: '⏳ Deferred to April 2026. Recurrent miscarriage: ≥2 losses before 20 wks. Confirm ICD codes, exclusions (chromosomal, uterine).'
     },
     {
         id: 20, section: 'gwas', priority: 'high', status: 'todo',
         title: 'Covariate selection for GWAS (age, parity, PC1–10)',
-        note: 'See data/validate_admixture_covariates.py for initial check. Confirm ancestry PCs are uncorrelated with phenotype.'
+        note: '⏳ Deferred to April 2026. See data/validate_admixture_covariates.py for initial check. Confirm ancestry PCs are uncorrelated with phenotype.'
     },
     {
         id: 21, section: 'gwas', priority: 'medium', status: 'todo',
         title: 'Power calculation for expected case/control sample size',
-        note: 'Use QUANTO or pwr R package. Target 80% power at α=5×10⁻⁸ for common variants (MAF≥0.05).'
+        note: '⏳ Deferred to April 2026. Use QUANTO or pwr R package. Target 80% power at α=5×10⁻⁸ for common variants (MAF≥0.05).'
     },
     {
         id: 22, section: 'gwas', priority: 'low', status: 'todo',
         title: 'Prepare GWAS analysis plan document',
-        note: 'Phenotype definitions, QC thresholds, analysis pipeline, primary + secondary endpoints.'
+        note: '⏳ Deferred to April 2026. Phenotype definitions, QC thresholds, analysis pipeline, primary + secondary endpoints.'
     }
 ];
 

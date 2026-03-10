@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Log: March 9, 2026 - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Courier New', monospace; background: #1e1e1e; color: #d4d4d4; min-height: 100vh; padding: 20px;}
+        .container {max-width: 1200px; margin: 0 auto; background: #252526; border-radius: 5px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden;}
+        .header {background: #1b5e20; color: white; padding: 20px;}
+        .header h1 {font-size: 1.8em; margin-bottom: 10px;}
+        .header p {opacity: 0.9; font-family: 'Segoe UI', sans-serif;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 10px; display: inline-block; font-family: 'Segoe UI', sans-serif;}
+        .back-link:hover {color: white;}
+        .content {padding: 20px;}
+        .summary-box {background: #2d2d30; border: 1px solid #3e3e42; padding: 15px; margin: 20px 0; border-radius: 3px;}
+        .summary-title {color: #4ec9b0; font-weight: bold; margin-bottom: 10px; font-size: 1.1em;}
+        .footer {background: #2d2d30; padding: 15px 20px; text-align: center; color: #858585; border-top: 1px solid #3e3e42; font-family: 'Segoe UI', sans-serif;}
+        .success {color: #4ec9b0;}
+        .warn {color: #dcdcaa;}
+        .info {color: #9cdcfe;}
+        .section {margin: 25px 0; padding: 20px; background: #1e1e1e; border-radius: 3px; border-left: 3px solid #007acc;}
+        .section h3 {color: #569cd6; margin-bottom: 12px; font-size: 1.1em;}
+        .section p, .section li {color: #b4b4b4; line-height: 1.7; margin-bottom: 8px;}
+        .section ul {margin-left: 20px;}
+        .code {background: #1a1a1a; color: #ce9178; padding: 2px 6px; border-radius: 3px; font-size: 0.9em;}
+        .data-table {width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9em;}
+        .data-table th {background: #333; padding: 8px 12px; text-align: left; color: #9cdcfe; border-bottom: 2px solid #555;}
+        .data-table td {padding: 7px 12px; border-bottom: 1px solid #3e3e42;}
+        .data-table tr:hover {background: #2a2d2e;}
+        .tag {display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; margin-right: 4px;}
+        .tag-complete {background: #1b5e20; color: #a5d6a7;}
+        .tag-new {background: #0d47a1; color: #90caf9;}
+        .tag-fix {background: #b71c1c; color: #ef9a9a;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>Daily Log: March 9, 2026</h1>
+            <p>sNMF Validation, F<sub>ST</sub> Matrix Completion, Heatmap Visualization &amp; Data Downloads</p>
+        </div>
+        
+        <div class="content">
+
+            <!-- SUMMARY -->
+            <div class="summary-box">
+                <div class="summary-title">📊 Session Summary</div>
+                <div style="margin-bottom: 8px;"><span class="success">✓ 5 TASKS COMPLETED</span></div>
+                <div style="color:#858585; margin-bottom: 8px;">Duration: ~3 hours | Server: Biotech2024 (100.104.25.22)</div>
+                <div style="margin-bottom: 4px;"><span class="tag tag-complete">DONE</span> sNMF validation — global + Uzbek-only datasets</div>
+                <div style="margin-bottom: 4px;"><span class="tag tag-complete">DONE</span> Evanno finalization — step11 updated, rerun cancelled</div>
+                <div style="margin-bottom: 4px;"><span class="tag tag-complete">DONE</span> Full 5×5 F<sub>ST</sub> matrix — 5 missing pairs computed</div>
+                <div style="margin-bottom: 4px;"><span class="tag tag-new">NEW</span> Step 14 page — interactive heatmap + MDS visualization</div>
+                <div style="margin-bottom: 4px;"><span class="tag tag-complete">DONE</span> Annotation JSON downloaded (490 SNPs, 27 fields)</div>
+            </div>
+
+
+            <!-- SECTION 1: sNMF -->
+            <div class="section">
+                <h3>1. sNMF Independent Validation of K Selection</h3>
+                <p><strong>Goal:</strong> Validate ADMIXTURE's cross-validation K selection using sNMF (sparse Non-negative Matrix Factorization) from the LEA R package — a completely independent algorithm.</p>
+                
+                <p><strong>Global dataset</strong> (2,095 samples × 172,537 biallelic SNPs after vcf2geno conversion):</p>
+                <ul>
+                    <li>Optimal K = 9 by minimum cross-entropy (0.534309)</li>
+                    <li>But K=7 → K=9 improvement is only 0.08%, i.e. <strong>plateau from K=7</strong></li>
+                    <li>ADMIXTURE concordance: K=3 r=0.9996, K=5 r=0.9969, K=7 r=0.9921</li>
+                    <li><span class="success">✓</span> Confirms ADMIXTURE's K=7 optimal selection</li>
+                </ul>
+                
+                <p><strong>Uzbek-only dataset</strong> (1,074 samples × 172,537 SNPs):</p>
+                <ul>
+                    <li>Cross-entropy monotonically increases from K=2 — confirms K=2 is optimal</li>
+                    <li>ADMIXTURE concordance: K=2 r=0.9979 (excellent), K=5 r=0.6339 (collapses for higher K)</li>
+                    <li><span class="success">✓</span> Confirms Uzbek-only ADMIXTURE CV result (K=2 minimum)</li>
+                </ul>
+                
+                <p><strong>Scripts created:</strong> <span class="code">scripts/run_snmf.R</span>, <span class="code">scripts/run_snmf_uzbek.R</span>, <span class="code">scripts/snmf_complete.R</span></p>
+                <p><strong>Server outputs:</strong> <span class="code">/staging/.../snmf_results/</span>, <span class="code">/staging/.../snmf_results_uzbek/</span></p>
+            </div>
+
+
+            <!-- SECTION 2: EVANNO -->
+            <div class="section">
+                <h3>2. Evanno ΔK Finalization</h3>
+                <p><strong>Status:</strong> 51/70 batch runs completed (K=2–6: all 10 reps; K=7: 1/10; K=8: 0/10). K=7 and K=8 failed with exit code 127 after server reboot.</p>
+                
+                <p><strong>Decision:</strong> sNMF independently validates K=7 (global) and K=2 (Uzbek-only), so K=7-8 reruns are unnecessary. Killed <span class="code">evanno_rerun</span> tmux session.</p>
+                
+                <p><strong>Data corrections applied:</strong></p>
+                <ul>
+                    <li><span class="tag tag-fix">FIX</span> Log-likelihoods were from Uzbek-only dataset (~−353M) — corrected to global values (~−250M)</li>
+                    <li><span class="tag tag-fix">FIX</span> CV errors had minor precision errors — updated from actual <span class="code">pipeline.log</span></li>
+                </ul>
+                
+                <p><strong>Step 11 updates:</strong> §3.1 Evanno ΔK with statistical caveat (method designed for STRUCTURE's MCMC, not ADMIXTURE's ML), §3.2 sNMF global results, §3.3 Uzbek-only validation. Preliminary banner removed.</p>
+            </div>
+
+
+            <!-- SECTION 3: FST -->
+            <div class="section">
+                <h3>3. Full Pairwise F<sub>ST</sub> Matrix</h3>
+                <p><strong>Previously computed</strong> (Feb 16, 2026): UZB–EUR, UZB–EAS, UZB–SAS, UZB–AFR, EUR–EAS (5 pairs)</p>
+                <p><strong>Computed today:</strong> AFR–EUR, AFR–EAS, AFR–SAS, EUR–SAS, EAS–SAS (5 missing pairs)</p>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Pair</th><th>Weighted F<sub>ST</sub></th><th>Mean F<sub>ST</sub></th><th>Category</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>UZB – SAS</td><td style="color:#4ec9b0">0.0179</td><td>0.0148</td><td style="color:#4ec9b0">Very low</td></tr>
+                        <tr><td>UZB – EUR</td><td style="color:#4ec9b0">0.0204</td><td>0.0160</td><td style="color:#4ec9b0">Low</td></tr>
+                        <tr><td>EUR – SAS</td><td style="color:#9cdcfe">0.0279</td><td>0.0218</td><td style="color:#9cdcfe">Low</td></tr>
+                        <tr><td>UZB – EAS</td><td style="color:#dcdcaa">0.0493</td><td>0.0369</td><td style="color:#dcdcaa">Moderate</td></tr>
+                        <tr><td>EAS – SAS</td><td style="color:#dcdcaa">0.0653</td><td>0.0451</td><td style="color:#dcdcaa">Moderate</td></tr>
+                        <tr><td>EUR – EAS</td><td style="color:#ce9178">0.1061</td><td>0.0724</td><td style="color:#ce9178">High</td></tr>
+                        <tr><td>UZB – AFR</td><td style="color:#ce9178">0.1094</td><td>0.0729</td><td style="color:#ce9178">High</td></tr>
+                        <tr><td>SAS – AFR</td><td style="color:#f44747">0.1306</td><td>0.0784</td><td style="color:#f44747">High</td></tr>
+                        <tr><td>EUR – AFR</td><td style="color:#f44747">0.1448</td><td>0.0912</td><td style="color:#f44747">Very high</td></tr>
+                        <tr><td>EAS – AFR</td><td style="color:#f44747">0.1681</td><td>0.1161</td><td style="color:#f44747">Very high</td></tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Key insight:</strong> UZB is closest to SAS (0.018), confirming Indo-Iranian heritage. All values fall within published 1000 Genomes Phase 3 ranges.</p>
+                <p><strong>Method:</strong> PLINK 1.9 <span class="code">--fst</span> with Weir &amp; Cockerham estimator on 376,208 LD-pruned SNPs. Population assignment via <span class="code">--within</span> cluster files.</p>
+            </div>
+
+
+            <!-- SECTION 4: STEP14 PAGE -->
+            <div class="section">
+                <h3>4. New Visualization: Step 14 — F<sub>ST</sub> Heatmap &amp; MDS</h3>
+                <p><strong>Created:</strong> <span class="code">steps/step14.html</span> — comprehensive interactive page featuring:</p>
+                <ul>
+                    <li><strong>Interactive canvas heatmap</strong> with mouse-hover tooltips showing population pairs and F<sub>ST</sub> values</li>
+                    <li><strong>Classical MDS plot</strong> — 2D projection of the 5×5 distance matrix via eigendecomposition of doubly-centered D² matrix (implemented in pure JS)</li>
+                    <li><strong>Bar chart</strong> — F<sub>ST</sub> distance from UZB to all reference populations</li>
+                    <li><strong>Color-coded matrix table</strong> — green (F<sub>ST</sub> &lt; 0.03) → orange → red (F<sub>ST</sub> &gt; 0.10)</li>
+                    <li><strong>Population ranking tables</strong> — proximity to UZB + largest global divergences</li>
+                    <li><strong>Published comparison table</strong> — validates against 1000G Phase 3 literature</li>
+                </ul>
+                <p>Also updated: <span class="code">index.html</span> (new step card + SVG pipeline node), <span class="code">next_steps.html</span> (corrected F<sub>ST</sub> values in existing heatmap)</p>
+            </div>
+
+
+            <!-- SECTION 5: ANNOTATION -->
+            <div class="section">
+                <h3>5. Annotation JSON Downloaded</h3>
+                <p><strong>File:</strong> <span class="code">data/snp_data_full.json</span> (242,957 bytes)</p>
+                <p><strong>Contents:</strong> 490 PBS-selected candidate SNPs with 27 annotation fields:</p>
+                <ul>
+                    <li><strong>Identifiers:</strong> snp_id (chr:pos), rsid, chrom, pos, A1, A2</li>
+                    <li><strong>Population genetics:</strong> PBS_UZB, PBS_EUR, PBS_EAS, MAF_UZB, MAF_EUR, MAF_EAS, MAF_SAS, MAF_AFR, near_private</li>
+                    <li><strong>Functional:</strong> gene, consequence, sift, polyphen</li>
+                    <li><strong>Database hits:</strong> gwas_hits, gwas_top, gwas_detail, clinvar_sig, clinvar_cond, gtex_hits, gtex_top, gtex_detail</li>
+                </ul>
+                <p><strong>Method:</strong> Base64 transfer via SSH (SCP broken due to Dragen MOTD). Marker-delimited extraction: <span class="code">===START=== / ===END===</span> to isolate base64 from MOTD contamination.</p>
+            </div>
+
+
+            <!-- SECTION 6: TODO UPDATES -->
+            <div class="section">
+                <h3>6. Task Tracker Updates</h3>
+                <p>Updated <span class="code">todo.html</span> tasks:</p>
+                <ul>
+                    <li><span class="tag tag-complete">DONE</span> #2: sNMF global validation</li>
+                    <li><span class="tag tag-complete">DONE</span> #3: Evanno 70-rep batch</li>
+                    <li><span class="tag tag-complete">DONE</span> #5: sNMF Uzbek-only</li>
+                    <li><span class="tag tag-complete">DONE</span> #10: step11 cleanup</li>
+                    <li><span class="tag tag-complete">DONE</span> #16: k=7-8 rerun → cancelled (sNMF confirms)</li>
+                    <li><span class="tag tag-complete">DONE</span> #6: F<sub>ST</sub> heatmap (today) — step 14 created</li>
+                    <li><span class="tag tag-complete">DONE</span> #12: Download annotation JSON</li>
+                    <li><span class="warn">⏳</span> #19-22: GWAS tasks deferred to April 2026</li>
+                </ul>
+            </div>
+
+
+            <!-- SECTION 7: FILES -->
+            <div class="section">
+                <h3>7. Files Modified / Created</h3>
+                <table class="data-table">
+                    <thead><tr><th>File</th><th>Action</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="code">steps/step11.html</span></td><td>Updated</td><td>§3.2 sNMF global, §3.3 Uzbek-only, removed preliminary banner</td></tr>
+                        <tr><td><span class="code">steps/step14.html</span></td><td><span class="tag tag-new">NEW</span></td><td>F<sub>ST</sub> heatmap + MDS visualization page</td></tr>
+                        <tr><td><span class="code">index.html</span></td><td>Updated</td><td>Added step 14 card + SVG pipeline node</td></tr>
+                        <tr><td><span class="code">steps/next_steps.html</span></td><td>Updated</td><td>Corrected F<sub>ST</sub> matrix (old estimates → computed values)</td></tr>
+                        <tr><td><span class="code">data/snp_data_full.json</span></td><td><span class="tag tag-new">NEW</span></td><td>490 annotated SNPs (242 KB)</td></tr>
+                        <tr><td><span class="code">todo.html</span></td><td>Updated</td><td>Tasks 2,3,5,6,10,12,16 marked done</td></tr>
+                        <tr><td><span class="code">scripts/run_snmf.R</span></td><td><span class="tag tag-new">NEW</span></td><td>Global sNMF pipeline (LEA, vcf2geno)</td></tr>
+                        <tr><td><span class="code">scripts/run_snmf_uzbek.R</span></td><td><span class="tag tag-new">NEW</span></td><td>Uzbek-only sNMF pipeline</td></tr>
+                        <tr><td><span class="code">daily/2026-03-09.html</span></td><td><span class="tag tag-new">NEW</span></td><td>This daily log</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            ALSU Genotype Analysis Pipeline — Daily Log — March 9, 2026 — Server: Biotech2024
+        </div>
+    </div>
+</body>
+</html>

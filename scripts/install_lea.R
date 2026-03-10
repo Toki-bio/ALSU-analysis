@@ -1,0 +1,11 @@
+user_lib <- Sys.getenv("R_LIBS_USER")
+if (user_lib == "") user_lib <- file.path(Sys.getenv("HOME"), "R", "x86_64-pc-linux-gnu-library", paste0(R.version$major, ".", strsplit(R.version$minor, "\\.")[[1]][1]))
+dir.create(user_lib, recursive = TRUE, showWarnings = FALSE)
+.libPaths(c(user_lib, .libPaths()))
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager", repos = "https://cloud.r-project.org", lib = user_lib)
+BiocManager::install("LEA", ask = FALSE, update = FALSE, lib = user_lib)
+cat("LEA installed successfully\n")
+library(LEA)
+cat("LEA version:", as.character(packageVersion("LEA")), "\n")
