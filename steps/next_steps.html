@@ -139,15 +139,15 @@
         <li>F<sub>ST</sub>: UZB closest to SAS (0.018), then EUR (0.020), then EAS (0.049)</li>
         <li>ADMIXTURE K=2&ndash;8: <strong>Uzbek-only</strong> K=2 optimal (CV monotonically increases); <strong>Global</strong> K=5&ndash;8 plateau (CV=0.294, with all 2,548 1000G)</li>
         <li>PBS multi-population analysis: 490 Uzbek-specific SNPs, 456 with PBS &ge; 0.3</li>
-        <li>LD pruning: 10.8M &rarr; 380K independent SNPs for population genetics</li>
-        <li><strong>ROH &amp; IBD:</strong> 134,080 ROH segments, median F<sub>ROH</sub>=0.032. 9,700 related pairs. See <a href="step15.html">Step 15</a></li>
+        <li>LD pruning: 5.41M &rarr; 88.7K independent SNPs for population genetics</li>
+        <li><strong>ROH &amp; IBD:</strong> 33,704 ROH segments, median F<sub>ROH</sub>=0.016. 6,368 related pairs (PI_HAT &ge; 0.05), 428 related (PI_HAT &gt; 0.0884). See <a href="step15.html">Step 15</a></li>
     </ul>
 </div>
 
 <div class="tier-card">
     <h4><span class="status-done">FINALIZED</span> &mdash; All background jobs completed</h4>
     <ul>
-        <li><strong>Evanno &Delta;K</strong>: 51/70 runs completed (K=2&ndash;6 &times; 10 reps). K=7&ndash;8 cancelled (server reboot). sNMF independently validates. &Delta;K peaks at K=3. See <a href="step11.html">Step 11 &sect;3.1</a></li>
+        <li><strong>Evanno &Delta;K</strong>: V2 complete (K=2&ndash;8 &times; 10 reps, 70/70 runs). sNMF independently validates. &Delta;K peaks at K=3. See <a href="step11.html">Step 11 &sect;3.1</a></li>
         <li><strong>Global ADMIXTURE</strong> &mdash; <span class="status-done">V2 COMPLETE</span>. K=5&ndash;8 plateau (CV=0.294). 3,595 samples (2,548 1000G + 1,047 UZB). See <a href="step11.html">Step 11</a></li>
         <li><strong>sNMF validation</strong> &mdash; <span class="status-done">V2 COMPLETE</span>. K=2 Uzbek-only (monotonic CE increase, 0.425). Global sNMF V1-only. See <a href="step11.html">Step 11 &sect;3.2&ndash;3.3</a></li>
     </ul>
@@ -262,8 +262,8 @@
         Median F<sub>ROH</sub> = 0.016. See <a href="step15.html">Step 15</a> for V2 results.
     </p>
     <p>
-        IBD analysis (PLINK <code>--genome</code>, 1,155 pre-dedup samples) identified 9,700 related pairs (PI_HAT &gt; 0.125),
-        including 65 duplicate/MZ pairs, 106 first-degree, and 7,952 second-degree relatives — confirming strong founder effects.
+        IBD analysis (V2: PLINK <code>--genome</code>, 1,047 post-QC samples) identified 6,368 related pairs (PI_HAT &ge; 0.05),
+        of which 428 are related at PI_HAT &gt; 0.0884: 0 duplicates, 3 first-degree, 2 second-degree, and 423 third-degree relatives.
     </p>
     <p><strong>Clinical relevance:</strong> F<sub>ROH</sub> will be used as a covariate in the pregnancy loss GWAS.
     Mixed linear models (BOLT-LMM/SAIGE) are essential given the extensive cryptic relatedness.</p>
@@ -279,7 +279,7 @@
 </div>
 
 <div class="success">
-    <strong>&#10003; Validation Complete</strong> &mdash; 1,038 / 1,074 genotyped samples matched to phenotype covariates (96.6% match rate).
+    <strong>&#10003; Validation Complete</strong> &mdash; 1,007 / 1,047 genotyped samples matched to phenotype covariates (96.2% match rate).
     <br>ID mapping: genotype IDs (<code>PREFIX_realID</code>) &rarr; phenotype IDs (<code>realID</code>) by stripping numeric prefix.
 </div>
 
@@ -479,8 +479,8 @@
         IBD analysis (PLINK <code>--genome</code>) completed on 1,155 pre-dedup samples (666,435 pairwise comparisons).
     </p>
     <ul>
-        <li><strong>9,700 related pairs</strong> (PI_HAT &gt; 0.125): 65 duplicates, 106 first-degree, 7,952 second-degree, 3,645 third-degree</li>
-        <li>PI_HAT distribution: 97.7% pairs &lt; 0.05 (unrelated), but heavy tail reveals extensive cryptic relatedness</li>
+        <li><strong>6,368 related pairs</strong> (PI_HAT &ge; 0.05); 428 at PI_HAT &gt; 0.0884: 0 duplicates, 3 first-degree, 2 second-degree, 423 third-degree</li>
+        <li>PI_HAT distribution: heavy tail reveals cryptic relatedness consistent with founder effects</li>
         <li>Cross-reference with ADMIXTURE K=2 (Q1 mean=0.650, Q2 mean=0.350) shows F<sub>ROH</sub> is slightly elevated at ancestry extremes, consistent with subgroup endogamy</li>
     </ul>
     <p><strong>Remaining:</strong></p>

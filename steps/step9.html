@@ -223,7 +223,7 @@
                         </table>
 
                         <div class="important">
-                            <strong>Note on Sample Count:</strong> This analysis used 1,199 Uzbek samples from the pre-QC genotyped dataset (<code>uzbek_data.ped</code>), not the 1,074 post-imputation final dataset. The Fst analysis was performed in October–November 2025, concurrent with the QC pipeline (Steps 1–6). The 125 additional samples include those later removed for missingness, IBD duplicates, and other QC filters. For downstream analyses requiring consistency with the GWAS dataset, F<sub>ST</sub> should be recalculated on the final 1,074 samples.
+                            <strong>Note on Sample Count:</strong> This analysis used 1,199 Uzbek samples from the pre-QC genotyped dataset (<code>uzbek_data.ped</code>), not the 1,047 post-imputation final dataset (V2). The Fst analysis was performed in October–November 2025, concurrent with the QC pipeline (Steps 1–6). The additional samples include those later removed for missingness, IBD duplicates, and other QC filters. For downstream analyses requiring consistency with the GWAS dataset, F<sub>ST</sub> should be recalculated on the final 1,047 samples.
                         </div>
                     </div>
                 </div>
@@ -848,7 +848,7 @@ CHR     SNP     POS     NMISS   FST
                         <ul>
                             <li><strong>Gene Annotation:</strong> Annotate the 256 extreme F<sub>ST</sub> loci (F<sub>ST</sub> &gt; 0.5) with nearest genes using ANNOVAR/VEP</li>
                             <li><strong>Fst Manhattan Plot:</strong> Create a genome-wide Manhattan plot of F<sub>ST</sub> values for visual identification of differentiation peaks</li>
-                            <li><strong>Recalculate on Final Dataset:</strong> Re-run F<sub>ST</sub> using the post-QC 1,074 samples for consistency with GWAS</li>
+                            <li><strong>Recalculate on Final Dataset:</strong> Re-run F<sub>ST</sub> using the post-QC 1,047 samples (V2) for consistency with GWAS</li>
                             <li><strong>Cross-reference with GWAS:</strong> Flag any GWAS hits that overlap with high-F<sub>ST</sub> regions</li>
                             <li><strong>Compare with EAS/SAS:</strong> Calculate F<sub>ST</sub> against East Asian and South Asian 1000G populations to decompose Uzbek ancestry components</li>
                             <li><strong>ADMIXTURE Integration:</strong> Combine F<sub>ST</sub> with ADMIXTURE results (Step 10) for comprehensive ancestry characterization</li>

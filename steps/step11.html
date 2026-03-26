@@ -606,19 +606,20 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
 
             <div class="stat-box">
                 <span class="stat-label">Finding 1:</span>
-                <span class="stat-value">The Uzbek cohort harbors a <strong>unique Central Asian ancestral component</strong> (70.2%)
-                not captured by any 1000G reference population &mdash; this justifies population-specific reference panels.</span>
+                <span class="stat-value">At K=5 the Uzbek cohort is predominantly <strong>European (48.8%)</strong> and
+                <strong>East Asian (28.8%)</strong>, with a substantial <strong>South Asian (19.2%)</strong> component
+                &mdash; a three-way admixture not captured by any single 1000G reference population.</span>
             </div>
 
             <div class="stat-box">
                 <span class="stat-label">Finding 2:</span>
-                <span class="stat-value">East Asian ancestry (~12.3% mean) represents <strong>Turkic-Mongol steppe heritage</strong>,
-                varying 7.4-fold across regions. This variation is a potential confounder for disease association studies.</span>
+                <span class="stat-value">East Asian ancestry (~28.8% mean) represents <strong>Turkic-Mongol steppe heritage</strong>,
+                varying across regions. This variation is a potential confounder for disease association studies.</span>
             </div>
 
             <div class="stat-box">
                 <span class="stat-label">Finding 3:</span>
-                <span class="stat-value">Western Eurasian admixture (EUR + SAS, ~12.7%) reflects the <strong>Silk Road
+                <span class="stat-value">Western Eurasian admixture (EUR + SAS, ~68.0%) reflects the <strong>Silk Road
                 Indo-European substrate</strong> with Sogdian and Indo-Aryan contributions, strongest in Fergana Valley.</span>
             </div>
 
@@ -890,7 +891,7 @@ function updateInterpretation() {
     document.getElementById('kInterpretation').innerHTML = kInterpretations[currentK];
 }
 
-// ===== UZBEK PIE CHART (K=7) =====
+// ===== UZBEK PIE CHART (K=5) =====
 function drawUzbekPie() {
     const canvas = document.getElementById('uzbekPieChart');
     const ctx = canvas.getContext('2d');
@@ -899,10 +900,10 @@ function drawUzbekPie() {
 
     ctx.clearRect(0, 0, W, H);
 
-    const values = [0.7024, 0.1232, 0.0452, 0.0439, 0.0430, 0.0385, 0.0040];
+    const values = [0.488, 0.288, 0.192, 0.029, 0.003];
     const colors = ['#9575cd','#64b5f6','#4db6ac','#ffb74d','#81c784'];
-    const labels = ['Central Asian (70.2%)','East Asian (12.3%)','N. European (4.5%)',
-                     'CA minor (4.4%)','S. European (4.3%)','South Asian (3.9%)','African (0.4%)'];
+    const labels = ['European (48.8%)','East Asian (28.8%)','South Asian (19.2%)',
+                     'African (2.9%)','American (0.3%)'];
 
     let startAngle = -Math.PI / 2;
     values.forEach((val, i) => {
