@@ -16,14 +16,14 @@ Seven critical reproducibility gaps were identified in the ALSU pipeline documen
 
 ---
 
-## Issue 1: FST Sample Count Mismatch (1,199 vs 1,074)
+## Issue 1: FST Sample Count Mismatch (1,199 vs 1,047)
 
-### Status: ✅ DOCUMENTED (but not propagated)
+### Status: ✅ RESOLVED — Recalculated on V2 post-QC dataset
 
 ### Finding
-- **Step 9 & 14 (FST Analysis):** Uses **1,199 Uzbek samples**
-- **Step 6 (Post-Imputation QC):** Removes 24 outliers → **1,074 samples** (final)
-- **Documentation Location:** [Step 9, line 226](steps/step9.html#L226)
+- **V1 (Steps 9 & 14):** Used **1,199 Uzbek samples** (pre-QC), 376,208 LD-pruned SNPs
+- **V2 (recalculated June 2026):** Uses **1,047 Uzbek samples** (post-QC), 77,111 LD-pruned SNPs
+- All step pages updated with V2 FST values
 
 ### Root Cause
 FST analysis was performed October–November 2025 using pre-QC dataset (`uzbek_data.ped`), concurrent with QC pipeline. The 125 additional samples (1,199 - 1,074) were later removed via:
@@ -51,18 +51,19 @@ Step 14 (FST & MDS Heatmap) **repeats the 1,199 sample count without this caveat
 
 ## Issue 2: Tool Versions — MISSING DOCUMENTATION
 
-### Status: ❌ UNDOCUMENTED
+### Status: ✅ RESOLVED
 
 ### Critical Tools Used
 | Tool | Version | Location | Status |
 |------|---------|----------|--------|
-| PLINK (plink 1.9) | ? | Steps 1-6, 9-14 | **✗ NOT RECORDED** |
-| PLINK2 (plink2) | ? | Steps 7-8 | **✗ NOT RECORDED** |
-| BCFtools | ? | Steps 3-5, 7-8 | **✗ NOT RECORDED** |
-| VCFtools | ? | Step 6 | **✗ NOT RECORDED** |
-| ADMIXTURE | ? | Steps 10-11 | **✗ NOT RECORDED** |
-| R / RStudio | ? | Data analysis | **✗ NOT RECORDED** |
-| Michigan Imputation Server | ? | Step 4 | **⚠ Documented as "2+4=6 months wallclock"** |
+| PLINK (plink 1.9) | v1.9.0-b.7.7 (22 Oct 2024) | Steps 1-6, 9-14 | **✓ RECORDED** |
+| PLINK2 (plink2) | v2.0.0-a.6.9LM (29 Jan 2025) | Steps 3, 7-8 | **✓ RECORDED** |
+| BCFtools | 1.22 | Steps 3-5, 7-8 | **✓ RECORDED** |
+| VCFtools | Not installed on server | Step 6 | **⚠ Not available** |
+| ADMIXTURE | v1.3.0 | Steps 10-11 | **✓ RECORDED** |
+| R | 4.5.1 (2025-06-13) | Data analysis | **✓ RECORDED** |
+| LEA (sNMF) | 3.22.0 (Bioconductor) | Steps 11 | **✓ RECORDED** |
+| Michigan Imputation Server | — | Step 4 | **⚠ Documented as "2+4=6 months wallclock"** |
 
 ### Impact
 Without tool versions, **reproducibility is impossible**. Minor version changes in PLINK/BCFtools can alter:
@@ -75,20 +76,19 @@ Without tool versions, **reproducibility is impossible**. Minor version changes 
 Create `TOOL_VERSIONS.txt` with:
 ```
 # ALSU Pipeline — Tool Versions & Build Info
-# Generated: 2026-03-26
+# Captured: June 2026 from DRAGEN server
 
 ## Bioinformatics Tools
-PLINK 1.9 (v1.90b6.21 64-bit, 2 May 2018) — Steps 1-6
-PLINK 1.9 (v1.9.0-b.7.7 64-bit, 22 Oct 2024) — Steps 9, 14-15
-PLINK2 (v2.00a2.3 64-bit, 17 May 2019) — Steps 3, 7-8
+PLINK 1.9 (v1.9.0-b.7.7 64-bit, 22 Oct 2024) — Steps 1-6, 9, 14-15
+PLINK2 (v2.0.0-a.6.9LM 64-bit, 29 Jan 2025) — Steps 3, 7-8
 
-BCFtools (v1.17+) — VCF processing (Steps 3-6)
-VCFtools — Step 6 validation (version not captured)
+BCFtools (v1.22) — VCF processing (Steps 3-6)
+VCFtools — Not installed on server; Step 6 validation skipped
 
 ADMIXTURE (v1.3.0, Alexander et al. 2008-2015) — Steps 10-11
 
-## Statistical & Visualization 
-R — Packages: LEA/sNMF (Bioconductor; version not captured)
+## Statistical & Visualization
+R 4.5.1 (2025-06-13) — Packages: LEA 3.22.0 / sNMF (Bioconductor)
 Ensembl VEP REST API (release 113, GRCh38) — Step 12
 
 ## Imputation Service

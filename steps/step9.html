@@ -573,6 +573,12 @@ Weighted Fst estimate: 0.0204295</div>
                                 <li><strong>Valid markers:</strong> 376,206 (2 excluded due to invariant alleles)</li>
                             </ul>
                         </div>
+                        <div class="info" style="margin-top:12px;">
+                            <strong>V2 update (1,047 post-QC samples, 77,111 LD-pruned SNPs):</strong>
+                            UZB–EUR weighted F<sub>ST</sub> = <strong>0.0145</strong> (mean 0.0100).
+                            The lower value reflects both the stricter QC (1,047 vs 1,199 samples) and
+                            the more aggressively LD-pruned SNP set. See <a href="step14.html">Step 14</a> for the full 5-population matrix.
+                        </div>
                     </div>
                 </div>
 
@@ -713,7 +719,8 @@ Weighted Fst estimate: 0.0204295</div>
                         <table>
                             <tr><th>Population Pair</th><th>Typical F<sub>ST</sub></th><th>Source</th></tr>
                             <tr><td>Within-European (e.g., CEU vs TSI)</td><td>0.002–0.006</td><td>1000 Genomes</td></tr>
-                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (this study)</strong></td><td><strong>0.020</strong></td><td><strong>This analysis</strong></td></tr>
+                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (V1, 376K SNPs)</strong></td><td><strong>0.020</strong></td><td><strong>This analysis</strong></td></tr>
+                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (V2, 77K SNPs)</strong></td><td><strong>0.015</strong></td><td><strong>V2 recalculation</strong></td></tr>
                             <tr><td>EUR vs SAS (South Asian)</td><td>~0.020–0.040</td><td>1000 Genomes</td></tr>
                             <tr><td>EUR vs EAS (East Asian)</td><td>~0.10–0.11</td><td>1000 Genomes</td></tr>
                             <tr><td>EUR vs AFR (African)</td><td>~0.12–0.15</td><td>1000 Genomes</td></tr>
@@ -810,8 +817,8 @@ CHR     SNP     POS     NMISS   FST
                             </tr>
                             <tr>
                                 <td><strong>Genome-wide Weighted F<sub>ST</sub></strong></td>
-                                <td>0.0204</td>
-                                <td>Uzbek are closer to EUR than SAS, reflecting shared Eurasian ancestry</td>
+                                <td>0.0204 (V1) → 0.0145 (V2)</td>
+                                <td>Uzbek are equidistant from EUR and SAS on V2 data (77K SNPs, 1,047 samples)</td>
                             </tr>
                             <tr>
                                 <td><strong>Extreme outliers (F<sub>ST</sub> &gt; 0.5)</strong></td>

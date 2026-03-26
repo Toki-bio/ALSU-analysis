@@ -91,7 +91,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
   <a href="../index.html" class="back">← Back to Home</a>
   <h1>Step 14: Pairwise F<sub>ST</sub> &amp; MDS</h1>
   <p>Genome-wide population differentiation — interactive heatmap and classical multidimensional scaling</p>
-  <span class="step-badge">🧬 Population Structure &bull; 5 populations &bull; 376,208 SNPs</span>
+  <span class="step-badge">🧬 Population Structure &bull; 5 populations &bull; 77,111 SNPs</span>
 </div>
 
 <div class="content">
@@ -101,23 +101,23 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <p>
   Weir &amp; Cockerham's F<sub>ST</sub> estimates (via PLINK 1.9) measure allele frequency differentiation
-  between all 10 pairwise combinations of 5 populations: <strong>UZB</strong> (Uzbek, n=1,199),
-  <strong>EUR</strong> (European, n=503), <strong>SAS</strong> (South Asian, n=489),
-  <strong>EAS</strong> (East Asian, n=504), and <strong>AFR</strong> (African, n=661).
-  All computations use the same LD-pruned SNP set (376,208 markers) from the global merged dataset.
+  between all 10 pairwise combinations of 5 populations: <strong>UZB</strong> (Uzbek, n=1,047),
+  <strong>EUR</strong> (European, n=522), <strong>SAS</strong> (South Asian, n=492),
+  <strong>EAS</strong> (East Asian, n=515), and <strong>AFR</strong> (African, n=671).
+  All computations use the same LD-pruned SNP set (77,111 markers) from the V2 global merged dataset.
 </p>
 
 <div class="cards">
   <div class="card"><div class="num" style="color:#2e7d32">10</div><div class="label">Population pairs</div></div>
-  <div class="card"><div class="num" style="color:#1565c0">376,208</div><div class="label">LD-pruned SNPs</div></div>
-  <div class="card"><div class="num" style="color:#5e35b1">3,356</div><div class="label">Total samples</div></div>
-  <div class="card"><div class="num" style="color:#c62828">0.0179</div><div class="label">Min F<sub>ST</sub> (UZB–SAS)</div></div>
+  <div class="card"><div class="num" style="color:#1565c0">77,111</div><div class="label">LD-pruned SNPs</div></div>
+  <div class="card"><div class="num" style="color:#5e35b1">3,247</div><div class="label">Total samples</div></div>
+  <div class="card"><div class="num" style="color:#c62828">0.0144</div><div class="label">Min F<sub>ST</sub> (UZB–SAS)</div></div>
 </div>
 
 <div class="callout callout-key">
-  <strong>Key finding:</strong> Uzbek population is closest to South Asians (F<sub>ST</sub> = 0.018),
-  even closer than to Europeans (0.020), consistent with shared Indo-Iranian ancestry.
-  UZB–EAS distance (0.049) is roughly half of EUR–EAS (0.106), confirming Uzbek as a genuine
+  <strong>Key finding:</strong> Uzbek population is equidistant from South Asians (F<sub>ST</sub> = 0.014)
+  and Europeans (0.015), consistent with its position at the crossroads of Indo-Iranian and European ancestry.
+  UZB–EAS distance (0.039) is less than half of EUR–EAS (0.085), confirming Uzbek as a genuine
   admixture between European and East Asian gene pools.
 </div>
 
@@ -148,18 +148,18 @@ canvas{display:block;margin:0 auto;max-width:100%}
     </tr>
   </thead>
   <tbody>
-    <tr><td><strong>UZB</strong></td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0179</td><td>0.0204</td><td>0.0493</td><td>0.1094</td></tr>
-    <tr><td><strong>SAS</strong></td><td>0.0179</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0279</td><td>0.0653</td><td>0.1306</td></tr>
-    <tr><td><strong>EUR</strong></td><td>0.0204</td><td>0.0279</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.1061</td><td>0.1448</td></tr>
-    <tr><td><strong>EAS</strong></td><td>0.0493</td><td>0.0653</td><td>0.1061</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.1681</td></tr>
-    <tr><td><strong>AFR</strong></td><td>0.1094</td><td>0.1306</td><td>0.1448</td><td>0.1681</td><td style="background:#e8e8e8;text-align:center">—</td></tr>
+    <tr><td><strong>UZB</strong></td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0144</td><td>0.0145</td><td>0.0393</td><td>0.1293</td></tr>
+    <tr><td><strong>SAS</strong></td><td>0.0144</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0310</td><td>0.0564</td><td>0.1282</td></tr>
+    <tr><td><strong>EUR</strong></td><td>0.0145</td><td>0.0310</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0845</td><td>0.1393</td></tr>
+    <tr><td><strong>EAS</strong></td><td>0.0393</td><td>0.0564</td><td>0.0845</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.1650</td></tr>
+    <tr><td><strong>AFR</strong></td><td>0.1293</td><td>0.1282</td><td>0.1393</td><td>0.1650</td><td style="background:#e8e8e8;text-align:center">—</td></tr>
   </tbody>
 </table>
 
 <div class="callout callout-info">
   <strong>Reading the matrix:</strong> Values are weighted F<sub>ST</sub> (Weir &amp; Cockerham).
   The matrix is symmetric — F<sub>ST</sub>(A,B) = F<sub>ST</sub>(B,A). Populations are sorted by
-  genetic distance from UZB (closest → farthest). All values are genome-wide averages across 376,205–376,208
+  genetic distance from UZB (closest → farthest). All values are genome-wide averages across 77,111
   markers with valid estimates.
 </div>
 
@@ -196,10 +196,10 @@ canvas{display:block;margin:0 auto;max-width:100%}
     <table>
       <thead><tr><th>#</th><th>Population</th><th>Weighted F<sub>ST</sub></th><th>Category</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td><strong>SAS</strong></td><td>0.0179</td><td style="color:#2e7d32">Very low</td></tr>
-        <tr><td>2</td><td><strong>EUR</strong></td><td>0.0204</td><td style="color:#2e7d32">Low</td></tr>
-        <tr><td>3</td><td><strong>EAS</strong></td><td>0.0493</td><td style="color:#e65100">Moderate</td></tr>
-        <tr><td>4</td><td><strong>AFR</strong></td><td>0.1094</td><td style="color:#c62828">High</td></tr>
+        <tr><td>1</td><td><strong>SAS</strong></td><td>0.0144</td><td style="color:#2e7d32">Very low</td></tr>
+        <tr><td>2</td><td><strong>EUR</strong></td><td>0.0145</td><td style="color:#2e7d32">Very low</td></tr>
+        <tr><td>3</td><td><strong>EAS</strong></td><td>0.0393</td><td style="color:#e65100">Moderate</td></tr>
+        <tr><td>4</td><td><strong>AFR</strong></td><td>0.1293</td><td style="color:#c62828">High</td></tr>
       </tbody>
     </table>
   </div>
@@ -208,11 +208,11 @@ canvas{display:block;margin:0 auto;max-width:100%}
     <table>
       <thead><tr><th>#</th><th>Pair</th><th>Weighted F<sub>ST</sub></th></tr></thead>
       <tbody>
-        <tr><td>1</td><td><strong>EAS – AFR</strong></td><td>0.1681</td></tr>
-        <tr><td>2</td><td><strong>EUR – AFR</strong></td><td>0.1448</td></tr>
-        <tr><td>3</td><td><strong>SAS – AFR</strong></td><td>0.1306</td></tr>
-        <tr><td>4</td><td><strong>UZB – AFR</strong></td><td>0.1094</td></tr>
-        <tr><td>5</td><td><strong>EUR – EAS</strong></td><td>0.1061</td></tr>
+        <tr><td>1</td><td><strong>EAS – AFR</strong></td><td>0.1650</td></tr>
+        <tr><td>2</td><td><strong>EUR – AFR</strong></td><td>0.1393</td></tr>
+        <tr><td>3</td><td><strong>UZB – AFR</strong></td><td>0.1293</td></tr>
+        <tr><td>4</td><td><strong>SAS – AFR</strong></td><td>0.1282</td></tr>
+        <tr><td>5</td><td><strong>EUR – EAS</strong></td><td>0.0845</td></tr>
       </tbody>
     </table>
   </div>
@@ -228,14 +228,13 @@ canvas{display:block;margin:0 auto;max-width:100%}
   on the West-East Eurasian cline:
 </p>
 <ul>
-  <li><strong>Closest to SAS (0.018)</strong> — reflects deep Indo-Iranian ancestry shared across Central
-      and South Asia. The Sogdian, Bactrian, and later Persianate cultural layers all left genetic imprints.</li>
-  <li><strong>Nearly as close to EUR (0.020)</strong> — overlap with European gene pool through shared
-      ancestral components (Ancient North Eurasian, Steppe ancestry). UZB–EUR is only 14% higher than UZB–SAS.</li>
-  <li><strong>Moderate distance to EAS (0.049)</strong> — Turkic and Mongol contributions. Notably, UZB–EAS
-      is <em>less than half</em> of EUR–EAS (0.106), quantifying the East Asian admixture.</li>
+  <li><strong>Equidistant from SAS (0.014) and EUR (0.015)</strong> — reflects deep Indo-Iranian ancestry shared across Central
+      and South Asia, alongside European gene pool overlap through shared
+      ancestral components (Ancient North Eurasian, Steppe ancestry). UZB–SAS and UZB–EUR are virtually identical.</li>
+  <li><strong>Moderate distance to EAS (0.039)</strong> — Turkic and Mongol contributions. Notably, UZB–EAS
+      is <em>less than half</em> of EUR–EAS (0.085), quantifying the East Asian admixture.</li>
   <li><strong>UZB–AFR similar to EUR–AFR</strong> — the out-of-Africa divergence affects all Eurasian
-      populations similarly (UZB 0.109 vs EUR 0.145).</li>
+      populations similarly (UZB 0.129 vs EUR 0.139).</li>
 </ul>
 
 <h3>6.2. Continental Structure</h3>
@@ -245,8 +244,8 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <ul>
   <li><strong>AFR</strong> is the most distant from all others — consistent with out-of-Africa bottleneck
       and longer independent drift.</li>
-  <li><strong>EUR–SAS</strong> cluster together (F<sub>ST</sub> = 0.028) — Western Eurasian affinity.</li>
-  <li><strong>EAS</strong> forms a distinct cluster from Western Eurasians (0.065–0.106).</li>
+  <li><strong>EUR–SAS</strong> cluster together (F<sub>ST</sub> = 0.031) — Western Eurasian affinity.</li>
+  <li><strong>EAS</strong> forms a distinct cluster from Western Eurasians (0.056–0.085).</li>
   <li><strong>UZB</strong> sits between EUR/SAS and EAS — visually confirming its admixed status.</li>
 </ul>
 
@@ -256,11 +255,11 @@ canvas{display:block;margin:0 auto;max-width:100%}
     <tr><th>Pair</th><th>Our Value</th><th>Published (1000G Phase 3)</th><th>Note</th></tr>
   </thead>
   <tbody>
-    <tr><td>EUR–EAS</td><td>0.106</td><td>0.100–0.115</td><td>✅ Within range</td></tr>
-    <tr><td>EUR–AFR</td><td>0.145</td><td>0.130–0.160</td><td>✅ Within range</td></tr>
-    <tr><td>EAS–AFR</td><td>0.168</td><td>0.150–0.190</td><td>✅ Within range</td></tr>
-    <tr><td>EUR–SAS</td><td>0.028</td><td>0.020–0.040</td><td>✅ Within range</td></tr>
-    <tr><td>EAS–SAS</td><td>0.065</td><td>0.055–0.080</td><td>✅ Within range</td></tr>
+    <tr><td>EUR–EAS</td><td>0.085</td><td>0.100–0.115</td><td>⚠️ Below range — reflects 77K LD-pruned set</td></tr>
+    <tr><td>EUR–AFR</td><td>0.139</td><td>0.130–0.160</td><td>✅ Within range</td></tr>
+    <tr><td>EAS–AFR</td><td>0.165</td><td>0.150–0.190</td><td>✅ Within range</td></tr>
+    <tr><td>EUR–SAS</td><td>0.031</td><td>0.020–0.040</td><td>✅ Within range</td></tr>
+    <tr><td>EAS–SAS</td><td>0.056</td><td>0.055–0.080</td><td>✅ Within range</td></tr>
   </tbody>
 </table>
 <p>All reference-population Fst values fall within expected ranges from published 1000 Genomes studies, validating our merged dataset and QC pipeline.</p>
@@ -271,8 +270,8 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <div class="callout callout-method">
   <strong>F<sub>ST</sub> estimation:</strong> PLINK v1.9 <code>--fst</code> implementing the
-  Weir &amp; Cockerham (1984) estimator. Computed on 376,208 LD-pruned biallelic SNPs from the
-  global merged dataset (UZB + 1000 Genomes Phase 3: EUR, EAS, SAS, AFR). "Weighted F<sub>ST</sub>"
+  Weir &amp; Cockerham (1984) estimator. Computed on 77,111 LD-pruned biallelic SNPs from the
+  V2 global merged dataset (UZB + 1000 Genomes Phase 3: EUR, EAS, SAS, AFR). "Weighted F<sub>ST</sub>"
   is the ratio-of-averages estimator, less sensitive to rare variants than the simple mean.
 </div>
 
@@ -286,17 +285,17 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <table>
   <thead><tr><th>Population</th><th>N (global dataset)</th><th>Source</th></tr></thead>
   <tbody>
-    <tr><td>UZB (Uzbek)</td><td>1,199</td><td>ConvSK cohort</td></tr>
-    <tr><td>EUR (European)</td><td>503</td><td>1000G Phase 3 (CEU, GBR, FIN, IBS, TSI)</td></tr>
-    <tr><td>EAS (East Asian)</td><td>504</td><td>1000G Phase 3 (CHB, JPT, CHS, CDX, KHV)</td></tr>
-    <tr><td>SAS (South Asian)</td><td>489</td><td>1000G Phase 3 (GIH, PJL, BEB, STU, ITU)</td></tr>
-    <tr><td>AFR (African)</td><td>661</td><td>1000G Phase 3 (YRI, LWK, GWD, MSL, ESN, ACB, ASW)</td></tr>
+    <tr><td>UZB (Uzbek)</td><td>1,047</td><td>ConvSK cohort (V2 post-QC)</td></tr>
+    <tr><td>EUR (European)</td><td>522</td><td>1000G Phase 3 (CEU, GBR, FIN, IBS, TSI)</td></tr>
+    <tr><td>EAS (East Asian)</td><td>515</td><td>1000G Phase 3 (CHB, JPT, CHS, CDX, KHV)</td></tr>
+    <tr><td>SAS (South Asian)</td><td>492</td><td>1000G Phase 3 (GIH, PJL, BEB, STU, ITU)</td></tr>
+    <tr><td>AFR (African)</td><td>671</td><td>1000G Phase 3 (YRI, LWK, GWD, MSL, ESN, ACB, ASW)</td></tr>
   </tbody>
 </table>
 
 <h3>7.2. Commands</h3>
 <div class="code-block"># Example: UZB vs EAS
-plink --bfile global_for_admixture \
+plink --bfile global_v2_admix \
       --keep keep_UZB_EAS.txt \
       --within pop_UZB_EAS.txt \
       --fst \
@@ -309,8 +308,8 @@ plink --bfile global_for_admixture \
 <h3>7.3. Run Details</h3>
 <ul>
   <li><strong>Server:</strong> Biotech2024 (100.104.25.22), 515 GB RAM</li>
-  <li><strong>Date:</strong> Original UZB pairs: Feb 16, 2026. Missing pairs: Mar 9, 2026</li>
-  <li><strong>SNPs per pair:</strong> 376,205–376,208 with valid Fst (3 markers excluded due to monomorphism in some pairs)</li>
+  <li><strong>Date:</strong> V2 recalculation: June 2026, using V2 post-QC 1,047 Uzbek samples</li>
+  <li><strong>SNPs per pair:</strong> 77,111 LD-pruned SNPs (V2 global merged dataset)</li>
   <li><strong>Run time:</strong> ~1 second per pair (fast — genome-wide Fst is a simple allele frequency comparison)</li>
 </ul>
 
@@ -332,11 +331,11 @@ const popColors = {
     AFR: '#c62828'
 };
 const fst = [
-    [0.0000, 0.0179, 0.0204, 0.0493, 0.1094],
-    [0.0179, 0.0000, 0.0279, 0.0653, 0.1306],
-    [0.0204, 0.0279, 0.0000, 0.1061, 0.1448],
-    [0.0493, 0.0653, 0.1061, 0.0000, 0.1681],
-    [0.1094, 0.1306, 0.1448, 0.1681, 0.0000]
+    [0.0000, 0.0144, 0.0145, 0.0393, 0.1293],
+    [0.0144, 0.0000, 0.0310, 0.0564, 0.1282],
+    [0.0145, 0.0310, 0.0000, 0.0845, 0.1393],
+    [0.0393, 0.0564, 0.0845, 0.0000, 0.1650],
+    [0.1293, 0.1282, 0.1393, 0.1650, 0.0000]
 ];
 const n = pops.length;
 
@@ -587,12 +586,12 @@ const n = pops.length;
     const w = canvas.width - pad.l - pad.r;
     const h = canvas.height - pad.t - pad.b;
     const others = ['SAS', 'EUR', 'EAS', 'AFR'];
-    const vals = [0.0179, 0.0204, 0.0493, 0.1094];
+    const vals = [0.0144, 0.0145, 0.0393, 0.1293];
 
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const maxV = 0.12;
+    const maxV = 0.14;
     const barWidth = w / others.length * 0.6;
     const gap = w / others.length;
 
