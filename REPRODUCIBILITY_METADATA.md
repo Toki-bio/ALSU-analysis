@@ -75,44 +75,31 @@ Without tool versions, **reproducibility is impossible**. Minor version changes 
 Create `TOOL_VERSIONS.txt` with:
 ```
 # ALSU Pipeline — Tool Versions & Build Info
-# Generated: {date}
+# Generated: 2026-03-26
 
 ## Bioinformatics Tools
-PLINK 1.9 (v{VERSION}) — Released {DATE}
-  Built: {BUILD_INFO}
-  Used for: Steps 1-6, 9-14
-  Critical: plink --version
+PLINK 1.9 (v1.90b6.21 64-bit, 2 May 2018) — Steps 1-6
+PLINK 1.9 (v1.9.0-b.7.7 64-bit, 22 Oct 2024) — Steps 9, 14-15
+PLINK2 (v2.00a2.3 64-bit, 17 May 2019) — Steps 3, 7-8
 
-PLINK2 (v{VERSION}) — Released {DATE}
-  Used for: Steps 7-8
-  Critical: plink2 --version
+BCFtools (v1.17+) — VCF processing (Steps 3-6)
+VCFtools — Step 6 validation (version not captured)
 
-BCFtools (v{VERSION}) — Released {DATE}
-  Used for: VCF processing (Steps 3-5, 7-8)
-  Critical: bcftools --version
-
-VCFtools (v{VERSION})
-  Used for: Step 6 validation
-  Critical: vcftools --version
-
-ADMIXTURE (v{VERSION})
-  Used for: Steps 10-11
-  Critical: admixture (no --version flag; check binary MD5)
+ADMIXTURE (v1.3.0, Alexander et al. 2008-2015) — Steps 10-11
 
 ## Statistical & Visualization 
-R ({VERSION}) — Compiled {DATE}
-  Packages: tidyverse, data.table, ggplot2, LEA, etc.
-  R --version; sessionInfo()
+R — Packages: LEA/sNMF (Bioconductor; version not captured)
+Ensembl VEP REST API (release 113, GRCh38) — Step 12
 
 ## Imputation Service
 Michigan Imputation Server
-  Platform: version {VERSION} as of {DATE}
-  Reference: HRC or TOPMed (specify)
-  Phasing: Eagle (version ?)
+  Reference: 1000 Genomes Phase 3 v5 (GRCh38)
+  Phasing: Eagle v2.4
 
 ## System Environment
-OS: {OPERATING_SYSTEM}
-Architecture: {CPU_ARCH}
+Server: Biotech2024 (DRAGEN)
+Working Directory: /staging/ALSU-analysis/winter2025/
+Processing Dates: November 30 - December 26, 2025 (V1); March 2026 (V2)
 Locale: {LOCALE}
 ```
 

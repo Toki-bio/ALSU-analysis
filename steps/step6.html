@@ -174,6 +174,18 @@ done</div>
   --out final_qc</div>
                     
                     <h3 style="color: #333; margin-top: 20px;">Step 3: Remove outlier samples</h3>
+
+                    <div class="info-box">
+                        <strong>Imputation quality pre-filter (Step 6.3):</strong> Before per-chromosome VCF filtering,
+                        a high-quality variant list was extracted from the Michigan Imputation Server output
+                        (<code>UZB_all.HQ_imputed.R2ge0p8.MAFge0p001.tsv</code>) applying:
+                        <strong>R&sup2; &ge; 0.8</strong> (imputation quality),
+                        <strong>MAF &ge; 0.001</strong>, and
+                        <strong>IMPUTED == 1</strong>.
+                        This yielded <strong>10,009,530 HQ variant IDs</strong> used as a whitelist in the filtering step below.
+                        See <a href="../old_logs/step6_technical_log.md">Step 6 Technical Log</a> for full details.
+                    </div>
+
                     <div class="code-block">$ python3 detect_outliers.py -i chr1_stats.imiss \
   --threshold 0.05 --output outliers_remove.txt
 
@@ -184,11 +196,16 @@ Found 24 outlier samples:
                     
                     <h3 style="color: #333; margin-top: 20px;">Step 4: Final filtering and export</h3>
                     <div class="code-block">$ for chr in {1..22}; do
-  bcftools view chr${chr}.dose_normalized.vcf.gz \
-    --samples-file keep_samples.txt \
-    -o chr${chr}.dose_final.vcf.gz -O z
-  bcftools index chr${chr}.dose_final.vcf.gz
-done</div>
+  bcftools view chr${chr}.dose.vcf.gz \
+    --samples-file ^het_outliers_vcf_format.txt \
+    --include 'ID=@HQ_variant_ids.txt' \
+    --output-type z \
+    --output filtered_clean/chr${chr}.clean.vcf.gz \
+    --threads 4
+  tabix -p vcf filtered_clean/chr${chr}.clean.vcf.gz
+done
+
+# Tools: bcftools v1.17+, tabix (htslib)</div>
                 </div>
             </div>
             

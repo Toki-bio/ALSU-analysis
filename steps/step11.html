@@ -168,7 +168,7 @@ plink --bfile global_merged --maf 0.01 --geno 0.02 --hwe 1e-6 --make-bed --out g
 plink --bfile global_qc --indep-pairwise 50 10 0.1 --out global_prune
 plink --bfile global_qc --extract global_prune.prune.in --make-bed --out global_for_admixture
 
-# ADMIXTURE K=2–8 with 32 threads and cross-validation
+# ADMIXTURE v1.3.0, K=2–8 with 32 threads and cross-validation
 for K in {2..8}; do
     admixture --cv -j32 global_for_admixture.bed $K | tee log_K${K}.out
 done</div>
@@ -289,7 +289,7 @@ done</div>
 
             <p>
                 To provide an independent, statistically rigorous validation of K selection, we supplement
-                ADMIXTURE with <strong>sNMF</strong> (Frichot et al., 2014), implemented in the R package <code>LEA</code>.
+                ADMIXTURE with <strong>sNMF</strong> (Frichot et al., 2014), implemented in the R package <code>LEA</code> (Bioconductor).
                 sNMF offers several advantages over both ADMIXTURE and STRUCTURE:
             </p>
 
