@@ -137,7 +137,7 @@
         <li>QC pipeline: missingness &rarr; IBD dedup &rarr; SNP filtering &rarr; imputation &rarr; normalization &rarr; final QC</li>
         <li>PCA: Uzbek-internal + global (1000 Genomes) &mdash; Uzbek sits on EUR&ndash;EAS cline</li>
         <li>F<sub>ST</sub>: UZB closest to SAS (0.018), then EUR (0.020), then EAS (0.049)</li>
-        <li>ADMIXTURE K=2&ndash;8: <strong>Uzbek-only</strong> K=2 optimal (CV monotonically increases); <strong>Global</strong> K=7 optimal (CV=0.385, with 1000G)</li>
+        <li>ADMIXTURE K=2&ndash;8: <strong>Uzbek-only</strong> K=2 optimal (CV monotonically increases); <strong>Global</strong> K=5&ndash;8 plateau (CV=0.294, with all 2,548 1000G)</li>
         <li>PBS multi-population analysis: 490 Uzbek-specific SNPs, 456 with PBS &ge; 0.3</li>
         <li>LD pruning: 10.8M &rarr; 380K independent SNPs for population genetics</li>
         <li><strong>ROH &amp; IBD:</strong> 134,080 ROH segments, median F<sub>ROH</sub>=0.032. 9,700 related pairs. See <a href="step15.html">Step 15</a></li>
@@ -148,8 +148,8 @@
     <h4><span class="status-done">FINALIZED</span> &mdash; All background jobs completed</h4>
     <ul>
         <li><strong>Evanno &Delta;K</strong>: 51/70 runs completed (K=2&ndash;6 &times; 10 reps). K=7&ndash;8 cancelled (server reboot). sNMF independently validates. &Delta;K peaks at K=3. See <a href="step11.html">Step 11 &sect;3.1</a></li>
-        <li><strong>Global ADMIXTURE</strong> &mdash; <span class="status-done">COMPLETE</span> (finished 2025-02-19). K=7 optimal (CV=0.385). See <a href="step11.html">Step 11</a></li>
-        <li><strong>sNMF validation</strong> &mdash; <span class="status-done">COMPLETE</span>. Confirms K=7 global (CE plateau), K=2 Uzbek-only (monotonic CE increase). See <a href="step11.html">Step 11 &sect;3.2&ndash;3.3</a></li>
+        <li><strong>Global ADMIXTURE</strong> &mdash; <span class="status-done">V2 COMPLETE</span>. K=5&ndash;8 plateau (CV=0.294). 3,595 samples (2,548 1000G + 1,047 UZB). See <a href="step11.html">Step 11</a></li>
+        <li><strong>sNMF validation</strong> &mdash; <span class="status-done">V2 COMPLETE</span>. K=2 Uzbek-only (monotonic CE increase, 0.425). Global sNMF V1-only. See <a href="step11.html">Step 11 &sect;3.2&ndash;3.3</a></li>
     </ul>
 </div>
 
@@ -244,7 +244,7 @@
         The |L&Prime;(K)| peaks sharply at <strong>K=3</strong> (143,051 vs. 5,464&ndash;34,278 for K=4&ndash;7). In the Evanno framework, this means the largest &ldquo;elbow&rdquo; in likelihood improvement occurs between K=2 and K=3 &mdash; i.e., K=2 is where the primary structure is captured, and K=3 adds the last meaningful component.
     </p>
     <p>
-        <strong>Caveat:</strong> The table above shows <em>Uzbek-only</em> single-run log-likelihoods. For the global dataset, multi-run Evanno analysis (51/70 runs, K=2&ndash;6 &times; 10 replicates) was completed and confirms &Delta;K peaks at K=3. K=7&ndash;8 runs were cancelled after server reboot; <strong>sNMF independently validates K=7</strong> as optimal for the global dataset. See <a href="step11.html">Step 11 &sect;3</a> for full results.
+        <strong>Caveat:</strong> The table above shows <em>Uzbek-only</em> single-run log-likelihoods. For the global V2 dataset, |L&Prime;(K)| again peaks at K=3 (2,087,440). CV error forms a plateau at K=5&ndash;8 with K=5 as most parsimonious. See <a href="step11.html">Step 11 &sect;3</a> for full results.
     </p>
     <p>
         <strong>Bottom line:</strong> Both CV error (minimum at K=2) and the Evanno second derivative (peak at K=3) agree: <strong>the Uzbek cohort has 2 major ancestry components</strong>, with a possible 3rd minor component that does not significantly improve model fit.
@@ -258,10 +258,8 @@
 <div class="tier-card">
     <h4><span class="status-done">✓ COMPLETE</span> &mdash; See <a href="step15.html">Step 15</a></h4>
     <p>
-        ROH analysis completed on 1,074 post-QC Uzbek samples (380,376 SNPs). <strong>134,080 ROH segments</strong> detected.
-        Median F<sub>ROH</sub> = 0.032 (elevated ~2–3× vs outbred European populations), max F<sub>ROH</sub> = 0.145.
-        All 1,074 individuals carry at least one ROH &gt;500 kb. ~34 individuals show F<sub>ROH</sub> &gt; 0.0625
-        (consistent with 1st-cousin-level parental consanguinity).
+        ROH analysis completed on 1,047 post-QC Uzbek samples (V2: 88,722 SNPs). <strong>33,704 ROH segments</strong> detected.
+        Median F<sub>ROH</sub> = 0.016. See <a href="step15.html">Step 15</a> for V2 results.
     </p>
     <p>
         IBD analysis (PLINK <code>--genome</code>, 1,155 pre-dedup samples) identified 9,700 related pairs (PI_HAT &gt; 0.125),
@@ -410,25 +408,27 @@
 
 <h4>D. Global ADMIXTURE with 1000 Genomes References</h4>
 <div class="tier-card">
-    <h4><span class="status-done">COMPLETE</span> &mdash; Finished 2025-02-19 23:18</h4>
+    <h4><span class="status-done">V2 COMPLETE</span> &mdash; March 2026</h4>
     <p>
-        2,095 samples (1,078 Uzbek + 1,017 references) &times; 380,376 LD-pruned SNPs:n    </p>
+        3,595 samples (1,047 Uzbek + 2,548 1000G Phase 3) &times; 77,111 LD-pruned SNPs:
+    </p>
     <table>
         <tr><th>Superpopulation</th><th>Populations</th><th>N samples</th></tr>
-        <tr><td><strong>EUR</strong></td><td>CEU (99), GBR (91), FIN (99), IBS (107), TSI (107)</td><td>503</td></tr>
-        <tr><td><strong>SAS</strong></td><td>GIH (103), PJL (96)</td><td>199</td></tr>
-        <tr><td><strong>EAS</strong></td><td>CHB (103), JPT (104)</td><td>207</td></tr>
-        <tr><td><strong>AFR</strong></td><td>YRI (108)</td><td>108</td></tr>
-        <tr><td><strong>UZB</strong></td><td>Uzbek cohort</td><td>1,078</td></tr>
-        <tr><td></td><td><strong>Total</strong></td><td><strong>2,095</strong></td></tr>
+        <tr><td><strong>AFR</strong></td><td>YRI, LWK, GWD, MSL, ESN, ACB, ASW</td><td>671</td></tr>
+        <tr><td><strong>EUR</strong></td><td>CEU, GBR, FIN, IBS, TSI</td><td>522</td></tr>
+        <tr><td><strong>SAS</strong></td><td>GIH, PJL, BEB, STU, ITU</td><td>492</td></tr>
+        <tr><td><strong>EAS</strong></td><td>CHB, JPT, CHS, CDX, KHV</td><td>515</td></tr>
+        <tr><td><strong>AMR</strong></td><td>MXL, PUR, CLM, PEL</td><td>348</td></tr>
+        <tr><td><strong>UZB</strong></td><td>Uzbek cohort</td><td>1,047</td></tr>
+        <tr><td></td><td><strong>Total</strong></td><td><strong>3,595</strong></td></tr>
     </table>
 
     <h5>Cross-Validation Error (CV)</h5>
     <table>
         <tr><th>K</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
-        <tr><td><strong>CV</strong></td><td>0.399</td><td>0.390</td><td>0.388</td><td>0.386</td><td>0.386</td><td class="status-done">0.385</td><td>0.385&uarr;</td></tr>
+        <tr><td><strong>CV</strong></td><td>0.310</td><td>0.300</td><td>0.297</td><td>0.295</td><td>0.295</td><td>0.294</td><td class="status-done">0.294</td></tr>
     </table>
-    <p><strong>K=7 optimal</strong> (lowest CV). K=8 shows uptick, confirming 7 ancestral components.</p>
+    <p><strong>K=5&ndash;8 plateau</strong> (CV difference &lt;0.1%). K=5 most parsimonious; K=8 nominal minimum (0.29422).</p>
 
     <h5>Global Covariate Validation</h5>
     <p>Re-ran <code>validate_admixture_covariates.py --global</code> on 1,068 matched Uzbek samples:</p>
@@ -936,7 +936,7 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td>12</td>
         <td>Global ADMIXTURE with 1000G</td>
         <td class="status-done">DONE</td>
-        <td>K=7 optimal (CV=0.385)</td>
+        <td>K=5&ndash;8 plateau (CV=0.294)</td>
         <td>Complete</td>
     </tr>
     <tr style="background:#e8f5e9;">

@@ -186,7 +186,7 @@
                     <tr>
                         <td>Uzbek Data</td>
                         <td><code>UZB_imputed_HQ_unique.{bed,bim,fam}</code></td>
-                        <td>1,074 Uzbek samples, 5.38M variants (unique IDs)</td>
+                        <td>1,047 Uzbek samples, 5.41M variants (unique IDs)</td>
                     </tr>
                     <tr>
                         <td>1000G Reference</td>
@@ -202,7 +202,7 @@
                 
                 <h2>Step 1: Extract Target SNPs from 1000G</h2>
                 <p>
-                    The 1000 Genomes reference contains ~80M variants. To make the merge computationally tractable and ensure proper overlap with our imputed dataset, we extract only the SNPs present in our LD-pruned list (88.3K independent variants).
+                    The 1000 Genomes reference contains ~80M variants. To make the merge computationally tractable and ensure proper overlap with our imputed dataset, we extract only the SNPs present in our LD-pruned list (88.7K independent variants).
                 </p>
                 
                 <h3>Prepare Position-Based Extraction</h3>
@@ -291,16 +291,16 @@ plink --bfile UZB_imputed_HQ_unique --bmerge KG_reference_final \
                 
                 <div class="stat-box">
                     <span class="stat-label">Combined Dataset:</span>
-                    <span class="stat-value">3,610 samples (1,062 UZB + 2,548 1000G)</span><br><br>
-                    <span class="stat-label">Variants Available:</span>
-                    <span class="stat-value">5,383,967 total (matching across both datasets)</span><br><br>
+                    <span class="stat-value">3,595 samples (1,047 UZB + 2,548 1000G)</span><br><br>
+                    <span class="stat-label">Common Variants:</span>
+                    <span class="stat-value">77,111 (intersection of V2 LD-pruned set and 1000G reference)</span><br><br>
                     <span class="stat-label">Variants Used for Global PCA:</span>
-                    <span class="stat-value">83,664 (1000G reference set)</span>
+                    <span class="stat-value">77,111 (common variant intersection)</span>
                 </div>
                 
                 <h2>Step 4: Global PCA</h2>
                 <p>
-                    Perform PCA on the merged dataset using only the 83.6K common variants. This reveals how the Uzbek samples cluster relative to the five 1000 Genomes superpopulations (AFR, AMR, EAS, EUR, SAS).
+                    Perform PCA on the merged dataset using only the 77.1K common variants. This reveals how the Uzbek samples cluster relative to the five 1000 Genomes superpopulations (AFR, AMR, EAS, EUR, SAS).
                 </p>
                 
                 <div class="code-block">
@@ -313,11 +313,11 @@ plink2 --bfile UZB_1kG_merged \
                 
                 <div class="command-output">
 Start time: Sat Jan  3 18:54:11 2026
-3610 samples (0 females, 0 males, 3610 ambiguous; 3610 founders) loaded.
-5383967 variants loaded from UZB_1kG_merged.bim.
---extract: 83664 variants remaining.
+3595 samples (0 females, 0 males, 3595 ambiguous; 3595 founders) loaded.
+77111 variants loaded from UZB_1kG_v2_merged.bim.
+77111 variants remaining after main filters.
 Calculating allele frequencies... done.
-83664 variants remaining after main filters.
+77111 variants remaining after main filters.
 Constructing GRM: done.
 Correcting for missingness... done.
 Extracting eigenvalues and eigenvectors... done.
@@ -454,7 +454,7 @@ Rscript plot_global_pca.R
                     </tr>
                     <tr>
                         <td><code>KG_reference_final.{bed,bim,fam}</code></td>
-                        <td>1000G reference (83.6K variants)</td>
+                        <td>1000G reference (83.6K variants, 77.1K common with V2)</td>
                     </tr>
                     <tr>
                         <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>

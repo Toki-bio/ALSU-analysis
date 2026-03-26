@@ -127,7 +127,7 @@
                             <rect x="150" y="780" width="300" height="120" fill="#2e7d32" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="810" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 6: Final QC &amp; Output</text>
                             <text x="300" y="835" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: Normalized dataset (10.8M variants)</text>
-                            <text x="300" y="855" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 1,074 samples, 10.8M variants | Dec 26</text>
+                            <text x="300" y="855" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 1,074 samples, 10.1M variants | Dec 26</text>
                         </a>
 
                         <line x1="300" y1="900" x2="300" y2="940" stroke="#1976d2" stroke-width="3"/>
@@ -136,7 +136,7 @@
                         <a href="steps/step7.html">
                             <rect x="150" y="940" width="300" height="120" fill="#1976d2" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="970" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 7: Local PCA Analysis</text>
-                            <text x="300" y="995" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: 1,074 samples, 10.8M variants</text>
+                            <text x="300" y="995" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: 1,074 samples, 10.1M variants</text>
                             <text x="300" y="1015" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: PCA scores, plots | Jan 3-4</text>
                         </a>
 
@@ -177,7 +177,7 @@
                             <rect x="150" y="1580" width="300" height="120" fill="#3949ab" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="1610" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 11: ADMIXTURE K=2–8</text>
                             <text x="300" y="1635" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + 1000G (376K SNPs)</text>
-                            <text x="300" y="1655" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: K=7 optimal (global), Evanno &Delta;K | Mar 2026</text>
+                            <text x="300" y="1655" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: K=5 parsimonious (global, V2), | Mar 2026</text>
                         </a>
 
                         <line x1="300" y1="1700" x2="300" y2="1740" stroke="#6a1b9a" stroke-width="3"/>
@@ -216,8 +216,8 @@
                         <a href="steps/step15.html">
                             <rect x="150" y="2220" width="300" height="120" fill="#004d40" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="2250" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 15: ROH &amp; IBD</text>
-                            <text x="300" y="2275" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB BED (1,074 × 380K SNPs)</text>
-                            <text x="300" y="2295" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 134K ROH | F_ROH | IBD | Mar 2026</text>
+                            <text x="300" y="2275" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB BED (1,047 × 5.41M SNPs)</text>
+                            <text x="300" y="2295" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 36.7K ROH | F_ROH | IBD | Mar 2026</text>
                         </a>
                     </svg>
                 </div>
@@ -289,7 +289,7 @@
                             <span class="step-title">Final QC &amp; Output</span>
                             <span class="step-date">Dec 26</span>
                         </div>
-                        <div class="step-description">Post-imputation QC (R²≥0.3, MAF, HWE). Final dataset: 1,074 samples, 10.8M variants.</div>
+                        <div class="step-description">Post-imputation QC (R²≥0.3, MAF, HWE). Final dataset: 1,074 samples, 10.1M variants.</div>
                         <div class="step-status">✓ Completed</div>
                         <div class="view-details"><a href="steps/step6.html">View Details →</a></div>
                     </div>
@@ -344,7 +344,7 @@
                             <span class="step-title">ADMIXTURE K=2–8 Analysis</span>
                             <span class="step-date">Mar 2026</span>
                         </div>
-                        <div class="step-description">Unsupervised ADMIXTURE on UZB + 1000G reference. K=7 optimal (global CV=0.385); Evanno &amp; sNMF validated. Interactive stacked-bar plots.</div>
+                        <div class="step-description">Unsupervised ADMIXTURE on UZB + all 2,548 1000G. K=5 most parsimonious (V2 CV=0.295); Evanno &amp; sNMF validated. Interactive stacked-bar plots.</div>
                         <div class="step-status" style="color: #3949ab;">✓ Complete</div>
                         <div class="view-details"><a href="steps/step11.html" style="color: #3949ab;">View Details →</a></div>
                     </div>
@@ -388,7 +388,7 @@
                             <span class="step-title">ROH &amp; IBD Analysis</span>
                             <span class="step-date">Mar 2026</span>
                         </div>
-                        <div class="step-description">134,080 ROH segments across 1,074 individuals. Median F<sub>ROH</sub>=0.032 (elevated vs outbred populations). IBD reveals 9,700 related pairs, 65 duplicates. Critical for pregnancy loss GWAS design.</div>
+                        <div class="step-description">36,702 ROH segments across 1,047 individuals. Median F<sub>ROH</sub>=0.015 (comparable to outbred populations). IBD reveals 6,368 pairs (PI_HAT≥0.05), minimal close relatedness. Critical for pregnancy loss GWAS design.</div>
                         <div class="step-status" style="color: #004d40;">✓ Complete</div>
                         <div class="view-details"><a href="steps/step15.html" style="color: #004d40;">View Details →</a></div>
                     </div>

@@ -127,7 +127,7 @@
                 <tr>
                     <td>Input VCF</td>
                     <td><code>UZB_imputed_HQ_clean_ALL.vcf.gz</code></td>
-                    <td>Imputed data (10.8M variants, 1,074 samples)</td>
+                    <td>Imputed data (10.1M variants, 1,074 samples)</td>
                 </tr>
                 <tr>
                     <td>Reference</td>
@@ -148,7 +148,7 @@
                 </tr>
                 <tr>
                     <td><code>UZB_imputed_HQ_qc.{bed,bim,fam}</code></td>
-                    <td>QC-filtered dataset (1,062 samples, 5.38M variants)</td>
+                    <td>QC-filtered dataset (1,047 samples, 5.41M variants)</td>
                 </tr>
                 <tr>
                     <td><code>UZB_imputed_HQ_unique.{bed,bim,fam}</code></td>
@@ -156,7 +156,7 @@
                 </tr>
                 <tr>
                     <td><code>UZB_pruned.prune.in / .prune.out</code></td>
-                    <td>LD pruning results (88.3K independent SNPs)</td>
+                    <td>LD pruning results (88.7K independent SNPs)</td>
                 </tr>
                 <tr>
                     <td><code>UZB_final_pca.eigenvec</code></td>
@@ -269,7 +269,7 @@ grep rs429358 UZB_test_freq.afreq
             </div>
             
             <h2 class="section-header">Step 2: Full Dataset Conversion</h2>
-            <p>With validation complete, convert the full 10.8M-variant dataset from VCF to PLINK binary format.</p>
+            <p>With validation complete, convert the full 10.1M-variant dataset from VCF to PLINK binary format.</p>
             
                         <div class="code-block">
 plink2 --vcf UZB_imputed_HQ_clean_ALL.vcf.gz 'dosage=DS' \
@@ -284,9 +284,9 @@ plink2 --vcf UZB_imputed_HQ_clean_ALL.vcf.gz 'dosage=DS' \
             
             <div class="stat-box">
                 <span class="stat-label">Variants Scanned:</span>
-                <span class="stat-value">10,846,569</span><br><br>
+                <span class="stat-value">10,078,949</span><br><br>
                 <span class="stat-label">Variants Validated:</span>
-                <span class="stat-value">10,089,290</span><br><br>
+                <span class="stat-value">10,078,949</span><br><br>
                 <span class="stat-label">Variants Changed:</span>
                 <span class="stat-value">0 (perfect alignment)</span><br><br>
                 <span class="stat-label">Samples Loaded:</span>
@@ -356,15 +356,15 @@ plink2 --bfile UZB_imputed_HQ_clean \
             
             <div class="stat-box">
                 <span class="stat-label">Samples Removed (--mind):</span>
-                <span class="stat-value">12 (high missingness)</span><br><br>
+                <span class="stat-value">27 (high missingness)</span><br><br>
                 <span class="stat-label">Samples Remaining:</span>
-                <span class="stat-value">1,062</span><br><br>
+                <span class="stat-value">1,047</span><br><br>
                 <span class="stat-label">Variants Removed (--geno):</span>
-                <span class="stat-value">2,422,321</span><br><br>
+                <span class="stat-value">2,402,057</span><br><br>
                 <span class="stat-label">Variants Removed (--maf):</span>
-                <span class="stat-value">3,040,416</span><br><br>
+                <span class="stat-value">2,270,994</span><br><br>
                 <span class="stat-label">Variants Remaining:</span>
-                <span class="stat-value">5,383,832</span><br><br>
+                <span class="stat-value">5,405,898</span><br><br>
                 <span class="stat-label">Runtime:</span>
                 <span class="stat-value">~5 seconds (14:56:19 → 14:56:24)</span>
             </div>
@@ -385,7 +385,7 @@ plink2 --bfile UZB_imputed_HQ_qc \
             
             <div class="stat-box">
                 <span class="stat-label">Variants Processed:</span>
-                <span class="stat-value">5,383,832</span><br><br>
+                <span class="stat-value">5,405,898</span><br><br>
                 <span class="stat-label">ID Format:</span>
                 <span class="stat-value">CHR:POS:REF:ALT</span><br><br>
                 <span class="stat-label">Runtime:</span>
@@ -430,17 +430,17 @@ plink2 --bfile UZB_imputed_HQ_unique \
             
             <div class="stat-box">
                 <span class="stat-label">Input Variants:</span>
-                <span class="stat-value">5,383,832</span><br><br>
+                <span class="stat-value">5,405,898</span><br><br>
                 <span class="stat-label">Variants Removed:</span>
-                <span class="stat-value">5,295,517</span><br><br>
+                <span class="stat-value">5,317,176</span><br><br>
                 <span class="stat-label">Independent Variants (prune.in):</span>
-                <span class="stat-value"><strong>88,315</strong></span><br><br>
+                <span class="stat-value"><strong>88,722</strong></span><br><br>
                 <span class="stat-label">Runtime:</span>
                 <span class="stat-value">~3 seconds (15:01:04 → 15:01:07)</span>
             </div>
             
             <div class="success">
-                <strong>Pruning Reduction:</strong> 5.38M → 88.3K variants (98.4% reduction) preserves population structure
+                <strong>Pruning Reduction:</strong> 5.41M → 88.7K variants (98.4% reduction) preserves population structure
             </div>
             
             <h2 class="section-header">Step 6: Principal Component Analysis (PCA)</h2>
@@ -460,13 +460,13 @@ plink2 --bfile UZB_imputed_HQ_unique \
                 <span class="stat-label">Number of Components:</span>
                 <span class="stat-value">10 (PC1–PC10)</span><br><br>
                 <span class="stat-label">Samples Analyzed:</span>
-                <span class="stat-value">1,062</span><br><br>
+                <span class="stat-value">1,047</span><br><br>
                 <span class="stat-label">Variants Used:</span>
-                <span class="stat-value">88,315 (independent SNPs)</span><br><br>
+                <span class="stat-value">88,722 (independent SNPs)</span><br><br>
                 <span class="stat-label">Variance Explained (PC1):</span>
-                <span class="stat-value">28.93%</span><br><br>
+                <span class="stat-value">29.34%</span><br><br>
                 <span class="stat-label">Variance Explained (PC2):</span>
-                <span class="stat-value">11.51%</span><br><br>
+                <span class="stat-value">10.87%</span><br><br>
                 <span class="stat-label">Runtime:</span>
                 <span class="stat-value">~2 seconds (15:05:02 → 15:05:04)</span>
             </div>
@@ -500,7 +500,7 @@ pca_plot <- ggplot(eigenvec, aes(x = PC1, y = PC2)) +
     theme_bw() +
     labs(
         title = "PCA of UZB Imputed Data",
-        subtitle = "Calculated from 88,315 independent SNPs",
+        subtitle = "Calculated from 88,722 independent SNPs",
         x = paste0("PC1 (", round(pve$pve[1], 2), "%)"),
         y = paste0("PC2 (", round(pve$pve[2], 2), "%)")
     ) +
@@ -523,8 +523,8 @@ EOF
             
             <div class="command-output">
 Success: UZB_pca_plot.png and UZB_pca_plot.pdf have been generated.
-PC1 explains: 28.93%
-PC2 explains: 11.51%
+PC1 explains: 29.34%
+PC2 explains: 10.87%
             </div>
             
             <div class="success">
@@ -537,10 +537,10 @@ PC2 explains: 11.51%
             </div>
             
             <h3 style="margin-top: 30px; color: #555;">Result: Local PCA Plot</h3>
-            <p style="color: #666; margin: 15px 0;">The PCA plot below shows clear population substructure within the Uzbek cohort. PC1 (28.93%) and PC2 (11.51%) capture ~40% of total genetic variance, revealing distinct ancestry clusters.</p>
+            <p style="color: #666; margin: 15px 0;">The PCA plot below shows clear population substructure within the Uzbek cohort. PC1 (29.34%) and PC2 (10.87%) capture ~40% of total genetic variance, revealing distinct ancestry clusters.</p>
             <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0;">
                 <img src="../images/PCA_UZB_Imputed.png" alt="PCA of UZB Imputed Data" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
-                <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Local PCA showing population structure in 1,062 Uzbek samples across 88,315 independent SNPs</p>
+                <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Local PCA showing population structure in 1,047 Uzbek samples across 88,722 independent SNPs</p>
             </div>
             
             <h2 class="section-header">Summary & Quality Assessment</h2>
@@ -558,22 +558,22 @@ PC2 explains: 11.51%
                 </tr>
                 <tr>
                     <td>Initial Variants</td>
-                    <td>10,846,569</td>
+                    <td>10,078,949</td>
                     <td>Pass</td>
                 </tr>
                 <tr>
                     <td>Independent SNPs (after LD pruning)</td>
-                    <td>88,315</td>
+                    <td>88,722</td>
                     <td>Suitable for PCA</td>
                 </tr>
                 <tr>
                     <td>PC1 Variance Explained</td>
-                    <td>28.93%</td>
+                    <td>29.34%</td>
                     <td>Strong population structure</td>
                 </tr>
                 <tr>
                     <td>PC2 Variance Explained</td>
-                    <td>11.51%</td>
+                    <td>10.87%</td>
                     <td>Secondary structure detected</td>
                 </tr>
                 <tr>
@@ -590,8 +590,8 @@ PC2 explains: 11.51%
                 <ul style="margin: 10px 0 0 15px;">
                     <li><strong>No allele flips or swaps:</strong> GRCh38 alignment 100% correct</li>
                     <li><strong>Dosage import correct:</strong> Verified with APOE ε4 frequency (12.1% matches Central Asian expectations)</li>
-                    <li><strong>Strong population structure:</strong> PC1+PC2 explain ~40.4% of total variance</li>
-                    <li><strong>Clean dataset:</strong> 1,062 high-quality samples, 88K independent variants</li>
+                    <li><strong>Strong population structure:</strong> PC1+PC2 explain ~40.2% of total variance</li>
+                    <li><strong>Clean dataset:</strong> 1,047 high-quality samples, 88.7K independent variants</li>
                 </ul>
             </div>
             

@@ -1,0 +1,7 @@
+K=2: Loglikelihood: -147676904.691827
+K=3: Loglikelihood: -144699938.388947
+K=4: Loglikelihood: -143810411.924365
+K=5: Loglikelihood: -143162075.402264
+K=6: Loglikelihood: -142951364.125522
+K=7: Loglikelihood: -142824765.394378
+K=8: Loglikelihood: -142672080.877965
