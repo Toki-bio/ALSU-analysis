@@ -138,9 +138,9 @@
         <li>PCA: Uzbek-internal + global (1000 Genomes) &mdash; Uzbek sits on EUR&ndash;EAS cline</li>
         <li>F<sub>ST</sub>: UZB equidistant from SAS and EUR (0.014), then EAS (0.039)</li>
         <li>ADMIXTURE K=2&ndash;8: <strong>Uzbek-only</strong> K=2 optimal (CV monotonically increases); <strong>Global</strong> K=5&ndash;8 plateau (CV=0.294, with all 2,548 1000G)</li>
-        <li>PBS multi-population analysis: 490 Uzbek-specific SNPs, 456 with PBS &ge; 0.3</li>
+        <li>PBS multi-population analysis (V2): 8 Uzbek-specific variants, all with PBS &ge; 0.3. See <a href="step12.html">Step 12</a></li>
         <li>LD pruning: 5.41M &rarr; 88.7K independent SNPs for population genetics</li>
-        <li><strong>ROH &amp; IBD:</strong> 33,704 ROH segments, median F<sub>ROH</sub>=0.016. 6,368 related pairs (PI_HAT &ge; 0.05), 428 related (PI_HAT &gt; 0.0884). See <a href="step15.html">Step 15</a></li>
+        <li><strong>ROH &amp; IBD:</strong> 36,702 ROH segments, median F<sub>ROH</sub>=0.015. 6,368 related pairs (PI_HAT &ge; 0.05), 428 related (PI_HAT &gt; 0.0884). See <a href="step15.html">Step 15</a></li>
     </ul>
 </div>
 
@@ -174,14 +174,14 @@
     &Delta;K = mean(|L&Prime;(K)|) / sd(L(K)) &nbsp;&nbsp;&nbsp; <span class="label">(normalized by variance across runs)</span>
 </div>
 
-<h4>Our ADMIXTURE log-likelihoods:</h4>
+<h4>Uzbek-only ADMIXTURE log-likelihoods (single run per K):</h4>
 <table>
     <tr>
         <th>K</th>
-        <th>Log-likelihood L(K)</th>
+        <th>Log-likelihood L(K) <span style="font-weight:normal;color:#888;">(single run)</span></th>
         <th>CV Error</th>
         <th>L&prime;(K)</th>
-        <th>|L&Prime;(K)|</th>
+        <th>|L&Prime;(K)| <span style="font-weight:normal;color:#888;">(not true &Delta;K)</span></th>
     </tr>
     <tr style="background:#e8f5e9;">
         <td><strong>2</strong></td>
@@ -241,13 +241,13 @@
 <div class="important">
     <strong>Interpretation:</strong>
     <p style="margin-top:8px;">
-        The |L&Prime;(K)| peaks sharply at <strong>K=3</strong> (143,051 vs. 5,464&ndash;34,278 for K=4&ndash;7). In the Evanno framework, this means the largest &ldquo;elbow&rdquo; in likelihood improvement occurs between K=2 and K=3 &mdash; i.e., K=2 is where the primary structure is captured, and K=3 adds the last meaningful component.
+        The |L&Prime;(K)| peaks sharply at <strong>K=3</strong> (143,051 vs. 5,464&ndash;34,278 for K=4&ndash;7). In the Evanno framework, this means the largest &ldquo;elbow&rdquo; in likelihood improvement occurs when going from K=2 to K=3 &mdash; the most informative split is the transition from 2 to 3 components.
     </p>
     <p>
-        <strong>Caveat:</strong> The table above shows <em>Uzbek-only</em> single-run log-likelihoods. For the global V2 dataset, |L&Prime;(K)| again peaks at K=3 (2,087,440). CV error forms a plateau at K=5&ndash;8 with K=5 as most parsimonious. See <a href="step11.html">Step 11 &sect;3</a> for full results.
+        <strong>Caveat &mdash; single-run limitation:</strong> The table above shows <em>Uzbek-only</em> log-likelihoods from a <strong>single ADMIXTURE run per K</strong> (not replicated). The proper Evanno &Delta;K = mean|L&Prime;(K)| / sd(L(K)) requires multiple replicates per K to compute the denominator; what is shown here is simply |L&Prime;(K)| from one run, which should be interpreted as an approximation. For the global V2 dataset (10 replicates per K, 70/70 completed), |L&Prime;(K)| again peaks at K=3 (2,087,440). See <a href="step11.html">Step 11 &sect;3.1</a> for full results. CV error forms a plateau at K=5&ndash;8 with K=5 as most parsimonious.
     </p>
     <p>
-        <strong>Bottom line:</strong> Both CV error (minimum at K=2) and the Evanno second derivative (peak at K=3) agree: <strong>the Uzbek cohort has 2 major ancestry components</strong>, with a possible 3rd minor component that does not significantly improve model fit.
+        <strong>Bottom line:</strong> CV error (minimum at K=2) and the Evanno second derivative (peak at K=3) give <strong>slightly different answers</strong>: CV favours K=2 as best-fitting, while the Evanno |L&Prime;(K)| peak at K=3 indicates the sharpest structural break occurs when adding a 3rd component. A natural reconciliation is that <strong>K=2 captures the dominant ancestry structure</strong> (Western vs. Eastern Eurasian), while K=3 adds a minor component that does not significantly improve model fit. For publication, state both K values explicitly rather than collapsing into a single answer.
     </p>
 </div>
 
@@ -258,8 +258,8 @@
 <div class="tier-card">
     <h4><span class="status-done">✓ COMPLETE</span> &mdash; See <a href="step15.html">Step 15</a></h4>
     <p>
-        ROH analysis completed on 1,047 post-QC Uzbek samples (V2: 88,722 SNPs). <strong>33,704 ROH segments</strong> detected.
-        Median F<sub>ROH</sub> = 0.016. See <a href="step15.html">Step 15</a> for V2 results.
+        ROH analysis completed on 1,047 post-QC Uzbek samples (V2: 5,405,898 SNPs). <strong>36,702 ROH segments</strong> detected.
+        Median F<sub>ROH</sub> = 0.015. See <a href="step15.html">Step 15</a> for V2 results.
     </p>
     <p>
         IBD analysis (V2: PLINK <code>--genome</code>, 1,047 post-QC samples) identified 6,368 related pairs (PI_HAT &ge; 0.05),
@@ -431,7 +431,7 @@
     <p><strong>K=5&ndash;8 plateau</strong> (CV difference &lt;0.1%). K=5 most parsimonious; K=8 nominal minimum (0.29422).</p>
 
     <h5>Global Covariate Validation</h5>
-    <p>Re-ran <code>validate_admixture_covariates.py --global</code> on 1,068 matched Uzbek samples:</p>
+    <p>Re-ran <code>validate_admixture_covariates.py --global</code> on 1,007 matched Uzbek samples (of 1,047 genotyped; 96.2% match rate to phenotype covariates):</p>
     <table>
         <tr><th>Covariate</th><th>Test</th><th>K=2</th><th>K=3</th><th>K=4</th><th>K=5</th><th>K=6</th><th>K=7</th><th>K=8</th></tr>
         <tr>
@@ -476,7 +476,7 @@
 <div class="tier-card">
     <h4><span class="status-done">✓ COMPLETE</span> &mdash; See <a href="step15.html">Step 15</a></h4>
     <p>
-        IBD analysis (PLINK <code>--genome</code>) completed on 1,155 pre-dedup samples (666,435 pairwise comparisons).
+        IBD analysis (PLINK <code>--genome</code>) completed on V2 post-QC dataset (1,047 samples, 88,722 LD-pruned SNPs; 547,581 pairwise comparisons).
     </p>
     <ul>
         <li><strong>6,368 related pairs</strong> (PI_HAT &ge; 0.05); 428 at PI_HAT &gt; 0.0884: 0 duplicates, 3 first-degree, 2 second-degree, 423 third-degree</li>
@@ -492,11 +492,16 @@
 
 
 <!-- ── 2.6 Gene annotation ── -->
-<h3>2.6. Gene Annotation of 490 Uzbek-Specific SNPs</h3>
+<h3>2.6. Gene Annotation of PBS Candidates</h3>
 
 <div class="tier-card">
     <h4><span class="status-done">COMPLETE</span> &mdash; Ensembl VEP annotation retrieved</h4>
-    <p>All 490 Uzbek-specific SNPs annotated via Ensembl VEP REST API (27 fields per SNP). Results in <a href="step12.html">Step 12</a>:</p>
+    <div style="background:#fff3e0;border:1px solid #ff9800;border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:0.9em;color:#5d4037">
+        <strong>&#9888; V1 results retained:</strong> The annotation below is from V1 (490 candidates). V2 PBS recomputation
+        reduced the candidate set to <strong>8 variants</strong> (see <a href="step12.html">Step 12</a>). V2 re-annotation of these 8 variants
+        has not yet been performed.
+    </div>
+    <p>V1: All 490 Uzbek-specific SNPs annotated via Ensembl VEP REST API (27 fields per SNP). Results in <a href="step12.html">Step 12</a>:</p>
     <ul>
         <li><strong>350/490 SNPs</strong> mapped to <strong>264 unique genes</strong></li>
         <li><strong>5 missense variants</strong> (4 potentially damaging by SIFT/PolyPhen): SPI1, TNXB, SLC6A2, ATL2</li>
@@ -788,8 +793,8 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <tr><th>Tier</th><th>SNP set</th><th>Threshold</th><th>Rationale</th></tr>
         <tr>
             <td><strong>1. Targeted</strong></td>
-            <td>490 Uzbek-specific SNPs</td>
-            <td>p &lt; 1.0 &times; 10<sup>&minus;4</sup> (Bonferroni for 490)</td>
+            <td>8 V2 PBS candidates (+ V1 490 for comparison)</td>
+            <td>p &lt; 0.00625 (Bonferroni for 8); V1 set: p &lt; 1.0 &times; 10<sup>&minus;4</sup></td>
             <td>Hypothesis: population-specific variants may affect fitness-related phenotypes</td>
         </tr>
         <tr>
@@ -892,7 +897,7 @@ text(mds, labels=rownames(mds), pos=3)</div>
     </tr>
     <tr style="background:#fff3e0;">
         <td>6</td>
-        <td>GWAS (targeted 490 + genome-wide)</td>
+        <td>GWAS (targeted 8 V2 + genome-wide)</td>
         <td class="status-planned">HIGH</td>
         <td>#3, #5</td>
         <td>1&ndash;2 days</td>
@@ -927,7 +932,7 @@ text(mds, labels=rownames(mds), pos=3)</div>
     </tr>
     <tr style="background:#e8f5e9;">
         <td>11</td>
-        <td>Evanno &Delta;K (51/70 runs + sNMF)</td>
+        <td>Evanno &Delta;K (70/70 runs + sNMF)</td>
         <td class="status-done">DONE</td>
         <td>&mdash;</td>
         <td>Complete</td>

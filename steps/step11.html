@@ -211,9 +211,12 @@ done</div>
             <h3>3.1 Evanno Method (&Delta;K)</h3>
 
             <div class="info-box">
-                <strong>Note:</strong> The log-likelihoods below are from one ADMIXTURE run per K
-                on the global V2 dataset (3,595 samples &times; 77,111 SNPs). Since the Evanno method is statistically inappropriate for ADMIXTURE
-                (see caveat below), we rely on CV error and sNMF cross-entropy for K selection instead.
+                <strong>Note:</strong> The log-likelihoods below are from <strong>one representative ADMIXTURE run per K</strong>
+                on the global V2 dataset (3,595 samples &times; 77,111 SNPs). Although 10 replicates per K were run (70/70 completed),
+                the table shows single-run values rather than mean &plusmn; SD across replicates. The |L&Prime;(K)| column is therefore
+                a raw second difference, not the full Evanno &Delta;K (which requires run-to-run variance in the denominator).
+                Since the Evanno method is statistically inappropriate for ADMIXTURE (see caveat below),
+                we rely on CV error and sNMF cross-entropy for K selection instead.
             </div>
 
             <div style="background:#fff3e0;border:1px solid #ff9800;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:0.9em;color:#5d4037">
@@ -244,9 +247,9 @@ done</div>
             <table>
                 <tr>
                     <th>K</th>
-                    <th>L(K)</th>
+                    <th>L(K) <span style="font-weight:normal;color:#888;font-size:0.85em">(single run)</span></th>
                     <th>L&prime;(K) = L(K) &minus; L(K&minus;1)</th>
-                    <th>|L&Prime;(K)|</th>
+                    <th>|L&Prime;(K)| <span style="font-weight:normal;color:#888;font-size:0.85em">(not true &Delta;K)</span></th>
                 </tr>
                 <tr><td>2</td><td>&minus;147,676,905</td><td>&mdash;</td><td>&mdash;</td></tr>
                 <tr style="background:#d4edda; font-weight:600;">
@@ -266,10 +269,11 @@ done</div>
             </div>
 
             <div class="info-box">
-                <strong>Reconciling CV error (K=8 plateau) vs Evanno (K=3):</strong> These two criteria answer different questions.
-                The Evanno method detects the <em>dominant structural break</em> &mdash; the deepest split in the population tree.
+                <strong>Reconciling CV error (K=5&ndash;8 plateau) vs Evanno |L&Prime;(K)| (K=3):</strong> These two criteria answer different questions.
+                The Evanno |L&Prime;(K)| detects the <em>dominant structural break</em> &mdash; the deepest split in the population tree.
                 Cross-validation error measures <em>overall predictive accuracy</em>. For V2, K&nbsp;=&nbsp;3 captures continental-level
                 divergence (AFR / EUR+SAS / EAS), while the CV error plateau at K=5&ndash;8 suggests no single optimal resolution.
+                These methods give different K values (K=3 vs K=5&ndash;8), which is expected &mdash; they measure fundamentally different properties.
                 Given that V2 uses superpopulations rather than sub-populations, fewer K are needed to capture the main structure.
                 <strong>K&nbsp;=&nbsp;5 captures all major continental groups plus the Central Asian component</strong>;
                 K=6&ndash;8 provide diminishing additional resolution.
