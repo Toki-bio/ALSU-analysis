@@ -1,0 +1,34 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+==========================================
+DOT-ID VARIANT FORENSIC ANALYSIS (FAST)
+==========================================
+=== 0. Index check ===
+No tabix index for dose VCF
+-rw-r--r-- 1 root root 32662 Dec 26 00:00 /staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/filtered_clean/chr22.clean.vcf.gz.tbi
+
+=== A. Selecting 10 dot-ID variants ===
+awk: fatal: cannot open file `/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/step7_ld_pruning/UZB_imputed_HQ_clean.bim' for reading: No such file or directory
+Selected variants:
+
+=== B. Querying dose VCF for each variant ===
+
+=== C. Control: 3 HQ rsID variants ===
+awk: fatal: cannot open file `/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/step7_ld_pruning/UZB_imputed_HQ_clean.bim' for reading: No such file or directory
+awk: fatal: cannot open file `/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/step7_ld_pruning/UZB_imputed_HQ_clean.bim' for reading: No such file or directory
+awk: fatal: cannot open file `/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/step7_ld_pruning/UZB_imputed_HQ_clean.bim' for reading: No such file or directory
+
+=== D. Summary ===
+awk: fatal: cannot open file `/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/step7_ld_pruning/UZB_imputed_HQ_clean.bim' for reading: No such file or directory
+Dots in BIM: 0
+Dots in HQ:  8634
+
+Per-chr dot count in BIM:
+awk: fatal: cannot open file `/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/step7_ld_pruning/UZB_imputed_HQ_clean.bim' for reading: No such file or directory
+
+=== DONE ===

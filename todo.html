@@ -321,8 +321,8 @@ let TASKS = [
     // ── Analysis Pipeline ──────────────────────────────────────────────────
     {
         id: 1, section: 'analysis', priority: 'high', status: 'done',
-        title: 'PBS analysis — identify 490 Uzbek-specific SNPs',
-        note: 'Multi-pop Fst + PBS scores vs EUR/EAS/SAS/AFR. Completed Feb 2026.'
+        title: 'PBS analysis (V2: 8 Uzbek-specific SNPs)',
+        note: 'V2 recomputed Mar 2026 on corrected 77,111 SNPs: 8 candidates (PBS≥0.3). V1 had 490 on stale data.'
     },
     {
         id: 2, section: 'analysis', priority: 'high', status: 'done',
@@ -330,9 +330,9 @@ let TASKS = [
         note: 'Global: K=7 optimal by CV. Uzbek-only: K=2 optimal. Interactive stacked-bar plots in step11.html.'
     },
     {
-        id: 3, section: 'analysis', priority: 'high', status: 'done',
-        title: 'Evanno ΔK batch (51/70 runs completed)',
-        note: 'K=2-6 all 10 reps done, K=7 1 rep done. K=7-8 reruns cancelled — sNMF validated K selection independently. ΔK peaks at K=3 (global). Mar 9.'
+        id: 3, section: 'analysis', priority: 'high', status: 'inprogress',
+        title: 'Evanno ΔK replicate runs (V2 relaunch)',
+        note: 'Previous replicates used stale V1 data — discarded. Fresh V2 runs launched Mar 28: Global (3595×77111) + UZB-only (1047×88722), K2-K8 × 10 reps each. Running on DRAGEN.'
     },
     {
         id: 4, section: 'analysis', priority: 'high', status: 'done',
@@ -367,9 +367,9 @@ let TASKS = [
 
     // ── Server / Bioinformatics ────────────────────────────────────────────
     {
-        id: 10, section: 'server', priority: 'high', status: 'done',
-        title: 'Evanno + sNMF server runs complete',
-        note: 'Evanno 51/70 done (K=7-8 cancelled). sNMF global + Uzbek complete. Results in snmf_results/ and snmf_results_uzbek/. Mar 9.'
+        id: 10, section: 'server', priority: 'high', status: 'inprogress',
+        title: 'Evanno V2 replicates (running on DRAGEN)',
+        note: 'Fresh V2 Evanno launched Mar 28 on correct data: Global (3,595×77,111) + UZB-only (1,047×88,722), K=2–8 × 10 reps. Old V1 replicates using UZB_for_admixture (1,074×380,376) were discarded. Do NOT use tmp_evanno_complete_qp.sh.'
     },
     {
         id: 11, section: 'server', priority: 'medium', status: 'done',

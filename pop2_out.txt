@@ -1,0 +1,128 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== PCA_POPMAPPING ===
+HG00096	EUR
+HG00097	EUR
+HG00098	EUR
+HG00099	EUR
+HG00100	EUR
+HG00101	EUR
+HG00102	EUR
+HG00103	EUR
+HG00104	EUR
+HG00105	EUR
+HG00106	EUR
+HG00107	EUR
+HG00108	EUR
+HG00109	EUR
+HG00110	EUR
+HG00111	EUR
+HG00112	EUR
+HG00113	EUR
+HG00114	EUR
+HG00115	EUR
+=== PCA_POPMAPPING_COUNTS ===
+   1018 AFR
+    881 Uzbek
+    669 EUR
+    661 SAS
+    617 EAS
+    535 AMR
+     52 Russian
+     30 Tatar
+     25 Tajik
+     19 Korean
+     14 Kazakh
+     11 UZB
+      9 Karakalpak
+      4 Kyrgyz
+      4 Armenian
+      3 Turkish
+      2 Ukrainian
+      2 Chinese
+      1 Mordvin
+      1 Metis
+      1 Iranian
+      1 German
+      1 Azerbaijani
+      1 American
+=== PCA_POPMAPPING_TOTAL ===
+4562 /home/copilot/v2/pca/pop_mapping.txt
+=== REANALYSIS_PHASES ===
+64:  --bfile /staging/ALSU-analysis/winter2025/PLINK_301125_0312/step9_1000g.pca/1000g_grch38/KG_reference_final
+76:/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step9_1000g.pca/1000g_grch38/KG_reference_final.fam.
+78:/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step9_1000g.pca/1000g_grch38/KG_reference_final.bim.
+88:Logging to /home/copilot/v2/global_pca/UZB_1kG_v2_merged.log.
+93:  --out /home/copilot/v2/global_pca/UZB_1kG_v2_merged
+94:  --pmerge /home/copilot/v2/global_pca/kg_common
+104:[2026-03-25 12:55:47] plink2 merge failed, trying plink1.9 --bmerge with strand handling
+107:Logging to /home/copilot/v2/global_pca/UZB_1kG_v2_merged.log.
+110:  --bmerge /home/copilot/v2/global_pca/kg_common.bed /home/copilot/v2/global_pca/kg_common.bim /home/copilot/v2/global_pca/kg_common.fam
+112:  --out /home/copilot/v2/global_pca/UZB_1kG_v2_merged
+116:2548 people to be merged from /home/copilot/v2/global_pca/kg_common.fam.
+119:77111 markers to be merged from /home/copilot/v2/global_pca/kg_common.bim.
+121:Performing single-pass merge (3595 people, 77111 variants).
+123:/home/copilot/v2/global_pca/UZB_1kG_v2_merged-merge.bed +
+124:/home/copilot/v2/global_pca/UZB_1kG_v2_merged-merge.bim +
+125:/home/copilot/v2/global_pca/UZB_1kG_v2_merged-merge.fam .
+129:/home/copilot/v2/global_pca/UZB_1kG_v2_merged.nosex .
+136:--make-bed to /home/copilot/v2/global_pca/UZB_1kG_v2_merged.bed +
+137:/home/copilot/v2/global_pca/UZB_1kG_v2_merged.bim +
+138:/home/copilot/v2/global_pca/UZB_1kG_v2_merged.fam ... 0%1%2%3%4%5%6%7%8%9%10%11%12%13%14%15%16%17%18%19%20%21%22%23%24%25%26%27%28%29%30%31%32%33%34%35%36%37%38%39%40%41%42%43%44%45%46%47%48%49%50%51%52%53%54%55%56%57%58%59%60%61%62%63%64%65%66%67%68%69%70%71%72%73%74%75%76%77%78%79%80%81%82%83%84%85%86%87%88%89%90%91%92%93%94%95%96%97%98%99%done.
+144:  --bfile /home/copilot/v2/global_pca/UZB_1kG_v2_merged
+155:/home/copilot/v2/global_pca/UZB_1kG_v2_merged.fam.
+156:77111 variants loaded from /home/copilot/v2/global_pca/UZB_1kG_v2_merged.bim.
+295:Fst divergences between estimated populations: 
+366:Fst divergences between estimated populations: 
+446:Fst divergences between estimated populations: 
+653:Fst divergences between estimated populations: 
+865:Fst divergences between estimated populations: 
+1161:Fst divergences between estimated populations: 
+1403:Fst divergences between estimated populations: 
+=== REANALYSIS_PHASEC ===
+Logging to /home/copilot/v2/global_pca/v2_common.log.
+Options in effect:
+  --bfile /home/copilot/v2/plink/UZB_v2_ldpruned
+  --extract /home/copilot/v2/global_pca/common_snps.txt
+  --make-bed
+  --memory 16000
+  --out /home/copilot/v2/global_pca/v2_common
+  --threads 8
+
+Start time: Wed Mar 25 12:55:47 2026
+515370 MiB RAM detected, ~509032 available; reserving 16000 MiB for main
+workspace.
+--
+Writing /home/copilot/v2/global_pca/v2_common.fam ... done.
+Writing /home/copilot/v2/global_pca/v2_common.bim ... done.
+Writing /home/copilot/v2/global_pca/v2_common.bed ... 0%73%done.
+End time: Wed Mar 25 12:55:47 2026
+PLINK v2.0.0-a.6.9LM 64-bit Intel (29 Jan 2025)    cog-genomics.org/plink/2.0/
+(C) 2005-2025 Shaun Purcell, Christopher Chang   GNU General Public License v3
+Logging to /home/copilot/v2/global_pca/kg_common.log.
+Options in effect:
+  --bfile /staging/ALSU-analysis/winter2025/PLINK_301125_0312/step9_1000g.pca/1000g_grch38/KG_reference_final
+  --extract /home/copilot/v2/global_pca/common_snps.txt
+  --make-bed
+  --memory 16000
+  --out /home/copilot/v2/global_pca/kg_common
+  --threads 8
+
+Start time: Wed Mar 25 12:55:47 2026
+515370 MiB RAM detected, ~509032 available; reserving 16000 MiB for main
+workspace.
+--
+Writing /home/copilot/v2/global_pca/kg_common.fam ... done.
+Writing /home/copilot/v2/global_pca/kg_common.bim ... done.
+Writing /home/copilot/v2/global_pca/kg_common.bed ... 0%78%done.
+End time: Wed Mar 25 12:55:47 2026
+PLINK v2.0.0-a.6.9LM 64-bit Intel (29 Jan 2025)    cog-genomics.org/plink/2.0/
+(C) 2005-2025 Shaun Purcell, Christopher Chang   GNU General Public License v3
+Logging to /home/copilot/v2/global_pca/UZB_1kG_v2_merged.log.
+Options in effect:
+=== END ===

@@ -1,508 +1,119 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step 13: LD Analysis — ALSU Pipeline</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:20px}
-.page-wrapper{display:flex;gap:20px;max-width:1400px;margin:0 auto}
-.sidebar{width:250px;flex-shrink:0;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);padding:20px;height:fit-content;position:sticky;top:20px}
-.sidebar h3{font-size:1em;color:#333;margin-bottom:12px;border-bottom:2px solid #888;padding-bottom:8px}
-.roadmap-mini{display:flex;flex-direction:column;gap:6px}
-.roadmap-mini a{padding:9px 12px;background:#f5f5f5;color:#333;text-decoration:none;border-radius:5px;border-left:4px solid transparent;font-size:.88em;transition:all .2s}
-.roadmap-mini a:hover{background:#ebebeb;border-left-color:#666}
-.roadmap-mini a.current{background:#5e35b1;color:white;border-left-color:#311b92;font-weight:600}
-.main-content{flex:1;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);overflow:hidden}
-.page-header{background:linear-gradient(135deg,#3a3a3a 0%,#1a1a1a 100%);color:white;padding:30px}
-.page-header a.back{color:rgba(255,255,255,.75);text-decoration:none;font-size:.9em;display:inline-block;margin-bottom:10px}
-.page-header a.back:hover{color:white}
-.page-header h1{font-size:2em;margin-bottom:8px}
-.page-header p{opacity:.88;font-size:.95em}
-.step-badge{display:inline-block;background:rgba(255,255,255,.2);padding:4px 14px;border-radius:20px;font-size:.88em;margin-top:10px}
-.content{padding:30px}
-h2{color:#333;font-size:1.4em;margin:28px 0 14px;padding-bottom:8px;border-bottom:2px solid #e0e0e0}
-h3{color:#444;margin:20px 0 10px;font-size:1.1em}
-p,li{color:#555;line-height:1.7;margin-bottom:10px}
-ul,ol{margin-left:22px}
-code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;font-size:.88em}
-.code-block{background:#1e1e1e;color:#d4d4d4;padding:18px 20px;border-radius:8px;overflow-x:auto;margin:16px 0;font-family:'Courier New',monospace;font-size:.85em;line-height:1.6;white-space:pre}
-/* Cards */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:20px 0}
-.card{background:#f9f9f9;border-radius:8px;padding:16px;text-align:center;border:1px solid #e8e8e8;cursor:default}
-.card .num{font-size:2em;font-weight:700;color:#333;margin-bottom:4px}
-.card .label{font-size:.78em;color:#888;text-transform:uppercase;letter-spacing:.5px}
-.card.accent-loci   .num{color:#5e35b1}
-.card.accent-chr6   .num{color:#c62828}
-.card.accent-decay  .num{color:#1565c0}
-.card.accent-pairs  .num{color:#2e7d32}
-/* Callout boxes */
-.callout{border-radius:8px;padding:16px 20px;margin:18px 0;font-size:.92em}
-.callout-key{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
-.callout-mhc{background:#ffebee;border-left:4px solid #c62828;color:#7f0000}
-.callout-info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
-.callout-method{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
-.callout strong{font-weight:700}
-/* Canvas wrappers */
-.chart-wrap{margin:16px 0;overflow-x:auto}
-canvas{display:block;max-width:100%}
-/* Sortable table */
-.filter-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0 16px}
-.filter-bar input{flex:1;min-width:180px;max-width:320px;padding:8px 14px;border:2px solid #ddd;border-radius:6px;font-size:.88em}
-.filter-bar input:focus{outline:none;border-color:#5e35b1}
-.filter-btn{padding:7px 14px;border:1.5px solid #ccc;border-radius:20px;background:white;cursor:pointer;font-size:.82em;color:#555;transition:all .2s}
-.filter-btn:hover{border-color:#999;color:#333}
-.filter-btn.active{background:#5e35b1;color:white;border-color:#5e35b1}
-table{width:100%;border-collapse:collapse;font-size:.85em}
-thead th{background:#f0f0f0;padding:9px 12px;text-align:left;position:sticky;top:0;cursor:pointer;user-select:none;color:#333;font-weight:600;border-bottom:2px solid #ddd;white-space:nowrap}
-thead th:hover{background:#e5e5e5}
-thead th.sorted{background:#ede7f6;color:#5e35b1}
-tbody tr:nth-child(even){background:#fafafa}
-tbody tr:hover{background:#f3e5f5}
-td{padding:8px 12px;border-bottom:1px solid #eee;vertical-align:middle}
-.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.75em;font-weight:600;white-space:nowrap}
-.badge-chr6{background:#ffcdd2;color:#b71c1c}
-.badge-singleton{background:#e8f5e9;color:#1b5e20}
-.badge-cluster{background:#e3f2fd;color:#0d47a1}
-.pager{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:.85em;color:#666}
-.pager button{padding:6px 12px;border:1px solid #ddd;border-radius:4px;background:white;cursor:pointer;font-size:.85em}
-.pager button:hover{background:#f5f5f5}
-.pager button:disabled{opacity:.4;cursor:default}
-/* Two-column grid for charts */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
-.chart-panel{background:#f9f9f9;border-radius:8px;padding:16px;border:1px solid #e0e0e0}
-.chart-panel h3{margin-top:0;font-size:.95em;color:#444}
-@media(max-width:900px){.two-col{grid-template-columns:1fr}.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
-</style>
-</head><body>
-<div class="page-wrapper">
-<div class="sidebar">
-  <h3>Navigation</h3>
-  <div class="roadmap-mini">
-    <a href="../index.html">🏠 Home</a>
-    <a href="step10.html">Step 10 — PBS</a>
-    <a href="step11.html">Step 11 — ADMIXTURE</a>
-    <a href="step12.html">Step 12 — Annotation</a>
-    <a href="step13.html" class="current">Step 13 — LD Analysis</a>
-    <a href="step14.html">Step 14 — F<sub>ST</sub> &amp; MDS</a>
-    <a href="step15.html">Step 15 — ROH &amp; IBD</a>
-    <a href="next_steps.html">📋 Next Steps</a>
-    <a href="../todo.html">✅ Todo</a>
-  </div>
-  <h3 style="margin-top:20px">Contents</h3>
-  <div class="roadmap-mini">
-    <a href="#overview">Overview</a>
-    <a href="#clumping">LD Clumping</a>
-    <a href="#decay">LD Decay</a>
-    <a href="#mhc">Chr6 / MHC</a>
-    <a href="#pairs">High-LD Pairs</a>
-    <a href="#table">All 401 Loci</a>
-    <a href="#methods">Methods</a>
-  </div>
-</div>
-<div class="main-content">
-  <div class="page-header">
-    <a class="back" href="../index.html">← Back to Home</a>
-    <h1>Step 13: LD Analysis</h1>
-    <p>Linkage Disequilibrium clumping of 490 Uzbek-specific PBS candidates &amp; genome-wide LD decay in the UZB cohort</p>
-    <span class="step-badge">Step 13 · March 5, 2026</span>
-  </div>
-  <div class="content">
-
-    <h2 id="overview">Overview</h2>
-    <p>The 490 high-PBS Uzbek-specific SNPs identified in Step 10 may contain redundant signals — nearby variants in strong linkage disequilibrium (LD) may tag the same underlying selection event. This step performs two analyses:</p>
-    <ol>
-      <li><strong>LD clumping</strong> (PLINK <code>--clump</code>): identifies fully independent selection signals by collapsing PBS candidates in LD (r²≥0.5, within 1 Mb) into single representative loci.</li>
-      <li><strong>LD decay analysis</strong>: quantifies how rapidly LD decays with physical distance in the Uzbek cohort (376 K SNPs, n=1,199), providing context for the length of selection sweeps and haplotype blocks.</li>
-    </ol>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 13 - LD Analysis (V2)</title>
+  <style>
+    body { font-family: Segoe UI, Tahoma, Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .badge { background: #ede7f6; color: #4a148c; border: 1px solid #d1c4e9; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
+    .top { display: flex; justify-content: space-between; align-items: center; }
+    .cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 16px 0; }
+    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px; }
+    .num { font-size: 22px; font-weight: 700; }
+    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
+    .box { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 14px; margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eef2f5; padding: 8px; font-size: 13px; text-align: left; }
+    th { background: #f8fafc; }
+    .mono { font-family: Consolas, Menlo, monospace; }
+    a { color: #1565c0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div><a href="step12.html">Back to Step 12</a></div>
+        <h1>Step 13: LD Analysis (V2)</h1>
+        <p>LD clumping and LD decay recomputed from corrected V2 dataset.</p>
+      </div>
+      <div class="badge">Step 13 of 15</div>
+    </div>
 
     <div class="cards">
-      <div class="card accent-loci"><div class="num">490</div><div class="label">PBS input SNPs</div></div>
-      <div class="card accent-loci"><div class="num">401</div><div class="label">Independent loci</div></div>
-      <div class="card"><div class="num">18.2%</div><div class="label">Redundancy removed</div></div>
-      <div class="card accent-chr6"><div class="num">135</div><div class="label">Chr6 loci (33.7%)</div></div>
-      <div class="card accent-decay"><div class="num" id="r2-0kb">—</div><div class="label">Mean r² at 0–50 kb</div></div>
-      <div class="card accent-decay"><div class="num" id="r2-300kb">—</div><div class="label">Mean r² at 300–350 kb</div></div>
-      <div class="card accent-pairs"><div class="num">774</div><div class="label">PBS SNP pairs r²≥0.1</div></div>
+      <div class="card"><div class="num">8</div><div class="label">PBS Input SNPs</div></div>
+      <div class="card"><div class="num">8</div><div class="label">Independent Loci</div></div>
+      <div class="card"><div class="num">0</div><div class="label">LD Pairs (r2>=0.1)</div></div>
+      <div class="card"><div class="num">0.1753</div><div class="label">Mean r2 @ 0kb</div></div>
+      <div class="card"><div class="num">0.0022</div><div class="label">Mean r2 @ 500kb</div></div>
+      <div class="card"><div class="num">41</div><div class="label">Decay Bins</div></div>
     </div>
 
-    <div class="callout callout-key">
-      <strong>Key finding:</strong> 490 PBS candidates reduce to <strong>401 independent loci</strong> after LD clumping — an 18.2% reduction, which is modest. This means most PBS hits are already in low LD with each other and represent truly distinct selective pressures at different genomic positions. The one exception is chromosome 6: 135/401 loci (33.7%) map to the MHC/HLA region, where many candidate SNPs are in extended haplotype blocks under persistent pathogen-driven balancing selection.
+    <div class="box">
+      <h2>Independent Loci (V2)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>SNP</th>
+            <th>Chr</th>
+            <th>Position</th>
+            <th>PBS</th>
+            <th>MAF_UZB</th>
+          </tr>
+        </thead>
+        <tbody id="loci"></tbody>
+      </table>
     </div>
 
-    <div class="two-col">
-      <div class="chart-panel">
-        <h3>LD Decay Curve (genome-wide, n=1,199 UZB)</h3>
-        <div class="chart-wrap"><canvas id="decayCanvas" width="480" height="280"></canvas></div>
-        <p style="font-size:.8em;color:#999;margin-top:6px">Mean r² of random SNP pairs (N=3,000 thinned) binned in 50 kb windows. Rapid decay is expected in a large outbred Central Asian population.</p>
-      </div>
-      <div class="chart-panel">
-        <h3>Independent Loci per Chromosome</h3>
-        <div class="chart-wrap"><canvas id="chrCanvas" width="480" height="280"></canvas></div>
-        <p style="font-size:.8em;color:#999;margin-top:6px">Chr6 contributes 33.7% of all independent loci — far exceeding its ~6% share of the genome — reflecting MHC haplotype diversity under balancing selection.</p>
-      </div>
+    <div class="box">
+      <h2>LD Decay (50kb bins)</h2>
+      <p>Computed from UZB_v2_qc using sampled SNP pairs up to 2Mb.</p>
+      <table>
+        <thead>
+          <tr><th>Distance (kb)</th><th>Mean r2</th><th>Pair Count</th></tr>
+        </thead>
+        <tbody id="decay"></tbody>
+      </table>
     </div>
+  </div>
 
-    <h2 id="clumping">LD Clumping</h2>
-    <p>LD clumping was performed using PLINK v1.9 with the following parameters: r²≥0.5, window=1,000 kb, using the Uzbek-only genotype dataset (n=1,199, 376,208 SNPs). PBS scores were transformed to proxy p-values (higher PBS → smaller p-value) for the PLINK clumping algorithm, which selects the index SNP (smallest p) in each genomic window and absorbs correlated variants within the window as proxies.</p>
+  <script>
+    const LOCI = [
+      { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, maf: 0.0196 },
+      { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, maf: 0.03206 },
+      { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, maf: 0.0332 },
+      { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, maf: 0.01472 },
+      { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, maf: 0.4880 },
+      { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, maf: 0.4785 },
+      { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, maf: 0.4801 },
+      { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, maf: 0.4829 }
+    ];
 
-    <div class="callout callout-info">
-      <strong>Why r²=0.5 and 1,000 kb?</strong> These are standard thresholds from GWAS clumping practice (e.g., HapMap publications). r²=0.5 ensures that retained loci explain at least half of the variance at discarded proxy SNPs, while 1,000 kb captures the largest expected haplotype blocks in a European/Central Asian genomic context. More conservative thresholds (r²=0.1, 1,500 kb) reduce the 401 loci further; we chose r²=0.5 to be moderately conservative.
-    </div>
+    const DECAY = [
+      { kb: 0, r2: 0.1753, n: 642417 },
+      { kb: 50, r2: 0.0396, n: 544497 },
+      { kb: 100, r2: 0.0182, n: 542379 },
+      { kb: 150, r2: 0.0129, n: 511633 },
+      { kb: 200, r2: 0.0078, n: 506290 },
+      { kb: 250, r2: 0.0053, n: 476312 },
+      { kb: 500, r2: 0.0022, n: 427722 },
+      { kb: 1000, r2: 0.0015, n: 425126 },
+      { kb: 1500, r2: 0.0015, n: 393868 },
+      { kb: 2000, r2: 0.0015, n: 6 }
+    ];
 
-    <h3>Top 20 Independent Loci by PBS Score</h3>
-    <div id="top20Container"></div>
+    document.getElementById('loci').innerHTML = LOCI.map((r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td class="mono">${r.snp}</td>
+        <td>${r.chr}</td>
+        <td>${r.bp.toLocaleString()}</td>
+        <td>${r.pbs.toFixed(4)}</td>
+        <td>${(r.maf * 100).toFixed(2)}%</td>
+      </tr>
+    `).join('');
 
-    <h2 id="mhc">Chromosome 6 / MHC Enrichment</h2>
-    <div class="callout callout-mhc">
-      <strong>🔴 MHC over-representation (33.7% of loci on chr6):</strong><br>
-      Of 401 independent loci, 135 (33.7%) are on chromosome 6 — a chromosome that constitutes ~6% of the genome and ~5.8% of genotyped SNPs. This represents a <strong>~5.8× enrichment</strong> (135/401 observed vs 23 expected under null). The virtually all high-LD PBS pairs (r²≥0.9) are within the 28–34 Mb window of chromosome 6, which contains the Major Histocompatibility Complex (MHC/HLA) locus.
-      <br><br>
-      <strong>Biological interpretation:</strong> The MHC is the most gene-dense and polymorphic region of the human genome. It undergoes balancing selection driven by pathogen pressure — populations that have historically experienced diverse or novel pathogen exposures maintain unusually high MHC diversity. Uzbeks, positioned at the Silk Road crossroads, likely encountered a unique pathogen landscape from Eurasian, South Asian, and East Asian sources, maintaining MHC alleles lost or fixed in more isolated populations. The large number of independent loci within chr6 reflects <em>genuine haplotypic diversity rather than LD spread</em>: even after clumping at r²=0.5, 135 distinct MHC haplotypic regions stand as independent signals.
-    </div>
-
-    <h2 id="decay">LD Decay</h2>
-    <p>Genome-wide LD decay was computed for a random sample of 3,000 SNPs (seeds fixed for reproducibility), computing pairwise r² for all pairs within chromosomes up to 2,000 kb apart. Results were binned in 50 kb windows and mean r² calculated per bin.</p>
-    <p>Observed pattern: mean r²=0.096 at 0–50 kb, dropping to ~0.013 at 100–150 kb and plateauing at ~0.010–0.015 beyond 200 kb. The 0–50 kb bin is elevated by physical proximity (many pairs within the same local haplotype block), while the plateau beyond 100 kb reflects background LD (relatedness, admixture, and finite sample size artifacts).</p>
-    <p>This decay rate is broadly consistent with European-ancestry populations (r² half-life ~100 kb), suggesting the Uzbek cohort does not have extreme long-range LD. However, the comparison between chr6 and genome-wide LD decay (visualized above) reveals that the MHC region maintains substantially elevated LD at longer distances due to its unusual haplotype block structure.</p>
-
-    <h2 id="pairs">High-LD Pairs Among PBS Candidates (r²≥0.3)</h2>
-    <p>Among the 490 PBS candidates, <span id="highLdCount">—</span> SNP pairs share r²≥0.3. These are displayed below, sorted by r².</p>
-    <div class="filter-bar">
-      <input type="text" id="pairsSearch" placeholder="Filter by SNP ID…" oninput="renderPairsTable()">
-      <button class="filter-btn active" id="pbtn-all" onclick="setPairsFilter('all',this)">All r²≥0.1</button>
-      <button class="filter-btn" id="pbtn-high" onclick="setPairsFilter('high',this)">r²≥0.5</button>
-      <button class="filter-btn" id="pbtn-vhigh" onclick="setPairsFilter('vhigh',this)">r²≥0.9</button>
-    </div>
-    <div style="max-height:400px;overflow-y:auto;border:1px solid #e0e0e0;border-radius:6px">
-    <table>
-      <thead><tr>
-        <th onclick="sortPairs('snp_a')">SNP A ▲</th>
-        <th onclick="sortPairs('snp_b')">SNP B</th>
-        <th onclick="sortPairs('kb')" class="sorted">Distance (kb) ▼</th>
-        <th onclick="sortPairs('r2')">r²</th>
-        <th>Chr</th>
-      </tr></thead>
-      <tbody id="pairsTbody"></tbody>
-    </table>
-    </div>
-    <div class="pager" id="pairsPager"></div>
-
-    <h2 id="table">All 401 Independent Loci</h2>
-    <p>Sorted by PBS score (descending). Click any column header to resort. Use the filter bar to search by chromosome or SNP ID.</p>
-    <div class="filter-bar">
-      <input type="text" id="lociSearch" placeholder="Search chr, SNP…" oninput="renderLociTable()">
-      <button class="filter-btn active" id="lbtn-all"  onclick="setLociFilter('all',this)">All (401)</button>
-      <button class="filter-btn" id="lbtn-chr6"  onclick="setLociFilter('6',this)">Chr6 (135)</button>
-      <button class="filter-btn" id="lbtn-multi" onclick="setLociFilter('multi',this)">Multi-SNP clumps (38)</button>
-      <button class="filter-btn" id="lbtn-top50" onclick="setLociFilter('top50',this)">Top 50 PBS</button>
-    </div>
-    <div style="max-height:520px;overflow-y:auto;border:1px solid #e0e0e0;border-radius:6px">
-    <table>
-      <thead><tr>
-        <th onclick="sortLoci('chr')">Chr ▲</th>
-        <th onclick="sortLoci('bp')">Position</th>
-        <th onclick="sortLoci('snp')">SNP ID</th>
-        <th onclick="sortLoci('pbs')" class="sorted">PBS<sub>UZB</sub> ▼</th>
-        <th onclick="sortLoci('maf')">MAF (UZB)</th>
-        <th onclick="sortLoci('n_total')">Proxies (r²≥0.5)</th>
-        <th>Type</th>
-      </tr></thead>
-      <tbody id="lociTbody"></tbody>
-    </table>
-    </div>
-    <div class="pager" id="lociPager"></div>
-
-    <h2 id="methods">Methods</h2>
-    <div class="callout callout-method">
-      <strong>Reference dataset:</strong> UZB-only PLINK bed/bim/fam,
-      n=1,199 Uzbek individuals, 376,208 SNPs (autosomal, MAF≥0.5%, genotyping rate≥97%).
-      PLINK v1.9. All analyses on server 100.104.25.22, March 5 2026.
-    </div>
-    <h3>LD Clumping Command</h3>
-    <div class="code-block">plink --bfile UZB_only \
-  --clump pbs_clump_pval.txt \
-  --clump-snp-field SNP \
-  --clump-field P \
-  --clump-p1 1 \          # include all PBS SNPs as potential index SNPs
-  --clump-p2 1 \          # include all PBS SNPs as potential proxies
-  --clump-r2 0.5 \        # r² threshold for merging
-  --clump-kb 1000 \       # 1 Mb clumping window
-  --allow-no-sex --noweb \
-  --out pbs_clumped
-
-# p-value proxy: P = 1 - (PBS_UZB / max_PBS)  [maps high PBS → P ≈ 0, low PBS → P ≈ 1]</div>
-
-    <h3>LD Decay Command</h3>
-    <div class="code-block">plink --bfile UZB_only \
-  --extract decay_snps.txt \    # 3,000 random SNPs (seed=42)
-  --r2 \
-  --ld-window-kb 2000 \
-  --ld-window 99999 \
-  --ld-window-r2 0.0 \          # keep all pairs (including r²=0)
-  --allow-no-sex --noweb \
-  --out ld_decay
-# Results binned into 50 kb windows; mean r² per bin reported</div>
-
-    <h3>PBS-Candidate Pairwise LD Command</h3>
-    <div class="code-block">plink --bfile UZB_only \
-  --extract pbs_snps.txt \      # all 490 PBS candidates
-  --r2 \
-  --ld-window-kb 5000 \
-  --ld-window 99999 \
-  --ld-window-r2 0.1 \          # report only r²≥0.1
-  --allow-no-sex --noweb \
-  --out pbs_ld</div>
-
-    <h3>Limitations</h3>
-    <ul>
-      <li>The LD decay was computed from 3,000 randomly sampled SNPs; more stable estimates require ≥10,000 SNPs but would produce a very large .ld file. Results are directionally robust.</li>
-      <li>PBS scores are not p-values: using normalized PBS as a proxy p-value for clumping prioritizes higher-scoring SNPs as index loci, which is the correct behavior but means PLINK's SP2 column reflects ranked PBS rather than statistical significance of co-localization.</li>
-      <li>LD was computed within the Uzbek cohort only. EUR, EAS, or 1000G LD patterns may differ and should be considered when interpreting proxy SNPs.</li>
-      <li>8 of 490 PBS SNPs were absent from the UZB_only BIM file (likely filtered during QC) and are not represented in the 482-SNP clumping input.</li>
-    </ul>
-
-  </div><!-- /content -->
-</div><!-- /main-content -->
-</div><!-- /page-wrapper --><script>
-const LD_DATA = {"n_input": 482, "n_loci": 401, "clumps": [{"chr": "9", "bp": 104189856, "snp": "9:104189856", "n_total": 0, "pbs": 4.602104, "maf": 0.005435, "proxies": []}, {"chr": "8", "bp": 24813391, "snp": "8:24813391", "n_total": 0, "pbs": 4.239857, "maf": 0.01007, "proxies": []}, {"chr": "17", "bp": 48275339, "snp": "17:48275339", "n_total": 0, "pbs": 3.90938, "maf": 0.01346, "proxies": []}, {"chr": "1", "bp": 36934805, "snp": "1:36934805", "n_total": 0, "pbs": 3.620065, "maf": 0.01519, "proxies": []}, {"chr": "2", "bp": 179642589, "snp": "2:179642589", "n_total": 0, "pbs": 3.503803, "maf": 0.01523, "proxies": []}, {"chr": "11", "bp": 47355475, "snp": "11:47355475", "n_total": 0, "pbs": 3.495331, "maf": 0.01952, "proxies": []}, {"chr": "6", "bp": 29640785, "snp": "6:29640785", "n_total": 0, "pbs": 3.366669, "maf": 0.02012, "proxies": []}, {"chr": "4", "bp": 187003729, "snp": "4:187003729", "n_total": 0, "pbs": 3.356605, "maf": 0.02346, "proxies": []}, {"chr": "10", "bp": 96818119, "snp": "10:96818119", "n_total": 0, "pbs": 3.285179, "maf": 0.0159, "proxies": []}, {"chr": "1", "bp": 161199431, "snp": "1:161199431", "n_total": 0, "pbs": 3.279853, "maf": 0.02447, "proxies": []}, {"chr": "2", "bp": 152580815, "snp": "2:152580815", "n_total": 0, "pbs": 3.22565, "maf": 0.02315, "proxies": []}, {"chr": "13", "bp": 95672265, "snp": "13:95672265", "n_total": 0, "pbs": 3.191772, "maf": 0.02828, "proxies": []}, {"chr": "16", "bp": 89833576, "snp": "16:89833576", "n_total": 0, "pbs": 3.123452, "maf": 0.02852, "proxies": []}, {"chr": "6", "bp": 30585771, "snp": "6:30585771", "n_total": 0, "pbs": 3.107944, "maf": 0.01933, "proxies": []}, {"chr": "1", "bp": 146661814, "snp": "1:146661814", "n_total": 0, "pbs": 3.098544, "maf": 0.0324, "proxies": []}, {"chr": "6", "bp": 31059825, "snp": "6:31059825", "n_total": 0, "pbs": 3.093862, "maf": 0.0281, "proxies": []}, {"chr": "4", "bp": 70354534, "snp": "4:70354534", "n_total": 0, "pbs": 3.069482, "maf": 0.03342, "proxies": []}, {"chr": "11", "bp": 34999682, "snp": "11:34999682", "n_total": 0, "pbs": 3.064863, "maf": 0.0308, "proxies": []}, {"chr": "8", "bp": 48701786, "snp": "8:48701786", "n_total": 0, "pbs": 3.035188, "maf": 0.03039, "proxies": []}, {"chr": "2", "bp": 21238413, "snp": "2:21238413", "n_total": 0, "pbs": 3.014656, "maf": 0.03376, "proxies": []}, {"chr": "5", "bp": 162896759, "snp": "5:162896759", "n_total": 0, "pbs": 2.913737, "maf": 0.03626, "proxies": []}, {"chr": "6", "bp": 30285312, "snp": "6:30285312", "n_total": 3, "pbs": 2.883592, "maf": 0.02515, "proxies": ["6:30063652", "6:30155149", "6:30326809"]}, {"chr": "8", "bp": 145639681, "snp": "8:145639681", "n_total": 0, "pbs": 2.882652, "maf": 0.03893, "proxies": []}, {"chr": "6", "bp": 31476458, "snp": "6:31476458", "n_total": 0, "pbs": 2.881022, "maf": 0.02381, "proxies": []}, {"chr": "6", "bp": 18149105, "snp": "6:18149105", "n_total": 0, "pbs": 2.818312, "maf": 0.03028, "proxies": []}, {"chr": "11", "bp": 116694055, "snp": "11:116694055", "n_total": 0, "pbs": 2.769349, "maf": 0.03234, "proxies": []}, {"chr": "1", "bp": 114380656, "snp": "1:114380656", "n_total": 0, "pbs": 2.696349, "maf": 0.04855, "proxies": []}, {"chr": "6", "bp": 29650122, "snp": "6:29650122", "n_total": 0, "pbs": 2.684818, "maf": 0.04238, "proxies": []}, {"chr": "7", "bp": 44555699, "snp": "7:44555699", "n_total": 0, "pbs": 2.662935, "maf": 0.04619, "proxies": []}, {"chr": "6", "bp": 29461730, "snp": "6:29461730", "n_total": 0, "pbs": 2.621775, "maf": 0.03553, "proxies": []}, {"chr": "6", "bp": 32704884, "snp": "6:32704884", "n_total": 0, "pbs": 2.60848, "maf": 0.04348, "proxies": []}, {"chr": "7", "bp": 99457605, "snp": "7:99457605", "n_total": 0, "pbs": 2.495848, "maf": 0.04503, "proxies": []}, {"chr": "2", "bp": 21225485, "snp": "2:21225485", "n_total": 0, "pbs": 2.474722, "maf": 0.0451, "proxies": []}, {"chr": "16", "bp": 75564668, "snp": "16:75564668", "n_total": 0, "pbs": 2.462061, "maf": 0.04818, "proxies": []}, {"chr": "6", "bp": 30928317, "snp": "6:30928317", "n_total": 0, "pbs": 2.452246, "maf": 0.04239, "proxies": []}, {"chr": "11", "bp": 17476460, "snp": "11:17476460", "n_total": 0, "pbs": 2.425139, "maf": 0.04286, "proxies": []}, {"chr": "20", "bp": 746197, "snp": "20:746197", "n_total": 0, "pbs": 2.408835, "maf": 0.04333, "proxies": []}, {"chr": "6", "bp": 29993196, "snp": "6:29993196", "n_total": 3, "pbs": 2.40741, "maf": 0.04418, "proxies": ["6:29983144", "6:30004186", "6:30019206"]}, {"chr": "2", "bp": 179594107, "snp": "2:179594107", "n_total": 0, "pbs": 2.358756, "maf": 0.06944, "proxies": []}, {"chr": "11", "bp": 116619073, "snp": "11:116619073", "n_total": 0, "pbs": 2.319958, "maf": 0.05277, "proxies": []}, {"chr": "2", "bp": 234546157, "snp": "2:234546157", "n_total": 0, "pbs": 2.314167, "maf": 0.04819, "proxies": []}, {"chr": "6", "bp": 31430694, "snp": "6:31430694", "n_total": 1, "pbs": 2.311652, "maf": 0.04899, "proxies": ["6:31322790"]}, {"chr": "6", "bp": 118535983, "snp": "6:118535983", "n_total": 0, "pbs": 2.274159, "maf": 0.05372, "proxies": []}, {"chr": "16", "bp": 86009686, "snp": "16:86009686", "n_total": 0, "pbs": 2.274041, "maf": 0.05405, "proxies": []}, {"chr": "6", "bp": 31763942, "snp": "6:31763942", "n_total": 0, "pbs": 2.262553, "maf": 0.0531, "proxies": []}, {"chr": "2", "bp": 46412422, "snp": "2:46412422", "n_total": 0, "pbs": 2.239602, "maf": 0.05574, "proxies": []}, {"chr": "3", "bp": 38293463, "snp": "3:38293463", "n_total": 0, "pbs": 2.226725, "maf": 0.04807, "proxies": []}, {"chr": "6", "bp": 32135878, "snp": "6:32135878", "n_total": 0, "pbs": 2.203914, "maf": 0.0475, "proxies": []}, {"chr": "3", "bp": 47957996, "snp": "3:47957996", "n_total": 0, "pbs": 2.193439, "maf": 0.06229, "proxies": []}, {"chr": "6", "bp": 32349557, "snp": "6:32349557", "n_total": 0, "pbs": 2.17761, "maf": 0.05584, "proxies": []}, {"chr": "20", "bp": 10622501, "snp": "20:10622501", "n_total": 0, "pbs": 2.158909, "maf": 0.05753, "proxies": []}, {"chr": "17", "bp": 64208285, "snp": "17:64208285", "n_total": 0, "pbs": 2.157357, "maf": 0.05438, "proxies": []}, {"chr": "1", "bp": 110213514, "snp": "1:110213514", "n_total": 0, "pbs": 2.130761, "maf": 0.05917, "proxies": []}, {"chr": "6", "bp": 32151994, "snp": "6:32151994", "n_total": 0, "pbs": 2.0464, "maf": 0.06261, "proxies": []}, {"chr": "17", "bp": 28561755, "snp": "17:28561755", "n_total": 0, "pbs": 2.035244, "maf": 0.06799, "proxies": []}, {"chr": "6", "bp": 30610042, "snp": "6:30610042", "n_total": 0, "pbs": 2.031772, "maf": 0.06101, "proxies": []}, {"chr": "12", "bp": 56740682, "snp": "12:56740682", "n_total": 1, "pbs": 2.023669, "maf": 0.06809, "proxies": ["12:56744276"]}, {"chr": "6", "bp": 107780479, "snp": "6:107780479", "n_total": 0, "pbs": 2.015905, "maf": 0.0672, "proxies": []}, {"chr": "6", "bp": 30257846, "snp": "6:30257846", "n_total": 0, "pbs": 1.996222, "maf": 0.07466, "proxies": []}, {"chr": "6", "bp": 29977068, "snp": "6:29977068", "n_total": 0, "pbs": 1.994408, "maf": 0.07543, "proxies": []}, {"chr": "19", "bp": 41858876, "snp": "19:41858876", "n_total": 0, "pbs": 1.959891, "maf": 0.08107, "proxies": []}, {"chr": "6", "bp": 29923923, "snp": "6:29923923", "n_total": 0, "pbs": 1.945331, "maf": 0.07753, "proxies": []}, {"chr": "6", "bp": 30204399, "snp": "6:30204399", "n_total": 1, "pbs": 1.937215, "maf": 0.0728, "proxies": ["6:30213540"]}, {"chr": "6", "bp": 30094113, "snp": "6:30094113", "n_total": 0, "pbs": 1.860642, "maf": 0.06769, "proxies": []}, {"chr": "6", "bp": 30699384, "snp": "6:30699384", "n_total": 0, "pbs": 1.834406, "maf": 0.08256, "proxies": []}, {"chr": "6", "bp": 30038383, "snp": "6:30038383", "n_total": 0, "pbs": 1.815376, "maf": 0.07627, "proxies": []}, {"chr": "12", "bp": 56494998, "snp": "12:56494998", "n_total": 0, "pbs": 1.787046, "maf": 0.0867, "proxies": []}, {"chr": "6", "bp": 31244789, "snp": "6:31244789", "n_total": 0, "pbs": 1.786593, "maf": 0.07886, "proxies": []}, {"chr": "6", "bp": 30084696, "snp": "6:30084696", "n_total": 1, "pbs": 1.783908, "maf": 0.07954, "proxies": ["6:30083855"]}, {"chr": "4", "bp": 15704874, "snp": "4:15704874", "n_total": 0, "pbs": 1.762294, "maf": 0.06353, "proxies": []}, {"chr": "9", "bp": 116153891, "snp": "9:116153891", "n_total": 0, "pbs": 1.75846, "maf": 0.09032, "proxies": []}, {"chr": "6", "bp": 31256005, "snp": "6:31256005", "n_total": 1, "pbs": 1.718023, "maf": 0.06937, "proxies": ["6:31253928"]}, {"chr": "6", "bp": 42224546, "snp": "6:42224546", "n_total": 0, "pbs": 1.704219, "maf": 0.07901, "proxies": []}, {"chr": "6", "bp": 30002793, "snp": "6:30002793", "n_total": 4, "pbs": 1.703564, "maf": 0.09292, "proxies": ["6:29717339", "6:29773392", "6:29841356", "6:30027452"]}, {"chr": "6", "bp": 30231755, "snp": "6:30231755", "n_total": 1, "pbs": 1.694979, "maf": 0.0834, "proxies": ["6:30231829"]}, {"chr": "5", "bp": 150467189, "snp": "5:150467189", "n_total": 0, "pbs": 1.65533, "maf": 0.09423, "proxies": []}, {"chr": "5", "bp": 55251931, "snp": "5:55251931", "n_total": 0, "pbs": 1.639696, "maf": 0.09744, "proxies": []}, {"chr": "14", "bp": 73393246, "snp": "14:73393246", "n_total": 0, "pbs": 1.627436, "maf": 0.07174, "proxies": []}, {"chr": "12", "bp": 21491937, "snp": "12:21491937", "n_total": 0, "pbs": 1.616039, "maf": 0.1043, "proxies": []}, {"chr": "6", "bp": 32959180, "snp": "6:32959180", "n_total": 0, "pbs": 1.609218, "maf": 0.06977, "proxies": []}, {"chr": "6", "bp": 33095555, "snp": "6:33095555", "n_total": 0, "pbs": 1.607999, "maf": 0.07604, "proxies": []}, {"chr": "12", "bp": 20871256, "snp": "12:20871256", "n_total": 0, "pbs": 1.556706, "maf": 0.09033, "proxies": []}, {"chr": "6", "bp": 30430482, "snp": "6:30430482", "n_total": 0, "pbs": 1.55071, "maf": 0.09356, "proxies": []}, {"chr": "6", "bp": 32156489, "snp": "6:32156489", "n_total": 2, "pbs": 1.550006, "maf": 0.07879, "proxies": ["6:32166384", "6:32180431"]}, {"chr": "6", "bp": 31118898, "snp": "6:31118898", "n_total": 0, "pbs": 1.54519, "maf": 0.11, "proxies": []}, {"chr": "6", "bp": 31499603, "snp": "6:31499603", "n_total": 0, "pbs": 1.542344, "maf": 0.1069, "proxies": []}, {"chr": "6", "bp": 29804409, "snp": "6:29804409", "n_total": 0, "pbs": 1.524569, "maf": 0.1209, "proxies": []}, {"chr": "6", "bp": 30789647, "snp": "6:30789647", "n_total": 0, "pbs": 1.521122, "maf": 0.09838, "proxies": []}, {"chr": "11", "bp": 4434519, "snp": "11:4434519", "n_total": 0, "pbs": 1.518209, "maf": 0.1618, "proxies": []}, {"chr": "6", "bp": 31710968, "snp": "6:31710968", "n_total": 2, "pbs": 1.505987, "maf": 0.1234, "proxies": ["6:31582025", "6:31589264"]}, {"chr": "6", "bp": 52622755, "snp": "6:52622755", "n_total": 0, "pbs": 1.494284, "maf": 0.08832, "proxies": []}, {"chr": "6", "bp": 30056476, "snp": "6:30056476", "n_total": 0, "pbs": 1.493511, "maf": 0.1146, "proxies": []}, {"chr": "6", "bp": 32882799, "snp": "6:32882799", "n_total": 1, "pbs": 1.482357, "maf": 0.1103, "proxies": ["6:32877768"]}, {"chr": "6", "bp": 32354520, "snp": "6:32354520", "n_total": 0, "pbs": 1.464353, "maf": 0.1047, "proxies": []}, {"chr": "4", "bp": 74864550, "snp": "4:74864550", "n_total": 0, "pbs": 1.461416, "maf": 0.1195, "proxies": []}, {"chr": "15", "bp": 48779530, "snp": "15:48779530", "n_total": 0, "pbs": 1.455956, "maf": 0.0938, "proxies": []}, {"chr": "6", "bp": 31521302, "snp": "6:31521302", "n_total": 0, "pbs": 1.449651, "maf": 0.09899, "proxies": []}, {"chr": "6", "bp": 31600304, "snp": "6:31600304", "n_total": 0, "pbs": 1.445929, "maf": 0.1176, "proxies": []}, {"chr": "6", "bp": 30211903, "snp": "6:30211903", "n_total": 0, "pbs": 1.440949, "maf": 0.1301, "proxies": []}, {"chr": "6", "bp": 34214322, "snp": "6:34214322", "n_total": 0, "pbs": 1.42876, "maf": 0.1075, "proxies": []}, {"chr": "11", "bp": 69307695, "snp": "11:69307695", "n_total": 0, "pbs": 1.421942, "maf": 0.1189, "proxies": []}, {"chr": "6", "bp": 31179006, "snp": "6:31179006", "n_total": 1, "pbs": 1.40199, "maf": 0.09242, "proxies": ["6:31197514"]}, {"chr": "15", "bp": 92647645, "snp": "15:92647645", "n_total": 0, "pbs": 1.390783, "maf": 0.1136, "proxies": []}, {"chr": "11", "bp": 112023827, "snp": "11:112023827", "n_total": 0, "pbs": 1.372013, "maf": 0.1081, "proxies": []}, {"chr": "6", "bp": 30863530, "snp": "6:30863530", "n_total": 0, "pbs": 1.366458, "maf": 0.1153, "proxies": []}, {"chr": "9", "bp": 132580901, "snp": "9:132580901", "n_total": 0, "pbs": 1.361453, "maf": 0.125, "proxies": []}, {"chr": "6", "bp": 31497835, "snp": "6:31497835", "n_total": 1, "pbs": 1.352795, "maf": 0.1049, "proxies": ["6:31493421"]}, {"chr": "6", "bp": 25869371, "snp": "6:25869371", "n_total": 0, "pbs": 1.329913, "maf": 0.117, "proxies": []}, {"chr": "22", "bp": 30681257, "snp": "22:30681257", "n_total": 0, "pbs": 1.3276, "maf": 0.1177, "proxies": []}, {"chr": "5", "bp": 169805956, "snp": "5:169805956", "n_total": 0, "pbs": 1.319099, "maf": 0.1213, "proxies": []}, {"chr": "6", "bp": 31627449, "snp": "6:31627449", "n_total": 0, "pbs": 1.308589, "maf": 0.1051, "proxies": []}, {"chr": "6", "bp": 32235384, "snp": "6:32235384", "n_total": 0, "pbs": 1.304613, "maf": 0.1211, "proxies": []}, {"chr": "6", "bp": 31009508, "snp": "6:31009508", "n_total": 0, "pbs": 1.294774, "maf": 0.1121, "proxies": []}, {"chr": "6", "bp": 30969498, "snp": "6:30969498", "n_total": 4, "pbs": 1.267957, "maf": 0.1213, "proxies": ["6:30949996", "6:30951209", "6:30953240", "6:30969527"]}, {"chr": "19", "bp": 6718387, "snp": "19:6718387", "n_total": 0, "pbs": 1.259837, "maf": 0.1248, "proxies": []}, {"chr": "2", "bp": 227674564, "snp": "2:227674564", "n_total": 0, "pbs": 1.258214, "maf": 0.1285, "proxies": []}, {"chr": "6", "bp": 33153122, "snp": "6:33153122", "n_total": 0, "pbs": 1.252936, "maf": 0.1304, "proxies": []}, {"chr": "3", "bp": 37518545, "snp": "3:37518545", "n_total": 0, "pbs": 1.246664, "maf": 0.1297, "proxies": []}, {"chr": "6", "bp": 30386514, "snp": "6:30386514", "n_total": 0, "pbs": 1.24601, "maf": 0.1505, "proxies": []}, {"chr": "6", "bp": 29702206, "snp": "6:29702206", "n_total": 2, "pbs": 1.24518, "maf": 0.1349, "proxies": ["6:29610989", "6:29628883"]}, {"chr": "11", "bp": 113278483, "snp": "11:113278483", "n_total": 0, "pbs": 1.242152, "maf": 0.1327, "proxies": []}, {"chr": "1", "bp": 186650321, "snp": "1:186650321", "n_total": 0, "pbs": 1.238049, "maf": 0.1466, "proxies": []}, {"chr": "6", "bp": 32412809, "snp": "6:32412809", "n_total": 0, "pbs": 1.232976, "maf": 0.1269, "proxies": []}, {"chr": "4", "bp": 187195551, "snp": "4:187195551", "n_total": 0, "pbs": 1.229235, "maf": 0.1545, "proxies": []}, {"chr": "7", "bp": 36438709, "snp": "7:36438709", "n_total": 0, "pbs": 1.221814, "maf": 0.1241, "proxies": []}, {"chr": "16", "bp": 16043174, "snp": "16:16043174", "n_total": 0, "pbs": 1.214734, "maf": 0.1475, "proxies": []}, {"chr": "19", "bp": 13409696, "snp": "19:13409696", "n_total": 1, "pbs": 1.180117, "maf": 0.1383, "proxies": ["19:13409472"]}, {"chr": "1", "bp": 112297482, "snp": "1:112297482", "n_total": 0, "pbs": 1.17634, "maf": 0.1449, "proxies": []}, {"chr": "15", "bp": 25926198, "snp": "15:25926198", "n_total": 0, "pbs": 1.161108, "maf": 0.14, "proxies": []}, {"chr": "12", "bp": 44165430, "snp": "12:44165430", "n_total": 0, "pbs": 1.158529, "maf": 0.13, "proxies": []}, {"chr": "2", "bp": 234622412, "snp": "2:234622412", "n_total": 1, "pbs": 1.149096, "maf": 0.1207, "proxies": ["2:234625718"]}, {"chr": "6", "bp": 31947594, "snp": "6:31947594", "n_total": 0, "pbs": 1.14837, "maf": 0.1359, "proxies": []}, {"chr": "9", "bp": 99161512, "snp": "9:99161512", "n_total": 0, "pbs": 1.140596, "maf": 0.1532, "proxies": []}, {"chr": "6", "bp": 30042861, "snp": "6:30042861", "n_total": 2, "pbs": 1.117025, "maf": 0.1706, "proxies": ["6:29976024", "6:30065416"]}, {"chr": "4", "bp": 70351288, "snp": "4:70351288", "n_total": 0, "pbs": 1.109457, "maf": 0.151, "proxies": []}, {"chr": "6", "bp": 32582650, "snp": "6:32582650", "n_total": 0, "pbs": 1.103661, "maf": 0.1497, "proxies": []}, {"chr": "6", "bp": 30332146, "snp": "6:30332146", "n_total": 1, "pbs": 1.100948, "maf": 0.1499, "proxies": ["6:30413701"]}, {"chr": "15", "bp": 74710485, "snp": "15:74710485", "n_total": 0, "pbs": 1.099482, "maf": 0.1415, "proxies": []}, {"chr": "6", "bp": 31134087, "snp": "6:31134087", "n_total": 1, "pbs": 1.096135, "maf": 0.09924, "proxies": ["6:31143835"]}, {"chr": "6", "bp": 32148403, "snp": "6:32148403", "n_total": 4, "pbs": 1.085648, "maf": 0.162, "proxies": ["6:32113571", "6:32141005", "6:32145993", "6:32145999"]}, {"chr": "11", "bp": 4159764, "snp": "11:4159764", "n_total": 0, "pbs": 1.073277, "maf": 0.1398, "proxies": []}, {"chr": "11", "bp": 128728067, "snp": "11:128728067", "n_total": 0, "pbs": 1.065214, "maf": 0.1715, "proxies": []}, {"chr": "5", "bp": 133449827, "snp": "5:133449827", "n_total": 0, "pbs": 1.064554, "maf": 0.1493, "proxies": []}, {"chr": "16", "bp": 3304626, "snp": "16:3304626", "n_total": 0, "pbs": 1.064265, "maf": 0.1358, "proxies": []}, {"chr": "6", "bp": 30338138, "snp": "6:30338138", "n_total": 0, "pbs": 1.056641, "maf": 0.1721, "proxies": []}, {"chr": "4", "bp": 69531327, "snp": "4:69531327", "n_total": 0, "pbs": 1.049776, "maf": 0.1197, "proxies": []}, {"chr": "6", "bp": 31585000, "snp": "6:31585000", "n_total": 0, "pbs": 1.049344, "maf": 0.1567, "proxies": []}, {"chr": "13", "bp": 47430263, "snp": "13:47430263", "n_total": 0, "pbs": 1.047841, "maf": 0.1672, "proxies": []}, {"chr": "7", "bp": 65730798, "snp": "7:65730798", "n_total": 0, "pbs": 1.04433, "maf": 0.1711, "proxies": []}, {"chr": "11", "bp": 74931079, "snp": "11:74931079", "n_total": 0, "pbs": 1.013725, "maf": 0.1421, "proxies": []}, {"chr": "6", "bp": 31346621, "snp": "6:31346621", "n_total": 0, "pbs": 1.004235, "maf": 0.1664, "proxies": []}, {"chr": "5", "bp": 79361265, "snp": "5:79361265", "n_total": 0, "pbs": 0.999163, "maf": 0.1634, "proxies": []}, {"chr": "3", "bp": 148414887, "snp": "3:148414887", "n_total": 0, "pbs": 0.99622, "maf": 0.1698, "proxies": []}, {"chr": "6", "bp": 30088474, "snp": "6:30088474", "n_total": 0, "pbs": 0.993086, "maf": 0.1917, "proxies": []}, {"chr": "10", "bp": 79183038, "snp": "10:79183038", "n_total": 0, "pbs": 0.986478, "maf": 0.1642, "proxies": []}, {"chr": "6", "bp": 31022113, "snp": "6:31022113", "n_total": 0, "pbs": 0.98494, "maf": 0.156, "proxies": []}, {"chr": "5", "bp": 75591710, "snp": "5:75591710", "n_total": 0, "pbs": 0.984824, "maf": 0.1806, "proxies": []}, {"chr": "6", "bp": 31155785, "snp": "6:31155785", "n_total": 1, "pbs": 0.980502, "maf": 0.1942, "proxies": ["6:31196671"]}, {"chr": "4", "bp": 22820504, "snp": "4:22820504", "n_total": 0, "pbs": 0.976166, "maf": 0.1541, "proxies": []}, {"chr": "9", "bp": 107665978, "snp": "9:107665978", "n_total": 0, "pbs": 0.976034, "maf": 0.1712, "proxies": []}, {"chr": "6", "bp": 31484683, "snp": "6:31484683", "n_total": 0, "pbs": 0.972173, "maf": 0.1579, "proxies": []}, {"chr": "6", "bp": 30945265, "snp": "6:30945265", "n_total": 0, "pbs": 0.960282, "maf": 0.1753, "proxies": []}, {"chr": "4", "bp": 44386168, "snp": "4:44386168", "n_total": 0, "pbs": 0.951596, "maf": 0.1755, "proxies": []}, {"chr": "15", "bp": 89415247, "snp": "15:89415247", "n_total": 0, "pbs": 0.949189, "maf": 0.153, "proxies": []}, {"chr": "12", "bp": 56865056, "snp": "12:56865056", "n_total": 0, "pbs": 0.936152, "maf": 0.1799, "proxies": []}, {"chr": "8", "bp": 13058674, "snp": "8:13058674", "n_total": 0, "pbs": 0.929246, "maf": 0.1553, "proxies": []}, {"chr": "6", "bp": 52841479, "snp": "6:52841479", "n_total": 0, "pbs": 0.916992, "maf": 0.1758, "proxies": []}, {"chr": "1", "bp": 98552832, "snp": "1:98552832", "n_total": 0, "pbs": 0.916272, "maf": 0.1809, "proxies": []}, {"chr": "2", "bp": 60620286, "snp": "2:60620286", "n_total": 0, "pbs": 0.915178, "maf": 0.1658, "proxies": []}, {"chr": "6", "bp": 29938777, "snp": "6:29938777", "n_total": 0, "pbs": 0.913372, "maf": 0.1901, "proxies": []}, {"chr": "11", "bp": 611919, "snp": "11:611919", "n_total": 0, "pbs": 0.909762, "maf": 0.1756, "proxies": []}, {"chr": "12", "bp": 55098996, "snp": "12:55098996", "n_total": 0, "pbs": 0.889908, "maf": 0.1809, "proxies": []}, {"chr": "6", "bp": 29823571, "snp": "6:29823571", "n_total": 0, "pbs": 0.881542, "maf": 0.2052, "proxies": []}, {"chr": "6", "bp": 32281510, "snp": "6:32281510", "n_total": 2, "pbs": 0.880142, "maf": 0.1409, "proxies": ["6:32220484", "6:32233638"]}, {"chr": "2", "bp": 25391101, "snp": "2:25391101", "n_total": 0, "pbs": 0.878677, "maf": 0.1693, "proxies": []}, {"chr": "15", "bp": 92611892, "snp": "15:92611892", "n_total": 0, "pbs": 0.863435, "maf": 0.1849, "proxies": []}, {"chr": "2", "bp": 227655390, "snp": "2:227655390", "n_total": 0, "pbs": 0.858504, "maf": 0.197, "proxies": []}, {"chr": "6", "bp": 32411846, "snp": "6:32411846", "n_total": 0, "pbs": 0.857228, "maf": 0.1646, "proxies": []}, {"chr": "7", "bp": 41470093, "snp": "7:41470093", "n_total": 0, "pbs": 0.856303, "maf": 0.1946, "proxies": []}, {"chr": "4", "bp": 26108197, "snp": "4:26108197", "n_total": 0, "pbs": 0.851701, "maf": 0.1765, "proxies": []}, {"chr": "1", "bp": 94572270, "snp": "1:94572270", "n_total": 0, "pbs": 0.851441, "maf": 0.1947, "proxies": []}, {"chr": "8", "bp": 70603733, "snp": "8:70603733", "n_total": 0, "pbs": 0.845996, "maf": 0.1902, "proxies": []}, {"chr": "6", "bp": 146747330, "snp": "6:146747330", "n_total": 0, "pbs": 0.835179, "maf": 0.05202, "proxies": []}, {"chr": "12", "bp": 123640853, "snp": "12:123640853", "n_total": 0, "pbs": 0.832202, "maf": 0.2159, "proxies": []}, {"chr": "17", "bp": 61947107, "snp": "17:61947107", "n_total": 0, "pbs": 0.822333, "maf": 0.1965, "proxies": []}, {"chr": "6", "bp": 30097170, "snp": "6:30097170", "n_total": 2, "pbs": 0.815916, "maf": 0.1633, "proxies": ["6:30116160", "6:30285650"]}, {"chr": "12", "bp": 131320011, "snp": "12:131320011", "n_total": 0, "pbs": 0.814977, "maf": 0.3378, "proxies": []}, {"chr": "16", "bp": 7563293, "snp": "16:7563293", "n_total": 0, "pbs": 0.810728, "maf": 0.1325, "proxies": []}, {"chr": "6", "bp": 54875561, "snp": "6:54875561", "n_total": 0, "pbs": 0.807671, "maf": 0.3123, "proxies": []}, {"chr": "1", "bp": 163113375, "snp": "1:163113375", "n_total": 0, "pbs": 0.807418, "maf": 0.1857, "proxies": []}, {"chr": "17", "bp": 48719590, "snp": "17:48719590", "n_total": 0, "pbs": 0.807015, "maf": 0.2006, "proxies": []}, {"chr": "13", "bp": 33582646, "snp": "13:33582646", "n_total": 0, "pbs": 0.806736, "maf": 0.2171, "proxies": []}, {"chr": "11", "bp": 2182224, "snp": "11:2182224", "n_total": 0, "pbs": 0.782636, "maf": 0.2002, "proxies": []}, {"chr": "6", "bp": 6152137, "snp": "6:6152137", "n_total": 0, "pbs": 0.778002, "maf": 0.2098, "proxies": []}, {"chr": "8", "bp": 16012648, "snp": "8:16012648", "n_total": 0, "pbs": 0.777303, "maf": 0.1735, "proxies": []}, {"chr": "1", "bp": 64127468, "snp": "1:64127468", "n_total": 0, "pbs": 0.777127, "maf": 0.173, "proxies": []}, {"chr": "6", "bp": 31387967, "snp": "6:31387967", "n_total": 0, "pbs": 0.775382, "maf": 0.157, "proxies": []}, {"chr": "1", "bp": 183398906, "snp": "1:183398906", "n_total": 0, "pbs": 0.770632, "maf": 0.2502, "proxies": []}, {"chr": "16", "bp": 51458290, "snp": "16:51458290", "n_total": 0, "pbs": 0.768202, "maf": 0.2175, "proxies": []}, {"chr": "6", "bp": 116659336, "snp": "6:116659336", "n_total": 0, "pbs": 0.767863, "maf": 0.1919, "proxies": []}, {"chr": "6", "bp": 78173281, "snp": "6:78173281", "n_total": 0, "pbs": 0.767036, "maf": 0.1703, "proxies": []}, {"chr": "6", "bp": 30315011, "snp": "6:30315011", "n_total": 2, "pbs": 0.75875, "maf": 0.1607, "proxies": ["6:30257497", "6:30272417"]}, {"chr": "6", "bp": 33098896, "snp": "6:33098896", "n_total": 0, "pbs": 0.749494, "maf": 0.1987, "proxies": []}, {"chr": "6", "bp": 31082910, "snp": "6:31082910", "n_total": 0, "pbs": 0.749076, "maf": 0.1985, "proxies": []}, {"chr": "6", "bp": 132859609, "snp": "6:132859609", "n_total": 0, "pbs": 0.738748, "maf": 0.2088, "proxies": []}, {"chr": "12", "bp": 28534415, "snp": "12:28534415", "n_total": 0, "pbs": 0.723111, "maf": 0.2002, "proxies": []}, {"chr": "1", "bp": 94476388, "snp": "1:94476388", "n_total": 0, "pbs": 0.719108, "maf": 0.2173, "proxies": []}, {"chr": "1", "bp": 20931828, "snp": "1:20931828", "n_total": 0, "pbs": 0.706663, "maf": 0.2189, "proxies": []}, {"chr": "6", "bp": 30070932, "snp": "6:30070932", "n_total": 1, "pbs": 0.704619, "maf": 0.2369, "proxies": ["6:30067568"]}, {"chr": "6", "bp": 31465899, "snp": "6:31465899", "n_total": 0, "pbs": 0.704349, "maf": 0.2352, "proxies": []}, {"chr": "6", "bp": 32399261, "snp": "6:32399261", "n_total": 0, "pbs": 0.704105, "maf": 0.1946, "proxies": []}, {"chr": "11", "bp": 112026156, "snp": "11:112026156", "n_total": 0, "pbs": 0.70369, "maf": 0.1579, "proxies": []}, {"chr": "6", "bp": 52861858, "snp": "6:52861858", "n_total": 0, "pbs": 0.700916, "maf": 0.2117, "proxies": []}, {"chr": "1", "bp": 238060497, "snp": "1:238060497", "n_total": 0, "pbs": 0.676376, "maf": 0.1465, "proxies": []}, {"chr": "6", "bp": 160855021, "snp": "6:160855021", "n_total": 0, "pbs": 0.670689, "maf": 0.2318, "proxies": []}, {"chr": "6", "bp": 44194345, "snp": "6:44194345", "n_total": 0, "pbs": 0.668381, "maf": 0.191, "proxies": []}, {"chr": "17", "bp": 48729498, "snp": "17:48729498", "n_total": 0, "pbs": 0.662661, "maf": 0.2396, "proxies": []}, {"chr": "1", "bp": 120267505, "snp": "1:120267505", "n_total": 0, "pbs": 0.65398, "maf": 0.2174, "proxies": []}, {"chr": "4", "bp": 15939915, "snp": "4:15939915", "n_total": 0, "pbs": 0.646399, "maf": 0.1739, "proxies": []}, {"chr": "1", "bp": 161192511, "snp": "1:161192511", "n_total": 0, "pbs": 0.642715, "maf": 0.2008, "proxies": []}, {"chr": "9", "bp": 114596259, "snp": "9:114596259", "n_total": 0, "pbs": 0.642266, "maf": 0.02783, "proxies": []}, {"chr": "6", "bp": 31436609, "snp": "6:31436609", "n_total": 1, "pbs": 0.640526, "maf": 0.2498, "proxies": ["6:31436499"]}, {"chr": "16", "bp": 55700224, "snp": "16:55700224", "n_total": 0, "pbs": 0.638029, "maf": 0.1992, "proxies": []}, {"chr": "10", "bp": 79680434, "snp": "10:79680434", "n_total": 0, "pbs": 0.637164, "maf": 0.2217, "proxies": []}, {"chr": "11", "bp": 112034988, "snp": "11:112034988", "n_total": 0, "pbs": 0.624796, "maf": 0.2358, "proxies": []}, {"chr": "13", "bp": 103700866, "snp": "13:103700866", "n_total": 0, "pbs": 0.622427, "maf": 0.204, "proxies": []}, {"chr": "6", "bp": 32152387, "snp": "6:32152387", "n_total": 2, "pbs": 0.622179, "maf": 0.2464, "proxies": ["6:32019746", "6:32088854"]}, {"chr": "3", "bp": 121649477, "snp": "3:121649477", "n_total": 0, "pbs": 0.617603, "maf": 0.2547, "proxies": []}, {"chr": "6", "bp": 29927221, "snp": "6:29927221", "n_total": 0, "pbs": 0.61464, "maf": 0.2266, "proxies": []}, {"chr": "1", "bp": 94593100, "snp": "1:94593100", "n_total": 0, "pbs": 0.612388, "maf": 0.2246, "proxies": []}, {"chr": "15", "bp": 91437388, "snp": "15:91437388", "n_total": 0, "pbs": 0.597981, "maf": 0.2307, "proxies": []}, {"chr": "16", "bp": 6670663, "snp": "16:6670663", "n_total": 0, "pbs": 0.595392, "maf": 0.427, "proxies": []}, {"chr": "11", "bp": 1331254, "snp": "11:1331254", "n_total": 0, "pbs": 0.594709, "maf": 0.1855, "proxies": []}, {"chr": "13", "bp": 103687581, "snp": "13:103687581", "n_total": 0, "pbs": 0.591184, "maf": 0.2208, "proxies": []}, {"chr": "6", "bp": 32367451, "snp": "6:32367451", "n_total": 0, "pbs": 0.587976, "maf": 0.1945, "proxies": []}, {"chr": "13", "bp": 99860249, "snp": "13:99860249", "n_total": 0, "pbs": 0.586496, "maf": 0.2698, "proxies": []}, {"chr": "9", "bp": 107555711, "snp": "9:107555711", "n_total": 0, "pbs": 0.584824, "maf": 0.1841, "proxies": []}, {"chr": "5", "bp": 101563955, "snp": "5:101563955", "n_total": 0, "pbs": 0.580743, "maf": 0.2066, "proxies": []}, {"chr": "13", "bp": 31037903, "snp": "13:31037903", "n_total": 0, "pbs": 0.573049, "maf": 0.2444, "proxies": []}, {"chr": "7", "bp": 106678688, "snp": "7:106678688", "n_total": 0, "pbs": 0.572968, "maf": 0.3154, "proxies": []}, {"chr": "6", "bp": 31118565, "snp": "6:31118565", "n_total": 0, "pbs": 0.569912, "maf": 0.2063, "proxies": []}, {"chr": "2", "bp": 662461, "snp": "2:662461", "n_total": 0, "pbs": 0.561568, "maf": 0.1648, "proxies": []}, {"chr": "17", "bp": 7178818, "snp": "17:7178818", "n_total": 0, "pbs": 0.560067, "maf": 0.3493, "proxies": []}, {"chr": "11", "bp": 88577125, "snp": "11:88577125", "n_total": 1, "pbs": 0.5595, "maf": 0.4723, "proxies": ["11:89017973"]}, {"chr": "18", "bp": 21829623, "snp": "18:21829623", "n_total": 0, "pbs": 0.558805, "maf": 0.3832, "proxies": []}, {"chr": "9", "bp": 21986847, "snp": "9:21986847", "n_total": 0, "pbs": 0.558321, "maf": 0.2303, "proxies": []}, {"chr": "12", "bp": 20967747, "snp": "12:20967747", "n_total": 0, "pbs": 0.55361, "maf": 0.4941, "proxies": []}, {"chr": "6", "bp": 30539438, "snp": "6:30539438", "n_total": 9, "pbs": 0.548129, "maf": 0.2065, "proxies": ["6:30470301", "6:30480877", "6:30496816", "6:30499127", "6:30499732", "6:30505948", "6:30516353", "6:30537606", "6:30562671"]}, {"chr": "19", "bp": 45376284, "snp": "19:45376284", "n_total": 0, "pbs": 0.54781, "maf": 0.2852, "proxies": []}, {"chr": "11", "bp": 17501100, "snp": "11:17501100", "n_total": 0, "pbs": 0.543867, "maf": 0.2565, "proxies": []}, {"chr": "1", "bp": 29190390, "snp": "1:29190390", "n_total": 0, "pbs": 0.540269, "maf": 0.2522, "proxies": []}, {"chr": "7", "bp": 97993362, "snp": "7:97993362", "n_total": 0, "pbs": 0.537378, "maf": 0.2691, "proxies": []}, {"chr": "6", "bp": 33108848, "snp": "6:33108848", "n_total": 0, "pbs": 0.53497, "maf": 0.2783, "proxies": []}, {"chr": "11", "bp": 116703640, "snp": "11:116703640", "n_total": 0, "pbs": 0.533517, "maf": 0.2397, "proxies": []}, {"chr": "14", "bp": 105239146, "snp": "14:105239146", "n_total": 0, "pbs": 0.533277, "maf": 0.2846, "proxies": []}, {"chr": "5", "bp": 132560150, "snp": "5:132560150", "n_total": 0, "pbs": 0.529584, "maf": 0.2337, "proxies": []}, {"chr": "4", "bp": 30883842, "snp": "4:30883842", "n_total": 0, "pbs": 0.52878, "maf": 0.4967, "proxies": []}, {"chr": "13", "bp": 52792819, "snp": "13:52792819", "n_total": 0, "pbs": 0.523295, "maf": 0.4727, "proxies": []}, {"chr": "15", "bp": 70875360, "snp": "15:70875360", "n_total": 0, "pbs": 0.522819, "maf": 0.1167, "proxies": []}, {"chr": "7", "bp": 62201222, "snp": "7:62201222", "n_total": 0, "pbs": 0.519861, "maf": 0.4953, "proxies": []}, {"chr": "5", "bp": 125572736, "snp": "5:125572736", "n_total": 0, "pbs": 0.518836, "maf": 0.3551, "proxies": []}, {"chr": "6", "bp": 32755216, "snp": "6:32755216", "n_total": 6, "pbs": 0.518069, "maf": 0.226, "proxies": ["6:32740671", "6:32745156", "6:32747542", "6:32753313", "6:32762484", "6:32776414"]}, {"chr": "1", "bp": 168419212, "snp": "1:168419212", "n_total": 0, "pbs": 0.518037, "maf": 0.3694, "proxies": []}, {"chr": "2", "bp": 169782880, "snp": "2:169782880", "n_total": 0, "pbs": 0.518024, "maf": 0.2455, "proxies": []}, {"chr": "12", "bp": 48266167, "snp": "12:48266167", "n_total": 0, "pbs": 0.517141, "maf": 0.2419, "proxies": []}, {"chr": "19", "bp": 36336398, "snp": "19:36336398", "n_total": 0, "pbs": 0.516421, "maf": 0.4901, "proxies": []}, {"chr": "6", "bp": 31477324, "snp": "6:31477324", "n_total": 0, "pbs": 0.516384, "maf": 0.4906, "proxies": []}, {"chr": "1", "bp": 6279370, "snp": "1:6279370", "n_total": 0, "pbs": 0.511677, "maf": 0.2737, "proxies": []}, {"chr": "14", "bp": 28722661, "snp": "14:28722661", "n_total": 0, "pbs": 0.510629, "maf": 0.4852, "proxies": []}, {"chr": "19", "bp": 4229913, "snp": "19:4229913", "n_total": 0, "pbs": 0.510281, "maf": 0.2645, "proxies": []}, {"chr": "19", "bp": 55155548, "snp": "19:55155548", "n_total": 0, "pbs": 0.508634, "maf": 0.452, "proxies": []}, {"chr": "6", "bp": 30738408, "snp": "6:30738408", "n_total": 0, "pbs": 0.506694, "maf": 0.2674, "proxies": []}, {"chr": "5", "bp": 180109635, "snp": "5:180109635", "n_total": 0, "pbs": 0.50283, "maf": 0.4862, "proxies": []}, {"chr": "22", "bp": 31535872, "snp": "22:31535872", "n_total": 0, "pbs": 0.499565, "maf": 0.2382, "proxies": []}, {"chr": "6", "bp": 29776390, "snp": "6:29776390", "n_total": 3, "pbs": 0.498708, "maf": 0.3038, "proxies": ["6:29738665", "6:29772549", "6:29798803"]}, {"chr": "20", "bp": 45120212, "snp": "20:45120212", "n_total": 0, "pbs": 0.49447, "maf": 0.4995, "proxies": []}, {"chr": "11", "bp": 61678754, "snp": "11:61678754", "n_total": 0, "pbs": 0.492977, "maf": 0.2456, "proxies": []}, {"chr": "6", "bp": 32371179, "snp": "6:32371179", "n_total": 0, "pbs": 0.487728, "maf": 0.2965, "proxies": []}, {"chr": "22", "bp": 36632643, "snp": "22:36632643", "n_total": 1, "pbs": 0.486428, "maf": 0.4867, "proxies": ["22:36597744"]}, {"chr": "6", "bp": 150380884, "snp": "6:150380884", "n_total": 0, "pbs": 0.484992, "maf": 0.4611, "proxies": []}, {"chr": "6", "bp": 39873755, "snp": "6:39873755", "n_total": 0, "pbs": 0.484507, "maf": 0.4989, "proxies": []}, {"chr": "6", "bp": 33130208, "snp": "6:33130208", "n_total": 0, "pbs": 0.484469, "maf": 0.2504, "proxies": []}, {"chr": "3", "bp": 10059664, "snp": "3:10059664", "n_total": 0, "pbs": 0.483893, "maf": 0.4523, "proxies": []}, {"chr": "14", "bp": 69322889, "snp": "14:69322889", "n_total": 0, "pbs": 0.482019, "maf": 0.138, "proxies": []}, {"chr": "1", "bp": 43392250, "snp": "1:43392250", "n_total": 0, "pbs": 0.481024, "maf": 0.2551, "proxies": []}, {"chr": "6", "bp": 29589124, "snp": "6:29589124", "n_total": 0, "pbs": 0.48055, "maf": 0.2446, "proxies": []}, {"chr": "19", "bp": 37825839, "snp": "19:37825839", "n_total": 0, "pbs": 0.477387, "maf": 0.488, "proxies": []}, {"chr": "6", "bp": 31351175, "snp": "6:31351175", "n_total": 0, "pbs": 0.471542, "maf": 0.2377, "proxies": []}, {"chr": "6", "bp": 29939483, "snp": "6:29939483", "n_total": 5, "pbs": 0.471027, "maf": 0.2542, "proxies": ["6:29948812", "6:29977145", "6:29989695", "6:30004371", "6:30008003"]}, {"chr": "2", "bp": 195586736, "snp": "2:195586736", "n_total": 0, "pbs": 0.467853, "maf": 0.4862, "proxies": []}, {"chr": "15", "bp": 98643838, "snp": "15:98643838", "n_total": 0, "pbs": 0.466681, "maf": 0.492, "proxies": []}, {"chr": "22", "bp": 31148104, "snp": "22:31148104", "n_total": 0, "pbs": 0.46525, "maf": 0.4884, "proxies": []}, {"chr": "2", "bp": 241495013, "snp": "2:241495013", "n_total": 0, "pbs": 0.464954, "maf": 0.264, "proxies": []}, {"chr": "19", "bp": 48374551, "snp": "19:48374551", "n_total": 0, "pbs": 0.464074, "maf": 0.2786, "proxies": []}, {"chr": "7", "bp": 95034775, "snp": "7:95034775", "n_total": 0, "pbs": 0.462642, "maf": 0.2973, "proxies": []}, {"chr": "9", "bp": 34723744, "snp": "9:34723744", "n_total": 0, "pbs": 0.462161, "maf": 0.125, "proxies": []}, {"chr": "15", "bp": 27770335, "snp": "15:27770335", "n_total": 0, "pbs": 0.453261, "maf": 0.4183, "proxies": []}, {"chr": "3", "bp": 132656884, "snp": "3:132656884", "n_total": 0, "pbs": 0.451445, "maf": 0.3857, "proxies": []}, {"chr": "3", "bp": 961782, "snp": "3:961782", "n_total": 0, "pbs": 0.451373, "maf": 0.2786, "proxies": []}, {"chr": "3", "bp": 7034549, "snp": "3:7034549", "n_total": 0, "pbs": 0.4493, "maf": 0.2767, "proxies": []}, {"chr": "10", "bp": 126426148, "snp": "10:126426148", "n_total": 0, "pbs": 0.447938, "maf": 0.2684, "proxies": []}, {"chr": "2", "bp": 38298203, "snp": "2:38298203", "n_total": 0, "pbs": 0.446426, "maf": 0.2479, "proxies": []}, {"chr": "7", "bp": 51578885, "snp": "7:51578885", "n_total": 0, "pbs": 0.442169, "maf": 0.4775, "proxies": []}, {"chr": "14", "bp": 77173235, "snp": "14:77173235", "n_total": 0, "pbs": 0.441687, "maf": 0.4503, "proxies": []}, {"chr": "12", "bp": 18811965, "snp": "12:18811965", "n_total": 0, "pbs": 0.437898, "maf": 0.4683, "proxies": []}, {"chr": "5", "bp": 131705458, "snp": "5:131705458", "n_total": 0, "pbs": 0.435935, "maf": 0.2309, "proxies": []}, {"chr": "11", "bp": 85691662, "snp": "11:85691662", "n_total": 0, "pbs": 0.433867, "maf": 0.2718, "proxies": []}, {"chr": "6", "bp": 32739967, "snp": "6:32739967", "n_total": 0, "pbs": 0.428333, "maf": 0.2567, "proxies": []}, {"chr": "13", "bp": 108336201, "snp": "13:108336201", "n_total": 0, "pbs": 0.421283, "maf": 0.3033, "proxies": []}, {"chr": "22", "bp": 17271797, "snp": "22:17271797", "n_total": 0, "pbs": 0.417382, "maf": 0.163, "proxies": []}, {"chr": "12", "bp": 60173356, "snp": "12:60173356", "n_total": 0, "pbs": 0.416034, "maf": 0.2442, "proxies": []}, {"chr": "11", "bp": 59224885, "snp": "11:59224885", "n_total": 0, "pbs": 0.415414, "maf": 0.3096, "proxies": []}, {"chr": "7", "bp": 142389323, "snp": "7:142389323", "n_total": 0, "pbs": 0.41186, "maf": 0.4688, "proxies": []}, {"chr": "8", "bp": 28197747, "snp": "8:28197747", "n_total": 0, "pbs": 0.41027, "maf": 0.2647, "proxies": []}, {"chr": "6", "bp": 29706793, "snp": "6:29706793", "n_total": 0, "pbs": 0.409122, "maf": 0.3068, "proxies": []}, {"chr": "4", "bp": 69534943, "snp": "4:69534943", "n_total": 0, "pbs": 0.407999, "maf": 0.3341, "proxies": []}, {"chr": "12", "bp": 10598802, "snp": "12:10598802", "n_total": 0, "pbs": 0.40643, "maf": 0.2367, "proxies": []}, {"chr": "6", "bp": 88032988, "snp": "6:88032988", "n_total": 0, "pbs": 0.405315, "maf": 0.4233, "proxies": []}, {"chr": "12", "bp": 22059617, "snp": "12:22059617", "n_total": 0, "pbs": 0.40066, "maf": 0.2782, "proxies": []}, {"chr": "3", "bp": 101649779, "snp": "3:101649779", "n_total": 0, "pbs": 0.400421, "maf": 0.1983, "proxies": []}, {"chr": "4", "bp": 3597592, "snp": "4:3597592", "n_total": 0, "pbs": 0.398108, "maf": 0.4048, "proxies": []}, {"chr": "7", "bp": 104461487, "snp": "7:104461487", "n_total": 0, "pbs": 0.396368, "maf": 0.2356, "proxies": []}, {"chr": "6", "bp": 31475913, "snp": "6:31475913", "n_total": 0, "pbs": 0.392673, "maf": 0.2858, "proxies": []}, {"chr": "15", "bp": 58726744, "snp": "15:58726744", "n_total": 0, "pbs": 0.392015, "maf": 0.2736, "proxies": []}, {"chr": "6", "bp": 30421463, "snp": "6:30421463", "n_total": 0, "pbs": 0.388616, "maf": 0.4162, "proxies": []}, {"chr": "1", "bp": 196701051, "snp": "1:196701051", "n_total": 0, "pbs": 0.385885, "maf": 0.2787, "proxies": []}, {"chr": "13", "bp": 25600476, "snp": "13:25600476", "n_total": 0, "pbs": 0.384986, "maf": 0.435, "proxies": []}, {"chr": "4", "bp": 104641103, "snp": "4:104641103", "n_total": 0, "pbs": 0.384791, "maf": 0.2936, "proxies": []}, {"chr": "7", "bp": 49981799, "snp": "7:49981799", "n_total": 0, "pbs": 0.382235, "maf": 0.1779, "proxies": []}, {"chr": "7", "bp": 28034091, "snp": "7:28034091", "n_total": 0, "pbs": 0.380618, "maf": 0.2509, "proxies": []}, {"chr": "2", "bp": 236995045, "snp": "2:236995045", "n_total": 0, "pbs": 0.376211, "maf": 0.2976, "proxies": []}, {"chr": "10", "bp": 106048294, "snp": "10:106048294", "n_total": 0, "pbs": 0.374963, "maf": 0.2918, "proxies": []}, {"chr": "17", "bp": 2203175, "snp": "17:2203175", "n_total": 0, "pbs": 0.371375, "maf": 0.3067, "proxies": []}, {"chr": "6", "bp": 31110391, "snp": "6:31110391", "n_total": 0, "pbs": 0.369536, "maf": 0.3384, "proxies": []}, {"chr": "9", "bp": 137335914, "snp": "9:137335914", "n_total": 0, "pbs": 0.36809, "maf": 0.306, "proxies": []}, {"chr": "18", "bp": 70474992, "snp": "18:70474992", "n_total": 0, "pbs": 0.367391, "maf": 0.05093, "proxies": []}, {"chr": "19", "bp": 55988725, "snp": "19:55988725", "n_total": 0, "pbs": 0.36243, "maf": 0.2784, "proxies": []}, {"chr": "5", "bp": 156479323, "snp": "5:156479323", "n_total": 0, "pbs": 0.362077, "maf": 0.2864, "proxies": []}, {"chr": "17", "bp": 25541278, "snp": "17:25541278", "n_total": 0, "pbs": 0.361334, "maf": 0.0775, "proxies": []}, {"chr": "8", "bp": 9860080, "snp": "8:9860080", "n_total": 0, "pbs": 0.359587, "maf": 0.261, "proxies": []}, {"chr": "5", "bp": 37209051, "snp": "5:37209051", "n_total": 0, "pbs": 0.358897, "maf": 0.4002, "proxies": []}, {"chr": "6", "bp": 30156496, "snp": "6:30156496", "n_total": 0, "pbs": 0.35478, "maf": 0.2869, "proxies": []}, {"chr": "7", "bp": 46753553, "snp": "7:46753553", "n_total": 0, "pbs": 0.354007, "maf": 0.3216, "proxies": []}, {"chr": "17", "bp": 73449644, "snp": "17:73449644", "n_total": 0, "pbs": 0.351977, "maf": 0.2517, "proxies": []}, {"chr": "2", "bp": 176707924, "snp": "2:176707924", "n_total": 0, "pbs": 0.35162, "maf": 0.5, "proxies": []}, {"chr": "8", "bp": 31691815, "snp": "8:31691815", "n_total": 0, "pbs": 0.349867, "maf": 0.1256, "proxies": []}, {"chr": "4", "bp": 23825732, "snp": "4:23825732", "n_total": 0, "pbs": 0.348279, "maf": 0.3861, "proxies": []}, {"chr": "12", "bp": 40620808, "snp": "12:40620808", "n_total": 0, "pbs": 0.347124, "maf": 0.2891, "proxies": []}, {"chr": "6", "bp": 29672165, "snp": "6:29672165", "n_total": 0, "pbs": 0.346421, "maf": 0.2877, "proxies": []}, {"chr": "20", "bp": 45232757, "snp": "20:45232757", "n_total": 0, "pbs": 0.343642, "maf": 0.2729, "proxies": []}, {"chr": "7", "bp": 93549596, "snp": "7:93549596", "n_total": 0, "pbs": 0.34313, "maf": 0.2934, "proxies": []}, {"chr": "17", "bp": 2126504, "snp": "17:2126504", "n_total": 0, "pbs": 0.341853, "maf": 0.2767, "proxies": []}, {"chr": "20", "bp": 55266755, "snp": "20:55266755", "n_total": 0, "pbs": 0.339503, "maf": 0.09974, "proxies": []}, {"chr": "5", "bp": 35044298, "snp": "5:35044298", "n_total": 0, "pbs": 0.337678, "maf": 0.2592, "proxies": []}, {"chr": "2", "bp": 153974661, "snp": "2:153974661", "n_total": 0, "pbs": 0.334737, "maf": 0.07277, "proxies": []}, {"chr": "5", "bp": 15840481, "snp": "5:15840481", "n_total": 0, "pbs": 0.334485, "maf": 0.406, "proxies": []}, {"chr": "4", "bp": 72604299, "snp": "4:72604299", "n_total": 0, "pbs": 0.333894, "maf": 0.286, "proxies": []}, {"chr": "8", "bp": 17609728, "snp": "8:17609728", "n_total": 0, "pbs": 0.333275, "maf": 0.1103, "proxies": []}, {"chr": "7", "bp": 27185070, "snp": "7:27185070", "n_total": 0, "pbs": 0.330043, "maf": 0.1293, "proxies": []}, {"chr": "11", "bp": 124137483, "snp": "11:124137483", "n_total": 0, "pbs": 0.32743, "maf": 0.4439, "proxies": []}, {"chr": "6", "bp": 29807393, "snp": "6:29807393", "n_total": 0, "pbs": 0.325943, "maf": 0.3263, "proxies": []}, {"chr": "6", "bp": 31426256, "snp": "6:31426256", "n_total": 0, "pbs": 0.323881, "maf": 0.3352, "proxies": []}, {"chr": "10", "bp": 66484562, "snp": "10:66484562", "n_total": 0, "pbs": 0.323538, "maf": 0.2774, "proxies": []}, {"chr": "10", "bp": 101558634, "snp": "10:101558634", "n_total": 1, "pbs": 0.321198, "maf": 0.3054, "proxies": ["10:101603781"]}, {"chr": "3", "bp": 64718258, "snp": "3:64718258", "n_total": 0, "pbs": 0.315644, "maf": 0.3571, "proxies": []}, {"chr": "2", "bp": 30255996, "snp": "2:30255996", "n_total": 0, "pbs": 0.314185, "maf": 0.152, "proxies": []}, {"chr": "2", "bp": 177045560, "snp": "2:177045560", "n_total": 0, "pbs": 0.313963, "maf": 0.2598, "proxies": []}, {"chr": "21", "bp": 34433051, "snp": "21:34433051", "n_total": 0, "pbs": 0.311263, "maf": 0.272, "proxies": []}, {"chr": "6", "bp": 29925972, "snp": "6:29925972", "n_total": 0, "pbs": 0.310808, "maf": 0.2791, "proxies": []}, {"chr": "2", "bp": 24692809, "snp": "2:24692809", "n_total": 0, "pbs": 0.310507, "maf": 0.299, "proxies": []}, {"chr": "6", "bp": 30313340, "snp": "6:30313340", "n_total": 0, "pbs": 0.309018, "maf": 0.3885, "proxies": []}, {"chr": "6", "bp": 30413972, "snp": "6:30413972", "n_total": 4, "pbs": 0.308813, "maf": 0.2958, "proxies": ["6:30364727", "6:30410832", "6:30415111", "6:30425695"]}, {"chr": "19", "bp": 51354597, "snp": "19:51354597", "n_total": 0, "pbs": 0.308606, "maf": 0.2782, "proxies": []}, {"chr": "7", "bp": 34874038, "snp": "7:34874038", "n_total": 0, "pbs": 0.308507, "maf": 0.3142, "proxies": []}, {"chr": "6", "bp": 32758761, "snp": "6:32758761", "n_total": 0, "pbs": 0.307903, "maf": 0.3013, "proxies": []}, {"chr": "20", "bp": 296374, "snp": "20:296374", "n_total": 0, "pbs": 0.30577, "maf": 0.4083, "proxies": []}, {"chr": "2", "bp": 226301474, "snp": "2:226301474", "n_total": 0, "pbs": 0.304915, "maf": 0.2493, "proxies": []}, {"chr": "17", "bp": 54778817, "snp": "17:54778817", "n_total": 0, "pbs": 0.304757, "maf": 0.2923, "proxies": []}, {"chr": "10", "bp": 81047383, "snp": "10:81047383", "n_total": 0, "pbs": 0.303196, "maf": 0.299, "proxies": []}, {"chr": "14", "bp": 70723940, "snp": "14:70723940", "n_total": 0, "pbs": 0.301415, "maf": 0.3842, "proxies": []}, {"chr": "19", "bp": 35486475, "snp": "19:35486475", "n_total": 0, "pbs": 0.300915, "maf": 0.4788, "proxies": []}, {"chr": "13", "bp": 20901724, "snp": "13:20901724", "n_total": 0, "pbs": 0.300409, "maf": 0.2969, "proxies": []}, {"chr": "4", "bp": 68005803, "snp": "4:68005803", "n_total": 0, "pbs": 0.293635, "maf": 0.227, "proxies": []}, {"chr": "22", "bp": 44324727, "snp": "22:44324727", "n_total": 0, "pbs": 0.288433, "maf": 0.3242, "proxies": []}, {"chr": "6", "bp": 31450923, "snp": "6:31450923", "n_total": 0, "pbs": 0.285416, "maf": 0.3425, "proxies": []}, {"chr": "11", "bp": 60128004, "snp": "11:60128004", "n_total": 0, "pbs": 0.283688, "maf": 0.2931, "proxies": []}, {"chr": "2", "bp": 224848477, "snp": "2:224848477", "n_total": 0, "pbs": 0.27572, "maf": 0.4143, "proxies": []}, {"chr": "17", "bp": 71500332, "snp": "17:71500332", "n_total": 0, "pbs": 0.268779, "maf": 0.3736, "proxies": []}, {"chr": "17", "bp": 19644472, "snp": "17:19644472", "n_total": 0, "pbs": 0.260345, "maf": 0.2958, "proxies": []}, {"chr": "16", "bp": 62042937, "snp": "16:62042937", "n_total": 0, "pbs": 0.259186, "maf": 0.3731, "proxies": []}, {"chr": "4", "bp": 107974330, "snp": "4:107974330", "n_total": 0, "pbs": 0.257569, "maf": 0.325, "proxies": []}, {"chr": "6", "bp": 39050622, "snp": "6:39050622", "n_total": 0, "pbs": 0.256721, "maf": 0.3303, "proxies": []}, {"chr": "6", "bp": 30845563, "snp": "6:30845563", "n_total": 0, "pbs": 0.246136, "maf": 0.3405, "proxies": []}, {"chr": "6", "bp": 29682866, "snp": "6:29682866", "n_total": 0, "pbs": 0.242638, "maf": 0.3442, "proxies": []}, {"chr": "6", "bp": 31587561, "snp": "6:31587561", "n_total": 0, "pbs": 0.229931, "maf": 0.3374, "proxies": []}, {"chr": "3", "bp": 52831701, "snp": "3:52831701", "n_total": 0, "pbs": 0.227941, "maf": 0.3118, "proxies": []}, {"chr": "3", "bp": 165455566, "snp": "3:165455566", "n_total": 0, "pbs": 0.224594, "maf": 0.4643, "proxies": []}, {"chr": "13", "bp": 76137263, "snp": "13:76137263", "n_total": 0, "pbs": 0.223082, "maf": 0.3776, "proxies": []}, {"chr": "6", "bp": 32861631, "snp": "6:32861631", "n_total": 1, "pbs": 0.220482, "maf": 0.3172, "proxies": ["6:32855340"]}, {"chr": "18", "bp": 65335814, "snp": "18:65335814", "n_total": 0, "pbs": 0.218676, "maf": 0.2711, "proxies": []}, {"chr": "5", "bp": 33951693, "snp": "5:33951693", "n_total": 0, "pbs": -0.872328, "maf": 0.4374, "proxies": []}], "decay_curve": [{"kb": 0, "mean_r2": 0.0962, "n": 240}, {"kb": 50, "mean_r2": 0.0404, "n": 228}, {"kb": 100, "mean_r2": 0.0179, "n": 199}, {"kb": 150, "mean_r2": 0.0138, "n": 208}, {"kb": 200, "mean_r2": 0.0163, "n": 193}, {"kb": 250, "mean_r2": 0.0126, "n": 209}, {"kb": 300, "mean_r2": 0.0122, "n": 177}, {"kb": 350, "mean_r2": 0.0157, "n": 190}, {"kb": 400, "mean_r2": 0.0137, "n": 208}, {"kb": 450, "mean_r2": 0.011, "n": 203}, {"kb": 500, "mean_r2": 0.0118, "n": 198}, {"kb": 550, "mean_r2": 0.0105, "n": 213}, {"kb": 600, "mean_r2": 0.0077, "n": 184}, {"kb": 650, "mean_r2": 0.0167, "n": 193}, {"kb": 700, "mean_r2": 0.0172, "n": 189}, {"kb": 750, "mean_r2": 0.0102, "n": 183}, {"kb": 800, "mean_r2": 0.0083, "n": 207}, {"kb": 850, "mean_r2": 0.011, "n": 194}, {"kb": 900, "mean_r2": 0.0124, "n": 182}, {"kb": 950, "mean_r2": 0.0117, "n": 189}, {"kb": 1000, "mean_r2": 0.0082, "n": 199}, {"kb": 1050, "mean_r2": 0.0132, "n": 195}, {"kb": 1100, "mean_r2": 0.0098, "n": 192}, {"kb": 1150, "mean_r2": 0.0091, "n": 202}, {"kb": 1200, "mean_r2": 0.0112, "n": 196}, {"kb": 1250, "mean_r2": 0.0079, "n": 184}, {"kb": 1300, "mean_r2": 0.0105, "n": 158}, {"kb": 1350, "mean_r2": 0.0116, "n": 177}, {"kb": 1400, "mean_r2": 0.012, "n": 189}, {"kb": 1450, "mean_r2": 0.0088, "n": 193}, {"kb": 1500, "mean_r2": 0.0086, "n": 185}, {"kb": 1550, "mean_r2": 0.0079, "n": 161}, {"kb": 1600, "mean_r2": 0.013, "n": 179}, {"kb": 1650, "mean_r2": 0.0114, "n": 181}, {"kb": 1700, "mean_r2": 0.0116, "n": 173}, {"kb": 1750, "mean_r2": 0.0111, "n": 191}, {"kb": 1800, "mean_r2": 0.0125, "n": 176}, {"kb": 1850, "mean_r2": 0.0177, "n": 168}, {"kb": 1900, "mean_r2": 0.0115, "n": 175}, {"kb": 1950, "mean_r2": 0.0112, "n": 171}], "pbs_ld_pairs": [{"snp_a": "6:32145993", "snp_b": "6:32145999", "kb": 0.0, "r2": 1.0}, {"snp_a": "6:30410832", "snp_b": "6:30413972", "kb": 3.1, "r2": 0.996}, {"snp_a": "6:32855340", "snp_b": "6:32861631", "kb": 6.3, "r2": 0.996}, {"snp_a": "6:29772549", "snp_b": "6:29776390", "kb": 3.8, "r2": 0.994}, {"snp_a": "6:30413972", "snp_b": "6:30415111", "kb": 1.1, "r2": 0.992}, {"snp_a": "6:32141005", "snp_b": "6:32145993", "kb": 5.0, "r2": 0.991}, {"snp_a": "6:30410832", "snp_b": "6:30415111", "kb": 4.3, "r2": 0.99}, {"snp_a": "6:32166384", "snp_b": "6:32180431", "kb": 14.0, "r2": 0.99}, {"snp_a": "6:30949996", "snp_b": "6:30951209", "kb": 1.2, "r2": 0.988}, {"snp_a": "6:30413972", "snp_b": "6:30425695", "kb": 11.7, "r2": 0.985}, {"snp_a": "6:32141005", "snp_b": "6:32145999", "kb": 5.0, "r2": 0.985}, {"snp_a": "6:32762484", "snp_b": "6:32776414", "kb": 13.9, "r2": 0.985}, {"snp_a": "6:30410832", "snp_b": "6:30425695", "kb": 14.9, "r2": 0.984}, {"snp_a": "6:32753313", "snp_b": "6:32755216", "kb": 1.9, "r2": 0.984}, {"snp_a": "6:30505948", "snp_b": "6:30516353", "kb": 10.4, "r2": 0.983}, {"snp_a": "6:30415111", "snp_b": "6:30425695", "kb": 10.6, "r2": 0.98}, {"snp_a": "6:30257497", "snp_b": "6:30285650", "kb": 28.2, "r2": 0.976}, {"snp_a": "6:30257497", "snp_b": "6:30315011", "kb": 57.5, "r2": 0.975}, {"snp_a": "6:30496816", "snp_b": "6:30499732", "kb": 2.9, "r2": 0.973}, {"snp_a": "6:30496816", "snp_b": "6:30499127", "kb": 2.3, "r2": 0.972}, {"snp_a": "6:32745156", "snp_b": "6:32753313", "kb": 8.2, "r2": 0.972}, {"snp_a": "6:30470301", "snp_b": "6:30496816", "kb": 26.5, "r2": 0.967}, {"snp_a": "6:32233638", "snp_b": "6:32281510", "kb": 47.9, "r2": 0.962}, {"snp_a": "6:29948812", "snp_b": "6:30004371", "kb": 55.6, "r2": 0.961}, {"snp_a": "6:30951209", "snp_b": "6:30969498", "kb": 18.3, "r2": 0.957}, {"snp_a": "6:30285650", "snp_b": "6:30315011", "kb": 29.4, "r2": 0.954}, {"snp_a": "6:31582025", "snp_b": "6:31589264", "kb": 7.2, "r2": 0.948}, {"snp_a": "19:13409472", "snp_b": "19:13409696", "kb": 0.2, "r2": 0.947}, {"snp_a": "6:29948812", "snp_b": "6:29977145", "kb": 28.3, "r2": 0.943}, {"snp_a": "6:30949996", "snp_b": "6:30969498", "kb": 19.5, "r2": 0.942}, {"snp_a": "6:30499732", "snp_b": "6:30516353", "kb": 16.6, "r2": 0.941}, {"snp_a": "6:32745156", "snp_b": "6:32755216", "kb": 10.1, "r2": 0.939}, {"snp_a": "6:30470301", "snp_b": "6:30499127", "kb": 28.8, "r2": 0.936}, {"snp_a": "6:30231755", "snp_b": "6:30231829", "kb": 0.1, "r2": 0.934}, {"snp_a": "6:29773392", "snp_b": "6:29841356", "kb": 68.0, "r2": 0.932}, {"snp_a": "6:29977145", "snp_b": "6:30004371", "kb": 27.2, "r2": 0.93}, {"snp_a": "6:30470301", "snp_b": "6:30499732", "kb": 29.4, "r2": 0.928}, {"snp_a": "6:30002793", "snp_b": "6:30027452", "kb": 24.7, "r2": 0.927}, {"snp_a": "6:30499732", "snp_b": "6:30505948", "kb": 6.2, "r2": 0.926}, {"snp_a": "2:234622412", "snp_b": "2:234625718", "kb": 3.3, "r2": 0.917}, {"snp_a": "6:32113571", "snp_b": "6:32145999", "kb": 32.4, "r2": 0.914}, {"snp_a": "6:30496816", "snp_b": "6:30505948", "kb": 9.1, "r2": 0.913}, {"snp_a": "6:32113571", "snp_b": "6:32145993", "kb": 32.4, "r2": 0.911}, {"snp_a": "6:29983144", "snp_b": "6:30004186", "kb": 21.0, "r2": 0.91}, {"snp_a": "6:30496816", "snp_b": "6:30516353", "kb": 19.5, "r2": 0.91}, {"snp_a": "6:30499127", "snp_b": "6:30499732", "kb": 0.6, "r2": 0.904}, {"snp_a": "6:32113571", "snp_b": "6:32141005", "kb": 27.4, "r2": 0.903}, {"snp_a": "6:29989695", "snp_b": "6:30004371", "kb": 14.7, "r2": 0.902}, {"snp_a": "12:56740682", "snp_b": "12:56744276", "kb": 3.6, "r2": 0.899}, {"snp_a": "6:32753313", "snp_b": "6:32762484", "kb": 9.2, "r2": 0.893}, {"snp_a": "6:30949996", "snp_b": "6:30953240", "kb": 3.2, "r2": 0.89}, {"snp_a": "6:32755216", "snp_b": "6:32776414", "kb": 21.2, "r2": 0.889}, {"snp_a": "6:32753313", "snp_b": "6:32776414", "kb": 23.1, "r2": 0.888}, {"snp_a": "6:30480877", "snp_b": "6:30537606", "kb": 56.7, "r2": 0.887}, {"snp_a": "6:29948812", "snp_b": "6:29989695", "kb": 40.9, "r2": 0.886}, {"snp_a": "6:30065416", "snp_b": "6:30067568", "kb": 2.2, "r2": 0.886}, {"snp_a": "6:30470301", "snp_b": "6:30505948", "kb": 35.6, "r2": 0.88}, {"snp_a": "6:32745156", "snp_b": "6:32762484", "kb": 17.3, "r2": 0.88}, {"snp_a": "6:32755216", "snp_b": "6:32762484", "kb": 7.3, "r2": 0.876}, {"snp_a": "6:32745156", "snp_b": "6:32776414", "kb": 31.3, "r2": 0.87}, {"snp_a": "6:29977145", "snp_b": "6:29989695", "kb": 12.6, "r2": 0.869}, {"snp_a": "6:30470301", "snp_b": "6:30516353", "kb": 46.1, "r2": 0.868}, {"snp_a": "6:30537606", "snp_b": "6:30539438", "kb": 1.8, "r2": 0.867}, {"snp_a": "6:30951209", "snp_b": "6:30953240", "kb": 2.0, "r2": 0.859}, {"snp_a": "6:30480877", "snp_b": "6:30539438", "kb": 58.6, "r2": 0.858}, {"snp_a": "6:30083855", "snp_b": "6:30084696", "kb": 0.8, "r2": 0.856}, {"snp_a": "6:30499127", "snp_b": "6:30505948", "kb": 6.8, "r2": 0.856}, {"snp_a": "6:30499127", "snp_b": "6:30516353", "kb": 17.2, "r2": 0.846}, {"snp_a": "6:29773392", "snp_b": "6:30002793", "kb": 229.4, "r2": 0.818}, {"snp_a": "6:29776390", "snp_b": "6:29798803", "kb": 22.4, "r2": 0.818}, {"snp_a": "6:29939483", "snp_b": "6:29948812", "kb": 9.3, "r2": 0.818}, {"snp_a": "6:30953240", "snp_b": "6:30969498", "kb": 16.3, "r2": 0.814}, {"snp_a": "6:29772549", "snp_b": "6:29798803", "kb": 26.3, "r2": 0.811}, {"snp_a": "6:30480877", "snp_b": "6:30496816", "kb": 15.9, "r2": 0.808}, {"snp_a": "6:31493421", "snp_b": "6:31497835", "kb": 4.4, "r2": 0.806}, {"snp_a": "6:30480877", "snp_b": "6:30499127", "kb": 18.2, "r2": 0.803}, {"snp_a": "6:29993196", "snp_b": "6:30004186", "kb": 11.0, "r2": 0.799}, {"snp_a": "6:31436499", "snp_b": "6:31436609", "kb": 0.1, "r2": 0.792}, {"snp_a": "6:32156489", "snp_b": "6:32166384", "kb": 9.9, "r2": 0.789}, {"snp_a": "6:29948812", "snp_b": "6:30008003", "kb": 59.2, "r2": 0.784}, {"snp_a": "6:30470301", "snp_b": "6:30480877", "kb": 10.6, "r2": 0.783}, {"snp_a": "6:30496816", "snp_b": "6:30537606", "kb": 40.8, "r2": 0.783}, {"snp_a": "6:30004371", "snp_b": "6:30008003", "kb": 3.6, "r2": 0.78}, {"snp_a": "6:31253928", "snp_b": "6:31256005", "kb": 2.1, "r2": 0.779}, {"snp_a": "6:32877768", "snp_b": "6:32882799", "kb": 5.0, "r2": 0.777}, {"snp_a": "6:29738665", "snp_b": "6:29772549", "kb": 33.9, "r2": 0.776}, {"snp_a": "6:29738665", "snp_b": "6:29776390", "kb": 37.7, "r2": 0.776}, {"snp_a": "6:30949996", "snp_b": "6:30969527", "kb": 19.5, "r2": 0.773}, {"snp_a": "6:32156489", "snp_b": "6:32180431", "kb": 23.9, "r2": 0.773}, {"snp_a": "6:29773392", "snp_b": "6:30027452", "kb": 254.1, "r2": 0.77}, {"snp_a": "6:30951209", "snp_b": "6:30969527", "kb": 18.3, "r2": 0.767}, {"snp_a": "6:30470301", "snp_b": "6:30537606", "kb": 67.3, "r2": 0.763}, {"snp_a": "6:29939483", "snp_b": "6:30004371", "kb": 64.9, "r2": 0.761}, {"snp_a": "6:30499127", "snp_b": "6:30537606", "kb": 38.5, "r2": 0.76}, {"snp_a": "6:29841356", "snp_b": "6:30027452", "kb": 186.1, "r2": 0.759}, {"snp_a": "6:30969498", "snp_b": "6:30969527", "kb": 0.0, "r2": 0.756}, {"snp_a": "6:29977145", "snp_b": "6:30008003", "kb": 30.9, "r2": 0.755}, {"snp_a": "6:30505948", "snp_b": "6:30562671", "kb": 56.7, "r2": 0.755}, {"snp_a": "6:30480877", "snp_b": "6:30499732", "kb": 18.9, "r2": 0.754}, {"snp_a": "6:30496816", "snp_b": "6:30539438", "kb": 42.6, "r2": 0.754}, {"snp_a": "6:30516353", "snp_b": "6:30562671", "kb": 46.3, "r2": 0.749}, {"snp_a": "6:29841356", "snp_b": "6:30002793", "kb": 161.4, "r2": 0.748}, {"snp_a": "6:29939483", "snp_b": "6:29989695", "kb": 50.2, "r2": 0.748}, {"snp_a": "6:30499732", "snp_b": "6:30537606", "kb": 37.9, "r2": 0.747}, {"snp_a": "6:30499732", "snp_b": "6:30539438", "kb": 39.7, "r2": 0.746}, {"snp_a": "6:30537606", "snp_b": "6:30562671", "kb": 25.1, "r2": 0.746}, {"snp_a": "6:29939483", "snp_b": "6:29977145", "kb": 37.7, "r2": 0.742}, {"snp_a": "6:29989695", "snp_b": "6:30008003", "kb": 18.3, "r2": 0.731}, {"snp_a": "6:30470301", "snp_b": "6:30539438", "kb": 69.1, "r2": 0.724}, {"snp_a": "6:30499127", "snp_b": "6:30539438", "kb": 40.3, "r2": 0.721}, {"snp_a": "6:32113571", "snp_b": "6:32148403", "kb": 34.8, "r2": 0.72}, {"snp_a": "6:32088854", "snp_b": "6:32152387", "kb": 63.5, "r2": 0.719}, {"snp_a": "6:30480877", "snp_b": "6:30505948", "kb": 25.1, "r2": 0.716}, {"snp_a": "6:32019746", "snp_b": "6:32088854", "kb": 69.1, "r2": 0.716}, {"snp_a": "6:30505948", "snp_b": "6:30537606", "kb": 31.7, "r2": 0.71}, {"snp_a": "6:30480877", "snp_b": "6:30516353", "kb": 35.5, "r2": 0.709}, {"snp_a": "6:30516353", "snp_b": "6:30539438", "kb": 23.1, "r2": 0.706}, {"snp_a": "6:29717339", "snp_b": "6:29773392", "kb": 56.1, "r2": 0.703}, {"snp_a": "6:30505948", "snp_b": "6:30539438", "kb": 33.5, "r2": 0.698}, {"snp_a": "6:30496816", "snp_b": "6:30562671", "kb": 65.9, "r2": 0.697}, {"snp_a": "6:30516353", "snp_b": "6:30537606", "kb": 21.3, "r2": 0.696}, {"snp_a": "6:32141005", "snp_b": "6:32148403", "kb": 7.4, "r2": 0.694}, {"snp_a": "10:101558634", "snp_b": "10:101603781", "kb": 45.1, "r2": 0.694}, {"snp_a": "6:29610989", "snp_b": "6:29702206", "kb": 91.2, "r2": 0.693}, {"snp_a": "6:30953240", "snp_b": "6:30969527", "kb": 16.3, "r2": 0.69}, {"snp_a": "6:30499732", "snp_b": "6:30562671", "kb": 62.9, "r2": 0.684}, {"snp_a": "6:29610989", "snp_b": "6:29628883", "kb": 17.9, "r2": 0.682}, {"snp_a": "6:31582025", "snp_b": "6:31710968", "kb": 128.9, "r2": 0.678}, {"snp_a": "6:32145993", "snp_b": "6:32148403", "kb": 2.4, "r2": 0.672}, {"snp_a": "6:32145999", "snp_b": "6:32148403", "kb": 2.4, "r2": 0.669}, {"snp_a": "6:30470301", "snp_b": "6:30562671", "kb": 92.4, "r2": 0.667}, {"snp_a": "6:30480877", "snp_b": "6:30562671", "kb": 81.8, "r2": 0.665}, {"snp_a": "6:29983144", "snp_b": "6:29993196", "kb": 10.1, "r2": 0.664}, {"snp_a": "6:30499127", "snp_b": "6:30562671", "kb": 63.5, "r2": 0.661}, {"snp_a": "6:30272417", "snp_b": "6:30315011", "kb": 42.6, "r2": 0.658}, {"snp_a": "6:30063652", "snp_b": "6:30285312", "kb": 221.7, "r2": 0.654}, {"snp_a": "6:30204399", "snp_b": "6:30213540", "kb": 9.1, "r2": 0.654}, {"snp_a": "6:30257497", "snp_b": "6:30272417", "kb": 14.9, "r2": 0.652}, {"snp_a": "6:30539438", "snp_b": "6:30562671", "kb": 23.2, "r2": 0.651}, {"snp_a": "6:30063652", "snp_b": "6:30155149", "kb": 91.5, "r2": 0.648}, {"snp_a": "6:29976024", "snp_b": "6:30042861", "kb": 66.8, "r2": 0.646}, {"snp_a": "6:30332146", "snp_b": "6:30413701", "kb": 81.6, "r2": 0.643}, {"snp_a": "6:30272417", "snp_b": "6:30285650", "kb": 13.2, "r2": 0.64}, {"snp_a": "6:31589264", "snp_b": "6:31710968", "kb": 121.7, "r2": 0.64}, {"snp_a": "6:30065416", "snp_b": "6:30070932", "kb": 5.5, "r2": 0.639}, {"snp_a": "6:30067568", "snp_b": "6:30070932", "kb": 3.4, "r2": 0.639}, {"snp_a": "6:29628883", "snp_b": "6:29702206", "kb": 73.3, "r2": 0.636}, {"snp_a": "6:31179006", "snp_b": "6:31197514", "kb": 18.5, "r2": 0.635}, {"snp_a": "6:32740671", "snp_b": "6:32776414", "kb": 35.7, "r2": 0.629}, {"snp_a": "6:32740671", "snp_b": "6:32762484", "kb": 21.8, "r2": 0.625}, {"snp_a": "6:29717339", "snp_b": "6:29841356", "kb": 124.0, "r2": 0.624}, {"snp_a": "6:30004186", "snp_b": "6:30019206", "kb": 15.0, "r2": 0.62}, {"snp_a": "6:29738665", "snp_b": "6:29798803", "kb": 60.1, "r2": 0.615}, {"snp_a": "6:30213540", "snp_b": "6:30231829", "kb": 18.3, "r2": 0.614}, {"snp_a": "6:29939483", "snp_b": "6:30008003", "kb": 68.5, "r2": 0.613}, {"snp_a": "6:31155785", "snp_b": "6:31196671", "kb": 40.9, "r2": 0.598}, {"snp_a": "6:29461730", "snp_b": "6:30326809", "kb": 865.1, "r2": 0.596}, {"snp_a": "6:30285312", "snp_b": "6:31476458", "kb": 1191.1, "r2": 0.596}, {"snp_a": "6:32747542", "snp_b": "6:32755216", "kb": 7.7, "r2": 0.586}, {"snp_a": "6:32747542", "snp_b": "6:32753313", "kb": 5.8, "r2": 0.584}, {"snp_a": "6:29717339", "snp_b": "6:30002793", "kb": 285.5, "r2": 0.582}, {"snp_a": "6:30155149", "snp_b": "6:30285312", "kb": 130.2, "r2": 0.578}, {"snp_a": "6:31134087", "snp_b": "6:31143835", "kb": 9.7, "r2": 0.578}, {"snp_a": "6:32745156", "snp_b": "6:32747542", "kb": 2.4, "r2": 0.577}, {"snp_a": "6:30213540", "snp_b": "6:30231755", "kb": 18.2, "r2": 0.574}, {"snp_a": "6:29983144", "snp_b": "6:30019206", "kb": 36.1, "r2": 0.567}, {"snp_a": "6:32740671", "snp_b": "6:32755216", "kb": 14.5, "r2": 0.56}, {"snp_a": "6:30364727", "snp_b": "6:30425695", "kb": 61.0, "r2": 0.559}, {"snp_a": "6:32740671", "snp_b": "6:32753313", "kb": 12.6, "r2": 0.559}, {"snp_a": "6:32740671", "snp_b": "6:32745156", "kb": 4.5, "r2": 0.557}, {"snp_a": "6:30413701", "snp_b": "6:30425695", "kb": 12.0, "r2": 0.555}, {"snp_a": "6:30413701", "snp_b": "6:30415111", "kb": 1.4, "r2": 0.554}, {"snp_a": "6:30410832", "snp_b": "6:30413701", "kb": 2.9, "r2": 0.552}, {"snp_a": "6:30364727", "snp_b": "6:30410832", "kb": 46.1, "r2": 0.55}, {"snp_a": "6:30413701", "snp_b": "6:30413972", "kb": 0.3, "r2": 0.548}, {"snp_a": "6:30364727", "snp_b": "6:30415111", "kb": 50.4, "r2": 0.547}, {"snp_a": "6:30364727", "snp_b": "6:30413972", "kb": 49.2, "r2": 0.544}, {"snp_a": "6:32019746", "snp_b": "6:32152387", "kb": 132.6, "r2": 0.543}, {"snp_a": "6:32220484", "snp_b": "6:32281510", "kb": 61.0, "r2": 0.543}, {"snp_a": "6:31118565", "snp_b": "6:31197514", "kb": 78.9, "r2": 0.541}, {"snp_a": "6:30097170", "snp_b": "6:30116160", "kb": 19.0, "r2": 0.54}, {"snp_a": "6:32220484", "snp_b": "6:32233638", "kb": 13.2, "r2": 0.533}, {"snp_a": "6:30042861", "snp_b": "6:30065416", "kb": 22.6, "r2": 0.523}, {"snp_a": "6:29717339", "snp_b": "6:30027452", "kb": 310.1, "r2": 0.521}, {"snp_a": "6:32747542", "snp_b": "6:32776414", "kb": 28.9, "r2": 0.519}, {"snp_a": "6:32747542", "snp_b": "6:32762484", "kb": 14.9, "r2": 0.517}, {"snp_a": "6:31322790", "snp_b": "6:31430694", "kb": 107.9, "r2": 0.515}, {"snp_a": "6:29993196", "snp_b": "6:30019206", "kb": 26.0, "r2": 0.514}, {"snp_a": "6:31484683", "snp_b": "6:31493421", "kb": 8.7, "r2": 0.511}, {"snp_a": "6:30097170", "snp_b": "6:30285650", "kb": 188.5, "r2": 0.509}, {"snp_a": "6:30285312", "snp_b": "6:30326809", "kb": 41.5, "r2": 0.503}, {"snp_a": "6:30097170", "snp_b": "6:30257497", "kb": 160.3, "r2": 0.495}, {"snp_a": "6:31430694", "snp_b": "6:31476458", "kb": 45.8, "r2": 0.491}, {"snp_a": "6:30042861", "snp_b": "6:30067568", "kb": 24.7, "r2": 0.487}, {"snp_a": "6:30699384", "snp_b": "6:30789647", "kb": 90.3, "r2": 0.483}, {"snp_a": "6:30097170", "snp_b": "6:30315011", "kb": 217.8, "r2": 0.479}, {"snp_a": "6:32399261", "snp_b": "6:32412809", "kb": 13.5, "r2": 0.466}, {"snp_a": "6:32354520", "snp_b": "6:32367451", "kb": 12.9, "r2": 0.464}, {"snp_a": "6:30084696", "snp_b": "6:30094113", "kb": 9.4, "r2": 0.459}, {"snp_a": "6:30063652", "snp_b": "6:31476458", "kb": 1412.8, "r2": 0.452}, {"snp_a": "6:31484683", "snp_b": "6:31497835", "kb": 13.2, "r2": 0.451}, {"snp_a": "6:30326809", "snp_b": "6:32349557", "kb": 2022.7, "r2": 0.449}, {"snp_a": "6:31082910", "snp_b": "6:31118898", "kb": 36.0, "r2": 0.448}, {"snp_a": "6:30204399", "snp_b": "6:30231829", "kb": 27.4, "r2": 0.447}, {"snp_a": "6:30413701", "snp_b": "6:30430482", "kb": 16.8, "r2": 0.447}, {"snp_a": "6:31582025", "snp_b": "6:32148403", "kb": 566.4, "r2": 0.446}, {"snp_a": "6:29773392", "snp_b": "6:29823571", "kb": 50.2, "r2": 0.442}, {"snp_a": "6:31589264", "snp_b": "6:32148403", "kb": 559.1, "r2": 0.442}, {"snp_a": "6:29640785", "snp_b": "6:29650122", "kb": 9.3, "r2": 0.436}, {"snp_a": "6:29461730", "snp_b": "6:30063652", "kb": 601.9, "r2": 0.431}, {"snp_a": "6:29823571", "snp_b": "6:29841356", "kb": 17.8, "r2": 0.424}, {"snp_a": "6:30155149", "snp_b": "6:31476458", "kb": 1321.3, "r2": 0.424}, {"snp_a": "6:30204399", "snp_b": "6:30326809", "kb": 122.4, "r2": 0.422}, {"snp_a": "6:30088474", "snp_b": "6:30211903", "kb": 123.4, "r2": 0.418}, {"snp_a": "6:30332146", "snp_b": "6:30364727", "kb": 32.6, "r2": 0.413}, {"snp_a": "6:30155149", "snp_b": "6:30326809", "kb": 171.7, "r2": 0.412}, {"snp_a": "6:31110391", "snp_b": "6:31155785", "kb": 45.4, "r2": 0.411}, {"snp_a": "6:30063652", "snp_b": "6:30326809", "kb": 263.2, "r2": 0.409}, {"snp_a": "6:31450923", "snp_b": "6:31465899", "kb": 15.0, "r2": 0.409}, {"snp_a": "6:31589264", "snp_b": "6:32113571", "kb": 524.3, "r2": 0.408}, {"snp_a": "6:31582025", "snp_b": "6:32113571", "kb": 531.5, "r2": 0.407}, {"snp_a": "6:29461730", "snp_b": "6:30204399", "kb": 742.7, "r2": 0.401}, {"snp_a": "6:29461730", "snp_b": "6:30285312", "kb": 823.6, "r2": 0.4}, {"snp_a": "6:30083855", "snp_b": "6:30094113", "kb": 10.3, "r2": 0.399}, {"snp_a": "6:30155149", "snp_b": "6:30204399", "kb": 49.2, "r2": 0.398}, {"snp_a": "6:29702206", "snp_b": "6:29977068", "kb": 274.9, "r2": 0.397}, {"snp_a": "6:31582025", "snp_b": "6:32141005", "kb": 559.0, "r2": 0.397}, {"snp_a": "6:30065416", "snp_b": "6:30088474", "kb": 23.1, "r2": 0.394}, {"snp_a": "6:31582025", "snp_b": "6:32145993", "kb": 564.0, "r2": 0.394}, {"snp_a": "6:31118565", "snp_b": "6:31179006", "kb": 60.4, "r2": 0.393}, {"snp_a": "6:31582025", "snp_b": "6:32145999", "kb": 564.0, "r2": 0.392}, {"snp_a": "6:30155149", "snp_b": "6:30213540", "kb": 58.4, "r2": 0.389}, {"snp_a": "6:30116160", "snp_b": "6:30257497", "kb": 141.3, "r2": 0.387}, {"snp_a": "6:30116160", "snp_b": "6:30285650", "kb": 169.5, "r2": 0.386}, {"snp_a": "6:29823571", "snp_b": "6:30027452", "kb": 203.9, "r2": 0.377}, {"snp_a": "6:29672165", "snp_b": "6:29706793", "kb": 34.6, "r2": 0.376}, {"snp_a": "6:30056476", "snp_b": "6:30070932", "kb": 14.5, "r2": 0.376}, {"snp_a": "6:30067568", "snp_b": "6:30088474", "kb": 20.9, "r2": 0.371}, {"snp_a": "6:30204399", "snp_b": "6:30231755", "kb": 27.4, "r2": 0.371}, {"snp_a": "6:31589264", "snp_b": "6:32145999", "kb": 556.7, "r2": 0.368}, {"snp_a": "6:29823571", "snp_b": "6:30002793", "kb": 179.2, "r2": 0.367}, {"snp_a": "6:30425695", "snp_b": "6:30480877", "kb": 55.2, "r2": 0.366}, {"snp_a": "6:31589264", "snp_b": "6:32141005", "kb": 551.7, "r2": 0.366}, {"snp_a": "6:29672165", "snp_b": "6:29939483", "kb": 267.3, "r2": 0.365}, {"snp_a": "6:31589264", "snp_b": "6:32145993", "kb": 556.7, "r2": 0.365}, {"snp_a": "6:30116160", "snp_b": "6:30315011", "kb": 198.9, "r2": 0.364}, {"snp_a": "6:29461730", "snp_b": "6:30155149", "kb": 693.4, "r2": 0.362}, {"snp_a": "6:29461730", "snp_b": "6:32349557", "kb": 2887.8, "r2": 0.359}, {"snp_a": "6:30413972", "snp_b": "6:30480877", "kb": 66.9, "r2": 0.359}, {"snp_a": "6:32739967", "snp_b": "6:32753313", "kb": 13.3, "r2": 0.358}, {"snp_a": "6:29989695", "snp_b": "6:30056476", "kb": 66.8, "r2": 0.356}, {"snp_a": "6:30410832", "snp_b": "6:30480877", "kb": 70.0, "r2": 0.356}, {"snp_a": "6:30156496", "snp_b": "6:30315011", "kb": 158.5, "r2": 0.349}, {"snp_a": "6:30415111", "snp_b": "6:30480877", "kb": 65.8, "r2": 0.349}, {"snp_a": "6:33095555", "snp_b": "6:33153122", "kb": 57.6, "r2": 0.348}, {"snp_a": "6:30156496", "snp_b": "6:30257497", "kb": 101.0, "r2": 0.347}, {"snp_a": "6:32739967", "snp_b": "6:32745156", "kb": 5.2, "r2": 0.347}, {"snp_a": "6:30083855", "snp_b": "6:30326809", "kb": 243.0, "r2": 0.345}, {"snp_a": "6:30156496", "snp_b": "6:30285650", "kb": 129.2, "r2": 0.342}, {"snp_a": "6:30332146", "snp_b": "6:30413972", "kb": 81.8, "r2": 0.342}, {"snp_a": "6:30332146", "snp_b": "6:30425695", "kb": 93.5, "r2": 0.341}, {"snp_a": "6:30425695", "snp_b": "6:30537606", "kb": 111.9, "r2": 0.341}, {"snp_a": "6:29461730", "snp_b": "6:30083855", "kb": 622.1, "r2": 0.34}, {"snp_a": "6:30332146", "snp_b": "6:30410832", "kb": 78.7, "r2": 0.339}, {"snp_a": "6:30332146", "snp_b": "6:30415111", "kb": 83.0, "r2": 0.338}, {"snp_a": "6:29672165", "snp_b": "6:29948812", "kb": 276.6, "r2": 0.337}, {"snp_a": "6:30413972", "snp_b": "6:30537606", "kb": 123.6, "r2": 0.337}, {"snp_a": "6:30257846", "snp_b": "6:30338138", "kb": 80.3, "r2": 0.336}, {"snp_a": "6:32739967", "snp_b": "6:32755216", "kb": 15.2, "r2": 0.335}, {"snp_a": "6:29610989", "snp_b": "6:29977068", "kb": 366.1, "r2": 0.333}, {"snp_a": "6:30410832", "snp_b": "6:30537606", "kb": 126.8, "r2": 0.333}, {"snp_a": "6:31710968", "snp_b": "6:32113571", "kb": 402.6, "r2": 0.333}, {"snp_a": "6:29461730", "snp_b": "6:30084696", "kb": 623.0, "r2": 0.332}, {"snp_a": "6:29672165", "snp_b": "6:30004371", "kb": 332.2, "r2": 0.331}, {"snp_a": "6:30004371", "snp_b": "6:30056476", "kb": 52.1, "r2": 0.33}, {"snp_a": "6:30413972", "snp_b": "6:30539438", "kb": 125.5, "r2": 0.329}, {"snp_a": "6:30415111", "snp_b": "6:30537606", "kb": 122.5, "r2": 0.329}, {"snp_a": "6:30097170", "snp_b": "6:30272417", "kb": 175.2, "r2": 0.328}, {"snp_a": "6:31710968", "snp_b": "6:32141005", "kb": 430.0, "r2": 0.328}, {"snp_a": "6:31710968", "snp_b": "6:32145999", "kb": 435.0, "r2": 0.328}, {"snp_a": "6:30285312", "snp_b": "6:31430694", "kb": 1145.4, "r2": 0.327}, {"snp_a": "6:31710968", "snp_b": "6:32145993", "kb": 435.0, "r2": 0.326}, {"snp_a": "6:31710968", "snp_b": "6:32148403", "kb": 437.4, "r2": 0.326}, {"snp_a": "6:30425695", "snp_b": "6:30539438", "kb": 113.7, "r2": 0.325}, {"snp_a": "6:30410832", "snp_b": "6:30539438", "kb": 128.6, "r2": 0.324}, {"snp_a": "6:30410832", "snp_b": "6:30516353", "kb": 105.5, "r2": 0.323}, {"snp_a": "6:32740671", "snp_b": "6:32747542", "kb": 6.9, "r2": 0.322}, {"snp_a": "6:30155149", "snp_b": "6:30231829", "kb": 76.7, "r2": 0.321}, {"snp_a": "6:30410832", "snp_b": "6:30505948", "kb": 95.1, "r2": 0.321}, {"snp_a": "6:30415111", "snp_b": "6:30516353", "kb": 101.2, "r2": 0.321}, {"snp_a": "6:30415111", "snp_b": "6:30539438", "kb": 124.3, "r2": 0.321}, {"snp_a": "6:30425695", "snp_b": "6:30505948", "kb": 80.3, "r2": 0.321}, {"snp_a": "6:29672165", "snp_b": "6:29977145", "kb": 305.0, "r2": 0.32}, {"snp_a": "6:29977145", "snp_b": "6:30056476", "kb": 79.3, "r2": 0.32}, {"snp_a": "6:30415111", "snp_b": "6:30505948", "kb": 90.8, "r2": 0.32}, {"snp_a": "6:30042861", "snp_b": "6:30211903", "kb": 169.0, "r2": 0.319}, {"snp_a": "6:30425695", "snp_b": "6:30516353", "kb": 90.7, "r2": 0.319}, {"snp_a": "6:30084696", "snp_b": "6:30326809", "kb": 242.1, "r2": 0.318}, {"snp_a": "6:30413972", "snp_b": "6:30505948", "kb": 92.0, "r2": 0.318}, {"snp_a": "6:29948812", "snp_b": "6:30056476", "kb": 107.7, "r2": 0.317}], "pbs_ld_pairs_total": 774, "clumps_with_proxies": 38, "chr_loci_counts": {"1": 23, "2": 25, "3": 13, "4": 19, "5": 17, "6": 135, "7": 18, "8": 10, "9": 10, "10": 8, "11": 25, "12": 17, "13": 12, "14": 6, "15": 11, "16": 10, "17": 14, "18": 3, "19": 12, "20": 6, "21": 1, "22": 6}, "top10_loci": [{"chr": "9", "bp": 104189856, "snp": "9:104189856", "n_total": 0, "pbs": 4.602104, "maf": 0.005435, "proxies": []}, {"chr": "8", "bp": 24813391, "snp": "8:24813391", "n_total": 0, "pbs": 4.239857, "maf": 0.01007, "proxies": []}, {"chr": "17", "bp": 48275339, "snp": "17:48275339", "n_total": 0, "pbs": 3.90938, "maf": 0.01346, "proxies": []}, {"chr": "1", "bp": 36934805, "snp": "1:36934805", "n_total": 0, "pbs": 3.620065, "maf": 0.01519, "proxies": []}, {"chr": "2", "bp": 179642589, "snp": "2:179642589", "n_total": 0, "pbs": 3.503803, "maf": 0.01523, "proxies": []}, {"chr": "11", "bp": 47355475, "snp": "11:47355475", "n_total": 0, "pbs": 3.495331, "maf": 0.01952, "proxies": []}, {"chr": "6", "bp": 29640785, "snp": "6:29640785", "n_total": 0, "pbs": 3.366669, "maf": 0.02012, "proxies": []}, {"chr": "4", "bp": 187003729, "snp": "4:187003729", "n_total": 0, "pbs": 3.356605, "maf": 0.02346, "proxies": []}, {"chr": "10", "bp": 96818119, "snp": "10:96818119", "n_total": 0, "pbs": 3.285179, "maf": 0.0159, "proxies": []}, {"chr": "1", "bp": 161199431, "snp": "1:161199431", "n_total": 0, "pbs": 3.279853, "maf": 0.02447, "proxies": []}], "total_snps_in_clumps": 482, "mean_r2_0kb": 0.0962, "mean_r2_500kb": 0.0118};
-const CLUMP_DATA = LD_DATA.clumps;
-const DECAY_DATA = LD_DATA.decay_curve;
-const PBS_LD   = LD_DATA.pbs_ld_pairs;
-
-const PAGE = 50;
-let lociFilter = 'all', lociSort = 'pbs', lociAsc = false, lociPage = 1;
-let pairsFilter = 'all', pairsSort = 'r2', pairsAsc = false, pairsPage = 1;
-
-// ── Cards ──────────────────────────────────────────────────────────────────
-function initCards() {
-  const d0 = DECAY_DATA.find(b => b.kb === 0);
-  const d3 = DECAY_DATA.find(b => b.kb === 300);
-  if (d0) document.getElementById('r2-0kb').textContent = d0.mean_r2.toFixed(3);
-  if (d3) document.getElementById('r2-300kb').textContent = d3.mean_r2.toFixed(3);
-  const highLd = PBS_LD.filter(p => p.r2 >= 0.3);
-  document.getElementById('highLdCount').textContent = LD_DATA.pbs_ld_pairs_total + ' total (top 300 shown)';
-}
-
-// ── LD Decay Canvas ────────────────────────────────────────────────────────
-function drawDecay() {
-  const cv = document.getElementById('decayCanvas');
-  const ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
-  const PAD = {t:20, r:20, b:45, l:55};
-  const iW = W - PAD.l - PAD.r, iH = H - PAD.t - PAD.b;
-  ctx.clearRect(0,0,W,H);
-  // Grid
-  ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
-  for (let i=0; i<=4; i++) {
-    const y = PAD.t + i*(iH/4);
-    ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(PAD.l+iW, y); ctx.stroke();
-  }
-  // Y axis labels (r²)
-  ctx.fillStyle='#999'; ctx.font='11px Segoe UI'; ctx.textAlign='right';
-  const maxR2 = 0.12;
-  for (let i=0; i<=4; i++) {
-    const val = maxR2 * (1 - i/4);
-    const y = PAD.t + i*(iH/4);
-    ctx.fillText(val.toFixed(3), PAD.l-6, y+4);
-  }
-  // X axis labels (kb)
-  ctx.textAlign='center';
-  const xLabels = [0,400,800,1200,1600,2000];
-  xLabels.forEach(kb => {
-    const x = PAD.l + (kb/2000)*iW;
-    ctx.fillText(kb, x, H-8);
-  });
-  ctx.fillText('Distance (kb)', PAD.l + iW/2, H-1+4);
-  // Axis labels
-  ctx.save(); ctx.translate(14, PAD.t + iH/2); ctx.rotate(-Math.PI/2);
-  ctx.textAlign='center'; ctx.fillText('Mean r²', 0, 0); ctx.restore();
-  // Line
-  ctx.beginPath(); ctx.strokeStyle='#1565c0'; ctx.lineWidth=2;
-  const validBins = DECAY_DATA.filter(b => b.kb <= 2000);
-  validBins.forEach((b, i) => {
-    const x = PAD.l + (b.kb/2000)*iW;
-    const y = PAD.t + (1 - Math.min(b.mean_r2,maxR2)/maxR2)*iH;
-    if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  });
-  ctx.stroke();
-  // Points
-  validBins.forEach(b => {
-    const x = PAD.l + (b.kb/2000)*iW;
-    const y = PAD.t + (1 - Math.min(b.mean_r2,maxR2)/maxR2)*iH;
-    ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2);
-    ctx.fillStyle='#1565c0'; ctx.fill();
-  });
-  // Threshold line at r²=0.1
-  ctx.setLineDash([4,4]); ctx.strokeStyle='#ef9a9a'; ctx.lineWidth=1;
-  const y01 = PAD.t + (1 - 0.1/maxR2)*iH;
-  ctx.beginPath(); ctx.moveTo(PAD.l, y01); ctx.lineTo(PAD.l+iW, y01); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle='#ef9a9a'; ctx.textAlign='left'; ctx.font='10px Segoe UI';
-  ctx.fillText('r²=0.1', PAD.l+4, y01-4);
-}
-
-// ── Chromosome bar chart ───────────────────────────────────────────────────
-function drawChrChart() {
-  const cv = document.getElementById('chrCanvas');
-  const ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
-  const PAD = {t:20, r:20, b:55, l:45};
-  const chrData = LD_DATA.chr_loci_counts;
-  const chrs = Object.keys(chrData).sort((a,b) => parseInt(a)-parseInt(b));
-  const maxN = Math.max(...Object.values(chrData));
-  const barW = Math.floor((W - PAD.l - PAD.r) / chrs.length) - 2;
-  const iH = H - PAD.t - PAD.b;
-  ctx.clearRect(0,0,W,H);
-  chrs.forEach((c, i) => {
-    const n = chrData[c];
-    const bh = (n/maxN)*iH;
-    const x = PAD.l + i*(barW+2);
-    const y = PAD.t + iH - bh;
-    ctx.fillStyle = c==='6' ? '#c62828' : '#7986cb';
-    ctx.fillRect(x, y, barW, bh);
-    // count label
-    if (n > 10) {
-      ctx.fillStyle = 'white'; ctx.font = 'bold 9px Segoe UI'; ctx.textAlign = 'center';
-      ctx.fillText(n, x+barW/2, y+12);
-    }
-    // chr label
-    ctx.fillStyle = '#555'; ctx.font = '9px Segoe UI'; ctx.textAlign = 'center';
-    ctx.fillText(c, x+barW/2, H-8);
-  });
-  ctx.fillStyle='#555'; ctx.font='11px Segoe UI'; ctx.textAlign='center';
-  ctx.fillText('Chromosome', PAD.l+(W-PAD.l-PAD.r)/2, H-1+5);
-}
-
-// ── Top 20 table ───────────────────────────────────────────────────────────
-function renderTop20() {
-  const sorted = [...CLUMP_DATA].sort((a,b)=>(b.pbs||0)-(a.pbs||0)).slice(0,20);
-  const rows = sorted.map((c,i) => {
-    const type = c.n_total > 0 ? `<span class="badge badge-cluster">${1+c.n_total} SNPs</span>`
-                               : `<span class="badge badge-singleton">Singleton</span>`;
-    const chr6 = c.chr==='6' ? ' <span class="badge badge-chr6">MHC</span>' : '';
-    return `<tr>
-      <td>${i+1}</td>
-      <td>${c.chr}${chr6}</td>
-      <td>${c.bp.toLocaleString()}</td>
-      <td style="font-family:monospace">${c.snp}</td>
-      <td><strong>${(c.pbs||0).toFixed(4)}</strong></td>
-      <td>${c.maf ? (c.maf*100).toFixed(2)+'%' : '—'}</td>
-      <td>${type}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('top20Container').innerHTML =
-    `<table><thead><tr><th>#</th><th>Chr</th><th>Position</th><th>SNP ID</th><th>PBS<sub>UZB</sub></th><th>MAF (UZB)</th><th>Clump Type</th></tr></thead><tbody>${rows}</tbody></table>`;
-}
-
-// ── Loci table ─────────────────────────────────────────────────────────────
-let filteredLoci = [...CLUMP_DATA];
-function setLociFilter(f, btn) {
-  lociFilter = f; lociPage = 1;
-  document.querySelectorAll('#lbtn-all,#lbtn-chr6,#lbtn-multi,#lbtn-top50').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderLociTable();
-}
-function sortLoci(col) {
-  if (lociSort===col) lociAsc=!lociAsc; else { lociSort=col; lociAsc=col!=='pbs'; }
-  lociPage=1; renderLociTable();
-}
-function renderLociTable() {
-  const q = document.getElementById('lociSearch').value.toLowerCase();
-  let data = CLUMP_DATA.filter(c => {
-    if (lociFilter==='6' && c.chr!=='6') return false;
-    if (lociFilter==='multi' && c.n_total===0) return false;
-    if (lociFilter==='top50') {
-      const top50ids = new Set([...CLUMP_DATA].sort((a,b)=>(b.pbs||0)-(a.pbs||0)).slice(0,50).map(x=>x.snp));
-      if (!top50ids.has(c.snp)) return false;
-    }
-    if (q && !(c.snp+' '+c.chr).toLowerCase().includes(q)) return false;
-    return true;
-  });
-  data.sort((a,b) => {
-    const va=a[lociSort]??'', vb=b[lociSort]??'';
-    if (typeof va==='number') return lociAsc ? va-vb : vb-va;
-    return lociAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
-  });
-  filteredLoci = data;
-  const total=data.length, pages=Math.ceil(total/PAGE);
-  const slice = data.slice((lociPage-1)*PAGE, lociPage*PAGE);
-  const rows = slice.map(c => {
-    const chr6 = c.chr==='6' ? ' <span class="badge badge-chr6">MHC?</span>' : '';
-    const type = c.n_total > 0 ? `<span class="badge badge-cluster">+${c.n_total} proxies</span>`
-                               : `<span class="badge badge-singleton">singleton</span>`;
-    return `<tr>
-      <td>${c.chr}${chr6}</td>
-      <td>${c.bp.toLocaleString()}</td>
-      <td style="font-family:monospace;font-size:.82em">${c.snp}</td>
-      <td><strong>${(c.pbs||0).toFixed(4)}</strong></td>
-      <td>${c.maf ? (c.maf*100).toFixed(2)+'%' : '—'}</td>
-      <td>${c.n_total}</td>
-      <td>${type}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('lociTbody').innerHTML = rows || '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px">No matching loci.</td></tr>';
-  const pg = document.getElementById('lociPager');
-  pg.innerHTML = `<button onclick="lociPage--;renderLociTable()" ${lociPage<=1?'disabled':''}>‹ Prev</button>
-    <span>Page ${lociPage} of ${pages} (${total} loci)</span>
-    <button onclick="lociPage++;renderLociTable()" ${lociPage>=pages?'disabled':''}>Next ›</button>`;
-}
-
-// ── Pairs table ─────────────────────────────────────────────────────────────
-let filteredPairs = [...PBS_LD];
-function setPairsFilter(f, btn) {
-  pairsFilter = f; pairsPage = 1;
-  document.querySelectorAll('#pbtn-all,#pbtn-high,#pbtn-vhigh').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderPairsTable();
-}
-function sortPairs(col) {
-  if (pairsSort===col) pairsAsc=!pairsAsc; else { pairsSort=col; pairsAsc=col!=='r2'; }
-  pairsPage=1; renderPairsTable();
-}
-function renderPairsTable() {
-  const q = document.getElementById('pairsSearch').value.toLowerCase();
-  let data = PBS_LD.filter(p => {
-    if (pairsFilter==='high' && p.r2 < 0.5) return false;
-    if (pairsFilter==='vhigh' && p.r2 < 0.9) return false;
-    if (q && !(p.snp_a+' '+p.snp_b).toLowerCase().includes(q)) return false;
-    return true;
-  });
-  data.sort((a,b) => {
-    const va=a[pairsSort]??'', vb=b[pairsSort]??'';
-    if (typeof va==='number') return pairsAsc ? va-vb : vb-va;
-    return lociAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
-  });
-  filteredPairs = data;
-  const total=data.length, pages=Math.ceil(total/PAGE);
-  const slice = data.slice((pairsPage-1)*PAGE, pairsPage*PAGE);
-  const rows = slice.map(p => {
-    const chrA = p.snp_a.split(':')[0];
-    const r2Color = p.r2 >= 0.9 ? '#c62828' : p.r2 >= 0.5 ? '#e65100' : '#555';
-    return `<tr>
-      <td style="font-family:monospace;font-size:.82em">${p.snp_a}</td>
-      <td style="font-family:monospace;font-size:.82em">${p.snp_b}</td>
-      <td>${p.kb.toFixed(1)}</td>
-      <td><strong style="color:${r2Color}">${p.r2.toFixed(3)}</strong></td>
-      <td>${chrA==='6'?'<span class="badge badge-chr6">6 (MHC)</span>':chrA}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('pairsTbody').innerHTML = rows || '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">No pairs match.</td></tr>';
-  const pg = document.getElementById('pairsPager');
-  pg.innerHTML = `<button onclick="pairsPage--;renderPairsTable()" ${pairsPage<=1?'disabled':''}>‹ Prev</button>
-    <span>Page ${pairsPage} of ${pages} (${total} pairs)</span>
-    <button onclick="pairsPage++;renderPairsTable()" ${pairsPage>=pages?'disabled':''}>Next ›</button>`;
-}
-
-// ── Init ───────────────────────────────────────────────────────────────────
-initCards();
-drawDecay();
-drawChrChart();
-renderTop20();
-renderLociTable();
-renderPairsTable();
-window.addEventListener('resize', () => { drawDecay(); drawChrChart(); });
-</script>
+    document.getElementById('decay').innerHTML = DECAY.map(d => `
+      <tr>
+        <td>${d.kb}</td>
+        <td>${d.r2.toFixed(4)}</td>
+        <td>${d.n.toLocaleString()}</td>
+      </tr>
+    `).join('');
+  </script>
 </body>
 </html>

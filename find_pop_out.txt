@@ -1,0 +1,79 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== FIND_V2_SCRIPTS ===
+/home/copilot/v2/run_snmf_uzbek_v2.R
+=== FIND_POP ===
+/home/copilot/v2/pca/pop_mapping.txt
+=== V2_LS ===
+total 184652
+drwxrwxr-x 10 copilot copilot       256 Mar 25 22:06 .
+drwx------ 17 copilot copilot      4096 Mar 25 10:08 ..
+drwxrwxr-x  2 copilot copilot      4096 Mar 25 22:06 admixture
+drwxrwxr-x  2 copilot copilot      4096 Mar 26 07:23 global_admixture
+drwxrwxr-x  2 copilot copilot      4096 Mar 25 12:55 global_pca
+-rw-rw-r--  1 copilot copilot 188206629 Mar 25 10:11 HQ_targets_posrefalt.tsv
+drwxrwxr-x  2 copilot copilot        77 Mar 25 12:56 ibd
+drwxrwxr-x  2 copilot copilot       190 Mar 25 12:56 pca
+drwxrwxr-x  2 copilot copilot      4096 Mar 25 12:38 plink
+-rw-rw-r--  1 copilot copilot    133976 Mar 26 07:23 reanalysis.log
+-rw-rw-r--  1 copilot copilot    458848 Mar 25 12:38 recalc_v2.log
+drwxrwxr-x  2 copilot copilot       132 Mar 25 12:56 roh
+-rw-rw-r--  1 copilot copilot      4952 Mar 25 15:51 run_snmf_uzbek_v2.R
+drwxrwxr-x  3 copilot copilot      4096 Mar 25 16:43 snmf_uzbek
+-rw-rw-r--  1 copilot copilot    244075 Mar 25 16:43 snmf_uzbek_v2.log
+=== GLOBAL_LS ===
+total 95192
+drwxrwxr-x  2 copilot copilot     4096 Mar 26 07:23 .
+drwxrwxr-x 10 copilot copilot      256 Mar 25 22:06 ..
+-rw-rw-r--  1 copilot copilot  1387998 Mar 25 22:27 global_v2_admix.2.P
+-rw-rw-r--  1 copilot copilot    64710 Mar 25 22:27 global_v2_admix.2.Q
+-rw-rw-r--  1 copilot copilot  2081997 Mar 25 23:02 global_v2_admix.3.P
+-rw-rw-r--  1 copilot copilot    97065 Mar 25 23:02 global_v2_admix.3.Q
+-rw-rw-r--  1 copilot copilot  2775996 Mar 25 23:47 global_v2_admix.4.P
+-rw-rw-r--  1 copilot copilot   129420 Mar 25 23:47 global_v2_admix.4.Q
+-rw-rw-r--  1 copilot copilot  3469995 Mar 26 00:56 global_v2_admix.5.P
+-rw-rw-r--  1 copilot copilot   161775 Mar 26 00:56 global_v2_admix.5.Q
+-rw-rw-r--  1 copilot copilot  4163994 Mar 26 03:06 global_v2_admix.6.P
+-rw-rw-r--  1 copilot copilot   194130 Mar 26 03:06 global_v2_admix.6.Q
+-rw-rw-r--  1 copilot copilot  4857993 Mar 26 05:16 global_v2_admix.7.P
+-rw-rw-r--  1 copilot copilot   226485 Mar 26 05:16 global_v2_admix.7.Q
+-rw-rw-r--  1 copilot copilot  5551992 Mar 26 07:23 global_v2_admix.8.P
+-rw-rw-r--  1 copilot copilot   258840 Mar 26 07:23 global_v2_admix.8.Q
+-rw-rw-r--  1 copilot copilot 69322792 Mar 25 22:06 global_v2_admix.bed
+-rw-rw-r--  1 copilot copilot  2569532 Mar 25 22:06 global_v2_admix.bim
+-rw-rw-r--  1 copilot copilot    79941 Mar 25 22:06 global_v2_admix.fam
+-rw-rw-r--  1 copilot copilot     3391 Mar 25 22:27 global_v2_admix_K2.log
+-rw-rw-r--  1 copilot copilot     2786 Mar 25 23:02 global_v2_admix_K3.log
+-rw-rw-r--  1 copilot copilot     3276 Mar 25 23:47 global_v2_admix_K4.log
+-rw-rw-r--  1 copilot copilot     3994 Mar 26 00:56 global_v2_admix_K5.log
+-rw-rw-r--  1 copilot copilot     6155 Mar 26 03:06 global_v2_admix_K6.log
+-rw-rw-r--  1 copilot copilot     5812 Mar 26 05:16 global_v2_admix_K7.log
+-rw-rw-r--  1 copilot copilot     5032 Mar 26 07:23 global_v2_admix_K8.log
+=== REANALYSIS ===
+=== GLOBAL_LOG ===
+****                   ADMIXTURE Version 1.3.0                  ****
+****                    Copyright 2008-2015                     ****
+****           David Alexander, Suyash Shringarpure,            ****
+****                John  Novembre, Ken Lange                   ****
+****                                                            ****
+****                 Please cite our paper!                     ****
+****   Information at www.genetics.ucla.edu/software/admixture  ****
+
+Cross-validation will be performed.  Folds=5.
+Parallel execution requested.  Will use 8 threads.
+Random seed: 43
+Point estimation method: Block relaxation algorithm
+Convergence acceleration algorithm: QuasiNewton, 3 secant conditions
+Point estimation will terminate when objective function delta < 0.0001
+Estimation of standard errors disabled; will compute point estimates only.
+Size of G: 3595x77111
+Performing five EM steps to prime main algorithm
+1 (EM) 	Elapsed: 9.12	Loglikelihood: -1.61365e+08	(delta): 3.11314e+08
+2 (EM) 	Elapsed: 8.835	Loglikelihood: -1.56501e+08	(delta): 4.86422e+06
+3 (EM) 	Elapsed: 9.023	Loglikelihood: -1.55293e+08	(delta): 1.2084e+06
+=== END ===

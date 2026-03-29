@@ -1,0 +1,61 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== ADMIXTURE ===
+[2026-03-26 07:23:27]   ROH:           /home/copilot/v2/roh/UZB_v2_ROH.{hom,hom.indiv,hom.summary}
+[2026-03-26 07:23:27]   IBD:           /home/copilot/v2/ibd/UZB_v2_IBD.genome
+[2026-03-26 07:23:27]   UZB ADMIX:     /home/copilot/v2/admixture/UZB_v2_admix.{2-8}.Q
+[2026-03-26 07:23:27]   Global ADMIX:  /home/copilot/v2/global_admixture/global_v2_admix.{2-8}.Q
+[2026-03-26 07:23:27] Disk free: 13G
+=== PROCESSES ===
+=== Q FILES ===
+-rw-rw-r-- 1 copilot copilot 18846 Mar 25 13:03 /home/copilot/v2/admixture/UZB_v2_admix.2.Q
+-rw-rw-r-- 1 copilot copilot 28269 Mar 25 13:22 /home/copilot/v2/admixture/UZB_v2_admix.3.Q
+-rw-rw-r-- 1 copilot copilot 37692 Mar 25 13:46 /home/copilot/v2/admixture/UZB_v2_admix.4.Q
+-rw-rw-r-- 1 copilot copilot 47115 Mar 25 15:08 /home/copilot/v2/admixture/UZB_v2_admix.5.Q
+-rw-rw-r-- 1 copilot copilot 56538 Mar 25 16:59 /home/copilot/v2/admixture/UZB_v2_admix.6.Q
+-rw-rw-r-- 1 copilot copilot 65961 Mar 25 19:30 /home/copilot/v2/admixture/UZB_v2_admix.7.Q
+-rw-rw-r-- 1 copilot copilot 75384 Mar 25 22:06 /home/copilot/v2/admixture/UZB_v2_admix.8.Q
+=== CV ERRORS ===
+=== LOG-LIKELIHOODS ===
+=== sNMF CE ===
+"K","mean_CE","sd_CE","min_CE","best_run"
+2,0.425013237332668,0.000321847824957769,0.424584835709712,1
+3,0.425045875489719,0.000324812297537204,0.424631075693743,1
+4,0.425388091551907,0.000335195846339359,0.424946890410896,1
+5,0.425984642535741,0.000331013939755407,0.425569807235416,9
+6,0.426539452860486,0.000436483033725008,0.42594597016559,1
+7,0.427068742214305,0.000322954407186027,0.426616157043441,1
+8,0.427623925764792,0.00029925189210038,0.427281447066793,9
+9,0.428240849802653,0.0003458543570541,0.427853301566301,9
+10,0.4287582933709,0.000330069730350891,0.428314500888369,1
+=== PHASE C ===
+global_v2_admix.2.P
+global_v2_admix.2.Q
+global_v2_admix.3.P
+global_v2_admix.3.Q
+global_v2_admix.4.P
+global_v2_admix.4.Q
+global_v2_admix.5.P
+global_v2_admix.5.Q
+global_v2_admix.6.P
+global_v2_admix.6.Q
+global_v2_admix.7.P
+global_v2_admix.7.Q
+global_v2_admix.8.P
+global_v2_admix.8.Q
+global_v2_admix.bed
+global_v2_admix.bim
+global_v2_admix.fam
+global_v2_admix_K2.log
+global_v2_admix_K3.log
+global_v2_admix_K4.log
+global_v2_admix_K5.log
+global_v2_admix_K6.log
+global_v2_admix_K7.log
+global_v2_admix_K8.log
+DONE

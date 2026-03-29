@@ -1,0 +1,13 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+PID=90498
+LAUNCHED
+UPLOADED
+-rw-rw-r-- 1 copilot copilot 23245167 Mar 25 12:56 /home/copilot/v2/admixture/UZB_v2_admix.bed
+/dev/md126p3     24G  9.4G   15G  39% /home
+Rscript (R) version 4.5.1 (2025-06-13)

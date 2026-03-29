@@ -1,0 +1,243 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== 1. Check UZB_all.HQ.query.chrposrefalt.tsv ===
+File exists
+Lines: 10009530
+First 10 lines:
+chr10	100000235	C	T	rs11596870
+chr10	100000943	G	A	rs11190359
+chr10	100000954	C	T	rs112887542
+chr10	100000979	T	C	rs11190360
+chr10	100001168	T	C	rs182851655
+chr10	100001656	G	A	rs147189308
+chr10	100001780	G	A	rs138795422
+chr10	100002012	T	C	rs11190362
+chr10	100002300	GA	G	rs111354488
+chr10	100002330	AAAAG	A	rs147431732
+
+=== 2. Check UZB_all.HQ_imputed.R2ge0p8.MAFge0p001.tsv columns ===
+Lines: 10009531
+Header:
+CHROM	POS	ID	REF	ALT	AF	MAF	R2	ER2	IMPUTED	TYPED
+First 5 data:
+chr1	61084	.	G	A	0.00163889	0.00163889	0.833012	.	1	.
+chr1	78302	.	T	C	0.00195082	0.00195082	0.800188	.	1	.
+chr1	79653	rs528487446	T	C	0.00247678	0.00247678	0.835409	.	1	.
+chr1	181598	.	G	GGGT	0.00157149	0.00157149	0.868316	.	1	.
+chr1	779831	rs184426933	C	G	0.00154417	0.00154417	0.889188	.	1	.
+
+=== 3. Check the FULL frequency table for TYPED vs IMPUTED column ===
+Header:
+CHROM	POS	ID	REF	ALT	R2	N_nonmiss	SUM_DS	AF_DS
+
+Columns (numbered):
+1: CHROM
+2: POS
+3: ID
+4: REF
+5: ALT
+6: R2
+7: N_nonmiss
+8: SUM_DS
+9: AF_DS
+
+=== 4. Check for info files from Michigan that have Genotyped/Typed column ===
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr10.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr11.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr12.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr13.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr14.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr15.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr16.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr17.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr18.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr19.info.gz
+
+=== 5. List files in imputation_results/unz ===
+total 105868928
+drwxr-xr-x 4 root root       8192 Jan  2 21:19 .
+drwxr-xr-x 5 root root       4096 Jan  1 15:28 ..
+drwxr-xr-x 2 root root         42 Jan  2 21:07 allele_verification
+-rw-r--r-- 1 root root  173706394 Dec 19 23:20 chr10.af.keyed.tsv
+-rw-r--r-- 1 root root 3529346432 Dec 18 18:06 chr10.dose.vcf.gz
+-rw-r--r-- 1 root root   32755774 Dec 18 18:06 chr10.empiricalDose.vcf.gz
+-rw-r--r-- 1 root root      80343 Dec 18 18:06 chr10.empiricalDose.vcf.gz.tbi
+-rw-r--r-- 1 root root   57786260 Dec 18 18:03 chr10.info.gz
+-rw-r--r-- 1 root root 1193856575 Dec 19 23:11 chr10.rsq.keyed.tsv
+-rw-r--r-- 1 root root  175479065 Dec 19 23:30 chr11.af.keyed.tsv
+-rw-r--r-- 1 root root 3454982238 Dec 18 18:06 chr11.dose.vcf.gz
+-rw-r--r-- 1 root root   31390691 Dec 18 18:06 chr11.empiricalDose.vcf.gz
+-rw-r--r-- 1 root root      79514 Dec 18 18:06 chr11.empiricalDose.vcf.gz.tbi
+-rw-r--r-- 1 root root   58185007 Dec 18 18:03 chr11.info.gz
+-rw-r--r-- 1 root root 1205858600 Dec 19 23:21 chr11.rsq.keyed.tsv
+-rw-r--r-- 1 root root  168043841 Dec 19 23:40 chr12.af.keyed.tsv
+-rw-r--r-- 1 root root 3286594835 Dec 18 18:05 chr12.dose.vcf.gz
+-rw-r--r-- 1 root root   31703397 Dec 18 18:05 chr12.empiricalDose.vcf.gz
+-rw-r--r-- 1 root root      80046 Dec 18 18:05 chr12.empiricalDose.vcf.gz.tbi
+-rw-r--r-- 1 root root   55925009 Dec 18 18:03 chr12.info.gz
+-rw-r--r-- 1 root root 1154285175 Dec 19 23:31 chr12.rsq.keyed.tsv
+-rw-r--r-- 1 root root  126718740 Dec 19 23:48 chr13.af.keyed.tsv
+-rw-r--r-- 1 root root 2579920951 Dec 18 18:05 chr13.dose.vcf.gz
+-rw-r--r-- 1 root root   23920726 Dec 18 18:05 chr13.empiricalDose.vcf.gz
+-rw-r--r-- 1 root root      59328 Dec 18 18:05 chr13.empiricalDose.vcf.gz.tbi
+-rw-r--r-- 1 root root   42093852 Dec 18 18:03 chr13.info.gz
+-rw-r--r-- 1 root root  870641150 Dec 19 23:41 chr13.rsq.keyed.tsv
+-rw-r--r-- 1 root root  112907332 Dec 19 23:55 chr14.af.keyed.tsv
+-rw-r--r-- 1 root root 2250596200 Dec 18 18:05 chr14.dose.vcf.gz
+-rw-r--r-- 1 root root   21937322 Dec 18 18:05 chr14.empiricalDose.vcf.gz
+-rw-r--r-- 1 root root      53321 Dec 18 18:05 chr14.empiricalDose.vcf.gz.tbi
+-rw-r--r-- 1 root root   37721605 Dec 18 18:03 chr14.info.gz
+-rw-r--r-- 1 root root  777248585 Dec 19 23:49 chr14.rsq.keyed.tsv
+-rw-r--r-- 1 root root  102399102 Dec 20 00:01 chr15.af.keyed.tsv
+-rw-r--r-- 1 root root 2100660440 Dec 18 18:04 chr15.dose.vcf.gz
+-rw-r--r-- 1 root root   21715021 Dec 18 18:04 chr15.empiricalDose.vcf.gz
+-rw-r--r-- 1 root root      47366 Dec 18 18:04 chr15.empiricalDose.vcf.gz.tbi
+-rw-r--r-- 1 root root   34460526 Dec 18 18:03 chr15.info.gz
+-rw-r--r-- 1 root root  705586405 Dec 19 23:55 chr15.rsq.keyed.tsv
+
+=== 6. List files in imputation_results/ ===
+total 69690892
+drwxr-xr-x 5 root root       4096 Jan  1 15:28 .
+drwxr-xr-x 3 root root       4096 Dec 19 03:04 ..
+-rw-r--r-- 1 root root 3577297424 Dec 18 16:52 chr_10.zip
+-rw-r--r-- 1 root root 3500996802 Dec 18 16:57 chr_11.zip
+-rw-r--r-- 1 root root 3332785610 Dec 18 17:01 chr_12.zip
+-rw-r--r-- 1 root root 2614421595 Dec 18 17:04 chr_13.zip
+-rw-r--r-- 1 root root 2282744671 Dec 18 17:07 chr_14.zip
+-rw-r--r-- 1 root root 2132216272 Dec 18 17:09 chr_15.zip
+-rw-r--r-- 1 root root 2355070468 Dec 18 17:12 chr_16.zip
+-rw-r--r-- 1 root root 2119704298 Dec 18 17:14 chr_17.zip
+-rw-r--r-- 1 root root 2132283722 Dec 18 17:16 chr_18.zip
+-rw-r--r-- 1 root root 1816628077 Dec 18 17:18 chr_19.zip
+-rw-r--r-- 1 root root 5588071113 Dec 18 16:48 chr_1.zip
+-rw-r--r-- 1 root root 1693785618 Dec 18 17:26 chr_20.zip
+-rw-r--r-- 1 root root 1122416677 Dec 18 17:27 chr_21.zip
+-rw-r--r-- 1 root root 1136258724 Dec 18 17:28 chr_22.zip
+-rw-r--r-- 1 root root 5838852873 Dec 18 17:24 chr_2.zip
+-rw-r--r-- 1 root root 4941286077 Dec 18 17:34 chr_3.zip
+-rw-r--r-- 1 root root 5242917457 Dec 18 17:39 chr_4.zip
+
+=== 7. Check for chr1.info.gz or similar ===
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr10.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr11.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr12.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr13.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr14.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr15.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr16.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr17.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr18.info.gz
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/chr19.info.gz
+
+=== 8. Check dose VCF for ID field (first 20 variants of chr22) ===
+chr22	10558487	rs1401216842	C	T
+chr22	10558566	.	A	T
+chr22	10559124	rs1310096937	G	T
+chr22	10559382	rs1228798992	A	T
+chr22	10559427	.	C	A
+chr22	10559583	.	G	C
+chr22	10560051	.	C	G
+chr22	10560268	rs1305400225	C	T
+chr22	10560412	rs1232800849	C	T
+chr22	10560460	rs1373141904	C	T
+chr22	10560486	.	G	A
+chr22	10560512	rs1277782348	G	C
+chr22	10560539	.	G	A
+chr22	10560656	.	C	G
+chr22	10560656	.	C	T
+chr22	10560830	rs1439007999	A	G
+chr22	10561169	.	T	G
+chr22	10561170	rs1341502384	T	G
+chr22	10561172	.	G	A
+chr22	10561177	rs1335478419	C	A
+
+=== 9. Check filtered_clean directory ===
+total 90522000
+drwxr-xr-x 3 root root        8192 Jan  3 15:44 .
+drwxr-xr-x 4 root root        8192 Jan  2 21:19 ..
+-rw-r--r-- 1 root root  2190169655 Dec 25 22:45 chr10.clean.vcf.gz
+-rw-r--r-- 1 root root      114825 Dec 25 22:46 chr10.clean.vcf.gz.tbi
+-rw-r--r-- 1 root root       96777 Jan  3 15:41 chr10_positions.bed
+-rw-r--r-- 1 root root         660 Jan  3 15:44 chr10_ref.log
+-rw-r--r-- 1 root root  2135718771 Dec 25 22:55 chr11.clean.vcf.gz
+-rw-r--r-- 1 root root      114761 Dec 25 22:56 chr11.clean.vcf.gz.tbi
+-rw-r--r-- 1 root root       92085 Jan  3 15:41 chr11_positions.bed
+-rw-r--r-- 1 root root         660 Jan  3 15:44 chr11_ref.log
+-rw-r--r-- 1 root root  2021058508 Dec 25 23:05 chr12.clean.vcf.gz
+-rw-r--r-- 1 root root      114970 Dec 25 23:06 chr12.clean.vcf.gz.tbi
+-rw-r--r-- 1 root root       91806 Jan  3 15:41 chr12_positions.bed
+-rw-r--r-- 1 root root         660 Jan  3 15:44 chr12_ref.log
+-rw-r--r-- 1 root root  1597485695 Dec 25 23:13 chr13.clean.vcf.gz
+-rw-r--r-- 1 root root       83508 Dec 25 23:14 chr13.clean.vcf.gz.tbi
+-rw-r--r-- 1 root root       70391 Jan  3 15:41 chr13_positions.bed
+-rw-r--r-- 1 root root         660 Jan  3 15:44 chr13_ref.log
+-rw-r--r-- 1 root root  1385293963 Dec 25 23:20 chr14.clean.vcf.gz
+-rw-r--r-- 1 root root       76673 Dec 25 23:21 chr14.clean.vcf.gz.tbi
+-rw-r--r-- 1 root root       62906 Jan  3 15:41 chr14_positions.bed
+-rw-r--r-- 1 root root         660 Jan  3 15:44 chr14_ref.log
+-rw-r--r-- 1 root root  1261465322 Dec 25 23:26 chr15.clean.vcf.gz
+-rw-r--r-- 1 root root       71466 Dec 25 23:27 chr15.clean.vcf.gz.tbi
+-rw-r--r-- 1 root root       60051 Jan  3 15:41 chr15_positions.bed
+-rw-r--r-- 1 root root         660 Jan  3 15:44 chr15_ref.log
+-rw-r--r-- 1 root root  1359167349 Dec 25 23:32 chr16.clean.vcf.gz
+-rw-r--r-- 1 root root       69092 Dec 25 23:33 chr16.clean.vcf.gz.tbi
+-rw-r--r-- 1 root root       66707 Jan  3 15:41 chr16_positions.bed
+
+=== 10. Check the .bim file for variant count and ID patterns ===
+Total variants: 10846569
+Variants with rsID: 10033378
+Variants with dot ID: 813191
+Variants with chr:pos format: 0
+First 10 lines:
+1	.	0	11095	T	C
+1	.	0	11129	T	C
+1	.	0	12676	A	G
+1	.	0	12685	C	G
+1	.	0	12905	C	T
+1	.	0	13911	C	A
+1	.	0	13917	TC	T
+1	.	0	14092	A	G
+1	.	0	15564	T	TAG
+1	.	0	18733	A	G
+
+=== 11. Check the UZB_all.AF_DS_Rsq.tsv ???????? another freq table? ===
+Lines: 1
+Header:
+CHROM	POS	ID	REF	ALT	Rsq	N_nonmiss	SUM_DS	AF_DS
+Columns:
+1: CHROM
+2: POS
+3: ID
+4: REF
+5: ALT
+6: Rsq
+7: N_nonmiss
+8: SUM_DS
+9: AF_DS
+
+=== 12. Count distinct IMPUTED column values in AF_DS_R2 ===
+Column 10 sample:
+1: 
+2: 
+3: 
+4: 
+5: 
+6: 
+
+=== 13. Count typed vs imputed in full freq table (first 100 lines) ===
+    100 
+
+plink.exe : /tmp/inv3.sh: line 97: $'\r': command not found
+At line:1 char:261
++ ... x.sh -Raw | & plink.exe -batch -i C:\Users\toki\.ssh\id_ed25519.ppk - ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (/tmp/inv3.sh: l...mmand not found 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+=== DONE ===

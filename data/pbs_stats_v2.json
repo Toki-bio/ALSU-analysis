@@ -1,0 +1,26 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+{
+  "n_snps": 77111,
+  "mean": -0.009794311049408946,
+  "median": -0.006012148890877594,
+  "stdev": 0.02648373649941707,
+  "min": -0.3621109301348654,
+  "max": 2.988450120460636,
+  "p95": 0.004526998824322153,
+  "p99": 0.012649844794430194,
+  "p999": 0.029277112640967537,
+  "n_pbs_ge_03": 8,
+  "n_pbs_ge_01": 13,
+  "n_negative": 63414,
+  "pct_negative": 82.2372942900494,
+  "n_tier1": 8,
+  "n_tier2": 1,
+  "n_tier3": 0,
+  "n_candidates": 8
+}

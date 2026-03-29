@@ -1,0 +1,216 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== 1. FIND ALSU-RELATED DIRECTORIES ===
+/staging/Sergei/ALSU
+/staging/ALSU
+/staging/ALSU-analysis
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.bim
+/staging/ALSU-analysis/Fst_analysis/uzbek_data.map
+/staging/ALSU-analysis/Fst_analysis/uzbek_data.ped
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_final_flipped.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.bim
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg38.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg38_clean.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg19_lifted.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg38_unmapped.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.bim
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.bim
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.fam
+
+=== 2. CHECK HOME DIRECTORY ===
+total 2532
+drwx------  16 copilot copilot    4096 Mar  9 21:30 .
+drwxr-xr-x.  7 root    root        214 Feb 13 22:32 ..
+-rw-rw-r--   1 copilot copilot       0 Feb 19 19:03 1{print
+-rw-------   1 copilot copilot     126 Mar  8 14:16 .bash_history
+-rw-r--r--   1 copilot copilot      18 Aug  2  2022 .bash_logout
+-rw-r--r--   1 copilot copilot     141 Aug  2  2022 .bash_profile
+-rw-r--r--   1 copilot copilot     428 Feb 16 16:19 .bashrc
+-rwxrwxr-x   1 copilot copilot    3937 Mar  7 11:54 build-mafft-wasm.sh
+drwxrwxr-x   4 copilot copilot      27 Mar  8 14:14 .cache
+drwx------   4 copilot copilot      30 Mar  8 13:49 .config
+drwxrwxr-x  12 copilot copilot    4096 Mar  7 10:27 emsdk
+drwxrwxr-x   9 copilot copilot     118 Mar  8 15:58 .esmtp_queue
+-rw-rw-r--   1 copilot copilot 1416400 Mar  7 00:02 GCF-sq2.bnk
+-rw-rw-r--   1 copilot copilot       0 Mar  8 16:40 GCF-sq2_pw_consensus.fasta
+-rw-rw-r--   1 copilot copilot     258 Mar  7 19:39 GCF-sq2_pw_consensus_gapped.fasta
+-rw-rw-r--   1 copilot copilot    2380 Mar  7 19:39 GCF-sq2_pw_consensus.log
+-rw-rw-r--   1 copilot copilot   11009 Mar  7 19:39 GCF-sq2_pw_freqtable.tsv
+-rw-rw-r--   1 copilot copilot    3366 Mar  7 19:39 GCF-sq2_pw_insertions.tsv
+-rw-rw-r--   1 copilot copilot     262 Mar  7 19:37 GCF-sq2_pw_reference.fasta
+
+=== 3. FIND HQ VARIANT FILES ===
+
+=== 4. FIND PLINK BED/FAM FILES ===
+/staging/Tools/plink_linux_x86_64_20241022/plink.fam
+/staging/Sergei/ALSU/ConvSK/PLINK_100625_0236/alsu_qc_00-temporary.fam
+/staging/Sergei/ALSU/ConvSK/PLINK_120625_0107/alsu_qc_00.fam
+/staging/Sergei/ALSU/ConvSK/PLINK_120625_0107/alsu_qc_01.fam
+/staging/Sergei/ALSU/ConvSK/PLINK_120625_0107/alsu_qc_02.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr22.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr1.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr13.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr2.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr3.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr4.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr5.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr19.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr6.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr18.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr7.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr14.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr16.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr8.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr9.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr10.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr17.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr11.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr20.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr12.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr15.fam
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr21.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.fam
+
+=== 5. FIND VCF FILTERING SCRIPTS ===
+/staging/Sergei/Scorpio/HiTE/RNA_seq/makeCleanGeneGTF.py
+/staging/Sergei/Scorpio/HiTE/module/clean_lib.py
+/staging/Sergei/Scorpio/HiTE/module/genome_clean.py
+/staging/Nematoda/bbmap/bloomfilter.sh
+/staging/Nematoda/bbmap/bloomfilterparser.sh
+/staging/Nematoda/bbmap/estherfilter.sh
+/staging/Nematoda/bbmap/filterassemblysummary.sh
+/staging/Nematoda/bbmap/filterbarcodes.sh
+/staging/Nematoda/bbmap/filterbycoverage.sh
+/staging/Nematoda/bbmap/filterbyname.sh
+/staging/Nematoda/bbmap/filterbysequence.sh
+/staging/Nematoda/bbmap/filterbytaxa.sh
+/staging/Nematoda/bbmap/filterbytile.sh
+/staging/Nematoda/bbmap/filterlines.sh
+/staging/Nematoda/bbmap/filterqc.sh
+/staging/Nematoda/bbmap/filtersam.sh
+/staging/Nematoda/bbmap/filtersilva.sh
+/staging/Nematoda/bbmap/filtersubs.sh
+/staging/Nematoda/bbmap/filtervcf.sh
+/staging/Nematoda/bbmap/kmerfilterset.sh
+
+=== 6. FIND LARGE TSV/TXT FILES (frequency tables) ===
+/home/copilot/ROH_analysis/UZB_ROH.log
+/home/copilot/ROH_analysis/UZB_ROH.nosex
+/home/copilot/ROH_analysis/UZB_ROH.hom
+/home/copilot/ROH_analysis/UZB_ROH.hom.indiv
+/home/copilot/ROH_analysis/UZB_ROH.hom.summary
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.bim
+/staging/ALSU-analysis/Fst_analysis/uzbek_data.map
+/staging/ALSU-analysis/Fst_analysis/uzbek_data.ped
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_final_flipped.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_chr22_clean.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg38.bim
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg38.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg38_clean.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg19_lifted.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_hg38_unmapped.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.bed
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.fam
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19_temp.bim
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.log
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.nosex
+/staging/ALSU-analysis/Fst_analysis/uzbek_data_hg19.bed
+
+=== 7. CHECK /staging IF EXISTS ===
+total 3084988
+drwxr-xr-x  29 root root               4096 Sep 24 02:54 .
+dr-xr-xr-x. 20 root root               4096 Jan 22 00:51 ..
+drwxr-xr-x   3 root root               4096 Sep 19  2025 ALSU
+drwxr-xr-x   9 root root                235 Feb 16 16:11 ALSU-analysis
+drwxr-xr-x   3 root root                 66 Feb  6  2025 Anaconda
+drwxr-xr-x   3 root root                 60 Sep 24 03:04 bacteria
+drwxr-xr-x   3 root root                 28 Jul 14  2025 cardio
+drwxr-xr-x   5 root root                 41 Jun 27  2025 conda
+drwxr-xr-x   3 root root                 23 Jan 28  2025 data
+drwxr-xr-x   2 root root                  6 Jul 16  2025 Data
+-rw-r--r--   1 root root               9466 Jul 15  2025 del
+-rwxr-xr-x   1 root root         2936633285 Jul 21  2025 dragen-4.4.4-12.multi.el8.x86_64.run
+drwxr-xr-x  16 root root               4096 Jul 17  2025 ensembl-vep
+drwxr-xr-x   3 root root                 23 Nov  4  2024 examples
+drwxrwsr-x   5 root shared_users         95 Jul 22  2025 Genomes
+drwxr-xr-x  12 root root                181 Sep  8  2025 home
+drwxr-xr-x   5 root root                 45 Aug 10  2025 idelucs_project
+drwxr-xr-x   5 root root                 98 Aug 10  2025 idelucs_venv
+drwxr-xr-x  20 root root               4096 Aug 11  2025 miniconda3
+total 2562228
+drwxr-xr-x  9 root    root           235 Feb 16 16:11 .
+drwxr-xr-x 29 root    root          4096 Sep 24 02:54 ..
+drwxr-xr-x 10 copilot copilot       4096 Mar  9 13:57 admixture_analysis
+-rw-r--r--  1 root    root    2623461539 Oct 13 09:06 ALSU.vcf
+drwxr-xr-x  3 root    root           236 Aug 27  2025 Conversion
+-rw-r--r--  1 root    root        205660 Jun 25  2025 del
+drwxr-xr-x  3 root    root         12288 Feb 16 16:15 Fst_analysis
+-rw-r--r--  1 root    root         11900 Jun 16  2025 list1.del
+-rw-r--r--  1 root    root          8729 Jun 16  2025 list.del
+drwxr-xr-x  3 root    root           279 Aug  7  2025 snp
+drwxr-xr-x  3 root    root           171 Oct  5 16:14 SNPfreq
+drwxr-xr-x  5 root    root           160 Aug  7  2025 table
+drwxr-xr-x  7 root    root           193 Jan  2 19:58 winter2025
+
+=== 8. FIND ANY LOGS ABOUT VARIANT FILTERING ===
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr22.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr1.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr2.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr3.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr19.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr21.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr4.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr16.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr5.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr17.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr20.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr6.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr7.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr8.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr9.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr10.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr14.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr18.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr11.log
+/staging/ALSU-analysis/Fst_analysis/1000G_data/1000G_EUR_chr15.log
+
+=== DONE ===
+plink.exe : /tmp/investigate.sh: line 41: $'\r': command not found
+At line:1 char:61
++ ... e.sh -Raw | & plink.exe -batch -i C:\Users\toki\.ssh\id_ed25519.ppk - ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (/tmp/investigat...mmand not found 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

@@ -1,0 +1,434 @@
+Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== HOST ===
+Biotech2024
+=== DIRS UNDER /home/copilot/v2 ===
+/home/copilot/v2
+/home/copilot/v2/admixture
+/home/copilot/v2/fst_v2
+/home/copilot/v2/global_admixture
+/home/copilot/v2/global_pca
+/home/copilot/v2/ibd
+/home/copilot/v2/pbs_v2
+/home/copilot/v2/pca
+/home/copilot/v2/plink
+/home/copilot/v2/roh
+/home/copilot/v2/snmf_uzbek
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K10
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K2
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K3
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K4
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K5
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K6
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K7
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K8
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/K9
+/home/copilot/v2/snmf_uzbek/UZB_v2_admix.snmf/masked
+=== GLOBAL ADMIXTURE PRIMARY FILES ===
+/home/copilot/v2/global_admixture
+global_v2_admix.2.P
+global_v2_admix.2.Q
+global_v2_admix.3.P
+global_v2_admix.3.Q
+global_v2_admix.4.P
+global_v2_admix.4.Q
+global_v2_admix.5.P
+global_v2_admix.5.Q
+global_v2_admix.6.P
+global_v2_admix.6.Q
+global_v2_admix.7.P
+global_v2_admix.7.Q
+global_v2_admix.8.P
+global_v2_admix.8.Q
+global_v2_admix.bed
+global_v2_admix.bim
+global_v2_admix.fam
+global_v2_admix_K2.log
+global_v2_admix_K3.log
+global_v2_admix_K4.log
+global_v2_admix_K5.log
+global_v2_admix_K6.log
+global_v2_admix_K7.log
+global_v2_admix_K8.log
+--- K log files ---
+global_v2_admix_K2.log
+global_v2_admix_K3.log
+global_v2_admix_K4.log
+global_v2_admix_K5.log
+global_v2_admix_K6.log
+global_v2_admix_K7.log
+global_v2_admix_K8.log
+K_LOG_COUNT=7
+--- CV lines from K logs ---
+global_v2_admix_K2.log:CV error (K=2): 0.31043
+global_v2_admix_K3.log:CV error (K=3): 0.29992
+global_v2_admix_K4.log:CV error (K=4): 0.29703
+global_v2_admix_K5.log:CV error (K=5): 0.29503
+global_v2_admix_K6.log:CV error (K=6): 0.29458
+global_v2_admix_K7.log:CV error (K=7): 0.29442
+global_v2_admix_K8.log:CV error (K=8): 0.29422
+--- Log-likelihood lines from K logs ---
+global_v2_admix_K2.log:1 (EM) 	Elapsed: 9.12	Loglikelihood: -1.61365e+08	(delta): 3.11314e+08
+global_v2_admix_K2.log:2 (EM) 	Elapsed: 8.835	Loglikelihood: -1.56501e+08	(delta): 4.86422e+06
+global_v2_admix_K2.log:3 (EM) 	Elapsed: 9.023	Loglikelihood: -1.55293e+08	(delta): 1.2084e+06
+global_v2_admix_K2.log:4 (EM) 	Elapsed: 9.098	Loglikelihood: -1.54691e+08	(delta): 601267
+global_v2_admix_K2.log:5 (EM) 	Elapsed: 9.078	Loglikelihood: -1.54387e+08	(delta): 304480
+global_v2_admix_K2.log:Initial loglikelihood: -1.54387e+08
+global_v2_admix_K2.log:1 (QN/Block) 	Elapsed: 25.464	Loglikelihood: -1.51336e+08	(delta): 3.05042e+06
+global_v2_admix_K2.log:2 (QN/Block) 	Elapsed: 26.282	Loglikelihood: -1.49336e+08	(delta): 2.00072e+06
+global_v2_admix_K2.log:3 (QN/Block) 	Elapsed: 25.926	Loglikelihood: -1.48108e+08	(delta): 1.22789e+06
+global_v2_admix_K2.log:4 (QN/Block) 	Elapsed: 26.226	Loglikelihood: -1.47704e+08	(delta): 403867
+global_v2_admix_K2.log:5 (QN/Block) 	Elapsed: 26.884	Loglikelihood: -1.47679e+08	(delta): 25371.1
+global_v2_admix_K2.log:6 (QN/Block) 	Elapsed: 26.936	Loglikelihood: -1.47678e+08	(delta): 643.241
+global_v2_admix_K2.log:7 (QN/Block) 	Elapsed: 26.171	Loglikelihood: -1.47677e+08	(delta): 407.243
+global_v2_admix_K2.log:8 (QN/Block) 	Elapsed: 26.114	Loglikelihood: -1.47677e+08	(delta): 434.179
+global_v2_admix_K2.log:9 (QN/Block) 	Elapsed: 26.256	Loglikelihood: -1.47677e+08	(delta): 108.866
+global_v2_admix_K2.log:10 (QN/Block) 	Elapsed: 25.903	Loglikelihood: -1.47677e+08	(delta): 19.6865
+global_v2_admix_K2.log:11 (QN/Block) 	Elapsed: 26.135	Loglikelihood: -1.47677e+08	(delta): 6.92303
+global_v2_admix_K2.log:12 (QN/Block) 	Elapsed: 25.754	Loglikelihood: -1.47677e+08	(delta): 6.39772
+global_v2_admix_K2.log:13 (QN/Block) 	Elapsed: 26.236	Loglikelihood: -1.47677e+08	(delta): 5.00617
+global_v2_admix_K2.log:14 (QN/Block) 	Elapsed: 25.974	Loglikelihood: -1.47677e+08	(delta): 1.20429
+global_v2_admix_K2.log:15 (QN/Block) 	Elapsed: 25.932	Loglikelihood: -1.47677e+08	(delta): 0.787014
+global_v2_admix_K2.log:16 (QN/Block) 	Elapsed: 25.681	Loglikelihood: -1.47677e+08	(delta): 0.24488
+global_v2_admix_K2.log:17 (QN/Block) 	Elapsed: 25.97	Loglikelihood: -1.47677e+08	(delta): 0.205958
+global_v2_admix_K2.log:18 (QN/Block) 	Elapsed: 25.963	Loglikelihood: -1.47677e+08	(delta): 0.0211716
+global_v2_admix_K2.log:19 (QN/Block) 	Elapsed: 26.42	Loglikelihood: -1.47677e+08	(delta): 0.0282112
+global_v2_admix_K2.log:20 (QN/Block) 	Elapsed: 26.384	Loglikelihood: -1.47677e+08	(delta): 0.00219542
+global_v2_admix_K2.log:21 (QN/Block) 	Elapsed: 28.69	Loglikelihood: -1.47677e+08	(delta): 0.00127745
+global_v2_admix_K2.log:22 (QN/Block) 	Elapsed: 28.864	Loglikelihood: -1.47677e+08	(delta): 0.000394672
+global_v2_admix_K2.log:23 (QN/Block) 	Elapsed: 28.664	Loglikelihood: -1.47677e+08	(delta): 0.0002985
+global_v2_admix_K2.log:24 (QN/Block) 	Elapsed: 29.219	Loglikelihood: -1.47677e+08	(delta): 3.73721e-05
+global_v2_admix_K2.log:Loglikelihood: -147676904.691827
+global_v2_admix_K3.log:1 (EM) 	Elapsed: 11.914	Loglikelihood: -1.63829e+08	(delta): 2.80798e+08
+global_v2_admix_K3.log:2 (EM) 	Elapsed: 11.895	Loglikelihood: -1.57586e+08	(delta): 6.24273e+06
+global_v2_admix_K3.log:3 (EM) 	Elapsed: 11.827	Loglikelihood: -1.56262e+08	(delta): 1.32382e+06
+global_v2_admix_K3.log:4 (EM) 	Elapsed: 11.922	Loglikelihood: -1.55487e+08	(delta): 774788
+global_v2_admix_K3.log:5 (EM) 	Elapsed: 12.196	Loglikelihood: -1.54983e+08	(delta): 504414
+global_v2_admix_K3.log:Initial loglikelihood: -1.54983e+08
+global_v2_admix_K3.log:1 (QN/Block) 	Elapsed: 75.037	Loglikelihood: -1.48122e+08	(delta): 6.86043e+06
+global_v2_admix_K3.log:2 (QN/Block) 	Elapsed: 75.154	Loglikelihood: -1.45818e+08	(delta): 2.30487e+06
+global_v2_admix_K3.log:3 (QN/Block) 	Elapsed: 75.539	Loglikelihood: -1.45047e+08	(delta): 771059
+global_v2_admix_K3.log:4 (QN/Block) 	Elapsed: 76.084	Loglikelihood: -1.44735e+08	(delta): 311789
+global_v2_admix_K3.log:5 (QN/Block) 	Elapsed: 76.943	Loglikelihood: -1.44706e+08	(delta): 29013.6
+global_v2_admix_K3.log:6 (QN/Block) 	Elapsed: 76.537	Loglikelihood: -1.44703e+08	(delta): 3082.24
+global_v2_admix_K3.log:7 (QN/Block) 	Elapsed: 76.228	Loglikelihood: -1.44701e+08	(delta): 1330.87
+global_v2_admix_K3.log:8 (QN/Block) 	Elapsed: 75.783	Loglikelihood: -1.447e+08	(delta): 1089.78
+global_v2_admix_K3.log:9 (QN/Block) 	Elapsed: 76.947	Loglikelihood: -1.447e+08	(delta): 293.162
+global_v2_admix_K3.log:10 (QN/Block) 	Elapsed: 77.11	Loglikelihood: -1.447e+08	(delta): 13.7052
+global_v2_admix_K3.log:11 (QN/Block) 	Elapsed: 77.157	Loglikelihood: -1.447e+08	(delta): 2.06824
+global_v2_admix_K3.log:12 (QN/Block) 	Elapsed: 77.808	Loglikelihood: -1.447e+08	(delta): 0.258648
+global_v2_admix_K3.log:13 (QN/Block) 	Elapsed: 77.087	Loglikelihood: -1.447e+08	(delta): 0.00722244
+global_v2_admix_K3.log:14 (QN/Block) 	Elapsed: 76.808	Loglikelihood: -1.447e+08	(delta): 0.000995636
+global_v2_admix_K3.log:15 (QN/Block) 	Elapsed: 77.581	Loglikelihood: -1.447e+08	(delta): 0.000142813
+global_v2_admix_K3.log:16 (QN/Block) 	Elapsed: 77.429	Loglikelihood: -1.447e+08	(delta): 7.74264e-05
+global_v2_admix_K3.log:Loglikelihood: -144699938.388947
+global_v2_admix_K4.log:1 (EM) 	Elapsed: 21.207	Loglikelihood: -1.64678e+08	(delta): 2.64107e+08
+global_v2_admix_K4.log:2 (EM) 	Elapsed: 21.183	Loglikelihood: -1.57911e+08	(delta): 6.76662e+06
+global_v2_admix_K4.log:3 (EM) 	Elapsed: 21.677	Loglikelihood: -1.56662e+08	(delta): 1.24965e+06
+global_v2_admix_K4.log:4 (EM) 	Elapsed: 21.951	Loglikelihood: -1.55939e+08	(delta): 722888
+global_v2_admix_K4.log:5 (EM) 	Elapsed: 20.876	Loglikelihood: -1.55428e+08	(delta): 510356
+global_v2_admix_K4.log:Initial loglikelihood: -1.55428e+08
+global_v2_admix_K4.log:1 (QN/Block) 	Elapsed: 79.327	Loglikelihood: -1.47867e+08	(delta): 7.56126e+06
+global_v2_admix_K4.log:2 (QN/Block) 	Elapsed: 78.103	Loglikelihood: -1.45465e+08	(delta): 2.40254e+06
+global_v2_admix_K4.log:3 (QN/Block) 	Elapsed: 79.097	Loglikelihood: -1.44439e+08	(delta): 1.02572e+06
+global_v2_admix_K4.log:4 (QN/Block) 	Elapsed: 78.002	Loglikelihood: -1.44094e+08	(delta): 344852
+global_v2_admix_K4.log:5 (QN/Block) 	Elapsed: 75.364	Loglikelihood: -1.44017e+08	(delta): 77268.6
+global_v2_admix_K4.log:6 (QN/Block) 	Elapsed: 74.031	Loglikelihood: -1.43951e+08	(delta): 65673.3
+global_v2_admix_K4.log:7 (QN/Block) 	Elapsed: 72.228	Loglikelihood: -1.43893e+08	(delta): 57765
+global_v2_admix_K4.log:8 (QN/Block) 	Elapsed: 73.706	Loglikelihood: -1.43862e+08	(delta): 30944.4
+global_v2_admix_K4.log:9 (QN/Block) 	Elapsed: 72.314	Loglikelihood: -1.4384e+08	(delta): 22434.4
+global_v2_admix_K4.log:10 (QN/Block) 	Elapsed: 74.323	Loglikelihood: -1.43827e+08	(delta): 12972
+global_v2_admix_K4.log:11 (QN/Block) 	Elapsed: 75.947	Loglikelihood: -1.4382e+08	(delta): 7114.08
+global_v2_admix_K4.log:12 (QN/Block) 	Elapsed: 74.307	Loglikelihood: -1.43814e+08	(delta): 5825.56
+global_v2_admix_K4.log:13 (QN/Block) 	Elapsed: 73.961	Loglikelihood: -1.43811e+08	(delta): 2503.14
+global_v2_admix_K4.log:14 (QN/Block) 	Elapsed: 74.645	Loglikelihood: -1.43811e+08	(delta): 736.252
+global_v2_admix_K4.log:15 (QN/Block) 	Elapsed: 74.166	Loglikelihood: -1.4381e+08	(delta): 212.686
+global_v2_admix_K4.log:16 (QN/Block) 	Elapsed: 73.728	Loglikelihood: -1.4381e+08	(delta): 66.3571
+global_v2_admix_K4.log:17 (QN/Block) 	Elapsed: 74.902	Loglikelihood: -1.4381e+08	(delta): 7.02412
+global_v2_admix_K4.log:18 (QN/Block) 	Elapsed: 73.446	Loglikelihood: -1.4381e+08	(delta): 0.750316
+global_v2_admix_K4.log:19 (QN/Block) 	Elapsed: 73.297	Loglikelihood: -1.4381e+08	(delta): 0.100514
+global_v2_admix_K4.log:20 (QN/Block) 	Elapsed: 73.113	Loglikelihood: -1.4381e+08	(delta): 0.00358188
+global_v2_admix_K4.log:21 (QN/Block) 	Elapsed: 74.9	Loglikelihood: -1.4381e+08	(delta): 0.000158399
+global_v2_admix_K4.log:22 (QN/Block) 	Elapsed: 78.206	Loglikelihood: -1.4381e+08	(delta): 3.54648e-06
+global_v2_admix_K4.log:Loglikelihood: -143810411.924365
+global_v2_admix_K5.log:1 (EM) 	Elapsed: 71.09	Loglikelihood: -1.64868e+08	(delta): 2.54563e+08
+global_v2_admix_K5.log:2 (EM) 	Elapsed: 75.224	Loglikelihood: -1.57904e+08	(delta): 6.96394e+06
+global_v2_admix_K5.log:3 (EM) 	Elapsed: 69.415	Loglikelihood: -1.56755e+08	(delta): 1.14841e+06
+global_v2_admix_K5.log:4 (EM) 	Elapsed: 73.195	Loglikelihood: -1.5611e+08	(delta): 645512
+global_v2_admix_K5.log:5 (EM) 	Elapsed: 70.997	Loglikelihood: -1.5564e+08	(delta): 469648
+global_v2_admix_K5.log:Initial loglikelihood: -1.5564e+08
+global_v2_admix_K5.log:1 (QN/Block) 	Elapsed: 89.056	Loglikelihood: -1.4766e+08	(delta): 7.98014e+06
+global_v2_admix_K5.log:2 (QN/Block) 	Elapsed: 91.332	Loglikelihood: -1.45072e+08	(delta): 2.58742e+06
+global_v2_admix_K5.log:3 (QN/Block) 	Elapsed: 92.339	Loglikelihood: -1.43935e+08	(delta): 1.1374e+06
+global_v2_admix_K5.log:4 (QN/Block) 	Elapsed: 91.516	Loglikelihood: -1.43575e+08	(delta): 360087
+global_v2_admix_K5.log:5 (QN/Block) 	Elapsed: 94.299	Loglikelihood: -1.43544e+08	(delta): 31230.6
+global_v2_admix_K5.log:6 (QN/Block) 	Elapsed: 91.295	Loglikelihood: -1.43537e+08	(delta): 6292.36
+global_v2_admix_K5.log:7 (QN/Block) 	Elapsed: 91.514	Loglikelihood: -1.43535e+08	(delta): 1977.4
+global_v2_admix_K5.log:8 (QN/Block) 	Elapsed: 92.561	Loglikelihood: -1.43532e+08	(delta): 3563.33
+global_v2_admix_K5.log:9 (QN/Block) 	Elapsed: 92.497	Loglikelihood: -1.43526e+08	(delta): 6002.12
+global_v2_admix_K5.log:10 (QN/Block) 	Elapsed: 92.6	Loglikelihood: -1.43508e+08	(delta): 17593
+global_v2_admix_K5.log:11 (QN/Block) 	Elapsed: 91.175	Loglikelihood: -1.43473e+08	(delta): 35642.4
+global_v2_admix_K5.log:12 (QN/Block) 	Elapsed: 89.994	Loglikelihood: -1.43449e+08	(delta): 23423.4
+global_v2_admix_K5.log:13 (QN/Block) 	Elapsed: 89.383	Loglikelihood: -1.43419e+08	(delta): 29991.8
+global_v2_admix_K5.log:14 (QN/Block) 	Elapsed: 89.722	Loglikelihood: -1.43374e+08	(delta): 45728.8
+global_v2_admix_K5.log:15 (QN/Block) 	Elapsed: 90.35	Loglikelihood: -1.43324e+08	(delta): 49855.7
+global_v2_admix_K5.log:16 (QN/Block) 	Elapsed: 89.786	Loglikelihood: -1.43267e+08	(delta): 56345.4
+global_v2_admix_K5.log:17 (QN/Block) 	Elapsed: 90.662	Loglikelihood: -1.43223e+08	(delta): 44094.9
+global_v2_admix_K5.log:18 (QN/Block) 	Elapsed: 89.662	Loglikelihood: -1.432e+08	(delta): 22841.7
+global_v2_admix_K5.log:19 (QN/Block) 	Elapsed: 89.226	Loglikelihood: -1.43185e+08	(delta): 15581
+global_v2_admix_K5.log:20 (QN/Block) 	Elapsed: 89.28	Loglikelihood: -1.43174e+08	(delta): 10632.5
+global_v2_admix_K5.log:21 (QN/Block) 	Elapsed: 87.962	Loglikelihood: -1.43168e+08	(delta): 6541.84
+global_v2_admix_K5.log:22 (QN/Block) 	Elapsed: 88.897	Loglikelihood: -1.43164e+08	(delta): 4131.05
+global_v2_admix_K5.log:23 (QN/Block) 	Elapsed: 89.101	Loglikelihood: -1.43162e+08	(delta): 1207.44
+global_v2_admix_K5.log:24 (QN/Block) 	Elapsed: 89.351	Loglikelihood: -1.43162e+08	(delta): 206.602
+global_v2_admix_K5.log:25 (QN/Block) 	Elapsed: 88.154	Loglikelihood: -1.43162e+08	(delta): 23.1626
+global_v2_admix_K5.log:26 (QN/Block) 	Elapsed: 88.212	Loglikelihood: -1.43162e+08	(delta): 4.59327
+global_v2_admix_K5.log:27 (QN/Block) 	Elapsed: 87.757	Loglikelihood: -1.43162e+08	(delta): 0.442133
+global_v2_admix_K5.log:28 (QN/Block) 	Elapsed: 87.882	Loglikelihood: -1.43162e+08	(delta): 0.0191552
+global_v2_admix_K5.log:29 (QN/Block) 	Elapsed: 88.918	Loglikelihood: -1.43162e+08	(delta): 0.00322869
+global_v2_admix_K5.log:30 (QN/Block) 	Elapsed: 89.681	Loglikelihood: -1.43162e+08	(delta): 0.000508428
+global_v2_admix_K5.log:31 (QN/Block) 	Elapsed: 88.158	Loglikelihood: -1.43162e+08	(delta): 3.8445e-05
+global_v2_admix_K5.log:Loglikelihood: -143162075.402264
+global_v2_admix_K6.log:1 (EM) 	Elapsed: 42.14	Loglikelihood: -1.64935e+08	(delta): 2.48098e+08
+global_v2_admix_K6.log:2 (EM) 	Elapsed: 42.896	Loglikelihood: -1.57817e+08	(delta): 7.11805e+06
+global_v2_admix_K6.log:3 (EM) 	Elapsed: 40.629	Loglikelihood: -1.56745e+08	(delta): 1.07183e+06
+global_v2_admix_K6.log:4 (EM) 	Elapsed: 41.197	Loglikelihood: -1.56158e+08	(delta): 587147
+global_v2_admix_K6.log:5 (EM) 	Elapsed: 41.605	Loglikelihood: -1.55727e+08	(delta): 430682
+global_v2_admix_K6.log:Initial loglikelihood: -1.55727e+08
+global_v2_admix_K6.log:1 (QN/Block) 	Elapsed: 103.192	Loglikelihood: -1.46383e+08	(delta): 9.344e+06
+global_v2_admix_K6.log:2 (QN/Block) 	Elapsed: 105.593	Loglikelihood: -1.44222e+08	(delta): 2.16049e+06
+global_v2_admix_K6.log:3 (QN/Block) 	Elapsed: 106.464	Loglikelihood: -1.4351e+08	(delta): 712892
+global_v2_admix_K6.log:4 (QN/Block) 	Elapsed: 107.727	Loglikelihood: -1.43234e+08	(delta): 275699
+global_v2_admix_K6.log:5 (QN/Block) 	Elapsed: 105.65	Loglikelihood: -1.43144e+08	(delta): 90366.8
+global_v2_admix_K6.log:6 (QN/Block) 	Elapsed: 106.155	Loglikelihood: -1.43103e+08	(delta): 40345.3
+global_v2_admix_K6.log:7 (QN/Block) 	Elapsed: 102.885	Loglikelihood: -1.43091e+08	(delta): 12208.2
+global_v2_admix_K6.log:8 (QN/Block) 	Elapsed: 103.211	Loglikelihood: -1.43086e+08	(delta): 5297.75
+global_v2_admix_K6.log:9 (QN/Block) 	Elapsed: 102.878	Loglikelihood: -1.4308e+08	(delta): 5285.8
+global_v2_admix_K6.log:10 (QN/Block) 	Elapsed: 102.014	Loglikelihood: -1.43077e+08	(delta): 3279.05
+global_v2_admix_K6.log:11 (QN/Block) 	Elapsed: 102.402	Loglikelihood: -1.43075e+08	(delta): 2511.6
+global_v2_admix_K6.log:12 (QN/Block) 	Elapsed: 103.395	Loglikelihood: -1.43072e+08	(delta): 2742.22
+global_v2_admix_K6.log:13 (QN/Block) 	Elapsed: 107.671	Loglikelihood: -1.43069e+08	(delta): 2371.17
+global_v2_admix_K6.log:14 (QN/Block) 	Elapsed: 106.577	Loglikelihood: -1.43067e+08	(delta): 2052.69
+global_v2_admix_K6.log:15 (QN/Block) 	Elapsed: 106.381	Loglikelihood: -1.43066e+08	(delta): 1768.71
+global_v2_admix_K6.log:16 (QN/Block) 	Elapsed: 106.576	Loglikelihood: -1.43062e+08	(delta): 3422.83
+global_v2_admix_K6.log:17 (QN/Block) 	Elapsed: 107.859	Loglikelihood: -1.43059e+08	(delta): 3292.15
+global_v2_admix_K6.log:18 (QN/Block) 	Elapsed: 105.618	Loglikelihood: -1.43056e+08	(delta): 3150.57
+global_v2_admix_K6.log:19 (QN/Block) 	Elapsed: 106.712	Loglikelihood: -1.43052e+08	(delta): 3972.22
+global_v2_admix_K6.log:20 (QN/Block) 	Elapsed: 110.109	Loglikelihood: -1.43045e+08	(delta): 6380.52
+global_v2_admix_K6.log:21 (QN/Block) 	Elapsed: 108.265	Loglikelihood: -1.43037e+08	(delta): 8570.05
+global_v2_admix_K6.log:22 (QN/Block) 	Elapsed: 108.973	Loglikelihood: -1.43027e+08	(delta): 10241.3
+global_v2_admix_K6.log:23 (QN/Block) 	Elapsed: 108.893	Loglikelihood: -1.4302e+08	(delta): 6938.35
+global_v2_admix_K6.log:24 (QN/Block) 	Elapsed: 110.158	Loglikelihood: -1.43013e+08	(delta): 7057.73
+global_v2_admix_K6.log:25 (QN/Block) 	Elapsed: 112.745	Loglikelihood: -1.43002e+08	(delta): 10533.8
+global_v2_admix_K6.log:26 (QN/Block) 	Elapsed: 111.675	Loglikelihood: -1.42997e+08	(delta): 4642.28
+global_v2_admix_K6.log:27 (QN/Block) 	Elapsed: 108.287	Loglikelihood: -1.42991e+08	(delta): 6618.3
+global_v2_admix_K6.log:28 (QN/Block) 	Elapsed: 109.928	Loglikelihood: -1.42987e+08	(delta): 3701.72
+global_v2_admix_K6.log:29 (QN/Block) 	Elapsed: 109.403	Loglikelihood: -1.42985e+08	(delta): 2409.12
+global_v2_admix_K6.log:30 (QN/Block) 	Elapsed: 107.596	Loglikelihood: -1.42982e+08	(delta): 2575.79
+global_v2_admix_K6.log:31 (QN/Block) 	Elapsed: 106.533	Loglikelihood: -1.42979e+08	(delta): 2814.89
+global_v2_admix_K6.log:32 (QN/Block) 	Elapsed: 107.687	Loglikelihood: -1.42976e+08	(delta): 3116.14
+global_v2_admix_K6.log:33 (QN/Block) 	Elapsed: 107.615	Loglikelihood: -1.42973e+08	(delta): 3438.09
+global_v2_admix_K6.log:34 (QN/Block) 	Elapsed: 106.788	Loglikelihood: -1.42969e+08	(delta): 3738.39
+global_v2_admix_K6.log:35 (QN/Block) 	Elapsed: 107.701	Loglikelihood: -1.42965e+08	(delta): 3955.47
+global_v2_admix_K6.log:36 (QN/Block) 	Elapsed: 104.808	Loglikelihood: -1.42961e+08	(delta): 4244.79
+global_v2_admix_K6.log:37 (QN/Block) 	Elapsed: 107.256	Loglikelihood: -1.42956e+08	(delta): 5223.87
+global_v2_admix_K6.log:38 (QN/Block) 	Elapsed: 106.767	Loglikelihood: -1.42953e+08	(delta): 2298.74
+global_v2_admix_K6.log:39 (QN/Block) 	Elapsed: 106.133	Loglikelihood: -1.42953e+08	(delta): 703.72
+global_v2_admix_K6.log:40 (QN/Block) 	Elapsed: 105.684	Loglikelihood: -1.42952e+08	(delta): 790.336
+global_v2_admix_K6.log:41 (QN/Block) 	Elapsed: 106.372	Loglikelihood: -1.42952e+08	(delta): 299.71
+global_v2_admix_K6.log:42 (QN/Block) 	Elapsed: 106.146	Loglikelihood: -1.42951e+08	(delta): 67.1891
+global_v2_admix_K6.log:43 (QN/Block) 	Elapsed: 106.223	Loglikelihood: -1.42951e+08	(delta): 72.1695
+global_v2_admix_K6.log:44 (QN/Block) 	Elapsed: 106.025	Loglikelihood: -1.42951e+08	(delta): 14.4234
+global_v2_admix_K6.log:45 (QN/Block) 	Elapsed: 105.584	Loglikelihood: -1.42951e+08	(delta): 5.90967
+global_v2_admix_K6.log:46 (QN/Block) 	Elapsed: 105.525	Loglikelihood: -1.42951e+08	(delta): 2.25994
+global_v2_admix_K6.log:47 (QN/Block) 	Elapsed: 105.668	Loglikelihood: -1.42951e+08	(delta): 1.19498
+global_v2_admix_K6.log:48 (QN/Block) 	Elapsed: 104.871	Loglikelihood: -1.42951e+08	(delta): 1.10778
+global_v2_admix_K6.log:49 (QN/Block) 	Elapsed: 107.172	Loglikelihood: -1.42951e+08	(delta): 0.360861
+global_v2_admix_K6.log:50 (QN/Block) 	Elapsed: 107.646	Loglikelihood: -1.42951e+08	(delta): 0.440766
+global_v2_admix_K6.log:51 (QN/Block) 	Elapsed: 106.767	Loglikelihood: -1.42951e+08	(delta): 0.144786
+global_v2_admix_K6.log:52 (QN/Block) 	Elapsed: 106.383	Loglikelihood: -1.42951e+08	(delta): 0.0781345
+global_v2_admix_K6.log:53 (QN/Block) 	Elapsed: 107.347	Loglikelihood: -1.42951e+08	(delta): 0.0163626
+global_v2_admix_K6.log:54 (QN/Block) 	Elapsed: 105.286	Loglikelihood: -1.42951e+08	(delta): 0.0114996
+global_v2_admix_K6.log:55 (QN/Block) 	Elapsed: 105.764	Loglikelihood: -1.42951e+08	(delta): 0.00562587
+global_v2_admix_K6.log:56 (QN/Block) 	Elapsed: 105.873	Loglikelihood: -1.42951e+08	(delta): 0.00112978
+global_v2_admix_K6.log:57 (QN/Block) 	Elapsed: 106.904	Loglikelihood: -1.42951e+08	(delta): 0.000259489
+global_v2_admix_K6.log:58 (QN/Block) 	Elapsed: 108.435	Loglikelihood: -1.42951e+08	(delta): 6.26147e-05
+global_v2_admix_K6.log:Loglikelihood: -142951364.125522
+global_v2_admix_K7.log:1 (EM) 	Elapsed: 34.657	Loglikelihood: -1.64858e+08	(delta): 2.44459e+08
+global_v2_admix_K7.log:2 (EM) 	Elapsed: 34.704	Loglikelihood: -1.57662e+08	(delta): 7.19571e+06
+global_v2_admix_K7.log:3 (EM) 	Elapsed: 34.344	Loglikelihood: -1.56664e+08	(delta): 998223
+global_v2_admix_K7.log:4 (EM) 	Elapsed: 33.507	Loglikelihood: -1.56136e+08	(delta): 527960
+global_v2_admix_K7.log:5 (EM) 	Elapsed: 33.009	Loglikelihood: -1.55745e+08	(delta): 390797
+global_v2_admix_K7.log:Initial loglikelihood: -1.55745e+08
+global_v2_admix_K7.log:1 (QN/Block) 	Elapsed: 118.46	Loglikelihood: -1.46378e+08	(delta): 9.36665e+06
+global_v2_admix_K7.log:2 (QN/Block) 	Elapsed: 118.94	Loglikelihood: -1.43979e+08	(delta): 2.39908e+06
+global_v2_admix_K7.log:3 (QN/Block) 	Elapsed: 120.755	Loglikelihood: -1.43286e+08	(delta): 693643
+global_v2_admix_K7.log:4 (QN/Block) 	Elapsed: 121.062	Loglikelihood: -1.43065e+08	(delta): 220235
+global_v2_admix_K7.log:5 (QN/Block) 	Elapsed: 114.002	Loglikelihood: -1.43012e+08	(delta): 53557.9
+global_v2_admix_K7.log:6 (QN/Block) 	Elapsed: 114.058	Loglikelihood: -1.42994e+08	(delta): 18331.1
+global_v2_admix_K7.log:7 (QN/Block) 	Elapsed: 113.818	Loglikelihood: -1.42971e+08	(delta): 22112.2
+global_v2_admix_K7.log:8 (QN/Block) 	Elapsed: 113.86	Loglikelihood: -1.4296e+08	(delta): 11853.6
+global_v2_admix_K7.log:9 (QN/Block) 	Elapsed: 112.732	Loglikelihood: -1.42952e+08	(delta): 8026.68
+global_v2_admix_K7.log:10 (QN/Block) 	Elapsed: 112.374	Loglikelihood: -1.42946e+08	(delta): 5397.83
+global_v2_admix_K7.log:11 (QN/Block) 	Elapsed: 111.448	Loglikelihood: -1.4294e+08	(delta): 6000.77
+global_v2_admix_K7.log:12 (QN/Block) 	Elapsed: 111.014	Loglikelihood: -1.42925e+08	(delta): 15196.8
+global_v2_admix_K7.log:13 (QN/Block) 	Elapsed: 112.642	Loglikelihood: -1.42904e+08	(delta): 21206.1
+global_v2_admix_K7.log:14 (QN/Block) 	Elapsed: 115.049	Loglikelihood: -1.42893e+08	(delta): 10578.4
+global_v2_admix_K7.log:15 (QN/Block) 	Elapsed: 113.982	Loglikelihood: -1.42882e+08	(delta): 11289.9
+global_v2_admix_K7.log:16 (QN/Block) 	Elapsed: 113.607	Loglikelihood: -1.42874e+08	(delta): 7698.72
+global_v2_admix_K7.log:17 (QN/Block) 	Elapsed: 113.632	Loglikelihood: -1.42866e+08	(delta): 8146.81
+global_v2_admix_K7.log:18 (QN/Block) 	Elapsed: 113.699	Loglikelihood: -1.42857e+08	(delta): 8793.73
+global_v2_admix_K7.log:19 (QN/Block) 	Elapsed: 113.618	Loglikelihood: -1.42849e+08	(delta): 8034.21
+global_v2_admix_K7.log:20 (QN/Block) 	Elapsed: 113.72	Loglikelihood: -1.42843e+08	(delta): 6636.38
+global_v2_admix_K7.log:21 (QN/Block) 	Elapsed: 113.752	Loglikelihood: -1.42838e+08	(delta): 4807.85
+global_v2_admix_K7.log:22 (QN/Block) 	Elapsed: 115.724	Loglikelihood: -1.42834e+08	(delta): 3860.61
+global_v2_admix_K7.log:23 (QN/Block) 	Elapsed: 115.867	Loglikelihood: -1.42832e+08	(delta): 1567.98
+global_v2_admix_K7.log:24 (QN/Block) 	Elapsed: 120.018	Loglikelihood: -1.42831e+08	(delta): 1710.14
+global_v2_admix_K7.log:25 (QN/Block) 	Elapsed: 118.754	Loglikelihood: -1.42829e+08	(delta): 1771.95
+global_v2_admix_K7.log:26 (QN/Block) 	Elapsed: 114.769	Loglikelihood: -1.42828e+08	(delta): 693.788
+global_v2_admix_K7.log:27 (QN/Block) 	Elapsed: 114.749	Loglikelihood: -1.42828e+08	(delta): 625.337
+global_v2_admix_K7.log:28 (QN/Block) 	Elapsed: 113.931	Loglikelihood: -1.42827e+08	(delta): 473.14
+global_v2_admix_K7.log:29 (QN/Block) 	Elapsed: 117.015	Loglikelihood: -1.42827e+08	(delta): 209.073
+global_v2_admix_K7.log:30 (QN/Block) 	Elapsed: 117.864	Loglikelihood: -1.42827e+08	(delta): 210.644
+global_v2_admix_K7.log:31 (QN/Block) 	Elapsed: 121.071	Loglikelihood: -1.42826e+08	(delta): 279.352
+global_v2_admix_K7.log:32 (QN/Block) 	Elapsed: 120.884	Loglikelihood: -1.42826e+08	(delta): 301.264
+global_v2_admix_K7.log:33 (QN/Block) 	Elapsed: 120.707	Loglikelihood: -1.42826e+08	(delta): 333.439
+global_v2_admix_K7.log:34 (QN/Block) 	Elapsed: 119.699	Loglikelihood: -1.42826e+08	(delta): 261.435
+global_v2_admix_K7.log:35 (QN/Block) 	Elapsed: 116.028	Loglikelihood: -1.42825e+08	(delta): 230.15
+global_v2_admix_K7.log:36 (QN/Block) 	Elapsed: 115.997	Loglikelihood: -1.42825e+08	(delta): 168.654
+global_v2_admix_K7.log:37 (QN/Block) 	Elapsed: 116.608	Loglikelihood: -1.42825e+08	(delta): 119.412
+global_v2_admix_K7.log:38 (QN/Block) 	Elapsed: 116.153	Loglikelihood: -1.42825e+08	(delta): 132.674
+global_v2_admix_K7.log:39 (QN/Block) 	Elapsed: 115.466	Loglikelihood: -1.42825e+08	(delta): 60.8501
+global_v2_admix_K7.log:40 (QN/Block) 	Elapsed: 115.895	Loglikelihood: -1.42825e+08	(delta): 28.9902
+global_v2_admix_K7.log:41 (QN/Block) 	Elapsed: 115.738	Loglikelihood: -1.42825e+08	(delta): 11.299
+global_v2_admix_K7.log:42 (QN/Block) 	Elapsed: 115.968	Loglikelihood: -1.42825e+08	(delta): 4.31887
+global_v2_admix_K7.log:43 (QN/Block) 	Elapsed: 115.82	Loglikelihood: -1.42825e+08	(delta): 1.62523
+global_v2_admix_K7.log:44 (QN/Block) 	Elapsed: 115.923	Loglikelihood: -1.42825e+08	(delta): 0.453493
+global_v2_admix_K7.log:45 (QN/Block) 	Elapsed: 115.682	Loglikelihood: -1.42825e+08	(delta): 0.14639
+global_v2_admix_K7.log:46 (QN/Block) 	Elapsed: 115.572	Loglikelihood: -1.42825e+08	(delta): 0.0657716
+global_v2_admix_K7.log:47 (QN/Block) 	Elapsed: 116.229	Loglikelihood: -1.42825e+08	(delta): 0.044605
+global_v2_admix_K7.log:48 (QN/Block) 	Elapsed: 116.119	Loglikelihood: -1.42825e+08	(delta): 0.0302262
+global_v2_admix_K7.log:49 (QN/Block) 	Elapsed: 116.629	Loglikelihood: -1.42825e+08	(delta): 0.0121705
+global_v2_admix_K7.log:50 (QN/Block) 	Elapsed: 115.286	Loglikelihood: -1.42825e+08	(delta): 0.00839195
+global_v2_admix_K7.log:51 (QN/Block) 	Elapsed: 116.148	Loglikelihood: -1.42825e+08	(delta): 0.00118315
+global_v2_admix_K7.log:52 (QN/Block) 	Elapsed: 116.06	Loglikelihood: -1.42825e+08	(delta): 0.000138074
+global_v2_admix_K7.log:53 (QN/Block) 	Elapsed: 114.937	Loglikelihood: -1.42825e+08	(delta): 5.47469e-05
+global_v2_admix_K7.log:Loglikelihood: -142824765.394378
+global_v2_admix_K8.log:1 (EM) 	Elapsed: 56.476	Loglikelihood: -1.64779e+08	(delta): 2.40901e+08
+global_v2_admix_K8.log:2 (EM) 	Elapsed: 57.983	Loglikelihood: -1.57498e+08	(delta): 7.28034e+06
+global_v2_admix_K8.log:3 (EM) 	Elapsed: 57.162	Loglikelihood: -1.56566e+08	(delta): 932439
+global_v2_admix_K8.log:4 (EM) 	Elapsed: 57.921	Loglikelihood: -1.56089e+08	(delta): 476773
+global_v2_admix_K8.log:5 (EM) 	Elapsed: 59.887	Loglikelihood: -1.55736e+08	(delta): 353189
+global_v2_admix_K8.log:Initial loglikelihood: -1.55736e+08
+global_v2_admix_K8.log:1 (QN/Block) 	Elapsed: 128.317	Loglikelihood: -1.45684e+08	(delta): 1.00517e+07
+global_v2_admix_K8.log:2 (QN/Block) 	Elapsed: 127.146	Loglikelihood: -1.43734e+08	(delta): 1.94976e+06
+global_v2_admix_K8.log:3 (QN/Block) 	Elapsed: 128.817	Loglikelihood: -1.43199e+08	(delta): 535189
+global_v2_admix_K8.log:4 (QN/Block) 	Elapsed: 129.905	Loglikelihood: -1.42978e+08	(delta): 221245
+global_v2_admix_K8.log:5 (QN/Block) 	Elapsed: 131.013	Loglikelihood: -1.42886e+08	(delta): 92153.9
+global_v2_admix_K8.log:6 (QN/Block) 	Elapsed: 132.094	Loglikelihood: -1.4284e+08	(delta): 45505.9
+global_v2_admix_K8.log:7 (QN/Block) 	Elapsed: 133.122	Loglikelihood: -1.4282e+08	(delta): 19976.6
+global_v2_admix_K8.log:8 (QN/Block) 	Elapsed: 131.552	Loglikelihood: -1.42804e+08	(delta): 16696.2
+global_v2_admix_K8.log:9 (QN/Block) 	Elapsed: 130.085	Loglikelihood: -1.42776e+08	(delta): 28072.2
+global_v2_admix_K8.log:10 (QN/Block) 	Elapsed: 131.718	Loglikelihood: -1.42756e+08	(delta): 19638.8
+global_v2_admix_K8.log:11 (QN/Block) 	Elapsed: 144.382	Loglikelihood: -1.42748e+08	(delta): 7595.25
+global_v2_admix_K8.log:12 (QN/Block) 	Elapsed: 144.517	Loglikelihood: -1.42738e+08	(delta): 9987.71
+global_v2_admix_K8.log:13 (QN/Block) 	Elapsed: 146.344	Loglikelihood: -1.42731e+08	(delta): 7429.77
+global_v2_admix_K8.log:14 (QN/Block) 	Elapsed: 146.565	Loglikelihood: -1.42717e+08	(delta): 13618
+global_v2_admix_K8.log:15 (QN/Block) 	Elapsed: 143.672	Loglikelihood: -1.42694e+08	(delta): 23421.4
+global_v2_admix_K8.log:16 (QN/Block) 	Elapsed: 134.311	Loglikelihood: -1.42689e+08	(delta): 5080.42
+global_v2_admix_K8.log:17 (QN/Block) 	Elapsed: 127.942	Loglikelihood: -1.42686e+08	(delta): 3040.49
+global_v2_admix_K8.log:18 (QN/Block) 	Elapsed: 127.533	Loglikelihood: -1.42682e+08	(delta): 3763.68
+global_v2_admix_K8.log:19 (QN/Block) 	Elapsed: 128.361	Loglikelihood: -1.42679e+08	(delta): 2759.87
+global_v2_admix_K8.log:20 (QN/Block) 	Elapsed: 130.993	Loglikelihood: -1.42677e+08	(delta): 1766.98
+global_v2_admix_K8.log:21 (QN/Block) 	Elapsed: 143.884	Loglikelihood: -1.42675e+08	(delta): 2310.57
+global_v2_admix_K8.log:22 (QN/Block) 	Elapsed: 144.462	Loglikelihood: -1.42674e+08	(delta): 761.573
+global_v2_admix_K8.log:23 (QN/Block) 	Elapsed: 145.419	Loglikelihood: -1.42673e+08	(delta): 1590.68
+global_v2_admix_K8.log:24 (QN/Block) 	Elapsed: 143.926	Loglikelihood: -1.42672e+08	(delta): 388.526
+global_v2_admix_K8.log:25 (QN/Block) 	Elapsed: 144.321	Loglikelihood: -1.42672e+08	(delta): 202.325
+global_v2_admix_K8.log:26 (QN/Block) 	Elapsed: 144.447	Loglikelihood: -1.42672e+08	(delta): 105.686
+global_v2_admix_K8.log:27 (QN/Block) 	Elapsed: 135.19	Loglikelihood: -1.42672e+08	(delta): 24.4117
+global_v2_admix_K8.log:28 (QN/Block) 	Elapsed: 127.493	Loglikelihood: -1.42672e+08	(delta): 6.89869
+global_v2_admix_K8.log:29 (QN/Block) 	Elapsed: 128.147	Loglikelihood: -1.42672e+08	(delta): 1.6549
+global_v2_admix_K8.log:30 (QN/Block) 	Elapsed: 138.564	Loglikelihood: -1.42672e+08	(delta): 0.361603
+global_v2_admix_K8.log:31 (QN/Block) 	Elapsed: 137.296	Loglikelihood: -1.42672e+08	(delta): 0.315919
+global_v2_admix_K8.log:32 (QN/Block) 	Elapsed: 129.875	Loglikelihood: -1.42672e+08	(delta): 0.15412
+global_v2_admix_K8.log:33 (QN/Block) 	Elapsed: 128.919	Loglikelihood: -1.42672e+08	(delta): 0.0922782
+global_v2_admix_K8.log:34 (QN/Block) 	Elapsed: 127.944	Loglikelihood: -1.42672e+08	(delta): 0.0540443
+global_v2_admix_K8.log:35 (QN/Block) 	Elapsed: 126.979	Loglikelihood: -1.42672e+08	(delta): 0.0369473
+global_v2_admix_K8.log:36 (QN/Block) 	Elapsed: 126.929	Loglikelihood: -1.42672e+08	(delta): 0.0118635
+global_v2_admix_K8.log:37 (QN/Block) 	Elapsed: 128.551	Loglikelihood: -1.42672e+08	(delta): 0.00782275
+global_v2_admix_K8.log:38 (QN/Block) 	Elapsed: 127.833	Loglikelihood: -1.42672e+08	(delta): 0.00201711
+global_v2_admix_K8.log:39 (QN/Block) 	Elapsed: 128.308	Loglikelihood: -1.42672e+08	(delta): 0.00109816
+global_v2_admix_K8.log:40 (QN/Block) 	Elapsed: 129.193	Loglikelihood: -1.42672e+08	(delta): 0.000356674
+global_v2_admix_K8.log:41 (QN/Block) 	Elapsed: 128.162	Loglikelihood: -1.42672e+08	(delta): 0.000269204
+global_v2_admix_K8.log:42 (QN/Block) 	Elapsed: 127.262	Loglikelihood: -1.42672e+08	(delta): 3.37958e-05
+global_v2_admix_K8.log:Loglikelihood: -142672080.877965
+--- replicate-like filenames in this dir ---
+=== SEARCH REPLICATE ARTIFACTS UNDER /home/copilot ===
+/home/copilot/v2/global_admixture/global_v2_admix.2.P
+/home/copilot/v2/global_admixture/global_v2_admix.2.Q
+/home/copilot/v2/global_admixture/global_v2_admix.3.P
+/home/copilot/v2/global_admixture/global_v2_admix.3.Q
+/home/copilot/v2/global_admixture/global_v2_admix.4.P
+/home/copilot/v2/global_admixture/global_v2_admix.4.Q
+/home/copilot/v2/global_admixture/global_v2_admix.5.P
+/home/copilot/v2/global_admixture/global_v2_admix.5.Q
+/home/copilot/v2/global_admixture/global_v2_admix.6.P
+/home/copilot/v2/global_admixture/global_v2_admix.6.Q
+/home/copilot/v2/global_admixture/global_v2_admix.7.P
+/home/copilot/v2/global_admixture/global_v2_admix.7.Q
+/home/copilot/v2/global_admixture/global_v2_admix.8.P
+/home/copilot/v2/global_admixture/global_v2_admix.8.Q
+/home/copilot/v2/global_admixture/global_v2_admix.bed
+/home/copilot/v2/global_admixture/global_v2_admix.bim
+/home/copilot/v2/global_admixture/global_v2_admix.fam
+/home/copilot/v2/global_admixture/global_v2_admix_K2.log
+/home/copilot/v2/global_admixture/global_v2_admix_K3.log
+/home/copilot/v2/global_admixture/global_v2_admix_K4.log
+/home/copilot/v2/global_admixture/global_v2_admix_K5.log
+/home/copilot/v2/global_admixture/global_v2_admix_K6.log
+/home/copilot/v2/global_admixture/global_v2_admix_K7.log
+/home/copilot/v2/global_admixture/global_v2_admix_K8.log
+=== FILTER: FILES SUGGESTING REPLICATES ===
+=== UZB ADMIXTURE DIR ===
+/home/copilot/v2/admixture
+UZB_v2_admix.2.P
+UZB_v2_admix.2.Q
+UZB_v2_admix.3.P
+UZB_v2_admix.3.Q
+UZB_v2_admix.4.P
+UZB_v2_admix.4.Q
+UZB_v2_admix.5.P
+UZB_v2_admix.5.Q
+UZB_v2_admix.6.P
+UZB_v2_admix.6.Q
+UZB_v2_admix.7.P
+UZB_v2_admix.7.Q
+UZB_v2_admix.8.P
+UZB_v2_admix.8.Q
+UZB_v2_admix.bed
+UZB_v2_admix.bim
+UZB_v2_admix.fam
+UZB_v2_admix_K2.log
+UZB_v2_admix_K3.log
+UZB_v2_admix_K4.log
+UZB_v2_admix_K5.log
+UZB_v2_admix_K6.log
+UZB_v2_admix_K7.log
+UZB_v2_admix_K8.log
+--- UZB CV lines ---
+UZB_v2_admix_K2.log:CV error (K=2): 0.30762
+UZB_v2_admix_K3.log:CV error (K=3): 0.30811
+UZB_v2_admix_K4.log:CV error (K=4): 0.30958
+UZB_v2_admix_K5.log:CV error (K=5): 0.31103
+UZB_v2_admix_K6.log:CV error (K=6): 0.31266
+UZB_v2_admix_K7.log:CV error (K=7): 0.31445
+UZB_v2_admix_K8.log:CV error (K=8): 0.31627
+=== DONE ===
+
