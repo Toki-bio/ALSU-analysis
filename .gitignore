@@ -2,3 +2,15 @@ test_layout.html
 
 *.msi
 *.csv
+
+# Scratch/debug files — never commit
+tmp_*
+*_out.txt
+*_output.txt
+evanno_probe*
+evanno_server*
+status_out*
+fullmap_out*
+v2_explore_output*
+fst_v2_output*
+fst_v2_fix_output*
