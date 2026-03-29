@@ -1,5 +1,7 @@
 # ALSU Reproducibility Metadata & Quality Audit Report
 
+{% raw %}
+
 **Date Generated:** March 25, 2026  
 **Investigation Scope:** Sample count discrepancies, tool versions, phenotype mapping, QC thresholds  
 **Status:** CRITICAL GAPS IDENTIFIED
@@ -537,4 +539,6 @@ Step 6: Post-Imputation QC
 **Report Generated:** March 25, 2026  
 **Investigation Duration:** ~2 hours  
 **Coverage:** 100% of major gap areas identified by user
+
+{% endraw %}
 
