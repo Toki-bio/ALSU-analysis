@@ -1,0 +1,35 @@
+name: "Pages PR check (Liquid + Jekyll)"
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Grep for Liquid-like tokens and placeholders
+        run: |
+          set -e
+          if git ls-files '*.md' | xargs -r grep -n -E '\{\%|\{\{|\{[A-Z0-9_:\-]+\}' ; then
+            echo 'Liquid-like tokens or uppercase placeholders found in Markdown.'
+            echo 'Wrap literal template code with {% raw %}...{% endraw %} or replace placeholders with safe tokens (e.g. %N%).' 
+            exit 1
+          fi
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+
+      - name: Install Jekyll
+        run: |
+          gem install jekyll bundler
+
+      - name: Build site with Jekyll
+        run: |
+          set -e
+          jekyll build --trace

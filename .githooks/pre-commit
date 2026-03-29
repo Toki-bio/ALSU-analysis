@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the project check for Liquid/placeholders before committing markdown changes.
+exec "$(dirname "$0")/../scripts/check_liquid.sh"
