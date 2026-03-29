@@ -338,6 +338,7 @@ Calculated PBS for all {N} SNPs, sorted by value.
 
 ## Results
 - SNPs with PBS ≥ 0.3: {N} ({%} of genome)
+ - SNPs with PBS ≥ 0.3: {N} (% of genome)
 - Top 5 candidates:
   1. {CHR:POS} PBS = 0.XX
 
