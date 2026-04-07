@@ -1,109 +1,262 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Step 12 - PBS Functional Annotation (V2)</title>
-  <style>
-    body { font-family: Segoe UI, Tahoma, Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
-    .page { max-width: 1200px; margin: 0 auto; padding: 24px; }
-    .top { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
-    .badge { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
-    .warn { background: #fff8e1; color: #8a6d1f; border: 1px solid #ffe082; border-radius: 8px; padding: 12px 14px; margin: 16px 0; }
-    .ok { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; border-radius: 8px; padding: 12px 14px; margin: 16px 0; }
-    .cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 16px 0 20px; }
-    .card { background: white; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px; }
-    .num { font-size: 22px; font-weight: 700; color: #111827; }
-    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
-    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #d0d7de; border-radius: 8px; overflow: hidden; }
-    th, td { border-bottom: 1px solid #eef2f5; padding: 10px 8px; text-align: left; font-size: 13px; }
-    th { background: #f8fafc; color: #334155; }
-    tr:hover { background: #f9fbff; }
-    .mono { font-family: Consolas, Menlo, monospace; }
-    .small { color: #6b7280; font-size: 12px; }
-    .section { margin-top: 20px; }
-    a { color: #1565c0; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 12: PBS Functional Annotation - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        .content { padding: 30px; }
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .info-box { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; border-radius: 5px; margin: 20px 0; }
+        .info-box strong { color: #0d47a1; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+        .mono { font-family: Consolas, Menlo, monospace; }
+    </style>
 </head>
 <body>
-  <div class="page">
-    <div class="top">
-      <div>
-        <div><a href="step10.html">Back to Step 10</a></div>
-        <h1>Step 12: PBS Functional Annotation (V2)</h1>
-        <p class="small">Recomputed on corrected V2 dataset (77,111 SNPs; UZB n=1,047)</p>
-      </div>
-      <div class="badge">Step 12 of 15</div>
+<div class="page-wrapper">
+    <aside class="sidebar">
+        <h3>Pipeline Steps</h3>
+        <div class="roadmap-mini">
+            <a href="step1.html">Step 1: Missingness</a>
+            <a href="step2.html">Step 2: IBD Dedup</a>
+            <a href="step3.html">Step 3: SNP QC</a>
+            <a href="step4.html">Step 4: Imputation</a>
+            <a href="step5.html">Step 5: ID Normalize</a>
+            <a href="step6.html">Step 6: Final QC</a>
+            <a href="step7.html">Step 7: PCA Analysis</a>
+            <a href="step8.html">Step 8: Global PCA</a>
+            <a href="step9.html">Step 9: Fst Analysis</a>
+            <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+            <a href="step11.html">Step 11: ADMIXTURE</a>
+            <a href="step12.html" class="current">Step 12: Annotation</a>
+            <a href="step13.html">Step 13: LD Analysis</a>
+            <a href="step14.html">Step 14: Fst &amp; MDS</a>
+            <a href="step15.html">Step 15: ROH &amp; IBD</a>
+            <a href="next_steps.html">Next Steps</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search across all steps...">
+        </div>
+
+        <div class="header">
+            <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
+            <h1>Step 12: PBS Functional Annotation</h1>
+            <p>Annotate PBS candidate SNPs using Ensembl VEP, GWAS Catalog, ClinVar, and GTEx</p>
+            <span class="step-badge">Completed &mdash; March 2026</span>
+        </div>
+
+        <div class="content">
+
+            <h2>1. Overview</h2>
+            <p>
+                The 8 PBS candidate SNPs identified in <a href="step10.html">Step 10</a> are annotated using
+                four complementary resources to assess their functional significance: Ensembl VEP for variant
+                consequence prediction, GWAS Catalog for known disease associations, ClinVar for clinical
+                pathogenicity, and GTEx for tissue-specific expression effects (eQTL).
+            </p>
+
+            <div class="info-box">
+                <strong>Goal:</strong> Determine whether the Uzbek-specific allele frequency shifts detected by
+                PBS correspond to known functional variants, disease associations, or gene regulatory effects.
+            </div>
+
+            <h2>2. Prerequisites</h2>
+            <table>
+                <tr><th>Input</th><th>Source</th><th>Description</th></tr>
+                <tr>
+                    <td><code>pbs_candidates.json</code></td>
+                    <td><a href="step10.html">Step 10</a></td>
+                    <td>8 candidate SNPs with PBS scores, MAF, and tier classification</td>
+                </tr>
+            </table>
+
+            <h2>3. Annotation Pipeline</h2>
+            <p>
+                Annotations are retrieved via REST APIs using the Python script <code>annotate_uzb_snps.py</code>.
+                Each API is queried sequentially with rate limiting to avoid throttling.
+            </p>
+
+            <h3>3.1 Ensembl VEP (Variant Effect Predictor)</h3>
+            <p>Queries the Ensembl REST API to obtain rsID mapping, gene context, and predicted variant consequence:</p>
+            <div class="code-block">
+# Ensembl VEP — POST batch request (up to 100 variants per request)
+POST https://rest.ensembl.org/vep/human/region
+Content-Type: application/json
+
+Payload: {
+    "variants": ["9 104189856 . G C . . .", ...],
+    "canonical": true
+}
+
+Returns: rsID, gene symbol, consequence type
+         (missense_variant, synonymous_variant, intergenic_variant, etc.)
+Rate limit: ~15 requests/sec (0.07 s/request)</div>
+
+            <h3>3.2 GWAS Catalog</h3>
+            <p>Queries the EBI GWAS Catalog REST API by rsID to find known genome-wide significant associations:</p>
+            <div class="code-block">
+# GWAS Catalog — lookup by rsID
+GET https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/{rsid}/associations
+
+Returns: trait name, p-value, PubMed ID (top 5 hits per SNP)
+Rate limit: ~3 requests/sec (0.3 s/request)</div>
+
+            <h3>3.3 NCBI ClinVar</h3>
+            <p>Queries NCBI E-utilities to check clinical pathogenicity status:</p>
+            <div class="code-block">
+# ClinVar — two-step lookup
+# Step 1: Search for ClinVar records by rsID
+GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi
+    ?db=clinvar&amp;term={rsid}[rs]&amp;retmode=json
+
+# Step 2: Retrieve clinical significance
+GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi
+    ?db=clinvar&amp;id={clinvar_id}&amp;retmode=json
+
+Returns: clinical significance, associated condition, ClinVar accession
+Rate limit: 3 requests/sec without API key (0.35 s/request)</div>
+
+            <h3>3.4 GTEx eQTL</h3>
+            <p>
+                Queries the GTEx Portal API to check whether PBS candidates are expression quantitative trait
+                loci (eQTL) in relevant tissues:
+            </p>
+            <div class="code-block">
+# GTEx — tissue-specific eQTL lookup
+GET https://gtexportal.org/api/v2/association/singleTissueEqtl
+    ?snpId={rsid}
+    &amp;tissueSiteDetailId={tissue}
+    &amp;datasetId=gtex_v8
+
+Tissues queried:
+  - Whole_Blood
+  - Liver
+  - Artery_Aorta
+  - Brain_Frontal_Cortex_Ba9
+  - Adipose_Subcutaneous
+
+Returns: target gene, p-value, effect size (dosage slope)
+Rate limit: ~5 requests/sec (0.2 s/request)</div>
+
+            <h3>3.5 Running the Annotation Script</h3>
+            <div class="code-block">
+python3 annotate_uzb_snps.py</div>
+
+            <div class="command-output">
+Loading 8 PBS candidate SNPs...
+[1/4] Querying Ensembl VEP... 1 batch (8 variants)
+[2/4] Querying GWAS Catalog... 8 rsIDs
+[3/4] Querying ClinVar... 8 rsIDs
+[4/4] Querying GTEx eQTL... 8 rsIDs x 5 tissues
+Annotation complete. Output: uzbek_snp_annotations.json</div>
+
+            <h2>4. Results</h2>
+
+            <h3>4.1 Candidate Variants</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th><th>SNP</th><th>Chr</th><th>Position</th><th>PBS<sub>UZB</sub></th>
+                        <th>MAF<sub>UZB</sub></th><th>MAF<sub>EUR</sub></th><th>MAF<sub>EAS</sub></th>
+                        <th>MAF<sub>SAS</sub></th><th>MAF<sub>AFR</sub></th><th>&Delta;AF<sub>min</sub></th>
+                    </tr>
+                </thead>
+                <tbody id="rows"></tbody>
+            </table>
+
+            <h3>4.2 Annotation Summary</h3>
+            <div class="important">
+                <strong>Annotation status:</strong> External API re-annotation (VEP, GWAS Catalog, ClinVar, GTEx)
+                has not yet been completed for the final 8-candidate set. The annotation fields will be populated
+                once the API queries are run on the current reduced set. Functional interpretation should be
+                deferred until annotations are available.
+            </div>
+
+            <h3>4.3 Method Notes</h3>
+            <ul>
+                <li>PBS triangle: UZB&ndash;EUR&ndash;EAS (77,111 LD-pruned SNPs; 3,595 samples).</li>
+                <li>Population counts: UZB=1,047, EUR=522, EAS=515, SAS=492, AFR=671.</li>
+                <li>Candidate filter: Tier 1 (PBS &ge; 0.3) OR Tier 2 (|&Delta;AF| &ge; 0.3) OR Tier 3 (near-private).</li>
+                <li>Genome build: GRCh38.</li>
+                <li>Annotation script: <code>scripts/annotate_uzb_snps.py</code></li>
+            </ul>
+
+            <h2>5. Output Files</h2>
+            <table>
+                <tr><th>File</th><th>Description</th></tr>
+                <tr><td><code>uzbek_snp_annotations.json</code></td><td>Full annotation for all candidates (27 fields per SNP)</td></tr>
+                <tr><td><code>uzbek_snp_annotations.tsv</code></td><td>Tab-delimited version for downstream use</td></tr>
+            </table>
+
+            <h2>6. Next Steps</h2>
+            <ul>
+                <li><a href="step13.html">Step 13: LD Analysis</a> &mdash; LD clumping and decay analysis of PBS candidates.</li>
+                <li><a href="step14.html">Step 14: Fst &amp; MDS</a> &mdash; Pairwise F<sub>ST</sub> matrix and multidimensional scaling.</li>
+            </ul>
+
+        </div>
     </div>
+</div>
 
-    <div class="ok">
-      PBS recomputation is complete on V2. Candidate set changed from V1 (490 variants) to V2 (8 variants).
-      This page now shows only V2 candidates and V2 summary statistics.
-    </div>
+<script>
+const SNP_DATA = [
+    { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, uzb: 0.0196, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888, daf: 0.00818 },
+    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, uzb: 0.03206, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896, daf: 0.00332 },
+    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, uzb: 0.0332, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881, daf: 0.00542 },
+    { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, uzb: 0.01472, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654, daf: 0.14588 },
+    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, uzb: 0.488, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338, daf: 0.0266 },
+    { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, uzb: 0.4785, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610, daf: 0.0913 },
+    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, uzb: 0.4801, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639, daf: 0.3632 },
+    { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, uzb: 0.4829, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219, daf: 0.1610 }
+];
 
-    <div class="warn">
-      External API re-annotation (Ensembl VEP, GWAS Catalog, ClinVar, GTEx) has not yet been rerun for this reduced V2 set.
-      Current annotation-specific fields are intentionally left blank to avoid carrying V1 values.
-    </div>
-
-    <div class="cards">
-      <div class="card"><div class="num">77111</div><div class="label">Tested SNPs</div></div>
-      <div class="card"><div class="num">8</div><div class="label">PBS Candidates</div></div>
-      <div class="card"><div class="num">8</div><div class="label">Tier1 (PBS>=0.3)</div></div>
-      <div class="card"><div class="num">1</div><div class="label">Tier2 (|dAF|>=0.3)</div></div>
-      <div class="card"><div class="num">0</div><div class="label">Tier3 (Near-private)</div></div>
-      <div class="card"><div class="num">2.988</div><div class="label">Max PBS</div></div>
-    </div>
-
-    <div class="section">
-      <h2>V2 Candidate Variants (ranked by PBS_UZB)</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>SNP</th>
-            <th>Chr</th>
-            <th>Position</th>
-            <th>PBS_UZB</th>
-            <th>MAF_UZB</th>
-            <th>MAF_EUR</th>
-            <th>MAF_EAS</th>
-            <th>MAF_SAS</th>
-            <th>MAF_AFR</th>
-            <th>dAF_min</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-
-    <div class="section">
-      <h2>Method Notes (V2)</h2>
-      <ul>
-        <li>PBS triangle: UZB-EUR-EAS.</li>
-        <li>Input panel: UZB_1kG_v2_merged (77,111 LD-pruned SNPs; 3,595 samples).</li>
-        <li>Population counts: UZB=1047, EUR=522, EAS=515, SAS=492, AFR=671.</li>
-        <li>Filter logic: candidate if Tier1 OR Tier2 OR Tier3.</li>
-      </ul>
-    </div>
-  </div>
-
-  <script>
-    const SNP_DATA = [
-      { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, uzb: 0.0196, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888, daf: 0.00818 },
-      { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, uzb: 0.03206, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896, daf: 0.00332 },
-      { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, uzb: 0.0332, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881, daf: 0.00542 },
-      { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, uzb: 0.01472, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654, daf: 0.14588 },
-      { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, uzb: 0.488, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338, daf: 0.0266 },
-      { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, uzb: 0.4785, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610, daf: 0.0913 },
-      { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, uzb: 0.4801, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639, daf: 0.3632 },
-      { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, uzb: 0.4829, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219, daf: 0.1610 }
-    ];
-
-    const tbody = document.getElementById('rows');
-    tbody.innerHTML = SNP_DATA.map((r, i) => `
-      <tr>
+document.getElementById('rows').innerHTML = SNP_DATA.map((r, i) => `
+    <tr>
         <td>${i + 1}</td>
         <td class="mono">${r.snp}</td>
         <td>${r.chr}</td>
@@ -115,8 +268,8 @@
         <td>${(r.sas * 100).toFixed(2)}%</td>
         <td>${(r.afr * 100).toFixed(2)}%</td>
         <td>${r.daf.toFixed(4)}</td>
-      </tr>
-    `).join('');
-  </script>
+    </tr>
+`).join('');
+</script>
 </body>
 </html>

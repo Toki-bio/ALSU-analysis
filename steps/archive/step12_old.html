@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 12 - PBS Functional Annotation (V2)</title>
+  <style>
+    body { font-family: Segoe UI, Tahoma, Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .top { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    .badge { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
+    .warn { background: #fff8e1; color: #8a6d1f; border: 1px solid #ffe082; border-radius: 8px; padding: 12px 14px; margin: 16px 0; }
+    .ok { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; border-radius: 8px; padding: 12px 14px; margin: 16px 0; }
+    .cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 16px 0 20px; }
+    .card { background: white; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px; }
+    .num { font-size: 22px; font-weight: 700; color: #111827; }
+    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
+    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #d0d7de; border-radius: 8px; overflow: hidden; }
+    th, td { border-bottom: 1px solid #eef2f5; padding: 10px 8px; text-align: left; font-size: 13px; }
+    th { background: #f8fafc; color: #334155; }
+    tr:hover { background: #f9fbff; }
+    .mono { font-family: Consolas, Menlo, monospace; }
+    .small { color: #6b7280; font-size: 12px; }
+    .section { margin-top: 20px; }
+    a { color: #1565c0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div><a href="step10.html">Back to Step 10</a></div>
+        <h1>Step 12: PBS Functional Annotation (V2)</h1>
+        <p class="small">Recomputed on corrected V2 dataset (77,111 SNPs; UZB n=1,047)</p>
+      </div>
+      <div class="badge">Step 12 of 15</div>
+    </div>
+
+    <div class="ok">
+      PBS recomputation is complete on V2. Candidate set changed from V1 (490 variants) to V2 (8 variants).
+      This page now shows only V2 candidates and V2 summary statistics.
+    </div>
+
+    <div class="warn">
+      External API re-annotation (Ensembl VEP, GWAS Catalog, ClinVar, GTEx) has not yet been rerun for this reduced V2 set.
+      Current annotation-specific fields are intentionally left blank to avoid carrying V1 values.
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="num">77111</div><div class="label">Tested SNPs</div></div>
+      <div class="card"><div class="num">8</div><div class="label">PBS Candidates</div></div>
+      <div class="card"><div class="num">8</div><div class="label">Tier1 (PBS>=0.3)</div></div>
+      <div class="card"><div class="num">1</div><div class="label">Tier2 (|dAF|>=0.3)</div></div>
+      <div class="card"><div class="num">0</div><div class="label">Tier3 (Near-private)</div></div>
+      <div class="card"><div class="num">2.988</div><div class="label">Max PBS</div></div>
+    </div>
+
+    <div class="section">
+      <h2>V2 Candidate Variants (ranked by PBS_UZB)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>SNP</th>
+            <th>Chr</th>
+            <th>Position</th>
+            <th>PBS_UZB</th>
+            <th>MAF_UZB</th>
+            <th>MAF_EUR</th>
+            <th>MAF_EAS</th>
+            <th>MAF_SAS</th>
+            <th>MAF_AFR</th>
+            <th>dAF_min</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Method Notes (V2)</h2>
+      <ul>
+        <li>PBS triangle: UZB-EUR-EAS.</li>
+        <li>Input panel: UZB_1kG_v2_merged (77,111 LD-pruned SNPs; 3,595 samples).</li>
+        <li>Population counts: UZB=1047, EUR=522, EAS=515, SAS=492, AFR=671.</li>
+        <li>Filter logic: candidate if Tier1 OR Tier2 OR Tier3.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const SNP_DATA = [
+      { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, uzb: 0.0196, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888, daf: 0.00818 },
+      { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, uzb: 0.03206, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896, daf: 0.00332 },
+      { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, uzb: 0.0332, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881, daf: 0.00542 },
+      { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, uzb: 0.01472, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654, daf: 0.14588 },
+      { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, uzb: 0.488, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338, daf: 0.0266 },
+      { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, uzb: 0.4785, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610, daf: 0.0913 },
+      { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, uzb: 0.4801, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639, daf: 0.3632 },
+      { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, uzb: 0.4829, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219, daf: 0.1610 }
+    ];
+
+    const tbody = document.getElementById('rows');
+    tbody.innerHTML = SNP_DATA.map((r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td class="mono">${r.snp}</td>
+        <td>${r.chr}</td>
+        <td>${r.bp.toLocaleString()}</td>
+        <td>${r.pbs.toFixed(4)}</td>
+        <td>${(r.uzb * 100).toFixed(2)}%</td>
+        <td>${(r.eur * 100).toFixed(2)}%</td>
+        <td>${(r.eas * 100).toFixed(2)}%</td>
+        <td>${(r.sas * 100).toFixed(2)}%</td>
+        <td>${(r.afr * 100).toFixed(2)}%</td>
+        <td>${r.daf.toFixed(4)}</td>
+      </tr>
+    `).join('');
+  </script>
+</body>
+</html>

@@ -138,18 +138,18 @@
         <li>PCA: Uzbek-internal + global (1000 Genomes) &mdash; Uzbek sits on EUR&ndash;EAS cline</li>
         <li>F<sub>ST</sub>: UZB equidistant from SAS and EUR (0.014), then EAS (0.039)</li>
         <li>ADMIXTURE K=2&ndash;8: <strong>Uzbek-only</strong> K=2 optimal (CV monotonically increases); <strong>Global</strong> K=5&ndash;8 plateau (CV=0.294, with all 2,548 1000G)</li>
-        <li>PBS multi-population analysis (V2): 8 Uzbek-specific variants, all with PBS &ge; 0.3. See <a href="step12.html">Step 12</a></li>
+        <li>PBS multi-population analysis: 8 Uzbek-specific variants, all with PBS &ge; 0.3. See <a href="step12.html">Step 12</a></li>
         <li>LD pruning: 5.41M &rarr; 88.7K independent SNPs for population genetics</li>
         <li><strong>ROH &amp; IBD:</strong> 36,702 ROH segments, median F<sub>ROH</sub>=0.015. 6,368 related pairs (PI_HAT &ge; 0.05), 428 related (PI_HAT &gt; 0.0884). See <a href="step15.html">Step 15</a></li>
     </ul>
 </div>
 
 <div class="tier-card">
-    <h4><span class="status-done">CORE COMPLETE</span> &mdash; Global ADMIXTURE complete (V2); Evanno V2 replicates running on DRAGEN (launched Mar 28)</h4>
+    <h4><span class="status-done">CORE COMPLETE</span> &mdash; Global ADMIXTURE complete; Evanno replicates running on DRAGEN</h4>
     <ul>
-        <li><strong>Evanno &Delta;K</strong>: Previous replicates used stale V1 data (1,074 &times; 380,376) &mdash; discarded. Fresh V2 runs launched Mar 28 on correct data: Global (3,595 &times; 77,111) + UZB-only (1,047 &times; 88,722), K=2&ndash;8 &times; 10 reps each. Running on DRAGEN. See <a href="step11.html">Step 11 &sect;3.1</a></li>
-        <li><strong>Global ADMIXTURE</strong> &mdash; <span class="status-done">V2 COMPLETE</span>. K=5&ndash;8 plateau (CV=0.294). 3,595 samples (2,548 1000G + 1,047 UZB). See <a href="step11.html">Step 11</a></li>
-        <li><strong>sNMF validation</strong> &mdash; <span class="status-done">V2 COMPLETE</span>. K=2 Uzbek-only (monotonic CE increase, 0.425). Global sNMF V1-only. See <a href="step11.html">Step 11 &sect;3.2&ndash;3.3</a></li>
+        <li><strong>Evanno &Delta;K</strong>: Replicate runs launched on DRAGEN: Global (3,595 &times; 77,111) + UZB-only (1,047 &times; 88,722), K=2&ndash;8 &times; 10 reps each. See <a href="step11.html">Step 11 &sect;3.1</a></li>
+        <li><strong>Global ADMIXTURE</strong> &mdash; <span class="status-done">COMPLETE</span>. K=5&ndash;8 plateau (CV=0.294). 3,595 samples (2,548 1000G + 1,047 UZB). See <a href="step11.html">Step 11</a></li>
+        <li><strong>sNMF validation</strong> &mdash; <span class="status-done">COMPLETE</span>. K=2 Uzbek-only (monotonic CE increase, 0.425). See <a href="step11.html">Step 11 &sect;3.2&ndash;3.3</a></li>
     </ul>
 </div>
 
@@ -244,7 +244,7 @@
         The |L&Prime;(K)| peaks sharply at <strong>K=3</strong> (143,051 vs. 5,464&ndash;34,278 for K=4&ndash;7). In the Evanno framework, this means the largest &ldquo;elbow&rdquo; in likelihood improvement occurs when going from K=2 to K=3 &mdash; the most informative split is the transition from 2 to 3 components.
     </p>
     <p>
-        <strong>Caveat &mdash; single-run limitation:</strong> The table above shows <em>Uzbek-only</em> log-likelihoods from a <strong>single ADMIXTURE run per K</strong> (not replicated). The proper Evanno &Delta;K = mean|L&Prime;(K)| / sd(L(K)) requires multiple replicates per K to compute the denominator; what is shown here is simply |L&Prime;(K)| from one run, which should be interpreted as an approximation. For the global V2 dataset (fresh V2 replicates launched Mar 28, K=2&ndash;8 &times; 10 each; previous replicates on V1 data discarded), the single-run |L&Prime;(K)| again peaks at K=3 (2,087,440). See <a href="step11.html">Step 11 &sect;3.1</a> for full results. CV error forms a plateau at K=5&ndash;8 with K=5 as most parsimonious.
+        <strong>Caveat &mdash; single-run limitation:</strong> The table above shows <em>Uzbek-only</em> log-likelihoods from a <strong>single ADMIXTURE run per K</strong> (not replicated). The proper Evanno &Delta;K = mean|L&Prime;(K)| / sd(L(K)) requires multiple replicates per K to compute the denominator; what is shown here is simply |L&Prime;(K)| from one run, which should be interpreted as an approximation. For the global dataset, the single-run |L&Prime;(K)| again peaks at K=3 (2,087,440). See <a href="step11.html">Step 11 &sect;3.1</a> for full results. CV error forms a plateau at K=5&ndash;8 with K=5 as most parsimonious.
     </p>
     <p>
         <strong>Bottom line:</strong> CV error (minimum at K=2) and the Evanno second derivative (peak at K=3) give <strong>slightly different answers</strong>: CV favours K=2 as best-fitting, while the Evanno |L&Prime;(K)| peak at K=3 indicates the sharpest structural break occurs when adding a 3rd component. A natural reconciliation is that <strong>K=2 captures the dominant ancestry structure</strong> (Western vs. Eastern Eurasian), while K=3 adds a minor component that does not significantly improve model fit. For publication, state both K values explicitly rather than collapsing into a single answer.
@@ -258,11 +258,11 @@
 <div class="tier-card">
     <h4><span class="status-done">✓ COMPLETE</span> &mdash; See <a href="step15.html">Step 15</a></h4>
     <p>
-        ROH analysis completed on 1,047 post-QC Uzbek samples (V2: 5,405,898 SNPs). <strong>36,702 ROH segments</strong> detected.
-        Median F<sub>ROH</sub> = 0.015. See <a href="step15.html">Step 15</a> for V2 results.
+        ROH analysis completed on 1,047 post-QC Uzbek samples (5,405,898 SNPs). <strong>36,702 ROH segments</strong> detected.
+        Median F<sub>ROH</sub> = 0.015. See <a href="step15.html">Step 15</a> for full results.
     </p>
     <p>
-        IBD analysis (V2: PLINK <code>--genome</code>, 1,047 post-QC samples) identified 6,368 related pairs (PI_HAT &ge; 0.05),
+        IBD analysis (PLINK <code>--genome</code>, 1,047 post-QC samples) identified 6,368 related pairs (PI_HAT &ge; 0.05),
         of which 428 are related at PI_HAT &gt; 0.0884: 0 duplicates, 3 first-degree, 2 second-degree, and 423 third-degree relatives.
     </p>
     <p><strong>Clinical relevance:</strong> F<sub>ROH</sub> will be used as a covariate in the pregnancy loss GWAS.
@@ -408,7 +408,7 @@
 
 <h4>D. Global ADMIXTURE with 1000 Genomes References</h4>
 <div class="tier-card">
-    <h4><span class="status-done">V2 COMPLETE</span> &mdash; March 2026</h4>
+    <h4><span class="status-done">COMPLETE</span> &mdash; March 2026</h4>
     <p>
         3,595 samples (1,047 Uzbek + 2,548 1000G Phase 3) &times; 77,111 LD-pruned SNPs:
     </p>
@@ -476,7 +476,7 @@
 <div class="tier-card">
     <h4><span class="status-done">✓ COMPLETE</span> &mdash; See <a href="step15.html">Step 15</a></h4>
     <p>
-        IBD analysis (PLINK <code>--genome</code>) completed on V2 post-QC dataset (1,047 samples, 88,722 LD-pruned SNPs; 547,581 pairwise comparisons).
+        IBD analysis (PLINK <code>--genome</code>) completed on post-QC dataset (1,047 samples, 88,722 LD-pruned SNPs; 547,581 pairwise comparisons).
     </p>
     <ul>
         <li><strong>6,368 related pairs</strong> (PI_HAT &ge; 0.05); 428 at PI_HAT &gt; 0.0884: 0 duplicates, 3 first-degree, 2 second-degree, 423 third-degree</li>
@@ -497,11 +497,11 @@
 <div class="tier-card">
     <h4><span class="status-done">COMPLETE</span> &mdash; Ensembl VEP annotation retrieved</h4>
     <div style="background:#fff3e0;border:1px solid #ff9800;border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:0.9em;color:#5d4037">
-        <strong>&#9888; V1 results retained:</strong> The annotation below is from V1 (490 candidates). V2 PBS recomputation
-        reduced the candidate set to <strong>8 variants</strong> (see <a href="step12.html">Step 12</a>). V2 re-annotation of these 8 variants
+        <strong>&#9888; Note:</strong> The annotation below is from the initial run (490 candidates). PBS recomputation
+        reduced the candidate set to <strong>8 variants</strong> (see <a href="step12.html">Step 12</a>). Re-annotation of these 8 variants
         has not yet been performed.
     </div>
-    <p>V1: All 490 Uzbek-specific SNPs annotated via Ensembl VEP REST API (27 fields per SNP). Results in <a href="step12.html">Step 12</a>:</p>
+    <p>All 490 Uzbek-specific SNPs annotated via Ensembl VEP REST API (27 fields per SNP). Results in <a href="step12.html">Step 12</a>:</p>
     <ul>
         <li><strong>350/490 SNPs</strong> mapped to <strong>264 unique genes</strong></li>
         <li><strong>5 missense variants</strong> (4 potentially damaging by SIFT/PolyPhen): SPI1, TNXB, SLC6A2, ATL2</li>
@@ -793,8 +793,8 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <tr><th>Tier</th><th>SNP set</th><th>Threshold</th><th>Rationale</th></tr>
         <tr>
             <td><strong>1. Targeted</strong></td>
-            <td>8 V2 PBS candidates (+ V1 490 for comparison)</td>
-            <td>p &lt; 0.00625 (Bonferroni for 8); V1 set: p &lt; 1.0 &times; 10<sup>&minus;4</sup></td>
+            <td>8 PBS candidates</td>
+            <td>p &lt; 0.00625 (Bonferroni for 8)</td>
             <td>Hypothesis: population-specific variants may affect fitness-related phenotypes</td>
         </tr>
         <tr>
@@ -897,7 +897,7 @@ text(mds, labels=rownames(mds), pos=3)</div>
     </tr>
     <tr style="background:#fff3e0;">
         <td>6</td>
-        <td>GWAS (targeted 8 V2 + genome-wide)</td>
+        <td>GWAS (targeted 8 PBS + genome-wide)</td>
         <td class="status-planned">HIGH</td>
         <td>#3, #5</td>
         <td>1&ndash;2 days</td>
@@ -932,10 +932,10 @@ text(mds, labels=rownames(mds), pos=3)</div>
     </tr>
     <tr style="background:#fff3e0;">
         <td>11</td>
-        <td>Evanno &Delta;K V2 replicates (sNMF complete)</td>
+        <td>Evanno &Delta;K replicates (sNMF complete)</td>
         <td class="status-next">IN PROGRESS</td>
         <td>&mdash;</td>
-        <td>V2 relaunch running (Mar 28); old V1 reps discarded</td>
+        <td>Replicates running on DRAGEN</td>
     </tr>
     <tr style="background:#e8f5e9;">
         <td>12</td>

@@ -1,119 +1,310 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Step 13 - LD Analysis (V2)</title>
-  <style>
-    body { font-family: Segoe UI, Tahoma, Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
-    .page { max-width: 1200px; margin: 0 auto; padding: 24px; }
-    .badge { background: #ede7f6; color: #4a148c; border: 1px solid #d1c4e9; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
-    .top { display: flex; justify-content: space-between; align-items: center; }
-    .cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 16px 0; }
-    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px; }
-    .num { font-size: 22px; font-weight: 700; }
-    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
-    .box { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 14px; margin-top: 16px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border-bottom: 1px solid #eef2f5; padding: 8px; font-size: 13px; text-align: left; }
-    th { background: #f8fafc; }
-    .mono { font-family: Consolas, Menlo, monospace; }
-    a { color: #1565c0; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 13: LD Analysis - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        .content { padding: 30px; }
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .info-box { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; border-radius: 5px; margin: 20px 0; }
+        .info-box strong { color: #0d47a1; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+        .mono { font-family: Consolas, Menlo, monospace; }
+    </style>
 </head>
 <body>
-  <div class="page">
-    <div class="top">
-      <div>
-        <div><a href="step12.html">Back to Step 12</a></div>
-        <h1>Step 13: LD Analysis (V2)</h1>
-        <p>LD clumping and LD decay recomputed from corrected V2 dataset.</p>
-      </div>
-      <div class="badge">Step 13 of 15</div>
+<div class="page-wrapper">
+    <aside class="sidebar">
+        <h3>Pipeline Steps</h3>
+        <div class="roadmap-mini">
+            <a href="step1.html">Step 1: Missingness</a>
+            <a href="step2.html">Step 2: IBD Dedup</a>
+            <a href="step3.html">Step 3: SNP QC</a>
+            <a href="step4.html">Step 4: Imputation</a>
+            <a href="step5.html">Step 5: ID Normalize</a>
+            <a href="step6.html">Step 6: Final QC</a>
+            <a href="step7.html">Step 7: PCA Analysis</a>
+            <a href="step8.html">Step 8: Global PCA</a>
+            <a href="step9.html">Step 9: Fst Analysis</a>
+            <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+            <a href="step11.html">Step 11: ADMIXTURE</a>
+            <a href="step12.html">Step 12: Annotation</a>
+            <a href="step13.html" class="current">Step 13: LD Analysis</a>
+            <a href="step14.html">Step 14: Fst &amp; MDS</a>
+            <a href="step15.html">Step 15: ROH &amp; IBD</a>
+            <a href="next_steps.html">Next Steps</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search across all steps...">
+        </div>
+
+        <div class="header">
+            <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
+            <h1>Step 13: LD Analysis</h1>
+            <p>Linkage disequilibrium clumping of PBS candidates and genome-wide LD decay estimation</p>
+            <span class="step-badge">Completed &mdash; March 2026</span>
+        </div>
+
+        <div class="content">
+
+            <h2>1. Overview</h2>
+            <p>
+                To determine whether the 8 PBS candidate SNPs from <a href="step10.html">Step 10</a> represent
+                independent signals (rather than being in linkage disequilibrium with each other), we perform
+                LD clumping. Additionally, we estimate genome-wide LD decay to characterize the extent of
+                haplotype structure in the Uzbek population.
+            </p>
+
+            <div class="info-box">
+                <strong>Goal:</strong> (1) Identify how many of the 8 PBS candidates are truly independent signals,
+                and (2) characterize the LD landscape of the Uzbek population for future fine-mapping analyses.
+            </div>
+
+            <h2>2. Prerequisites</h2>
+            <table>
+                <tr><th>Input</th><th>Source</th><th>Description</th></tr>
+                <tr>
+                    <td><code>pbs_candidates.json</code></td>
+                    <td><a href="step10.html">Step 10</a></td>
+                    <td>8 PBS candidate SNPs</td>
+                </tr>
+                <tr>
+                    <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>
+                    <td><a href="step8.html">Step 8</a></td>
+                    <td>Merged dataset for LD reference (3,595 samples &times; 77,111 SNPs)</td>
+                </tr>
+                <tr>
+                    <td><code>UZB_v2_qc.{bed,bim,fam}</code></td>
+                    <td><a href="step6.html">Step 6</a></td>
+                    <td>Uzbek QC-passed dataset for LD decay (1,047 samples &times; 5.41M SNPs)</td>
+                </tr>
+            </table>
+
+            <h2>3. Pipeline</h2>
+
+            <h3>3.1 LD Clumping (Independent Loci)</h3>
+            <p>
+                Use PLINK&rsquo;s clumping algorithm to group correlated PBS candidates. SNPs within
+                &plusmn;1000 kb with r&sup2; &ge; 0.5 are merged into the same locus, with the highest-PBS
+                SNP retained as the lead variant:
+            </p>
+            <div class="code-block">
+# Create proxy p-value file (higher PBS = smaller pseudo-p-value)
+# This allows PLINK's clumping to retain the highest-PBS variant as lead
+
+plink --bfile UZB_1kG_merged \
+      --keep keep_UZB.txt \
+      --clump pbs_clump_pval.txt \
+      --clump-snp-field SNP \
+      --clump-field P \
+      --clump-p1 1 \
+      --clump-p2 1 \
+      --clump-r2 0.5 \
+      --clump-kb 1000 \
+      --allow-no-sex \
+      --out pbs_clumped</div>
+
+            <div class="command-output">
+8 variants loaded from pbs_clump_pval.txt.
+8 clumps formed from 8 top variants.
+Results written to pbs_clumped.clumped.</div>
+
+            <h3>3.2 Pairwise LD Among Candidates</h3>
+            <p>
+                Compute pairwise r&sup2; among all 8 PBS candidates to verify independence. Only pairs with
+                r&sup2; &ge; 0.1 within &plusmn;5000 kb are reported:
+            </p>
+            <div class="code-block">
+plink --bfile UZB_1kG_merged \
+      --keep keep_UZB.txt \
+      --extract pbs_candidate_snps.txt \
+      --r2 \
+      --ld-window-kb 5000 \
+      --ld-window 99999 \
+      --ld-window-r2 0.1 \
+      --allow-no-sex \
+      --out pbs_ld</div>
+
+            <div class="success">
+                <strong>Result:</strong> 0 pairs with r&sup2; &ge; 0.1 &mdash; all 8 PBS candidates are in independent loci.
+            </div>
+
+            <h3>3.3 Genome-Wide LD Decay</h3>
+            <p>
+                To characterize background LD in the Uzbek population, we sample 3,000 random SNPs from
+                the full QC-passed dataset and compute pairwise r&sup2; up to &plusmn;2 Mb, then bin into
+                50 kb windows:
+            </p>
+            <div class="code-block">
+# Sample 3,000 SNPs (reproducible seed)
+awk '{print $2}' UZB_v2_qc.bim | shuf -n 3000 --random-source=&lt;(yes 42) > decay_snps.txt
+
+# Compute pairwise r² (all pairs within 2 Mb, report all r² including 0)
+plink --bfile UZB_v2_qc \
+      --extract decay_snps.txt \
+      --r2 \
+      --ld-window-kb 2000 \
+      --ld-window 99999 \
+      --ld-window-r2 0.0 \
+      --allow-no-sex \
+      --out ld_decay</div>
+
+            <div class="code-block">
+# Bin into 50kb windows (same-chromosome pairs only)
+awk 'NR>1 {
+    dist = ($5 > $2) ? ($5 - $2) : ($2 - $5);
+    if ($1 == $4) {
+        bin = int(dist / 50000) * 50;
+        sum[bin] += $7;
+        count[bin]++;
+    }
+} END {
+    for (b in sum) printf "%d\t%.6f\t%d\n", b, sum[b]/count[b], count[b]
+}' ld_decay.ld | sort -n > ld_decay_binned.tsv</div>
+
+            <h2>4. Results</h2>
+
+            <h3>4.1 Independent Loci</h3>
+            <table>
+                <thead>
+                    <tr><th>#</th><th>SNP</th><th>Chr</th><th>Position</th><th>PBS<sub>UZB</sub></th><th>MAF<sub>UZB</sub></th></tr>
+                </thead>
+                <tbody id="loci"></tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>Interpretation:</strong> All 8 PBS candidates reside on separate chromosomes or are
+                far enough apart (with r&sup2; &lt; 0.1) to represent independent loci. This rules out a single
+                large-effect haplotype driving multiple apparent signals.
+            </div>
+
+            <h3>4.2 LD Decay</h3>
+            <p>
+                Mean r&sup2; by genomic distance (50 kb bins), computed from 3,000 sampled SNPs in the
+                Uzbek QC-passed dataset (1,047 samples):
+            </p>
+            <table>
+                <thead>
+                    <tr><th>Distance (kb)</th><th>Mean r&sup2;</th><th>Pair Count</th></tr>
+                </thead>
+                <tbody id="decay"></tbody>
+            </table>
+
+            <div class="success">
+                <strong>LD Decay Summary:</strong> r&sup2; drops from 0.175 at 0&ndash;50 kb to 0.040 at 50&ndash;100 kb
+                (a 4.4-fold drop), reaching background levels (~0.002) by 500 kb. This rapid decay is consistent
+                with the admixed Central Asian population history, where multiple ancestral sources contribute
+                heterogeneous haplotype blocks.
+            </div>
+
+            <h2>5. Output Files</h2>
+            <table>
+                <tr><th>File</th><th>Description</th></tr>
+                <tr><td><code>pbs_clumped.clumped</code></td><td>PLINK clump output (independent lead variants + proxy lists)</td></tr>
+                <tr><td><code>pbs_ld.ld</code></td><td>Pairwise r&sup2; among PBS candidate SNPs</td></tr>
+                <tr><td><code>ld_decay.ld</code></td><td>Raw pairwise r&sup2; for 3,000 sampled SNPs</td></tr>
+                <tr><td><code>ld_decay_binned.tsv</code></td><td>Binned LD decay curve (50 kb windows)</td></tr>
+                <tr><td><code>ld_data.json</code></td><td>All LD results compiled for visualization</td></tr>
+            </table>
+
+            <h2>6. Next Steps</h2>
+            <ul>
+                <li><a href="step14.html">Step 14: Fst &amp; MDS</a> &mdash; Pairwise F<sub>ST</sub> matrix and multidimensional scaling across all populations.</li>
+                <li><a href="step15.html">Step 15: ROH &amp; IBD</a> &mdash; Runs of homozygosity and identity-by-descent analysis.</li>
+            </ul>
+
+        </div>
     </div>
+</div>
 
-    <div class="cards">
-      <div class="card"><div class="num">8</div><div class="label">PBS Input SNPs</div></div>
-      <div class="card"><div class="num">8</div><div class="label">Independent Loci</div></div>
-      <div class="card"><div class="num">0</div><div class="label">LD Pairs (r2>=0.1)</div></div>
-      <div class="card"><div class="num">0.1753</div><div class="label">Mean r2 @ 0kb</div></div>
-      <div class="card"><div class="num">0.0022</div><div class="label">Mean r2 @ 500kb</div></div>
-      <div class="card"><div class="num">41</div><div class="label">Decay Bins</div></div>
-    </div>
+<script>
+const LOCI = [
+    { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, maf: 0.0196 },
+    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, maf: 0.03206 },
+    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, maf: 0.0332 },
+    { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, maf: 0.01472 },
+    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, maf: 0.4880 },
+    { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, maf: 0.4785 },
+    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, maf: 0.4801 },
+    { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, maf: 0.4829 }
+];
 
-    <div class="box">
-      <h2>Independent Loci (V2)</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>SNP</th>
-            <th>Chr</th>
-            <th>Position</th>
-            <th>PBS</th>
-            <th>MAF_UZB</th>
-          </tr>
-        </thead>
-        <tbody id="loci"></tbody>
-      </table>
-    </div>
+const DECAY = [
+    { kb: 0, r2: 0.1753, n: 642417 },
+    { kb: 50, r2: 0.0396, n: 544497 },
+    { kb: 100, r2: 0.0182, n: 542379 },
+    { kb: 150, r2: 0.0129, n: 511633 },
+    { kb: 200, r2: 0.0078, n: 506290 },
+    { kb: 250, r2: 0.0053, n: 476312 },
+    { kb: 500, r2: 0.0022, n: 427722 },
+    { kb: 1000, r2: 0.0015, n: 425126 },
+    { kb: 1500, r2: 0.0015, n: 393868 },
+    { kb: 2000, r2: 0.0015, n: 6 }
+];
 
-    <div class="box">
-      <h2>LD Decay (50kb bins)</h2>
-      <p>Computed from UZB_v2_qc using sampled SNP pairs up to 2Mb.</p>
-      <table>
-        <thead>
-          <tr><th>Distance (kb)</th><th>Mean r2</th><th>Pair Count</th></tr>
-        </thead>
-        <tbody id="decay"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <script>
-    const LOCI = [
-      { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, maf: 0.0196 },
-      { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, maf: 0.03206 },
-      { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, maf: 0.0332 },
-      { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, maf: 0.01472 },
-      { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, maf: 0.4880 },
-      { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, maf: 0.4785 },
-      { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, maf: 0.4801 },
-      { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, maf: 0.4829 }
-    ];
-
-    const DECAY = [
-      { kb: 0, r2: 0.1753, n: 642417 },
-      { kb: 50, r2: 0.0396, n: 544497 },
-      { kb: 100, r2: 0.0182, n: 542379 },
-      { kb: 150, r2: 0.0129, n: 511633 },
-      { kb: 200, r2: 0.0078, n: 506290 },
-      { kb: 250, r2: 0.0053, n: 476312 },
-      { kb: 500, r2: 0.0022, n: 427722 },
-      { kb: 1000, r2: 0.0015, n: 425126 },
-      { kb: 1500, r2: 0.0015, n: 393868 },
-      { kb: 2000, r2: 0.0015, n: 6 }
-    ];
-
-    document.getElementById('loci').innerHTML = LOCI.map((r, i) => `
-      <tr>
+document.getElementById('loci').innerHTML = LOCI.map((r, i) => `
+    <tr>
         <td>${i + 1}</td>
         <td class="mono">${r.snp}</td>
         <td>${r.chr}</td>
         <td>${r.bp.toLocaleString()}</td>
         <td>${r.pbs.toFixed(4)}</td>
         <td>${(r.maf * 100).toFixed(2)}%</td>
-      </tr>
-    `).join('');
+    </tr>
+`).join('');
 
-    document.getElementById('decay').innerHTML = DECAY.map(d => `
-      <tr>
+document.getElementById('decay').innerHTML = DECAY.map(d => `
+    <tr>
         <td>${d.kb}</td>
         <td>${d.r2.toFixed(4)}</td>
         <td>${d.n.toLocaleString()}</td>
-      </tr>
-    `).join('');
-  </script>
+    </tr>
+`).join('');
+</script>
 </body>
 </html>

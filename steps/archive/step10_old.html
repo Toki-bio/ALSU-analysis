@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 10 - Multi-Population PBS (V2)</title>
+  <style>
+    body { font-family: Segoe UI, Tahoma, Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
+    .page { max-width: 1260px; margin: 0 auto; padding: 24px; }
+    .top { display: flex; justify-content: space-between; align-items: center; }
+    .badge { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
+    .cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 16px 0; }
+    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px; }
+    .num { font-size: 22px; font-weight: 700; }
+    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
+    .box { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 14px; margin-top: 14px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid #eef2f5; padding: 9px 8px; font-size: 13px; text-align: left; }
+    th { background: #f8fafc; color: #334155; }
+    .mono { font-family: Consolas, Menlo, monospace; }
+    a { color: #1565c0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div><a href="step9.html">Back to Step 9</a> | <a href="step11.html">Next: Step 11</a></div>
+        <h1>Step 10: Multi-Population PBS Analysis (V2)</h1>
+        <p>Fully recomputed on corrected V2 merged panel (77,111 SNPs; 3,595 samples).</p>
+      </div>
+      <div class="badge">Step 10 of 15</div>
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="num">77111</div><div class="label">Tested SNPs</div></div>
+      <div class="card"><div class="num">8</div><div class="label">PBS Candidates</div></div>
+      <div class="card"><div class="num">8</div><div class="label">Tier1 (PBS>=0.3)</div></div>
+      <div class="card"><div class="num">1</div><div class="label">Tier2 (|dAF|>=0.3)</div></div>
+      <div class="card"><div class="num">0</div><div class="label">Tier3 (Near-private)</div></div>
+      <div class="card"><div class="num">2.988</div><div class="label">Max PBS</div></div>
+    </div>
+
+    <div class="box">
+      <h2>Population Panel</h2>
+      <table>
+        <thead><tr><th>Population</th><th>Code</th><th>N</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Uzbek cohort</td><td><strong>UZB</strong></td><td>1047</td><td>ALSU V2 QC-passed set</td></tr>
+          <tr><td>European</td><td><strong>EUR</strong></td><td>522</td><td>1000 Genomes</td></tr>
+          <tr><td>East Asian</td><td><strong>EAS</strong></td><td>515</td><td>1000 Genomes</td></tr>
+          <tr><td>South Asian</td><td><strong>SAS</strong></td><td>492</td><td>1000 Genomes</td></tr>
+          <tr><td>African</td><td><strong>AFR</strong></td><td>671</td><td>1000 Genomes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>Pairwise FST (Weighted)</h2>
+      <table>
+        <thead><tr><th>Comparison</th><th>Weighted FST</th><th>Mean FST</th></tr></thead>
+        <tbody>
+          <tr><td>UZB vs EUR</td><td>0.0144757</td><td>0.00996637</td></tr>
+          <tr><td>UZB vs EAS</td><td>0.0392886</td><td>0.0235704</td></tr>
+          <tr><td>EUR vs EAS</td><td>0.0844785</td><td>0.0502280</td></tr>
+          <tr><td>UZB vs SAS</td><td>0.0144129</td><td>0.00979682</td></tr>
+          <tr><td>UZB vs AFR</td><td>0.1293020</td><td>0.0609591</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>PBS Summary (UZB branch)</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Mean PBS</td><td>-0.0097943</td></tr>
+          <tr><td>Median PBS</td><td>-0.0060121</td></tr>
+          <tr><td>Std. dev.</td><td>0.0264837</td></tr>
+          <tr><td>Min</td><td>-0.3621109</td></tr>
+          <tr><td>Max</td><td>2.9884501</td></tr>
+          <tr><td>PBS >= 0.3</td><td>8 SNPs</td></tr>
+          <tr><td>PBS >= 0.1</td><td>13 SNPs</td></tr>
+          <tr><td>Negative PBS</td><td>63,414 (82.24%)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>Top V2 PBS Candidates</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>SNP</th><th>Chr</th><th>Position</th><th>PBS_UZB</th>
+            <th>MAF_UZB</th><th>MAF_EUR</th><th>MAF_EAS</th><th>MAF_SAS</th><th>MAF_AFR</th>
+          </tr>
+        </thead>
+        <tbody id="top"></tbody>
+      </table>
+      <p style="font-size:12px;color:#6b7280;margin-top:10px;">ADMIXTURE results are retained in <a href="step11.html">Step 11</a>; this page is focused on corrected V2 PBS outputs.</p>
+    </div>
+
+    <div class="box">
+      <h2>Next Steps</h2>
+      <ul>
+        <li><a href="step12.html">Step 12</a>: functional annotation for the 8 V2 candidates.</li>
+        <li><a href="step13.html">Step 13</a>: LD clumping and LD decay results on V2.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const TOP = [
+      { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, uzb: 0.0196, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888 },
+      { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, uzb: 0.03206, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896 },
+      { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, uzb: 0.0332, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881 },
+      { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, uzb: 0.01472, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654 },
+      { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, uzb: 0.4880, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338 },
+      { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, uzb: 0.4785, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610 },
+      { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, uzb: 0.4801, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639 },
+      { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, uzb: 0.4829, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219 }
+    ];
+
+    document.getElementById('top').innerHTML = TOP.map((r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td class="mono">${r.snp}</td>
+        <td>${r.chr}</td>
+        <td>${r.bp.toLocaleString()}</td>
+        <td>${r.pbs.toFixed(4)}</td>
+        <td>${(r.uzb * 100).toFixed(2)}%</td>
+        <td>${(r.eur * 100).toFixed(2)}%</td>
+        <td>${(r.eas * 100).toFixed(2)}%</td>
+        <td>${(r.sas * 100).toFixed(2)}%</td>
+        <td>${(r.afr * 100).toFixed(2)}%</td>
+      </tr>
+    `).join('');
+  </script>
+</body>
+</html>

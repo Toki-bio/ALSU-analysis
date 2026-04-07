@@ -107,7 +107,7 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 11: Global ADMIXTURE with 1000 Genomes</h1>
             <p>Unsupervised ancestry decomposition of the Uzbek cohort with continental reference populations</p>
-            <span class="step-badge">Completed &mdash; March 2026</span>
+            <span class="step-badge" style="background:rgba(255,165,0,0.3)">V2 &mdash; Evanno replicates running (Mar 28, 2026)</span>
         </div>
 
         <div class="content">
@@ -132,7 +132,7 @@
             <h2>2. Pipeline &amp; QC</h2>
 
             <h3>2.1 Reference Panel Selection</h3>
-            <p>We use the <strong>complete 1000 Genomes Phase 3</strong> reference (all 26 populations grouped into 5 superpopulations), providing broad continental representation.</p>
+            <p>V2 uses the <strong>complete 1000 Genomes Phase 3</strong> reference (all 26 populations grouped into 5 superpopulations), providing broader continental representation than V1&rsquo;s 10 selected sub-populations.</p>
             <table>
                 <tr><th>Superpopulation</th><th>Populations included</th><th>N</th></tr>
                 <tr><td><span class="superpop-tag tag-afr">AFR</span></td><td>YRI, LWK, GWD, MSL, ESN, ACB, ASW</td><td>671</td></tr>
@@ -143,7 +143,9 @@
                 <tr><td><span class="superpop-tag tag-uzb">UZB</span></td><td>Uzbek cohort (this study)</td><td>1,047</td></tr>
                 <tr style="font-weight:600; background:#f0f0f0;"><td colspan="2">Total</td><td>3,595</td></tr>
             </table>
-
+            <div class="info-box" style="margin-top:12px;">
+                <strong>V1 &rarr; V2 change:</strong> V1 used 10 hand-picked 1000G populations (1,017 samples); V2 uses all 26 populations (2,548 samples), adding the AMR superpopulation and expanding each continental group. This provides a more complete ancestry reference, particularly for admixed Central Asian populations with potential Native American-related (Ancient North Eurasian) signal.
+            </div>
 
             <h3>2.2 Processing Pipeline</h3>
             <div class="code-block">
@@ -210,7 +212,8 @@ done</div>
 
             <div class="info-box">
                 <strong>Note:</strong> The log-likelihoods below are from <strong>one representative ADMIXTURE run per K</strong>
-                on the global dataset (3,595 samples &times; 77,111 SNPs).
+                on the global V2 dataset (3,595 samples &times; 77,111 SNPs). <strong>Previous Evanno replicates were discovered to use stale V1 data (1,074 samples &times; 380,376 SNPs) and have been discarded.</strong>
+                Fresh V2 replicate runs launched Mar 28, 2026 on the correct datasets: Global (3,595 &times; 77,111) followed by UZB-only (1,047 &times; 88,722), K=2&ndash;8 &times; 10 replicates each.
                 The table shows single-run values rather than mean &plusmn; SD across replicates. The |L&Prime;(K)| column is therefore
                 a raw second difference, not the full Evanno &Delta;K (which requires run-to-run variance in the denominator).
                 Since the Evanno method is statistically inappropriate for ADMIXTURE (see caveat below),
@@ -239,7 +242,7 @@ done</div>
                 (see caveat above).
             </p>
             <p>
-                Using the log-likelihood values L(K) from the global ADMIXTURE run (3,595 samples &times; 77,111 SNPs) at each K&nbsp;=&nbsp;2&ndash;8:
+                Using the log-likelihood values L(K) from the global V2 ADMIXTURE run (3,595 samples &times; 77,111 SNPs) at each K&nbsp;=&nbsp;2&ndash;8:
             </p>
 
             <table>
@@ -261,7 +264,7 @@ done</div>
             </table>
 
             <div class="important">
-                <strong>|L&Prime;(K)| peaks at K&nbsp;=&nbsp;3</strong> (2,087,440). The most fundamental
+                <strong>|L&Prime;(K)| peaks at K&nbsp;=&nbsp;3</strong> (2,087,440), consistent with V1. The most fundamental
                 split separates three broad ancestral groups: <strong>African</strong>, <strong>West Eurasian</strong>
                 (European + South Asian), and <strong>East Eurasian</strong> (East Asian + Central Asian). A secondary peak at K=5 (437,625) reflects emergence of the Central Asian / AMR components.
             </div>
@@ -269,10 +272,10 @@ done</div>
             <div class="info-box">
                 <strong>Reconciling CV error (K=5&ndash;8 plateau) vs Evanno |L&Prime;(K)| (K=3):</strong> These two criteria answer different questions.
                 The Evanno |L&Prime;(K)| detects the <em>dominant structural break</em> &mdash; the deepest split in the population tree.
-                Cross-validation error measures <em>overall predictive accuracy</em>. K&nbsp;=&nbsp;3 captures continental-level
+                Cross-validation error measures <em>overall predictive accuracy</em>. For V2, K&nbsp;=&nbsp;3 captures continental-level
                 divergence (AFR / EUR+SAS / EAS), while the CV error plateau at K=5&ndash;8 suggests no single optimal resolution.
                 These methods give different K values (K=3 vs K=5&ndash;8), which is expected &mdash; they measure fundamentally different properties.
-                With superpopulation-level references, fewer K are needed to capture the main structure.
+                Given that V2 uses superpopulations rather than sub-populations, fewer K are needed to capture the main structure.
                 <strong>K&nbsp;=&nbsp;5 captures all major continental groups plus the Central Asian component</strong>;
                 K=6&ndash;8 provide diminishing additional resolution.
                 For downstream GWAS covariate adjustment, K&nbsp;=&nbsp;5 is the most parsimonious choice.
@@ -280,6 +283,14 @@ done</div>
 
             <!-- 3.2 sNMF VALIDATION -->
             <h3>3.2 sNMF (Sparse Non-negative Matrix Factorization)</h3>
+
+            <div class="info-box" style="border-left: 4px solid #ff9800; background: #fff8e1;">
+                <strong>&#9888; V1 results retained.</strong> The global sNMF analysis below was run on the V1 dataset
+                (2,095 samples &times; 172,537 biallelic SNPs) and has <strong>not been re-run</strong> on V2.
+                Since the V2 ADMIXTURE uses all 2,548 1000G samples (vs 1,017 in V1), a V2 sNMF re-run
+                would require the same expanded reference panel. The Uzbek-only sNMF (Section 3.3)
+                <em>has</em> been re-run on V2 and independently confirms K=2.
+            </div>
 
             <p>
                 To provide an independent, statistically rigorous validation of K selection, we supplement
@@ -378,6 +389,11 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
             <!-- 3.3 UZBEK-ONLY sNMF -->
             <h3>3.3 Uzbek-Only Validation (ADMIXTURE + sNMF)</h3>
 
+            <div class="info-box" style="border-left: 4px solid #2e7d32; background: #e8f5e9;">
+                <strong>&#10003; V2 complete (March 2026):</strong> Both Uzbek-only ADMIXTURE (K=2&ndash;8) and sNMF (K=2&ndash;10)
+                re-run on V2 dataset: <strong>1,047 samples &times; 88,722 SNPs</strong>. All results below are V2.
+            </div>
+
             <p>
                 To assess within-Uzbek substructure independently of reference populations, we ran both
                 ADMIXTURE (with cross-validation) and sNMF on the Uzbek-only subset. If significant internal
@@ -386,22 +402,23 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
 
             <h4>Uzbek-Only: ADMIXTURE CV Error</h4>
             <table>
-                <tr><th>K</th><th>CV Error</th><th>Note</th></tr>
-                <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.30762</td><td>&larr; Minimum</td></tr>
-                <tr><td>3</td><td>0.30811</td><td></td></tr>
-                <tr><td>4</td><td>0.30958</td><td></td></tr>
-                <tr><td>5</td><td>0.31103</td><td></td></tr>
-                <tr><td>6</td><td>0.31266</td><td></td></tr>
-                <tr><td>7</td><td>0.31445</td><td></td></tr>
-                <tr><td>8</td><td>0.31627</td><td></td></tr>
+                <tr><th>K</th><th>CV Error (V1)</th><th>CV Error (V2)</th><th>Note</th></tr>
+                <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.51335</td><td>0.30762</td><td>&larr; Minimum (both V1 &amp; V2)</td></tr>
+                <tr><td>3</td><td>0.51343</td><td>0.30811</td><td></td></tr>
+                <tr><td>4</td><td>0.51579</td><td>0.30958</td><td></td></tr>
+                <tr><td>5</td><td>0.51636</td><td>0.31103</td><td></td></tr>
+                <tr><td>6</td><td>0.51682</td><td>0.31266</td><td></td></tr>
+                <tr><td>7</td><td>0.51885</td><td>0.31445</td><td></td></tr>
+                <tr><td>8</td><td>0.51974</td><td>0.31627</td><td></td></tr>
             </table>
 
             <p>
-                CV error increases monotonically from K=2 through K=8, confirming <strong>no significant internal substructure</strong>
-                beyond a two-way split. The monotonic pattern across all 7 K-values is definitive.
+                CV error increases monotonically from K=2 through K=8 in both V1 and V2, confirming <strong>no significant internal substructure</strong>
+                beyond a two-way split. V2 CV errors are substantially lower (0.308&ndash;0.316 vs 0.513&ndash;0.520) because the V2 LD-pruned
+                set has 88,722 genuine SNPs versus V1&rsquo;s 380,376 (inflated by 837K spurious imputation artifacts). The monotonic pattern across all 7 K-values is definitive.
             </p>
 
-            <h4>Uzbek-Only: sNMF Cross-Entropy</h4>
+            <h4>Uzbek-Only: sNMF Cross-Entropy (V2)</h4>
             <table>
                 <tr><th>K</th><th>Mean CE</th><th>SD</th><th>Min CE</th><th>Best Run</th></tr>
                 <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.425013</td><td>0.000322</td><td>0.424585</td><td>1</td></tr>
@@ -418,6 +435,7 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
             <p>
                 Cross-entropy increases monotonically from K=2 (0.4250) to K=10 (0.4288), independently confirming that Uzbeks
                 form a <strong>relatively homogeneous group</strong> without deep ancestral subdivisions.
+                V2 CE values (~0.425) are substantially lower than V1 (~0.729), reflecting the cleaner V2 SNP set.
             </p>
 
             <h4>Uzbek-Only: sNMF vs ADMIXTURE Concordance</h4>
@@ -480,7 +498,7 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
             <h2>5. Ancestry Composition at K=5 (Most Parsimonious)</h2>
 
             <h3>5.1 Component Assignment</h3>
-            <p>At K=5 with the superpopulation-level reference, five continental ancestry components resolve cleanly:</p>
+            <p>At K=5 with V2&rsquo;s superpopulation-level reference, five continental ancestry components resolve cleanly:</p>
             <table>
                 <tr><th>Component</th><th>Color</th><th>Dominant in</th><th>Interpretation</th></tr>
                 <tr><td>Q1</td><td style="background:#64b5f6;color:white;text-align:center;">&#9632;</td><td>EAS (99.6%)</td><td>East Asian</td></tr>
@@ -505,17 +523,23 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
             </table>
 
             <div class="important">
-                <strong>Central Asian complexity:</strong> With the superpopulation-level reference, the Uzbek cohort is ~49% West Eurasian,
-                ~29% East Asian, and ~19% South Asian. Uzbek ancestry decomposes directly into continental sources &mdash; reflecting that the Central Asian component is itself
+                <strong>Central Asian complexity:</strong> With V2&rsquo;s superpopulation-level reference, the Uzbek cohort is ~49% West Eurasian,
+                ~29% East Asian, and ~19% South Asian. Unlike V1 (where a distinct &ldquo;Central Asian&rdquo; component appeared at K&ge;5),
+                V2 decomposes Uzbek ancestry directly into continental sources &mdash; reflecting that the Central Asian component is itself
                 a mixture of West Eurasian, East Asian, and South Asian ancestries. The ~3% AMR-like component likely reflects
                 shared Ancient North Eurasian (ANE) ancestry.
             </div>
 
             <!-- 6. COVARIATE VALIDATION -->
-            <h2>6. Covariate Validation</h2>
+            <h2>6. Covariate Validation <span style="color:#ff9800; font-size:14px;">(V1)</span></h2>
+            <div class="info-box" style="border-left: 4px solid #ff9800; background: #fff8e1; margin-bottom:12px;">
+                <strong>&#9888; Note:</strong> Covariate validation tests below use <strong>V1</strong> global ADMIXTURE Q-values
+                (1,068 matched samples). The key conclusion &mdash; ethnicity is non-significant, birthplace is significant &mdash;
+                is expected to hold in V2 given the same geographic structure.
+            </div>
             <p>
                 Kruskal&ndash;Wallis tests assessed whether self-reported ethnicity or birthplace within the Uzbek cohort
-                predicts any ADMIXTURE component (1,068 matched samples).
+                predicts any ADMIXTURE component (V1: 1,068 matched samples; covariate tests not yet re-run on V2).
             </p>
 
             <h3>6.1 Ethnicity</h3>
@@ -552,7 +576,12 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
                 ethnic self-identification. The admixture cline is genuine and geographically driven.
             </div>
 
-            <h3>6.3 Geographic Cline at K=7</h3>
+            <h3>6.3 Geographic Cline at K=7 <span style="color:#ff9800; font-size:14px;">(V1 data)</span></h3>
+            <div class="info-box" style="border-left: 4px solid #ff9800; background: #fff8e1; margin-bottom:12px;">
+                <strong>&#9888; Note:</strong> The geographic breakdown below uses <strong>V1</strong> global ADMIXTURE K=7 results
+                (10 sub-populations). V2 uses superpopulation-level references; per-region breakdowns have not yet been recomputed.
+                The qualitative pattern (east&ndash;west cline) is robust and applies to V2 as well.
+            </div>
             <p>Mean East Asian component (Q6) by birthplace reveals the geographic gradient:</p>
 
             <div class="chart-container">
@@ -966,7 +995,7 @@ function drawGeoChart() {
     // Axis labels
     ctx.save(); ctx.translate(15, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
     ctx.fillStyle = '#555'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('East Asian Ancestry (Q6)', 0, 0); ctx.restore();
+    ctx.fillText('East Asian Ancestry (Q6 — V1 data)', 0, 0); ctx.restore();
 
     // Arrow annotation
     ctx.fillStyle = '#888'; ctx.font = 'italic 12px sans-serif'; ctx.textAlign = 'center';

@@ -148,6 +148,7 @@
                 <a href="step12.html">Step 12: Annotation</a>
                 <a href="step13.html">Step 13: LD Analysis</a>
                 <a href="step14.html">Step 14: Fst &amp; MDS</a>
+                <a href="step15.html">Step 15: ROH &amp; IBD</a>
                 <a href="next_steps.html">Next Steps</a>
             </div>
         </aside>
@@ -223,7 +224,7 @@
                         </table>
 
                         <div class="important">
-                            <strong>Note on Sample Count:</strong> This analysis used 1,199 Uzbek samples from the pre-QC genotyped dataset (<code>uzbek_data.ped</code>), not the 1,047 post-imputation final dataset (V2). The Fst analysis was performed in October–November 2025, concurrent with the QC pipeline (Steps 1–6). The additional samples include those later removed for missingness, IBD duplicates, and other QC filters. For downstream analyses requiring consistency with the GWAS dataset, F<sub>ST</sub> should be recalculated on the final 1,047 samples.
+                            <strong>Note on Sample Count:</strong> This analysis used 1,199 Uzbek samples from the pre-QC genotyped dataset (<code>uzbek_data.ped</code>), not the 1,047 post-imputation final dataset. The Fst analysis was performed in October–November 2025, concurrent with the QC pipeline (Steps 1–6). The additional samples include those later removed for missingness, IBD duplicates, and other QC filters. For downstream analyses requiring consistency with the GWAS dataset, F<sub>ST</sub> should be recalculated on the final 1,047 samples.
                         </div>
                     </div>
                 </div>
@@ -574,7 +575,7 @@ Weighted Fst estimate: 0.0204295</div>
                             </ul>
                         </div>
                         <div class="info" style="margin-top:12px;">
-                            <strong>V2 update (1,047 post-QC samples, 77,111 LD-pruned SNPs):</strong>
+                            <strong>Updated results (1,047 post-QC samples, 77,111 LD-pruned SNPs):</strong>
                             UZB–EUR weighted F<sub>ST</sub> = <strong>0.0145</strong> (mean 0.0100).
                             The lower value reflects both the stricter QC (1,047 vs 1,199 samples) and
                             the more aggressively LD-pruned SNP set. See <a href="step14.html">Step 14</a> for the full 5-population matrix.
@@ -719,8 +720,8 @@ Weighted Fst estimate: 0.0204295</div>
                         <table>
                             <tr><th>Population Pair</th><th>Typical F<sub>ST</sub></th><th>Source</th></tr>
                             <tr><td>Within-European (e.g., CEU vs TSI)</td><td>0.002–0.006</td><td>1000 Genomes</td></tr>
-                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (V1, 376K SNPs)</strong></td><td><strong>0.020</strong></td><td><strong>This analysis</strong></td></tr>
-                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (V2, 77K SNPs)</strong></td><td><strong>0.015</strong></td><td><strong>V2 recalculation</strong></td></tr>
+                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (pre-QC, 376K SNPs)</strong></td><td><strong>0.020</strong></td><td><strong>This analysis</strong></td></tr>
+                            <tr style="background: #e8f5e9;"><td><strong>Uzbek vs EUR (post-QC, 77K SNPs)</strong></td><td><strong>0.015</strong></td><td><strong>Recalculation</strong></td></tr>
                             <tr><td>EUR vs SAS (South Asian)</td><td>~0.020–0.040</td><td>1000 Genomes</td></tr>
                             <tr><td>EUR vs EAS (East Asian)</td><td>~0.10–0.11</td><td>1000 Genomes</td></tr>
                             <tr><td>EUR vs AFR (African)</td><td>~0.12–0.15</td><td>1000 Genomes</td></tr>
@@ -817,8 +818,8 @@ CHR     SNP     POS     NMISS   FST
                             </tr>
                             <tr>
                                 <td><strong>Genome-wide Weighted F<sub>ST</sub></strong></td>
-                                <td>0.0204 (V1) → 0.0145 (V2)</td>
-                                <td>Uzbek are equidistant from EUR and SAS on V2 data (77K SNPs, 1,047 samples)</td>
+                                <td>0.0145</td>
+                                <td>Uzbek are equidistant from EUR and SAS (77K SNPs, 1,047 samples)</td>
                             </tr>
                             <tr>
                                 <td><strong>Extreme outliers (F<sub>ST</sub> &gt; 0.5)</strong></td>
@@ -855,7 +856,7 @@ CHR     SNP     POS     NMISS   FST
                         <ul>
                             <li><strong>Gene Annotation:</strong> Annotate the 256 extreme F<sub>ST</sub> loci (F<sub>ST</sub> &gt; 0.5) with nearest genes using ANNOVAR/VEP</li>
                             <li><strong>Fst Manhattan Plot:</strong> Create a genome-wide Manhattan plot of F<sub>ST</sub> values for visual identification of differentiation peaks</li>
-                            <li><strong>Recalculate on Final Dataset:</strong> Re-run F<sub>ST</sub> using the post-QC 1,047 samples (V2) for consistency with GWAS</li>
+                            <li><strong>Recalculate on Final Dataset:</strong> Re-run F<sub>ST</sub> using the post-QC 1,047 samples for consistency with GWAS</li>
                             <li><strong>Cross-reference with GWAS:</strong> Flag any GWAS hits that overlap with high-F<sub>ST</sub> regions</li>
                             <li><strong>Compare with EAS/SAS:</strong> Calculate F<sub>ST</sub> against East Asian and South Asian 1000G populations to decompose Uzbek ancestry components</li>
                             <li><strong>ADMIXTURE Integration:</strong> Combine F<sub>ST</sub> with ADMIXTURE results (Step 10) for comprehensive ancestry characterization</li>

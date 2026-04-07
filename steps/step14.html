@@ -104,7 +104,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
   between all 10 pairwise combinations of 5 populations: <strong>UZB</strong> (Uzbek, n=1,047),
   <strong>EUR</strong> (European, n=522), <strong>SAS</strong> (South Asian, n=492),
   <strong>EAS</strong> (East Asian, n=515), and <strong>AFR</strong> (African, n=671).
-  All computations use the same LD-pruned SNP set (77,111 markers) from the V2 global merged dataset.
+  All computations use the same LD-pruned SNP set (77,111 markers) from the global merged dataset.
 </p>
 
 <div class="cards">
@@ -271,7 +271,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <div class="callout callout-method">
   <strong>F<sub>ST</sub> estimation:</strong> PLINK v1.9 <code>--fst</code> implementing the
   Weir &amp; Cockerham (1984) estimator. Computed on 77,111 LD-pruned biallelic SNPs from the
-  V2 global merged dataset (UZB + 1000 Genomes Phase 3: EUR, EAS, SAS, AFR). "Weighted F<sub>ST</sub>"
+  global merged dataset (UZB + 1000 Genomes Phase 3: EUR, EAS, SAS, AFR). "Weighted F<sub>ST</sub>"
   is the ratio-of-averages estimator, less sensitive to rare variants than the simple mean.
 </div>
 
@@ -285,7 +285,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <table>
   <thead><tr><th>Population</th><th>N (global dataset)</th><th>Source</th></tr></thead>
   <tbody>
-    <tr><td>UZB (Uzbek)</td><td>1,047</td><td>ConvSK cohort (V2 post-QC)</td></tr>
+    <tr><td>UZB (Uzbek)</td><td>1,047</td><td>ConvSK cohort (post-QC)</td></tr>
     <tr><td>EUR (European)</td><td>522</td><td>1000G Phase 3 (CEU, GBR, FIN, IBS, TSI)</td></tr>
     <tr><td>EAS (East Asian)</td><td>515</td><td>1000G Phase 3 (CHB, JPT, CHS, CDX, KHV)</td></tr>
     <tr><td>SAS (South Asian)</td><td>492</td><td>1000G Phase 3 (GIH, PJL, BEB, STU, ITU)</td></tr>
@@ -308,8 +308,8 @@ plink --bfile global_v2_admix \
 <h3>7.3. Run Details</h3>
 <ul>
   <li><strong>Server:</strong> Biotech2024 (100.104.25.22), 515 GB RAM</li>
-  <li><strong>Date:</strong> V2 recalculation: March 2026, using V2 post-QC 1,047 Uzbek samples</li>
-  <li><strong>SNPs per pair:</strong> 77,111 LD-pruned SNPs (V2 global merged dataset)</li>
+  <li><strong>Date:</strong> Recalculation: March 2026, using post-QC 1,047 Uzbek samples</li>
+  <li><strong>SNPs per pair:</strong> 77,111 LD-pruned SNPs (global merged dataset)</li>
   <li><strong>Run time:</strong> ~1 second per pair (fast — genome-wide Fst is a simple allele frequency comparison)</li>
 </ul>
 

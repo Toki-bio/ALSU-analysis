@@ -1,129 +1,352 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Step 10 - Multi-Population PBS (V2)</title>
-  <style>
-    body { font-family: Segoe UI, Tahoma, Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
-    .page { max-width: 1260px; margin: 0 auto; padding: 24px; }
-    .top { display: flex; justify-content: space-between; align-items: center; }
-    .badge { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
-    .cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 16px 0; }
-    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px; }
-    .num { font-size: 22px; font-weight: 700; }
-    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
-    .box { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 14px; margin-top: 14px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border-bottom: 1px solid #eef2f5; padding: 9px 8px; font-size: 13px; text-align: left; }
-    th { background: #f8fafc; color: #334155; }
-    .mono { font-family: Consolas, Menlo, monospace; }
-    a { color: #1565c0; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 10: Multi-Population PBS Analysis - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        .content { padding: 30px; }
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .info-box { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; border-radius: 5px; margin: 20px 0; }
+        .info-box strong { color: #0d47a1; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+        .mono { font-family: Consolas, Menlo, monospace; }
+    </style>
 </head>
 <body>
-  <div class="page">
-    <div class="top">
-      <div>
-        <div><a href="step9.html">Back to Step 9</a> | <a href="step11.html">Next: Step 11</a></div>
-        <h1>Step 10: Multi-Population PBS Analysis (V2)</h1>
-        <p>Fully recomputed on corrected V2 merged panel (77,111 SNPs; 3,595 samples).</p>
-      </div>
-      <div class="badge">Step 10 of 15</div>
+<div class="page-wrapper">
+    <aside class="sidebar">
+        <h3>Pipeline Steps</h3>
+        <div class="roadmap-mini">
+            <a href="step1.html">Step 1: Missingness</a>
+            <a href="step2.html">Step 2: IBD Dedup</a>
+            <a href="step3.html">Step 3: SNP QC</a>
+            <a href="step4.html">Step 4: Imputation</a>
+            <a href="step5.html">Step 5: ID Normalize</a>
+            <a href="step6.html">Step 6: Final QC</a>
+            <a href="step7.html">Step 7: PCA Analysis</a>
+            <a href="step8.html">Step 8: Global PCA</a>
+            <a href="step9.html">Step 9: Fst Analysis</a>
+            <a href="step10.html" class="current">Step 10: Multi-Pop &amp; PBS</a>
+            <a href="step11.html">Step 11: ADMIXTURE</a>
+            <a href="step12.html">Step 12: Annotation</a>
+            <a href="step13.html">Step 13: LD Analysis</a>
+            <a href="step14.html">Step 14: Fst &amp; MDS</a>
+            <a href="step15.html">Step 15: ROH &amp; IBD</a>
+            <a href="next_steps.html">Next Steps</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search across all steps...">
+        </div>
+
+        <div class="header">
+            <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
+            <h1>Step 10: Multi-Population PBS Analysis</h1>
+            <p>Population Branch Statistic to identify Uzbek-specific allele frequency shifts</p>
+            <span class="step-badge">Completed &mdash; March 2026</span>
+        </div>
+
+        <div class="content">
+
+            <h2>1. Overview</h2>
+            <p>
+                The Population Branch Statistic (PBS) measures allele frequency divergence along a specific
+                population lineage relative to two outgroup populations. By computing PBS for the Uzbek branch
+                of a three-population tree (UZB&ndash;EUR&ndash;EAS), we identify SNPs where the Uzbek population
+                has experienced unusually large frequency shifts &mdash; potential signatures of local adaptation or
+                genetic drift.
+            </p>
+
+            <div class="info-box">
+                <strong>Goal:</strong> Identify SNPs with elevated PBS scores (Uzbek-specific allele frequency
+                changes) and classify them by tier: high PBS (&ge;0.3), large absolute frequency difference
+                (&Delta;AF &ge;0.3 vs all populations), or near-private alleles (UZB MAF &ge;5%, all others &le;1%).
+            </div>
+
+            <h2>2. Prerequisites</h2>
+            <table>
+                <tr><th>Source</th><th>File(s)</th><th>Description</th></tr>
+                <tr>
+                    <td>Merged Dataset</td>
+                    <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>
+                    <td>3,595 samples &times; 77,111 LD-pruned SNPs (from <a href="step8.html">Step 8</a>)</td>
+                </tr>
+                <tr>
+                    <td>Population Mapping</td>
+                    <td><code>pop_mapping.txt</code></td>
+                    <td>Sample-to-superpopulation assignments (from <a href="step8.html">Step 8</a>)</td>
+                </tr>
+            </table>
+
+            <h3>Population Panel</h3>
+            <table>
+                <tr><th>Population</th><th>Code</th><th>N</th><th>Source</th></tr>
+                <tr><td>Uzbek cohort</td><td><strong>UZB</strong></td><td>1,047</td><td>ALSU QC-passed set</td></tr>
+                <tr><td>European</td><td><strong>EUR</strong></td><td>522</td><td>1000 Genomes Phase 3</td></tr>
+                <tr><td>East Asian</td><td><strong>EAS</strong></td><td>515</td><td>1000 Genomes Phase 3</td></tr>
+                <tr><td>South Asian</td><td><strong>SAS</strong></td><td>492</td><td>1000 Genomes Phase 3</td></tr>
+                <tr><td>African</td><td><strong>AFR</strong></td><td>671</td><td>1000 Genomes Phase 3</td></tr>
+            </table>
+
+            <h2>3. Pipeline</h2>
+
+            <h3>3.1 Build Population Cluster File</h3>
+            <p>Create PLINK cluster assignments from the population mapping and the merged FAM file:</p>
+            <div class="code-block">
+# Build PLINK cluster file: FID IID CLUSTER
+awk 'NR==FNR {pop[$1]=$2; next} {
+  fid=$1; iid=$2;
+  if (iid in pop) p=pop[iid];
+  else if (fid in pop) p=pop[fid];
+  else p="UZB";
+  print fid, iid, p
+}' pop_mapping.txt UZB_1kG_merged.fam > clusters.txt
+
+# Verify population counts
+awk '{print $3}' clusters.txt | sort | uniq -c | sort -rn</div>
+
+            <div class="command-output">
+   1047 UZB
+    671 AFR
+    522 EUR
+    515 EAS
+    492 SAS
+    348 AMR</div>
+
+            <h3>3.2 Extract Per-Population Sample Lists</h3>
+            <div class="code-block">
+for POP in UZB EUR EAS SAS AFR; do
+    awk -v p="$POP" '$3==p {print $1, $2}' clusters.txt > keep_${POP}.txt
+    echo "$POP: $(wc -l < keep_${POP}.txt) samples"
+done</div>
+
+            <h3>3.3 Compute Per-Population Allele Frequencies</h3>
+            <div class="code-block">
+for POP in UZB EUR EAS SAS AFR; do
+    plink --bfile UZB_1kG_merged \
+          --keep keep_${POP}.txt \
+          --freq \
+          --out freq_${POP} \
+          --allow-no-sex --silent
+done</div>
+
+            <h3>3.4 Pairwise Per-SNP F<sub>ST</sub></h3>
+            <p>
+                Compute per-SNP Weir &amp; Cockerham F<sub>ST</sub> for the PBS triangle (UZB&ndash;EUR, UZB&ndash;EAS, EUR&ndash;EAS)
+                plus two additional pairs (UZB&ndash;SAS, UZB&ndash;AFR) for &Delta;AF context:
+            </p>
+            <div class="code-block">
+# Function to compute pairwise FST
+compute_fst() {
+    POP1=$1; POP2=$2
+    cat keep_${POP1}.txt keep_${POP2}.txt > keep_${POP1}_${POP2}.txt
+    awk -v p="$POP1" '{print $1, $2, p}' keep_${POP1}.txt  > within_${POP1}_${POP2}.txt
+    awk -v p="$POP2" '{print $1, $2, p}' keep_${POP2}.txt >> within_${POP1}_${POP2}.txt
+
+    plink --bfile UZB_1kG_merged \
+          --keep keep_${POP1}_${POP2}.txt \
+          --fst \
+          --within within_${POP1}_${POP2}.txt \
+          --out fst_${POP1}_${POP2} \
+          --allow-no-sex --silent
+}
+
+# PBS triangle
+compute_fst UZB EUR
+compute_fst UZB EAS
+compute_fst EUR EAS
+
+# Extra pairs for delta-AF context
+compute_fst UZB SAS
+compute_fst UZB AFR</div>
+
+            <h3>3.5 PBS Calculation (Python)</h3>
+            <p>
+                PBS is derived from pairwise F<sub>ST</sub> values by converting each to a divergence time
+                T = &minus;ln(1 &minus; F<sub>ST</sub>), then computing the branch length for the target (UZB) population:
+            </p>
+            <div class="stat-box">
+                <span class="stat-label">PBS formula:</span>
+                <span class="stat-value">PBS<sub>UZB</sub> = (T<sub>UZB-EUR</sub> + T<sub>UZB-EAS</sub> &minus; T<sub>EUR-EAS</sub>) / 2</span>
+            </div>
+
+            <div class="code-block">
+# Core PBS computation (from 02_calculate_pbs.py)
+import math
+
+def fst_to_T(fst_val):
+    """Convert FST to divergence time, capping FST at 0.999"""
+    f = max(0.0, min(fst_val, 0.999))
+    return -math.log(1.0 - f)
+
+# For each SNP present in all three FST files:
+T_ue = fst_to_T(fst_UZB_EUR[snp])
+T_ua = fst_to_T(fst_UZB_EAS[snp])
+T_ea = fst_to_T(fst_EUR_EAS[snp])
+pbs_uzb = (T_ue + T_ua - T_ea) / 2.0
+
+# Tier classification
+tier1 = pbs_uzb >= 0.3                    # Strong PBS
+tier2 = min_delta_af >= 0.3               # High delta-AF vs ALL populations
+tier3 = (maf_uzb >= 0.05 and              # Near-private: common in UZB,
+         all(maf_other <= 0.01))           # rare everywhere else</div>
+
+            <div class="command-output">
+$ python3 02_calculate_pbs.py --outdir ./pbs_results
+
+Loading Fst data...
+  UZB-EUR: 77,111 SNPs
+  UZB-EAS: 77,111 SNPs
+  EUR-EAS: 77,111 SNPs
+Computing PBS...
+  Total SNPs analyzed: 77,111
+
+=== PBS SUMMARY ===
+  n_snps: 77111
+  mean: -0.009794
+  median: -0.006012
+  stdev: 0.026484
+  min: -0.362111
+  max: 2.988450
+  n_pbs_ge_03: 8
+  n_pbs_ge_01: 13
+  n_negative: 63414
+  n_tier1: 8
+  n_tier2: 1
+  n_tier3: 0
+  n_candidates: 8</div>
+
+            <h2>4. Results</h2>
+
+            <h3>4.1 Pairwise F<sub>ST</sub> (Weighted)</h3>
+            <table>
+                <tr><th>Comparison</th><th>Weighted F<sub>ST</sub></th><th>Mean F<sub>ST</sub></th></tr>
+                <tr><td>UZB vs EUR</td><td>0.01448</td><td>0.00997</td></tr>
+                <tr><td>UZB vs EAS</td><td>0.03929</td><td>0.02357</td></tr>
+                <tr><td>EUR vs EAS</td><td>0.08448</td><td>0.05023</td></tr>
+                <tr><td>UZB vs SAS</td><td>0.01441</td><td>0.00980</td></tr>
+                <tr><td>UZB vs AFR</td><td>0.12930</td><td>0.06096</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Interpretation:</strong> UZB is genetically closest to EUR (F<sub>ST</sub>=0.014) and SAS (F<sub>ST</sub>=0.014),
+                moderately distant from EAS (0.039), and most distant from AFR (0.129). This is consistent with the PCA
+                positioning (<a href="step8.html">Step 8</a>) showing Uzbeks intermediate between EUR and SAS.
+            </div>
+
+            <h3>4.2 PBS Summary Statistics</h3>
+            <table>
+                <tr><th>Metric</th><th>Value</th></tr>
+                <tr><td>SNPs analyzed</td><td>77,111</td></tr>
+                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.00979</td></tr>
+                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00601</td></tr>
+                <tr><td>Standard deviation</td><td>0.02648</td></tr>
+                <tr><td>Min</td><td>&minus;0.36211</td></tr>
+                <tr><td>Max</td><td>2.98845</td></tr>
+                <tr><td>PBS &ge; 0.3 (Tier 1)</td><td>8 SNPs</td></tr>
+                <tr><td>PBS &ge; 0.1</td><td>13 SNPs</td></tr>
+                <tr><td>Negative PBS</td><td>63,414 (82.2%)</td></tr>
+            </table>
+
+            <h3>4.3 Top PBS Candidates</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th><th>SNP</th><th>Chr</th><th>Position</th><th>PBS<sub>UZB</sub></th>
+                        <th>MAF<sub>UZB</sub></th><th>MAF<sub>EUR</sub></th><th>MAF<sub>EAS</sub></th><th>MAF<sub>SAS</sub></th><th>MAF<sub>AFR</sub></th>
+                    </tr>
+                </thead>
+                <tbody id="top"></tbody>
+            </table>
+
+            <div class="important">
+                <strong>Observation:</strong> The top 3 SNPs (all on chromosome 12) show extremely high PBS values
+                (&gt;2.5) with very low UZB MAF (~2&ndash;3%) compared to high AFR MAF (~49%). These likely reflect
+                ancestral allele retention rather than positive selection. The more biologically interesting candidates
+                are SNPs 5&ndash;8 (PBS 0.32&ndash;0.53), where UZB shows high MAF (~48%) diverging from other populations.
+            </div>
+
+            <h2>5. Output Files</h2>
+            <table>
+                <tr><th>File</th><th>Description</th></tr>
+                <tr><td><code>clusters.txt</code></td><td>Population cluster file (FID IID POP)</td></tr>
+                <tr><td><code>freq_{UZB,EUR,EAS,SAS,AFR}.frq</code></td><td>Per-population allele frequencies</td></tr>
+                <tr><td><code>fst_{POP1}_{POP2}.fst</code></td><td>Per-SNP pairwise F<sub>ST</sub> (5 pairs)</td></tr>
+                <tr><td><code>pbs_all.tsv</code></td><td>PBS scores for all 77,111 SNPs</td></tr>
+                <tr><td><code>pbs_candidates.json</code></td><td>Filtered candidate SNPs (Tier 1/2/3)</td></tr>
+                <tr><td><code>pbs_stats.json</code></td><td>Summary statistics</td></tr>
+                <tr><td><code>pbs_histogram.json</code></td><td>PBS distribution for plotting</td></tr>
+            </table>
+
+            <h2>6. Next Steps</h2>
+            <ul>
+                <li><a href="step11.html">Step 11: ADMIXTURE</a> &mdash; Continental ancestry decomposition using the same merged dataset.</li>
+                <li><a href="step12.html">Step 12: PBS Annotation</a> &mdash; Functional annotation of the 8 PBS candidates.</li>
+                <li><a href="step13.html">Step 13: LD Analysis</a> &mdash; LD clumping and decay analysis of PBS candidates.</li>
+            </ul>
+
+        </div>
     </div>
+</div>
 
-    <div class="cards">
-      <div class="card"><div class="num">77111</div><div class="label">Tested SNPs</div></div>
-      <div class="card"><div class="num">8</div><div class="label">PBS Candidates</div></div>
-      <div class="card"><div class="num">8</div><div class="label">Tier1 (PBS>=0.3)</div></div>
-      <div class="card"><div class="num">1</div><div class="label">Tier2 (|dAF|>=0.3)</div></div>
-      <div class="card"><div class="num">0</div><div class="label">Tier3 (Near-private)</div></div>
-      <div class="card"><div class="num">2.988</div><div class="label">Max PBS</div></div>
-    </div>
+<script>
+const TOP = [
+    { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, uzb: 0.0196, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888 },
+    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, uzb: 0.03206, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896 },
+    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, uzb: 0.0332, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881 },
+    { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, uzb: 0.01472, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654 },
+    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, uzb: 0.4880, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338 },
+    { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, uzb: 0.4785, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610 },
+    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, uzb: 0.4801, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639 },
+    { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, uzb: 0.4829, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219 }
+];
 
-    <div class="box">
-      <h2>Population Panel</h2>
-      <table>
-        <thead><tr><th>Population</th><th>Code</th><th>N</th><th>Source</th></tr></thead>
-        <tbody>
-          <tr><td>Uzbek cohort</td><td><strong>UZB</strong></td><td>1047</td><td>ALSU V2 QC-passed set</td></tr>
-          <tr><td>European</td><td><strong>EUR</strong></td><td>522</td><td>1000 Genomes</td></tr>
-          <tr><td>East Asian</td><td><strong>EAS</strong></td><td>515</td><td>1000 Genomes</td></tr>
-          <tr><td>South Asian</td><td><strong>SAS</strong></td><td>492</td><td>1000 Genomes</td></tr>
-          <tr><td>African</td><td><strong>AFR</strong></td><td>671</td><td>1000 Genomes</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="box">
-      <h2>Pairwise FST (Weighted)</h2>
-      <table>
-        <thead><tr><th>Comparison</th><th>Weighted FST</th><th>Mean FST</th></tr></thead>
-        <tbody>
-          <tr><td>UZB vs EUR</td><td>0.0144757</td><td>0.00996637</td></tr>
-          <tr><td>UZB vs EAS</td><td>0.0392886</td><td>0.0235704</td></tr>
-          <tr><td>EUR vs EAS</td><td>0.0844785</td><td>0.0502280</td></tr>
-          <tr><td>UZB vs SAS</td><td>0.0144129</td><td>0.00979682</td></tr>
-          <tr><td>UZB vs AFR</td><td>0.1293020</td><td>0.0609591</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="box">
-      <h2>PBS Summary (UZB branch)</h2>
-      <table>
-        <thead><tr><th>Metric</th><th>Value</th></tr></thead>
-        <tbody>
-          <tr><td>Mean PBS</td><td>-0.0097943</td></tr>
-          <tr><td>Median PBS</td><td>-0.0060121</td></tr>
-          <tr><td>Std. dev.</td><td>0.0264837</td></tr>
-          <tr><td>Min</td><td>-0.3621109</td></tr>
-          <tr><td>Max</td><td>2.9884501</td></tr>
-          <tr><td>PBS >= 0.3</td><td>8 SNPs</td></tr>
-          <tr><td>PBS >= 0.1</td><td>13 SNPs</td></tr>
-          <tr><td>Negative PBS</td><td>63,414 (82.24%)</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="box">
-      <h2>Top V2 PBS Candidates</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th><th>SNP</th><th>Chr</th><th>Position</th><th>PBS_UZB</th>
-            <th>MAF_UZB</th><th>MAF_EUR</th><th>MAF_EAS</th><th>MAF_SAS</th><th>MAF_AFR</th>
-          </tr>
-        </thead>
-        <tbody id="top"></tbody>
-      </table>
-      <p style="font-size:12px;color:#6b7280;margin-top:10px;">ADMIXTURE results are retained in <a href="step11.html">Step 11</a>; this page is focused on corrected V2 PBS outputs.</p>
-    </div>
-
-    <div class="box">
-      <h2>Next Steps</h2>
-      <ul>
-        <li><a href="step12.html">Step 12</a>: functional annotation for the 8 V2 candidates.</li>
-        <li><a href="step13.html">Step 13</a>: LD clumping and LD decay results on V2.</li>
-      </ul>
-    </div>
-  </div>
-
-  <script>
-    const TOP = [
-      { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, uzb: 0.0196, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888 },
-      { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, uzb: 0.03206, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896 },
-      { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, uzb: 0.0332, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881 },
-      { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, uzb: 0.01472, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654 },
-      { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, uzb: 0.4880, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338 },
-      { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, uzb: 0.4785, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610 },
-      { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, uzb: 0.4801, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639 },
-      { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, uzb: 0.4829, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219 }
-    ];
-
-    document.getElementById('top').innerHTML = TOP.map((r, i) => `
-      <tr>
+document.getElementById('top').innerHTML = TOP.map((r, i) => `
+    <tr>
         <td>${i + 1}</td>
         <td class="mono">${r.snp}</td>
         <td>${r.chr}</td>
@@ -134,8 +357,8 @@
         <td>${(r.eas * 100).toFixed(2)}%</td>
         <td>${(r.sas * 100).toFixed(2)}%</td>
         <td>${(r.afr * 100).toFixed(2)}%</td>
-      </tr>
-    `).join('');
-  </script>
+    </tr>
+`).join('');
+</script>
 </body>
 </html>

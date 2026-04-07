@@ -146,6 +146,7 @@
                 <a href="step12.html">Step 12: Annotation</a>
                 <a href="step13.html">Step 13: LD Analysis</a>
                 <a href="step14.html">Step 14: Fst &amp; MDS</a>
+                <a href="step15.html">Step 15: ROH &amp; IBD</a>
                 <a href="next_steps.html">Next Steps</a>
             </div>
         </aside>
@@ -293,7 +294,7 @@ plink --bfile UZB_imputed_HQ_unique --bmerge KG_reference_final \
                     <span class="stat-label">Combined Dataset:</span>
                     <span class="stat-value">3,595 samples (1,047 UZB + 2,548 1000G)</span><br><br>
                     <span class="stat-label">Common Variants:</span>
-                    <span class="stat-value">77,111 (intersection of V2 LD-pruned set and 1000G reference)</span><br><br>
+                    <span class="stat-value">77,111 (intersection of LD-pruned set and 1000G reference)</span><br><br>
                     <span class="stat-label">Variants Used for Global PCA:</span>
                     <span class="stat-value">77,111 (common variant intersection)</span>
                 </div>
@@ -382,6 +383,10 @@ Rscript plot_global_pca.R
                 
                 <h3 style="margin-top: 30px; color: #555;">Result: Global PCA Plots</h3>
                 <p style="color: #666; margin: 15px 0;">The global PCA shows where the Uzbek cohort positions relative to major continental ancestry groups. The clear separation from 1000G samples reflects the unique Central Asian ancestry of the Uzbek population. Multiple PC combinations are shown below to reveal different aspects of population structure.</p>
+
+                <div class="info-box">
+                    <strong>Interactive Exploration:</strong> Use the <a href="../pca_viewer_enhanced.html">Interactive PCA Viewer</a> to explore all PC combinations with zoom, hover, and population filtering.
+                </div>
                 
                 <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0;">
                     <img src="../images/Global_PCA_UZB.png" alt="Global PCA: Uzbek vs 1000 Genomes" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
@@ -454,7 +459,7 @@ Rscript plot_global_pca.R
                     </tr>
                     <tr>
                         <td><code>KG_reference_final.{bed,bim,fam}</code></td>
-                        <td>1000G reference (83.6K variants, 77.1K common with V2)</td>
+                        <td>1000G reference (83.6K variants, 77.1K common)</td>
                     </tr>
                     <tr>
                         <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>

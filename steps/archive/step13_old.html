@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 13 - LD Analysis (V2)</title>
+  <style>
+    body { font-family: Segoe UI, Tahoma, Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .badge { background: #ede7f6; color: #4a148c; border: 1px solid #d1c4e9; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
+    .top { display: flex; justify-content: space-between; align-items: center; }
+    .cards { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 16px 0; }
+    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px; }
+    .num { font-size: 22px; font-weight: 700; }
+    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
+    .box { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 14px; margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eef2f5; padding: 8px; font-size: 13px; text-align: left; }
+    th { background: #f8fafc; }
+    .mono { font-family: Consolas, Menlo, monospace; }
+    a { color: #1565c0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div><a href="step12.html">Back to Step 12</a></div>
+        <h1>Step 13: LD Analysis (V2)</h1>
+        <p>LD clumping and LD decay recomputed from corrected V2 dataset.</p>
+      </div>
+      <div class="badge">Step 13 of 15</div>
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="num">8</div><div class="label">PBS Input SNPs</div></div>
+      <div class="card"><div class="num">8</div><div class="label">Independent Loci</div></div>
+      <div class="card"><div class="num">0</div><div class="label">LD Pairs (r2>=0.1)</div></div>
+      <div class="card"><div class="num">0.1753</div><div class="label">Mean r2 @ 0kb</div></div>
+      <div class="card"><div class="num">0.0022</div><div class="label">Mean r2 @ 500kb</div></div>
+      <div class="card"><div class="num">41</div><div class="label">Decay Bins</div></div>
+    </div>
+
+    <div class="box">
+      <h2>Independent Loci (V2)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>SNP</th>
+            <th>Chr</th>
+            <th>Position</th>
+            <th>PBS</th>
+            <th>MAF_UZB</th>
+          </tr>
+        </thead>
+        <tbody id="loci"></tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>LD Decay (50kb bins)</h2>
+      <p>Computed from UZB_v2_qc using sampled SNP pairs up to 2Mb.</p>
+      <table>
+        <thead>
+          <tr><th>Distance (kb)</th><th>Mean r2</th><th>Pair Count</th></tr>
+        </thead>
+        <tbody id="decay"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const LOCI = [
+      { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, maf: 0.0196 },
+      { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, maf: 0.03206 },
+      { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, maf: 0.0332 },
+      { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, maf: 0.01472 },
+      { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, maf: 0.4880 },
+      { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, maf: 0.4785 },
+      { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, maf: 0.4801 },
+      { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, maf: 0.4829 }
+    ];
+
+    const DECAY = [
+      { kb: 0, r2: 0.1753, n: 642417 },
+      { kb: 50, r2: 0.0396, n: 544497 },
+      { kb: 100, r2: 0.0182, n: 542379 },
+      { kb: 150, r2: 0.0129, n: 511633 },
+      { kb: 200, r2: 0.0078, n: 506290 },
+      { kb: 250, r2: 0.0053, n: 476312 },
+      { kb: 500, r2: 0.0022, n: 427722 },
+      { kb: 1000, r2: 0.0015, n: 425126 },
+      { kb: 1500, r2: 0.0015, n: 393868 },
+      { kb: 2000, r2: 0.0015, n: 6 }
+    ];
+
+    document.getElementById('loci').innerHTML = LOCI.map((r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td class="mono">${r.snp}</td>
+        <td>${r.chr}</td>
+        <td>${r.bp.toLocaleString()}</td>
+        <td>${r.pbs.toFixed(4)}</td>
+        <td>${(r.maf * 100).toFixed(2)}%</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('decay').innerHTML = DECAY.map(d => `
+      <tr>
+        <td>${d.kb}</td>
+        <td>${d.r2.toFixed(4)}</td>
+        <td>${d.n.toLocaleString()}</td>
+      </tr>
+    `).join('');
+  </script>
+</body>
+</html>

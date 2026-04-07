@@ -287,7 +287,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <h2 id="ibd">5. Identity-by-Descent Analysis</h2>
 
 <p>
-  IBD was estimated using PLINK 1.9 <code>--genome</code> on the V2 LD-pruned dataset
+  IBD was estimated using PLINK 1.9 <code>--genome</code> on the LD-pruned dataset
   (1,047 samples, 88,722 SNPs) with <code>--min 0.05</code>. The method-of-moments estimator produces PI_HAT (proportion
   of genome shared IBD) for every pair, along with Z0, Z1, Z2 (probabilities of sharing 0, 1,
   or 2 alleles IBD).
@@ -349,9 +349,8 @@ canvas{display:block;margin:0 auto;max-width:100%}
 </div>
 
 <div class="callout callout-key">
-  <strong>Note on duplicates:</strong> The V2 post-QC dataset has 0 duplicate/MZ pairs, as duplicates
-  were already removed during quality control (Step 7, --mind 0.05). The original V1 dataset
-  contained 65 duplicate pairs which were lab QC duplicates. Post-QC sample count: N = 1,047.
+  <strong>Note on duplicates:</strong> The post-QC dataset has 0 duplicate/MZ pairs, as duplicates
+  were already removed during quality control (Step 7, --mind 0.05). Post-QC sample count: N = 1,047.
 </div>
 
 <!-- ════════════════════ 6. PI_HAT DISTRIBUTION ════════════════════ -->
@@ -360,7 +359,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <p>
   The vast majority of pairs (98.8%) share &lt; 5% of their genome IBD, as expected for unrelated
-  individuals. The V2 analysis on LD-pruned variants (88.7K SNPs) with --min 0.05 threshold
+  individuals. The analysis on LD-pruned variants (88.7K SNPs) with --min 0.05 threshold
   detected 6,368 pairs:
 </p>
 
@@ -392,7 +391,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <div class="callout callout-warn">
   <strong>Implications for GWAS:</strong> With only 5 pairs at 2nd degree or closer and 423 3rd-degree pairs,
-  cryptic relatedness is minimal in the V2 post-QC dataset. Standard GRM-based mixed models
+  cryptic relatedness is minimal in the post-QC dataset. Standard GRM-based mixed models
   (BOLT-LMM, SAIGE) remain recommended for the planned pregnancy loss GWAS, but aggressive
   kinship filtering is unlikely to be necessary.
 </div>
@@ -478,15 +477,15 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <div class="callout callout-method">
   <strong>Software:</strong> PLINK v1.9.0-b.7.7 (64-bit, 515 GB RAM workstation)<br>
-  <strong>Input (ROH):</strong> UZB_v2_qc BED/BIM/FAM (1,047 × 5,405,898 SNPs, post-QC V2)<br>
-  <strong>Input (IBD):</strong> UZB_v2_ldpruned BED/BIM/FAM (1,047 × 88,722 SNPs, LD-pruned V2)<br>
+  <strong>Input (ROH):</strong> UZB_v2_qc BED/BIM/FAM (1,047 × 5,405,898 SNPs, post-QC)<br>
+  <strong>Input (IBD):</strong> UZB_v2_ldpruned BED/BIM/FAM (1,047 × 88,722 SNPs, LD-pruned)<br>
   <strong>F<sub>ROH</sub> formula:</strong> Σ(ROH length in kb) / 2,881,033 kb<br>
   <strong>IBD method:</strong> PLINK method-of-moments estimator (--genome flag)<br>
   <strong>Degree thresholds:</strong> Duplicates &gt; 0.98, 1st &gt; 0.354, 2nd &gt; 0.177, 3rd &gt; 0.0884
 </div>
 
 <h3>Command log</h3>
-<div class="code-block"># ROH analysis (V2)
+<div class="code-block"># ROH analysis
 plink --bfile ~/v2/roh/UZB_v2_for_roh \
       --homozyg \
       --homozyg-window-snp 50 \
@@ -502,7 +501,7 @@ plink --bfile ~/v2/roh/UZB_v2_for_roh \
 # Output: 36,702 ROH segments across 1,047 individuals
 # Files: UZB_v2_ROH.hom, UZB_v2_ROH.hom.indiv, UZB_v2_ROH.hom.summary
 
-# IBD analysis (V2)
+# IBD analysis
 plink --bfile ~/v2/plink/UZB_v2_ldpruned \
       --genome \
       --min 0.05 \
@@ -542,7 +541,7 @@ plink --bfile ~/v2/plink/UZB_v2_ldpruned \
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    // Binned F_ROH data (V2: 1,047 individuals, --homozyg-kb 1000)
+    // Binned F_ROH data (1,047 individuals, --homozyg-kb 1000)
     // F_ROH range: 0.0077 – 0.1111, most between 0.01–0.02
     const bins = [
         { lo: 0.000, hi: 0.010, n: 43 },
@@ -689,7 +688,7 @@ plink --bfile ~/v2/plink/UZB_v2_ldpruned \
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    // ROH count by chromosome (V2, scaled from per-chr proportions; --homozyg-kb 1000)
+    // ROH count by chromosome (scaled from per-chr proportions; --homozyg-kb 1000)
     // Total: 36,702 segments across 1,047 individuals
     const chrData = [
         { chr: '1', n: 3434 }, { chr: '2', n: 3590 }, { chr: '3', n: 2828 },
