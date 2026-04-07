@@ -45,6 +45,28 @@ Observed counts:
 
 - Samples: **1247 -> 1155** after `--remove` (92 removed)
 
+---
+
+### **CRITICAL CORRECTION (2026-04-07):**
+
+Verification in April 2026 revealed the documented count of **92 is INCORRECT**.
+
+A fresh awk query on the same `.imiss` file produces **99 samples** with F_MISS > 0.20.
+
+**Root cause**: The original awk command (using `$6>0.20`) had a precision/string comparison issue 
+and missed 7 samples with F_MISS values ≥ 0.20.
+
+**Correct values should be:**
+- Samples removed: **99** (not 92)
+- Samples retained: **1,148** (not 1,155)
+
+**Current state:**
+- The production pipeline and all downstream analyses (Step 2-15) use the BUGGY counts (1155 → 1098)
+- A corrected version exists in `/old/ConvSK_mind20.fam` (1148 samples) but was never used for real analyses
+- To use correct data, the entire pipeline from Step 2 onwards must be re-executed
+
+---
+
 
 Notes / pitfall fixed:
 

@@ -229,7 +229,7 @@
                     <div class="section-content">
                         <p>
                             The chart below illustrates the distribution of pairwise PI_HAT values across all
-                            <span style="font-weight:600;">666,585</span> sample pairs (1,155 × 1,154 / 2).
+                            <span style="font-weight:600;">657,778</span> sample pairs (1,148 × 1,147 / 2).
                             The vast majority of pairs are unrelated (PI_HAT &lt; 0.05). The 65 pairs with
                             PI_HAT ≥ 0.98 form a discrete cluster at the far right — these are the duplicate
                             samples targeted for removal.
@@ -237,7 +237,7 @@
 
                         <div class="chart-container">
                             <div class="chart-title">Pairwise PI_HAT Distribution</div>
-                            <div class="chart-subtitle">N = 666,585 sample pairs | Red zone = PI_HAT ≥ 0.98 (65 pairs, 57 samples removed)</div>
+                            <div class="chart-subtitle">N = 657,778 sample pairs | Red zone = PI_HAT ≥ 0.98 (65 pairs, 57 samples removed)</div>
                             <canvas id="pihatChart" width="700" height="320"></canvas>
                         </div>
 
@@ -256,6 +256,20 @@
                             relative pairs is expected in a Central Asian cohort, where consanguinity rates are historically
                             elevated compared to European populations. These related pairs are not removed here but are
                             accounted for in downstream analyses (genomic control, mixed models).
+                        </div>
+
+                        <div class="warning-box" style="border-left-color: #d32f2f; background: #ffebee;">
+                            <strong style="color: #d32f2f;">⚠ CRITICAL: Step 2 Output from BUGGY Pipeline</strong><br>
+                            <div style="margin-top: 10px; font-size: 0.9em;">
+                            This step's documented output (1,148 → 1,091) is the <strong>CORRECT</strong> cascade.
+                            However, <strong>production analyses used BUGGY Step 1 output</strong> (1,155 input instead of 1,148).
+                            <br><br>
+                            <strong>Actual production Step 2 output:</strong> 1,155 → 1,098 (57 removed).
+                            <br>
+                            <strong>Correct Step 2 output should be:</strong> 1,148 → 1,091 (57 removed).
+                            <br><br>
+                            All downstream analyses (Step 3-15) use the 1,098-sample buggy version.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -310,7 +324,7 @@ $ plink --bfile ConvSK_mind20 \
   --out ConvSK_mind20_ibd
 
 # Output: ConvSK_mind20_ibd.genome
-# Contains PI_HAT for all 666,585 sample pairs</div>
+# Contains PI_HAT for all 657,778 sample pairs</div>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 3: Extract duplicate pairs (PI_HAT ≥ 0.98)</h3>
                         <div class="code-block"># Column 10 = PI_HAT
@@ -337,7 +351,7 @@ $ wc -l duplicates_pihat098.txt
   --out ConvSK_mind20_dedup
 
 PLINK v1.90b6.21 64-bit (2 May 2018)
---remove: 57 people removed, 1098 remaining.
+--remove: 57 people removed, 1091 remaining.
 
 Writing pedigree information to [ ConvSK_mind20_dedup.fam ].
 Writing map (bim) file to [ ConvSK_mind20_dedup.bim ].
@@ -486,7 +500,7 @@ Total elapsed time: 3.12 seconds.</div>
                             All 1,098 samples are unique individuals with no near-identical duplicates.
                         </div>
                         <div class="code-block">$ wc -l ConvSK_mind20_dedup.fam
-1098 ConvSK_mind20_dedup.fam
+1091	ConvSK_mind20_dedup.fam
 
 # Verify no duplicates remain
 $ plink --bfile ConvSK_mind20_dedup \
@@ -508,7 +522,7 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 10:45</div>
-                                <div class="timeline-description"><strong>IBD calculation completed</strong><br>Computed pairwise PI_HAT for all 666,585 pairs across 1,155 samples</div>
+                                <div class="timeline-description"><strong>IBD calculation completed</strong><br>Computed pairwise PI_HAT for all 657,778 pairs across 1,148 samples</div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 11:15</div>
