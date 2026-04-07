@@ -525,24 +525,24 @@ $ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
         var pad = {top: 25, right: 20, bottom: 50, left: 60};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* MAF bins: characteristic L-shaped SFS */
+        /* Real MAF spectrum from ConvSK_raw (654,027 variants, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo:0.00, hi:0.01, count:98000},
-            {lo:0.01, hi:0.05, count:72000},
-            {lo:0.05, hi:0.10, count:65000},
-            {lo:0.10, hi:0.15, count:62000},
-            {lo:0.15, hi:0.20, count:60000},
-            {lo:0.20, hi:0.25, count:58000},
-            {lo:0.25, hi:0.30, count:55000},
-            {lo:0.30, hi:0.35, count:52000},
-            {lo:0.35, hi:0.40, count:48000},
-            {lo:0.40, hi:0.45, count:44000},
-            {lo:0.45, hi:0.50, count:40027}
+            {lo:0.00, hi:0.01, count:81888},
+            {lo:0.01, hi:0.05, count:214949},
+            {lo:0.05, hi:0.10, count:85435},
+            {lo:0.10, hi:0.15, count:52693},
+            {lo:0.15, hi:0.20, count:41989},
+            {lo:0.20, hi:0.25, count:35698},
+            {lo:0.25, hi:0.30, count:31941},
+            {lo:0.30, hi:0.35, count:29267},
+            {lo:0.35, hi:0.40, count:27560},
+            {lo:0.40, hi:0.45, count:26442},
+            {lo:0.45, hi:0.50, count:26165}
         ];
-        var maxY = 110000;
+        var maxY = 230000;
 
         drawAxes(ctx, pad, pW, pH);
-        drawHGrid(ctx, pad, pW, pH, maxY, [0, 20000, 40000, 60000, 80000, 100000]);
+        drawHGrid(ctx, pad, pW, pH, maxY, [0, 50000, 100000, 150000, 200000]);
 
         ctx.save(); ctx.translate(14, pad.top + pH/2); ctx.rotate(-Math.PI/2);
         ctx.textAlign = 'center'; ctx.font = '11px Segoe UI'; ctx.fillStyle = '#333';
@@ -582,21 +582,21 @@ $ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
         var pad = {top: 20, right: 15, bottom: 45, left: 50};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* -log10(p) bins. Most SNPs in HWE (low -log10p). */
+        /* Real HWE -log10(p) distribution from ConvSK_raw (654,027 variants, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo:0, hi:1, count:380000},
-            {lo:1, hi:2, count:55000},
-            {lo:2, hi:3, count:10000},
-            {lo:3, hi:4, count:4000},
-            {lo:4, hi:5, count:1800},
-            {lo:5, hi:6, count:800},
-            {lo:6, hi:8, count:1500},
-            {lo:8, hi:12, count:927}
+            {lo:0, hi:1, count:464734},
+            {lo:1, hi:2, count:75281},
+            {lo:2, hi:3, count:28554},
+            {lo:3, hi:4, count:15752},
+            {lo:4, hi:5, count:10993},
+            {lo:5, hi:6, count:8458},
+            {lo:6, hi:10, count:22865},
+            {lo:10, hi:20, count:27390}
         ];
-        var maxY = 420000;
+        var maxY = 500000;
 
         drawAxes(ctx, pad, pW, pH);
-        drawHGrid(ctx, pad, pW, pH, maxY, [0, 100000, 200000, 300000, 400000]);
+        drawHGrid(ctx, pad, pW, pH, maxY, [0, 100000, 200000, 300000, 400000, 500000]);
 
         ctx.save(); ctx.translate(12, pad.top + pH/2); ctx.rotate(-Math.PI/2);
         ctx.textAlign = 'center'; ctx.font = '10px Segoe UI'; ctx.fillStyle = '#333';
@@ -631,21 +631,21 @@ $ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
         var pad = {top: 20, right: 15, bottom: 45, left: 50};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* Per-SNP missingness: most SNPs near 0 */
+        /* Real per-SNP missingness from ConvSK_raw_miss.lmiss (654,027 variants, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo:0.000, hi:0.002, count:580000},
-            {lo:0.002, hi:0.005, count:42000},
-            {lo:0.005, hi:0.010, count:17000},
-            {lo:0.010, hi:0.020, count:8000},
-            {lo:0.020, hi:0.050, count:4000},
-            {lo:0.050, hi:0.100, count:2000},
-            {lo:0.100, hi:0.200, count: 800},
-            {lo:0.200, hi:0.500, count: 227}
+            {lo:0.000, hi:0.010, count:44905},
+            {lo:0.010, hi:0.020, count:121255},
+            {lo:0.020, hi:0.050, count:383400},
+            {lo:0.050, hi:0.100, count:88661},
+            {lo:0.100, hi:0.150, count:9126},
+            {lo:0.150, hi:0.200, count:1567},
+            {lo:0.200, hi:0.300, count:312},
+            {lo:0.300, hi:1.000, count:4801}
         ];
-        var maxY = 640000;
+        var maxY = 420000;
 
         drawAxes(ctx, pad, pW, pH);
-        drawHGrid(ctx, pad, pW, pH, maxY, [0, 200000, 400000, 600000]);
+        drawHGrid(ctx, pad, pW, pH, maxY, [0, 100000, 200000, 300000, 400000]);
 
         ctx.save(); ctx.translate(12, pad.top + pH/2); ctx.rotate(-Math.PI/2);
         ctx.textAlign = 'center'; ctx.font = '10px Segoe UI'; ctx.fillStyle = '#333';

@@ -328,22 +328,102 @@ Total elapsed time: 2.45 seconds.</div>
                             <summary>92 removed sample IDs (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    <strong>Data location (Biotech2024 server):</strong><br>
-                                    Removal list: <code>/staging/.../PLINK_301125_0312/remove_miss20.txt</code> (92 lines, FID &lt;tab&gt; IID)<br>
-                                    Full missingness: <code>/staging/.../PLINK_301125_0312/ConvSK_raw_miss.imiss</code>
+                                    <strong>Source:</strong> <code>remove_miss20.txt</code> on Biotech2024 server
+                                    (<code>/staging/.../PLINK_301125_0312/</code>). Extracted 2026-04-07.
                                 </p>
-                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    <strong>Note:</strong> Actual sample IDs are stored on the Biotech2024 server only.
-                                    Sample ID format in this dataset: <code>NNN_NN-NN</code> (e.g. <code>3_01-03</code>,
-                                    <code>142_09-09</code>). The raw dataset contains 1,247 samples numbered 1–1247.
-                                </p>
-                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># To regenerate removal list:
-$ awk 'NR>1 && $6+0 > 0.20 {print $1"\t"$2}' ConvSK_raw_miss.imiss > remove_miss20.txt
-
-# To extract with F_MISS values (sorted worst first):
-$ awk 'NR>1 && $6+0 > 0.20 {print $1, $2, $6}' ConvSK_raw_miss.imiss | sort -k3 -rn
-
-# 92 samples | F_MISS range: 0.200 – 0.342 | mean: 0.246</div>
+                                <div class="code-block" style="max-height: 400px; overflow-y: auto; font-size: 0.8em;">FID	IID
+1003	08-664
+1030	08-438
+1042	02-55
+1043	02-99
+1054	04-51
+1055	08-68
+1065	02-96
+1068	08-48
+1081	02-103
+1104	03-328
+1105	03-72
+1106	03-73
+1107	03-85
+1108	07-42
+1109	07-79
+1110	07-96
+1111	08-290
+1112	08-291
+1113	08-292
+1114	08-296
+1115	08-297
+1116	08-298
+1117	08-305
+1118	08-306
+1119	08-309
+1120	08-310
+1121	08-311
+1122	08-314
+1123	08-317
+1124	08-321
+1125	08-322
+1126	08-323
+1127	08-326
+1128	08-331
+1129	08-332
+1130	08-336
+1131	08-341
+1132	08-352
+1133	08-356
+1134	08-360
+1135	08-374
+1136	08-386
+1137	08-390
+1138	08-391
+1139	08-392
+1140	08-399
+1141	08-407
+1142	08-410
+1143	08-411
+1144	08-416
+1145	08-419
+1146	08-421
+1147	08-430
+1148	08-433
+1149	08-487
+1150	08-490
+1151	08-505
+1152	08-507
+1159	08-568
+1160	08-582
+1161	08-59
+1162	08-598
+1163	08-621
+1171	08-747
+1172	08-749
+1173	08-754
+1174	08-761
+1175	08-762
+1176	08-766
+1177	08-768
+1178	08-778
+1179	08-779
+1180	08-780
+1181	08-781
+1182	08-782
+1183	08-783
+1184	08-784
+1185	08-786
+1186	08-787
+1187	08-788
+1188	08-789
+1189	08-792
+1190	08-793
+1191	08-794
+1192	08-825d
+1193	15-12M
+1194	20-07
+1195	08-425
+1196	08-454
+1197	08-412
+1198	08-492
+1199	08-403</div>
                             </div>
                         </details>
 
@@ -454,25 +534,23 @@ $ ls -lh ConvSK_mind20.{bed,bim,fam}
         var plotW = W - pad.left - pad.right;
         var plotH = H - pad.top - pad.bottom;
 
-        /* Distribution matching known statistics:
-           N=1247, median=0.0021, mean=0.0024, Q1=0.0014, Q3=0.0028, max=0.3421
-           92 samples > 0.20. Most samples cluster near 0. */
+        /* Real F_MISS distribution from ConvSK_raw_miss.imiss (N=1247, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo: 0.000, hi: 0.005, count: 1105},
-            {lo: 0.005, hi: 0.010, count: 28},
-            {lo: 0.010, hi: 0.020, count: 10},
-            {lo: 0.020, hi: 0.050, count: 5},
-            {lo: 0.050, hi: 0.100, count: 4},
-            {lo: 0.100, hi: 0.150, count: 3},
-            {lo: 0.150, hi: 0.200, count: 0},
-            {lo: 0.200, hi: 0.250, count: 52},
-            {lo: 0.250, hi: 0.300, count: 28},
-            {lo: 0.300, hi: 0.350, count: 12}
+            {lo: 0.000, hi: 0.005, count: 0},
+            {lo: 0.005, hi: 0.010, count: 815},
+            {lo: 0.010, hi: 0.020, count: 168},
+            {lo: 0.020, hi: 0.050, count: 50},
+            {lo: 0.050, hi: 0.100, count: 60},
+            {lo: 0.100, hi: 0.150, count: 33},
+            {lo: 0.150, hi: 0.200, count: 22},
+            {lo: 0.200, hi: 0.300, count: 73},
+            {lo: 0.300, hi: 0.500, count: 26},
+            {lo: 0.500, hi: 1.000, count: 0}
         ];
         var maxCount = 0;
         bins.forEach(function(b) { if (b.count > maxCount) maxCount = b.count; });
         var maxY = Math.ceil(maxCount / 100) * 100 + 100;
-        var maxX = 0.35;
+        var maxX = 1.0;
 
         ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(pad.left, pad.top);

@@ -359,26 +359,119 @@ Total elapsed time: 3.12 seconds.</div>
                             <summary>View 65 duplicate pairs and 49 clusters (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    <strong>Data location (Biotech2024 server):</strong><br>
-                                    Pairs: <code>/staging/.../PLINK_301125_0312/duplicates_pihat098.txt</code> (65 lines)<br>
-                                    Clusters: <code>/staging/.../PLINK_301125_0312/dup_clusters_summary.tsv</code> (49 clusters)<br>
-                                    Removal list: <code>/staging/.../PLINK_301125_0312/remove_dups_pihat098.txt</code> (57 IDs)
+                                    <strong>Source:</strong> <code>dup_clusters_summary.tsv</code> and <code>remove_dups_pihat098.txt</code>
+                                    on Biotech2024 server. Extracted 2026-04-07.
                                 </p>
-                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    <strong>Note:</strong> Actual sample IDs are stored on the server. The local workspace
-                                    contains the post-dedup IBD file (<code>data/UZB_v2_IBD.genome</code>, 885 samples)
-                                    which has max PI_HAT = 0.545, confirming all duplicates were successfully removed.
-                                </p>
-                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># To extract pairs from pre-dedup .genome file:
-$ awk 'NR>1 && $10 >= 0.98 {print $1, $2, $3, $4, $10}' \
-  ConvSK_mind20_ibd.genome > duplicates_pihat098.txt
-# 65 pairs → 106 unique samples → 49 clusters → 57 removed
-
-# Cluster summary (from dup_clusters_summary.tsv):
-# cluster_id  kept_sample  cluster_size  all_members
-# 1           xxx_nn-nn    3             xxx, yyy, zzz
-# ...         ...          2             ...
-# 49 clusters total (most size=2, some size=3+)</div>
+                                <h4 style="margin: 10px 0 5px;">49 Clusters (kept sample + removed members)</h4>
+                                <div class="code-block" style="max-height: 350px; overflow-y: auto; font-size: 0.78em;">cluster  kept       F_MISS    size  members
+1        326:02-36d  0.0079   2     229:08-816, 326:02-36d
+2        422:08-744  0.0078   2     168:08-493, 422:08-744
+3        268:06-42d  0.0082   2     213:06-38, 268:06-42d
+4        194:06-04   0.0081   2     194:06-04, 293:02-52d
+5        225:08-799  0.0080   2     225:08-799, 300:06-41d
+6        284:01-59d  0.0083   2     169:04-13, 284:01-59d
+7        150:02-104  0.0079   2     91:09-37, 150:02-104
+8        280:07-01d  0.0082   2     166:04-08, 280:07-01d
+9        178:04-25   0.0084   2     178:04-25, 263:07-02d
+10       909:12-05   0.0087   2     908:12-04, 909:12-05
+11       152:02-36   0.0086   2     152:02-36, 270:07-19
+12       580:01-18   0.0081   2     580:01-18, 581:09-76
+13       246:08-436  0.0091   2     248:07-17, 246:08-436
+14       176:04-22   0.0081   2     176:04-22, 266:06-23d
+15       52:01-29    0.0086   3     11:02-29, 338:01-29t, 52:01-29
+16       519:08-770d 0.0079   2     335:08-770, 519:08-770d
+17       42:08-131   0.0078   2     42:08-131, 381:08-131d
+18       269:08-498  0.0081   2     269:08-498, 272:08-795d
+19       958:09-101  0.0110   2     958:09-101, 1170:08-742
+20       222:07-10   0.0080   2     222:07-10, 279:04-54d
+21       157:02-52   0.0083   2     290:01-53, 157:02-52
+22       342:02-104t 0.0085   3     205:06-29, 342:02-104t, 292:02-104d
+23       278:07-10d  0.0082   2     278:07-10d, 214:06-39
+24       353:03-156d 0.0083   3     130:03-155, 131:03-156, 353:03-156d
+25       283:02-64d  0.0081   2     218:07-01, 283:02-64d
+26       90:01-17    0.0088   2     90:01-17, 291:01-17d
+27       325:06-43d  0.0079   3     154:02-45, 325:06-43d, 237:08-107
+28       327:01-50d  0.0079   2     145:01-50, 327:01-50d
+29       276:06-15d  0.0086   3     273:06-34d, 276:06-15d, 165:04-07
+30       329:04-23d  0.0088   2     329:04-23d, 295:04-23
+31       265:03-37   0.0083   3     265:03-37, 261:08-194, 249:08-179
+32       187:04-45   0.0101   2     187:04-45, 262:06-06d
+33       352:03-155d 0.0081   2     352:03-155d, 129:03-154
+34       247:02-90   0.0091   2     247:02-90, 245:07-16
+35       275:08-124  0.0086   2     271:08-128, 275:08-124
+36       232:08-541  0.0080   2     232:08-541, 294:04-22d
+37       220:07-04   0.0080   2     220:07-04, 297:04-20d
+38       233:08-509  0.0079   3     369:04-40, 296:04-36, 233:08-509
+39       1096:08-719 &mdash;       2     1169:08-719d, 1096:08-719
+40       244:08-160  0.0086   2     243:07-15, 244:08-160
+41       757:08-265  0.0080   2     758:08-267, 757:08-265
+42       234:08-774  0.0079   2     281:04-55d, 234:08-774
+43       170:04-14   0.0080   2     282:02-49d, 170:04-14
+44       415:08-493d 0.0080   2     415:08-493d, 231:08-129
+45       277:08-817  0.0085   2     306:08-81d, 277:08-817
+46       380:08-107d 0.0093   2     380:08-107d, 204:06-28
+47       206:06-30   0.0082   2     206:06-30, 71:02-39
+48       832:08-181  0.0080   2     849:08-45, 832:08-181
+49       158:02-59   0.0080   3     347:02-45t, 287:02-45d, 158:02-59</div>
+                                <h4 style="margin: 15px 0 5px;">57 Removed Sample IDs</h4>
+                                <div class="code-block" style="max-height: 250px; overflow-y: auto; font-size: 0.78em;">FID	IID
+229	08-816
+168	08-493
+213	06-38
+293	02-52d
+300	06-41d
+169	04-13
+91	09-37
+166	04-08
+263	07-02d
+908	12-04
+270	07-19
+581	09-76
+248	07-17
+266	06-23d
+11	02-29
+338	01-29t
+335	08-770
+381	08-131d
+272	08-795d
+1170	08-742
+279	04-54d
+290	01-53
+205	06-29
+292	02-104d
+214	06-39
+130	03-155
+131	03-156
+218	07-01
+291	01-17d
+154	02-45
+237	08-107
+145	01-50
+273	06-34d
+165	04-07
+295	04-23
+261	08-194
+249	08-179
+262	06-06d
+129	03-154
+245	07-16
+271	08-128
+294	04-22d
+297	04-20d
+369	04-40
+296	04-36
+1169	08-719d
+243	07-15
+758	08-267
+281	04-55d
+282	02-49d
+231	08-129
+306	08-81d
+204	06-28
+71	02-39
+849	08-45
+347	02-45t
+287	02-45d</div>
                             </div>
                         </details>
                     </div>
@@ -463,16 +556,15 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
         var plotW = W - pad.left - pad.right;
         var plotH = H - pad.top - pad.bottom;
 
-        /* Log-scale bins for PI_HAT distribution.
-           Most pairs are unrelated (PI_HAT < 0.05). Counts are approximate from ibd_stats.sh categories. */
+        /* Real PI_HAT distribution from ConvSK_mind20_ibd.genome (1,155 samples, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo: 0.00, hi: 0.05, count: 660000, label: '<0.05'},
-            {lo: 0.05, hi: 0.10, count: 4500, label: '0.05-0.10'},
-            {lo: 0.10, hi: 0.20, count: 1600, label: '0.10-0.20'},
-            {lo: 0.20, hi: 0.35, count: 300, label: '0.20-0.35'},
-            {lo: 0.35, hi: 0.50, count: 80, label: '0.35-0.50'},
-            {lo: 0.50, hi: 0.75, count: 40, label: '0.50-0.75'},
-            {lo: 0.75, hi: 0.98, count: 8, label: '0.75-0.98'},
+            {lo: 0.00, hi: 0.05, count: 646771, label: '<0.05'},
+            {lo: 0.05, hi: 0.10, count: 4846, label: '0.05-0.10'},
+            {lo: 0.10, hi: 0.20, count: 2106, label: '0.10-0.20'},
+            {lo: 0.20, hi: 0.35, count: 4416, label: '0.20-0.35'},
+            {lo: 0.35, hi: 0.50, count: 163, label: '0.35-0.50'},
+            {lo: 0.50, hi: 0.75, count: 8, label: '0.50-0.75'},
+            {lo: 0.75, hi: 0.98, count: 3, label: '0.75-0.98'},
             {lo: 0.98, hi: 1.00, count: 65, label: '≥0.98'}
         ];
 

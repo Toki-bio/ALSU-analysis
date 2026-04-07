@@ -423,20 +423,21 @@ $ bcftools query -l chr1.dose.vcf.gz | wc -l
         var pad = {top: 25, right: 20, bottom: 50, left: 65};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* INFO score bins — strongly right-skewed (most near 1.0) */
+        /* Real INFO (R2) scores from Michigan Imputation Server VCFs, all 22 autosomes
+           (48,887,352 total imputed variants before R2 filtering, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo: 0.00, hi: 0.10, count:   15000, label: '0.0'},
-            {lo: 0.10, hi: 0.20, count:   18000, label: '0.1'},
-            {lo: 0.20, hi: 0.30, count:   23000, label: '0.2'},
-            {lo: 0.30, hi: 0.40, count:   42000, label: '0.3'},
-            {lo: 0.40, hi: 0.50, count:   68000, label: '0.4'},
-            {lo: 0.50, hi: 0.60, count:  105000, label: '0.5'},
-            {lo: 0.60, hi: 0.70, count:  148000, label: '0.6'},
-            {lo: 0.70, hi: 0.80, count:  235000, label: '0.7'},
-            {lo: 0.80, hi: 0.90, count: 3384000, label: '0.8'},
-            {lo: 0.90, hi: 1.01, count: 6909000, label: '0.9'}
+            {lo: 0.00, hi: 0.10, count: 17406316, label: '0.0'},
+            {lo: 0.10, hi: 0.20, count:  3448497, label: '0.1'},
+            {lo: 0.20, hi: 0.30, count:  2310017, label: '0.2'},
+            {lo: 0.30, hi: 0.40, count:  2072581, label: '0.3'},
+            {lo: 0.40, hi: 0.50, count:  2413120, label: '0.4'},
+            {lo: 0.50, hi: 0.60, count:  3049204, label: '0.5'},
+            {lo: 0.60, hi: 0.70, count:  3453235, label: '0.6'},
+            {lo: 0.70, hi: 0.80, count:  3473179, label: '0.7'},
+            {lo: 0.80, hi: 0.90, count:  3773113, label: '0.8'},
+            {lo: 0.90, hi: 1.01, count:  7488090, label: '0.9'}
         ];
-        var maxY = 7500000;
+        var maxY = 18000000;
 
         /* Axes */
         ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
@@ -448,7 +449,7 @@ $ bcftools query -l chr1.dose.vcf.gz | wc -l
 
         /* Y-axis grid + labels */
         ctx.fillStyle = '#555'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'right';
-        var yTicks = [0, 1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000];
+        var yTicks = [0, 3000000, 6000000, 9000000, 12000000, 15000000, 18000000];
         yTicks.forEach(function(v) {
             var y = pad.top + pH - (v / maxY) * pH;
             var label = v === 0 ? '0' : (v / 1000000).toFixed(0) + 'M';
@@ -488,7 +489,7 @@ $ bcftools query -l chr1.dose.vcf.gz | wc -l
             ctx.fillText(b.label, x + barW / 2, pad.top + pH + 14);
 
             /* Count labels for large bins */
-            if (b.count >= 200000) {
+            if (b.count >= 1000000) {
                 ctx.fillStyle = '#333'; ctx.font = '9px Segoe UI';
                 var lbl = (b.count / 1000000).toFixed(1) + 'M';
                 ctx.fillText(lbl, x + barW / 2, y - 4);
@@ -504,7 +505,7 @@ $ bcftools query -l chr1.dose.vcf.gz | wc -l
 
         /* Annotation: percentage ≥ 0.80 */
         ctx.fillStyle = '#333'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'right';
-        ctx.fillText('94.9% of variants above threshold', pad.left + pW - 5, pad.top + 12);
+        ctx.fillText('23.0% of variants ≥ 0.80 (R²)', pad.left + pW - 5, pad.top + 12);
     })();
     </script>
 </body>
