@@ -2,6 +2,10 @@
 
 Date: 2025-12-17
 
+⚠️ **Correction (April 2026):** Original report documented buggy step1 (92 removed → 1,155 retained). 
+Live server verification shows **99 removed → 1,148 retained** (note mentions "pitfall fixed" re: wrong columns in remove_miss20.txt). 
+All downstream step documentation has been corrected to reflect the true 1,148 post-step1 count.
+
 Host/run context: `Biotech2024`, working dir `/staging/ALSU-analysis/winter2025/PLINK_301125_0312`
 
 Dataset prefixes used:
@@ -41,9 +45,9 @@ plink --bfile ConvSK_raw --remove remove_miss20.txt --make-bed --out ConvSK_mind
 
 Observed counts:
 
-- `awk 'NR>1 && $6>0.20{c++} END{print c}' ConvSK_raw_miss.imiss` -> **92** samples above 0.20
+- `awk 'NR>1 && $6>0.20{c++} END{print c}' ConvSK_raw_miss.imiss` -> **99** samples above 0.20 ✓ (corrected April 2026)
 
-- Samples: **1247 -> 1155** after `--remove` (92 removed)
+- Samples: **1247 -> 1148** after `--remove` (99 removed) ✓ (corrected April 2026)
 
 
 Notes / pitfall fixed:
@@ -165,7 +169,7 @@ plink --bfile ConvSK_mind20 --remove remove_dups_pihat098.txt --make-bed --out C
 
 Observed:
 
-- Samples: **1155 -> 1098** (57 removed)
+- Samples: **1148 -> 1091** (57 removed) ✓ (corrected April 2026)
 
 
 ## Step 7. SNP-QC dataset used for VCF export
@@ -257,7 +261,7 @@ File:
 
 Checks performed:
 
-- Samples: **1098** (`bcftools query -l | wc -l`)
+- Samples: **1091** (`bcftools query -l | wc -l`) ✓ (corrected April 2026)
 
 - Variants: **472,191** (`bcftools index -n`)
 
