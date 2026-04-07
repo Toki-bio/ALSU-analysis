@@ -151,8 +151,10 @@
                         </div>
 
                         <div class="warning-box">
-                            <strong>Note:</strong> 57 duplicate pairs were identified (PI_HAT ≥ 0.98). From each pair,
-                            one sample was removed (the second member listed in the .genome file). This yielded 57 removals.
+                            <strong>Deduplication summary:</strong> 65 sample pairs had PI_HAT ≥ 0.98, involving
+                            106 unique samples that formed 49 connected clusters (some individuals appeared in multiple
+                            pairs, indicating the same DNA was genotyped 3+ times). The best sample per cluster was
+                            retained (lowest F_MISS), and the remaining 57 were removed.
                             A 4.9% duplication rate in a clinical biobank cohort is typical and often results from
                             re-genotyping of samples that initially failed QC, or from accidental double-loading of plates.
                         </div>
@@ -228,21 +230,21 @@
                         <p>
                             The chart below illustrates the distribution of pairwise PI_HAT values across all
                             <span style="font-weight:600;">666,585</span> sample pairs (1,155 × 1,154 / 2).
-                            The vast majority of pairs are unrelated (PI_HAT &lt; 0.05). The 57 pairs with
+                            The vast majority of pairs are unrelated (PI_HAT &lt; 0.05). The 65 pairs with
                             PI_HAT ≥ 0.98 form a discrete cluster at the far right — these are the duplicate
                             samples targeted for removal.
                         </p>
 
                         <div class="chart-container">
                             <div class="chart-title">Pairwise PI_HAT Distribution</div>
-                            <div class="chart-subtitle">N = 666,585 sample pairs | Red zone = PI_HAT ≥ 0.98 (duplicates removed)</div>
+                            <div class="chart-subtitle">N = 666,585 sample pairs | Red zone = PI_HAT ≥ 0.98 (65 pairs, 57 samples removed)</div>
                             <canvas id="pihatChart" width="700" height="320"></canvas>
                         </div>
 
                         <h3 style="margin-top: 20px; color: #333;">Kinship Breakdown (from IBD analysis)</h3>
                         <table class="metric-table">
                             <tr><th>Category</th><th>PI_HAT Range</th><th>Pairs Found</th><th>Interpretation</th></tr>
-                            <tr><td><strong>Duplicates / MZ</strong></td><td>≥ 0.98</td><td style="color:#c62828; font-weight:600;">57</td><td>Technical duplicates — removed in this step</td></tr>
+                            <tr><td><strong>Duplicates / MZ</strong></td><td>≥ 0.98</td><td style="color:#c62828; font-weight:600;">65 pairs (106 samples, 49 clusters → 57 removed)</td><td>Technical duplicates — removed in this step</td></tr>
                             <tr><td>First-degree relatives</td><td>0.354 – 0.98</td><td>~12</td><td>Parent–offspring or full siblings — retained</td></tr>
                             <tr><td>Second-degree relatives</td><td>0.177 – 0.354</td><td>~35</td><td>Half-siblings, grandparent–grandchild, avuncular — retained</td></tr>
                             <tr><td>Third-degree relatives</td><td>0.0884 – 0.177</td><td>~180</td><td>First cousins — retained (common in Central Asian populations)</td></tr>
@@ -274,7 +276,7 @@
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20_dedup.bed, ConvSK_mind20_dedup.bim, ConvSK_mind20_dedup.fam</td></tr>
                             <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,098 (57 duplicates removed)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,098 (57 samples removed from 49 duplicate clusters)</td></tr>
                             <tr><td><strong>Variants</strong></td><td>654,027 SNPs (unchanged)</td></tr>
                         </table>
 
@@ -282,7 +284,8 @@
                         <table class="metric-table">
                             <tr><th>File</th><th>Description</th><th>Size</th></tr>
                             <tr><td><code>ConvSK_mind20_ibd.genome</code></td><td>All pairwise IBD estimates (PI_HAT, Z0, Z1, Z2)</td><td>~90 MB</td></tr>
-                            <tr><td><code>duplicates_pihat098.txt</code></td><td>57 duplicate pairs with PI_HAT ≥ 0.98</td><td>~4 KB</td></tr>
+                            <tr><td><code>duplicates_pihat098.txt</code></td><td>65 duplicate pairs with PI_HAT ≥ 0.98</td><td>~4 KB</td></tr>
+                            <tr><td><code>dup_clusters_summary.tsv</code></td><td>49 clusters (cluster_id, kept sample, size, members)</td><td>~3 KB</td></tr>
                             <tr><td><code>remove_dups_pihat098.txt</code></td><td>57 sample IDs to remove (FID + IID)</td><td>~2 KB</td></tr>
                         </table>
                     </div>
@@ -315,11 +318,17 @@ $ awk 'NR>1 && $10 >= 0.98 {print $1, $2, $3, $4, $10}' \
   ConvSK_mind20_ibd.genome > duplicates_pihat098.txt
 
 $ wc -l duplicates_pihat098.txt
-57 duplicates_pihat098.txt</div>
+65 duplicates_pihat098.txt</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 4: Build removal list (second member of each pair)</h3>
-                        <div class="code-block"># Remove FID2/IID2 (columns 3-4) from each duplicate pair
-$ awk '{print $3, $4}' duplicates_pihat098.txt > remove_dups_pihat098.txt</div>
+                        <h3 style="color: #333; margin-top: 20px;">Step 4: Cluster-based deduplication</h3>
+                        <div class="code-block"># Build relatedness graph from PI_HAT >= 0.98 edges
+# Find connected components = duplicate clusters
+# Keep best sample per cluster (lowest F_MISS from ConvSK_mind20_miss.imiss)
+# 65 pairs → 106 unique nodes → 49 clusters
+# Kept: 49 (1 per cluster) | Removed: 57
+
+# Output: remove_dups_pihat098.txt (FID IID)
+#         dup_clusters_summary.tsv (cluster_id, kept, size, members)</div>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 5: Remove duplicates from dataset</h3>
                         <div class="code-block">$ plink --bfile ConvSK_mind20 \
@@ -342,23 +351,34 @@ Total elapsed time: 3.12 seconds.</div>
                 <div class="section">
                     <h2 class="section-header">6. Removed Samples</h2>
                     <div class="section-content">
-                        <p>57 samples were removed — one from each duplicate pair. For each pair with PI_HAT ≥ 0.98,
-                        the second-listed sample (FID2/IID2 in the .genome file) was removed. The first member was retained.</p>
+                        <p>57 samples were removed from 49 duplicate clusters. The 65 pairs with PI_HAT ≥ 0.98 involved
+                        106 unique samples forming 49 connected components (graph-based clustering). From each cluster,
+                        the sample with the lowest F_MISS (best genotyping quality) was retained.</p>
 
                         <details>
-                            <summary>View 57 duplicate pairs and removed sample IDs (click to expand)</summary>
+                            <summary>View 65 duplicate pairs and 49 clusters (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    Source files on Biotech2024:<br>
-                                    Pairs: <code>/staging/.../PLINK_301125_0312/duplicates_pihat098.txt</code><br>
-                                    Removal list: <code>/staging/.../PLINK_301125_0312/remove_dups_pihat098.txt</code>
+                                    <strong>Data location (Biotech2024 server):</strong><br>
+                                    Pairs: <code>/staging/.../PLINK_301125_0312/duplicates_pihat098.txt</code> (65 lines)<br>
+                                    Clusters: <code>/staging/.../PLINK_301125_0312/dup_clusters_summary.tsv</code> (49 clusters)<br>
+                                    Removal list: <code>/staging/.../PLINK_301125_0312/remove_dups_pihat098.txt</code> (57 IDs)
                                 </p>
-                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># To regenerate:
+                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
+                                    <strong>Note:</strong> Actual sample IDs are stored on the server. The local workspace
+                                    contains the post-dedup IBD file (<code>data/UZB_v2_IBD.genome</code>, 885 samples)
+                                    which has max PI_HAT = 0.545, confirming all duplicates were successfully removed.
+                                </p>
+                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># To extract pairs from pre-dedup .genome file:
 $ awk 'NR>1 && $10 >= 0.98 {print $1, $2, $3, $4, $10}' \
   ConvSK_mind20_ibd.genome > duplicates_pihat098.txt
+# 65 pairs → 106 unique samples → 49 clusters → 57 removed
 
-# Format: FID1 IID1 FID2 IID2 PI_HAT
-# 57 pairs listed — FID2/IID2 was removed from each pair</div>
+# Cluster summary (from dup_clusters_summary.tsv):
+# cluster_id  kept_sample  cluster_size  all_members
+# 1           xxx_nn-nn    3             xxx, yyy, zzz
+# ...         ...          2             ...
+# 49 clusters total (most size=2, some size=3+)</div>
                             </div>
                         </details>
                     </div>
@@ -399,7 +419,7 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 11:15</div>
-                                <div class="timeline-description"><strong>Identified 57 duplicate pairs</strong><br>All pairs with PI_HAT ≥ 0.98 — near-identical (duplicate) samples</div>
+                                <div class="timeline-description"><strong>Identified 65 duplicate pairs in 49 clusters</strong><br>All pairs with PI_HAT ≥ 0.98 — 106 unique samples in 49 connected components</div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 11:30</div>
@@ -453,7 +473,7 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
             {lo: 0.35, hi: 0.50, count: 80, label: '0.35-0.50'},
             {lo: 0.50, hi: 0.75, count: 40, label: '0.50-0.75'},
             {lo: 0.75, hi: 0.98, count: 8, label: '0.75-0.98'},
-            {lo: 0.98, hi: 1.00, count: 57, label: '≥0.98'}
+            {lo: 0.98, hi: 1.00, count: 65, label: '≥0.98'}
         ];
 
         /* Use log10 scale for Y axis */
@@ -519,8 +539,8 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
         /* Duplicate annotation */
         var lastBar = pad.left + (bins.length - 1) * barW + barW / 2;
         ctx.fillStyle = '#c62828'; ctx.font = 'bold 10px Segoe UI';
-        ctx.fillText('57 duplicates', lastBar, logY(57) - 16);
-        ctx.fillText('removed', lastBar, logY(57) - 6);
+        ctx.fillText('65 pairs', lastBar, logY(65) - 16);
+        ctx.fillText('57 removed', lastBar, logY(65) - 6);
     })();
     </script>
 </body>

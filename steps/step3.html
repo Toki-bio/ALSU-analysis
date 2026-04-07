@@ -131,12 +131,16 @@
                                 <div class="stat-label">Starting Variants</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">181,564</div>
-                                <div class="stat-label">Removed</div>
+                                <div class="stat-value">180,946</div>
+                                <div class="stat-label">Removed by QC</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">472,463</div>
-                                <div class="stat-label">Retained for Imputation</div>
+                                <div class="stat-value">473,081</div>
+                                <div class="stat-label">After PLINK QC</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">472,191</div>
+                                <div class="stat-label">Sent to Imputation</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-value">72.2%</div>
@@ -255,13 +259,15 @@
                             <tr><td>Per-SNP genotyping rate</td><td><code>--geno 0.01</code></td><td>≥ 99% call rate</td><td>~15,000</td></tr>
                             <tr><td>Autosome restriction</td><td><code>--chr 1-22</code></td><td>Autosomes only</td><td>~44,000</td></tr>
                             <tr style="background: #f0f0f0; font-weight: 600;">
-                                <td>Total removed (combined)</td><td colspan="2">All filters applied simultaneously</td><td>181,564</td></tr>
+                                <td>Total removed (combined)</td><td colspan="2">All filters applied simultaneously</td><td>180,946</td></tr>
                         </table>
 
                         <div class="warning-box">
                             <strong>Note:</strong> Individual filter counts overlap (a SNP can fail multiple filters).
-                            The approximate per-filter counts are from separate runs and do not sum to 181,564.
-                            PLINK applies all filters simultaneously in a single pass; the combined effect is 654,027 → 472,463.
+                            The approximate per-filter counts are from separate runs and do not sum to 180,946.
+                            PLINK applies all filters simultaneously in a single pass; the combined effect is 654,027 → 473,081.
+                            An additional 890 variants are removed during VCF cleanup (494 I/D alleles + 396 duplicate positions),
+                            yielding 472,191 variants sent to imputation.
                         </div>
                     </div>
                 </div>
@@ -330,13 +336,14 @@
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20_dedup_snpqc.bed, .bim, .fam</td></tr>
                             <tr><td><strong>Samples</strong></td><td>1,098 (unchanged)</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>472,463 SNPs (181,564 removed)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>473,081 SNPs (180,946 removed by PLINK QC filters)</td></tr>
                         </table>
 
                         <h3 style="color: #333; margin-top: 20px;">Output — Per-chromosome VCF for imputation</h3>
                         <table class="metric-table">
-                            <tr><td><strong>Files</strong></td><td>chr1.dose.vcf.gz through chr22.dose.vcf.gz (22 files)</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/.../PLINK_301125_0312/michigan_ready_chr/</code></td></tr>
+                            <tr><td><strong>Files</strong></td><td>chr1.vcf.gz through chr22.vcf.gz (22 files)</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/.../PLINK_301125_0312/</code></td></tr>
+                            <tr><td><strong>Variants</strong></td><td>472,191 (after removing 494 I/D alleles + 396 duplicate positions)</td></tr>
                             <tr><td><strong>Format</strong></td><td>bgzip-compressed VCF with tabix index</td></tr>
                         </table>
                     </div>
@@ -355,27 +362,44 @@
   --make-bed \
   --out ConvSK_mind20_dedup_snpqc
 
-# Result: 472,463 variants remain (181,564 removed)
+# Result: 473,081 variants remain (180,946 removed)
 # 1,098 samples unchanged</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 2: Convert to VCF format</h3>
-                        <div class="code-block"># plink2 for VCF export (supports modern VCF spec)
-$ plink2 --bfile ConvSK_mind20_dedup_snpqc \
-  --export vcf \
-  --out ConvSK_mind20_dedup_snpqc
+                        <h3 style="color: #333; margin-top: 20px;">Step 2: Export per-chromosome VCFs (excluding I/D alleles)</h3>
+                        <div class="code-block"># 494 variants have I/D alleles (insertion/deletion shorthand)
+# These are not valid VCF alleles — must be excluded
+$ awk '($5!="I" &amp;&amp; $5!="D" &amp;&amp; $6!="I" &amp;&amp; $6!="D") {print $2}' \
+  ConvSK_mind20_dedup_snpqc.bim > vcf_ok_snps.txt
 
-PLINK v2.00a2.3 64-bit (17 May 2019)
-472,463 variants and 1,098 samples pass filters.</div>
+# Export each chromosome using VCF-safe variants only
+$ for chr in {1..22}; do
+  plink --bfile ConvSK_mind20_dedup_snpqc \
+    --chr $chr --extract vcf_ok_snps.txt \
+    --recode vcf bgz --out chr${chr}
+  tabix -f -p vcf chr${chr}.vcf.gz
+done</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 3: Split VCF by chromosome for imputation server</h3>
-                        <div class="code-block">$ for chr in {1..22}; do
-  bcftools view ConvSK_mind20_dedup_snpqc.vcf \
-    --regions $chr \
-    -O z -o michigan_ready_chr/chr${chr}.dose.vcf.gz
-  bcftools index michigan_ready_chr/chr${chr}.dose.vcf.gz
-done
+                        <h3 style="color: #333; margin-top: 20px;">Step 3: Clean VCF for imputation server</h3>
+                        <div class="code-block"># Concatenate autosomes
+$ bcftools concat -Oz -o impute_in.autosomes.vcf.gz chr{1..22}.vcf.gz
 
-# 22 chromosome VCF files ready for Michigan Imputation Server</div>
+# Keep biallelic SNPs only
+$ bcftools view -m2 -M2 -v snps -Oz \
+  -o impute_in.autosomes.clean.vcf.gz impute_in.autosomes.vcf.gz
+
+# Remove duplicate positions (396 removed)
+$ bcftools norm -d all -Oz \
+  -o impute_in.autosomes.clean.nodup.vcf.gz \
+  impute_in.autosomes.clean.vcf.gz
+
+# Fix 2 non-ASCII sample IDs (Cyrillic chars)
+$ bcftools reheader -s rename_samples.tsv \
+  -o impute_in.final.vcf.gz \
+  impute_in.autosomes.clean.nodup.vcf.gz
+
+# Final variant count: 472,191
+$ bcftools index -n impute_in.final.vcf.gz
+472191</div>
                     </div>
                 </div>
 
@@ -384,13 +408,14 @@ done
                     <h2 class="section-header">6. Quality Verification</h2>
                     <div class="section-content">
                         <div class="success-box">
-                            <strong>✓ All 472,463 retained variants pass:</strong> MAF ≥ 0.01, HWE p &gt; 10⁻⁶,
+                            <strong>✓ All 473,081 retained variants pass:</strong> MAF ≥ 0.01, HWE p &gt; 10⁻⁶,
                             genotyping rate ≥ 99%, autosomes only (chr 1–22).
+                            After VCF cleanup, 472,191 variants are ready for imputation.
                         </div>
 
-                        <div class="code-block"># Verify variant count
+                        <div class="code-block"># Verify PLINK QC variant count
 $ wc -l ConvSK_mind20_dedup_snpqc.bim
-472463 ConvSK_mind20_dedup_snpqc.bim
+473081 ConvSK_mind20_dedup_snpqc.bim
 
 # Verify no filter violations remain
 $ plink --bfile ConvSK_mind20_dedup_snpqc \
@@ -422,15 +447,15 @@ $ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-17 10:30</div>
-                                <div class="timeline-description"><strong>Filtering complete</strong><br>654,027 → 472,463 variants (181,564 removed by combined filters)</div>
+                                <div class="timeline-description"><strong>Filtering complete</strong><br>654,027 → 473,081 variants (180,946 removed by combined PLINK QC filters)</div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-17 11:45</div>
-                                <div class="timeline-description"><strong>VCF conversion</strong><br>Exported to VCF using plink2 (6.2 GB uncompressed)</div>
+                                <div class="timeline-description"><strong>VCF export &amp; cleanup</strong><br>Removed 494 I/D allele variants, 396 duplicate positions. Fixed 2 non-ASCII sample IDs.</div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-17 14:20</div>
-                                <div class="timeline-description"><strong>Per-chromosome split</strong><br>Generated chr1–chr22 VCF files with bcftools. Indexed with tabix.</div>
+                                <div class="timeline-description"><strong>Per-chromosome split</strong><br>Generated chr1–chr22 VCF files with tabix indices. Final: 472,191 variants.</div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-17 16:00</div>

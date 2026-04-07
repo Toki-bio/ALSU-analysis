@@ -325,33 +325,48 @@ Total elapsed time: 2.45 seconds.</div>
                         had F_MISS values ranging from 0.200 to 0.342 (mean: 0.246).</p>
 
                         <details>
-                            <summary>View 92 removed sample IDs (click to expand)</summary>
+                            <summary>92 removed sample IDs (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    Source file: <code>remove_miss20.txt</code> on Biotech2024 server.
-                                    Format: FID &lt;tab&gt; IID.
+                                    <strong>Data location (Biotech2024 server):</strong><br>
+                                    Removal list: <code>/staging/.../PLINK_301125_0312/remove_miss20.txt</code> (92 lines, FID &lt;tab&gt; IID)<br>
+                                    Full missingness: <code>/staging/.../PLINK_301125_0312/ConvSK_raw_miss.imiss</code>
                                 </p>
-                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;">$ cat remove_miss20.txt
-# 92 samples with F_MISS > 0.20
-# Full list available on server at:
-# /staging/ALSU-analysis/winter2025/PLINK_301125_0312/remove_miss20.txt
-#
-# To regenerate:
-# awk 'NR>1 && $6+0 > 0.20 {print $1"\t"$2}' ConvSK_raw_miss.imiss > remove_miss20.txt</div>
+                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
+                                    <strong>Note:</strong> Actual sample IDs are stored on the Biotech2024 server only.
+                                    Sample ID format in this dataset: <code>NNN_NN-NN</code> (e.g. <code>3_01-03</code>,
+                                    <code>142_09-09</code>). The raw dataset contains 1,247 samples numbered 1–1247.
+                                </p>
+                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># To regenerate removal list:
+$ awk 'NR>1 && $6+0 > 0.20 {print $1"\t"$2}' ConvSK_raw_miss.imiss > remove_miss20.txt
+
+# To extract with F_MISS values (sorted worst first):
+$ awk 'NR>1 && $6+0 > 0.20 {print $1, $2, $6}' ConvSK_raw_miss.imiss | sort -k3 -rn
+
+# 92 samples | F_MISS range: 0.200 – 0.342 | mean: 0.246</div>
                             </div>
                         </details>
 
                         <details>
-                            <summary>Missingness values of removed samples (sorted)</summary>
+                            <summary>1,155 retained sample IDs (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    To extract the full list with F_MISS values:
+                                    The retained 1,155 samples proceed to Step 2 (IBD deduplication).
+                                    After all QC steps, 1,047 samples remain in the final analysis dataset.
                                 </p>
-                                <div class="code-block" style="font-size: 0.8em;"># Sort removed samples by missingness (worst first)
-$ awk 'NR>1 && $6+0 > 0.20 {print $1, $2, $6}' ConvSK_raw_miss.imiss \
-  | sort -k3 -rn
-
-# Available at: /staging/.../PLINK_301125_0312/ConvSK_raw_miss.imiss</div>
+                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># Full list on server:
+$ cut -f2 ConvSK_mind20.fam | head -20
+# 2_01-02
+# 3_01-03
+# 4_01-07
+# 5_01-12
+# 6_01-15
+# 7_01-19
+# 8_01-24
+# 9_01-25
+# 10_01-26
+# 12_02-81
+# ... (1,155 total)</div>
                             </div>
                         </details>
                     </div>
