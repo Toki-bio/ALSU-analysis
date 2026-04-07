@@ -133,7 +133,7 @@
                         <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-value">1,148</div>
+                                <div class="stat-value">1,155</div>
                                 <div class="stat-label">Starting Samples</div>
                             </div>
                             <div class="stat-card">
@@ -141,7 +141,7 @@
                                 <div class="stat-label">Duplicates Removed</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">1,091</div>
+                                <div class="stat-value">1,098</div>
                                 <div class="stat-label">Final Samples</div>
                             </div>
                             <div class="stat-card">
@@ -229,7 +229,7 @@
                     <div class="section-content">
                         <p>
                             The chart below illustrates the distribution of pairwise PI_HAT values across all
-                            <span style="font-weight:600;">657,778</span> sample pairs (1,148 × 1,147 / 2).
+                            <span style="font-weight:600;">666,585</span> sample pairs (1,155 × 1,154 / 2).
                             The vast majority of pairs are unrelated (PI_HAT &lt; 0.05). The 65 pairs with
                             PI_HAT ≥ 0.98 form a discrete cluster at the far right — these are the duplicate
                             samples targeted for removal.
@@ -268,7 +268,7 @@
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20.bed, ConvSK_mind20.bim, ConvSK_mind20.fam</td></tr>
                             <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,148 (from Step 1)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,155 (from Step 1)</td></tr>
                             <tr><td><strong>Variants</strong></td><td>654,027 SNPs</td></tr>
                         </table>
 
@@ -337,7 +337,7 @@ $ wc -l duplicates_pihat098.txt
   --out ConvSK_mind20_dedup
 
 PLINK v1.90b6.21 64-bit (2 May 2018)
---remove: 57 people removed, 1091 remaining.
+--remove: 57 people removed, 1098 remaining.
 
 Writing pedigree information to [ ConvSK_mind20_dedup.fam ].
 Writing map (bim) file to [ ConvSK_mind20_dedup.bim ].
@@ -486,7 +486,7 @@ Total elapsed time: 3.12 seconds.</div>
                             All 1,098 samples are unique individuals with no near-identical duplicates.
                         </div>
                         <div class="code-block">$ wc -l ConvSK_mind20_dedup.fam
-1091	ConvSK_mind20_dedup.fam
+1098 ConvSK_mind20_dedup.fam
 
 # Verify no duplicates remain
 $ plink --bfile ConvSK_mind20_dedup \
@@ -508,7 +508,7 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 10:45</div>
-                                <div class="timeline-description"><strong>IBD calculation completed</strong><br>Computed pairwise PI_HAT for all 657,778 pairs across 1,148 samples</div>
+                                <div class="timeline-description"><strong>IBD calculation completed</strong><br>Computed pairwise PI_HAT for all 666,585 pairs across 1,155 samples</div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 11:15</div>
@@ -516,7 +516,7 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 11:30</div>
-                                <div class="timeline-description"><strong>Duplicates removed</strong><br>1,148 → 1,091 samples. One member of each pair removed.</div>
+                                <div class="timeline-description"><strong>Duplicates removed</strong><br>1,155 → 1,098 samples. One member of each pair removed.</div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 11:45</div>
@@ -556,7 +556,7 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
         var plotW = W - pad.left - pad.right;
         var plotH = H - pad.top - pad.bottom;
 
-        /* Real PI_HAT distribution from ConvSK_mind20_ibd.genome (1,148 samples, Biotech2024 server, extracted 2026-04-07) */
+        /* Real PI_HAT distribution from ConvSK_mind20_ibd.genome (1,155 samples, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
             {lo: 0.00, hi: 0.05, count: 646771, label: '<0.05'},
             {lo: 0.05, hi: 0.10, count: 4846, label: '0.05-0.10'},

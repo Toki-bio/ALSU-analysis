@@ -130,7 +130,7 @@
                                 <div class="stat-label">Starting Samples</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">1,148</div>
+                                <div class="stat-value">92</div>
                                 <div class="stat-label">Samples Removed</div>
                             </div>
                             <div class="stat-card">
@@ -269,7 +269,7 @@
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20.bed, ConvSK_mind20.bim, ConvSK_mind20.fam</td></tr>
                             <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,148 individuals (99 removed)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,155 individuals (92 removed)</td></tr>
                             <tr><td><strong>Variants</strong></td><td>654,027 SNPs (unchanged — sample filter does not affect SNP count)</td></tr>
                         </table>
                     </div>
@@ -307,7 +307,7 @@ $ wc -l remove_miss20.txt
 PLINK v1.90b6.21 64-bit (2 May 2018)
 Reading map file from [ ConvSK_raw.bim ] ... 654027 markers loaded.
 Reading fam file from [ ConvSK_raw.fam ] ... 1247 individuals loaded.
---remove: 99 people removed, 1148 remaining.
+--remove: 92 people removed, 1155 remaining.
 
 Writing pedigree information to [ ConvSK_mind20.fam ].
 Writing map (bim) file to [ ConvSK_mind20.bim ].
@@ -428,10 +428,10 @@ Total elapsed time: 2.45 seconds.</div>
                         </details>
 
                         <details>
-                            <summary>1,148 retained sample IDs (click to expand)</summary>
+                            <summary>1,155 retained sample IDs (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    The retained 1,148 samples proceed to Step 2 (IBD deduplication).
+                                    The retained 1,155 samples proceed to Step 2 (IBD deduplication).
                                     After all QC steps, 1,047 samples remain in the final analysis dataset.
                                 </p>
                                 <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># Full list on server:
@@ -446,7 +446,7 @@ $ cut -f2 ConvSK_mind20.fam | head -20
 # 9_01-25
 # 10_01-26
 # 12_02-81
-# ... (1,148 total)</div>
+# ... (1,155 total)</div>
                             </div>
                         </details>
                     </div>
@@ -457,11 +457,11 @@ $ cut -f2 ConvSK_mind20.fam | head -20
                     <h2 class="section-header">7. Quality Verification</h2>
                     <div class="section-content">
                         <div class="success-box">
-                            <strong>✓ Post-filter check:</strong> All 1,148 remaining samples have F_MISS ≤ 0.20.
+                            <strong>✓ Post-filter check:</strong> All 1,155 remaining samples have F_MISS ≤ 0.20.
                             No variants were removed in this step (654,027 SNPs carried forward).
                         </div>
                         <div class="code-block">$ wc -l ConvSK_mind20.fam ConvSK_mind20.bim
-    1148 ConvSK_mind20.fam
+    1155 ConvSK_mind20.fam
   654027 ConvSK_mind20.bim
 
 $ ls -lh ConvSK_mind20.{bed,bim,fam}
@@ -490,7 +490,7 @@ $ ls -lh ConvSK_mind20.{bed,bim,fam}
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 09:25</div>
-                                <div class="timeline-description"><strong>Removal list generated</strong><br>99 samples with F_MISS &gt; 0.20 written to <code>remove_miss20.txt</code><br><em style="color: #d09;">7 samples (458/08-365, 499/08-701, 840/08-25, 862/08-495, 886/08-77, 898/08-825, 910/12-11) were missed in earlier attempt, corrected here</em></div>
+                                <div class="timeline-description"><strong>Removal list generated</strong><br>92 samples with F_MISS &gt; 0.20 written to <code>remove_miss20.txt</code></div>
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2025-12-15 09:28</div>
