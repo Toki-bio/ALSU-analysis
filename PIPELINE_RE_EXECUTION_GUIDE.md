@@ -68,9 +68,18 @@ Everything in the documentation from Step 2 onwards is based on BUGGY data:
 
 ## Decision: Should We Re-run?
 
-**RECOMMENDATION: YES, re-run Steps 2-15**
+**RECOMMENDATION: NO FULL RE-RUN NEEDED** ✓ Use filtering strategy instead
 
-**Rationale:**
+See `FILTERING_STRATEGY.md` for the efficient approach:
+- Keep imputation results as-is (expensive)
+- Just remove 7 bad samples from Step 4 output  
+- Re-run only Steps 6-15 (fast downstream analyses)
+- **Result:** Final analyses use correct 1,091-sample set
+- **Time savings:** ~70% (skip 7-day imputation)
+
+**Original Plan (if full re-run is required):**
+
+
 1. Seven samples carrying data quality issues are included in current analyses
 2. Results differ from ground truth; publications using this data are incorrect
 3. The corrected 1,148-sample version already exists and is ready to use
