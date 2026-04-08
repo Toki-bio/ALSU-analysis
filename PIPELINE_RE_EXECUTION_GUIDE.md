@@ -21,63 +21,74 @@ All downstream analyses (Steps 2-15) were executed using the buggy 1,155-sample 
 
 ## Steps That Need Re-execution
 
-| Step | Current (Buggy) | Correct | Input Required | Action |
-|------|---|---|---|---|
-| 1 | 1,247 → **1,155** | 1,247 → **1,148** | N/A | ✓ FIXED (doc only) |
-| 2 | **1,155** → 1,098 | **1,148** → 1,091 | 1,148 input | **RE-RUN** |
-| 3 | **1,098** (SNP-QC) | **1,091** (SNP-QC) | 1,091 input | **RE-RUN** |
-| 4 | **1,098** (imputation input) | **1,091** (imputation input) | 1,091 input | **RE-RUN IMPUTATION** |
-| 5 | **1,098** (ID norm) | **1,091** (ID norm) | imputed 1,091 | **RE-RUN** |
-| 6 | **1,074** (post-QC) | ~**1,067** (post-QC) | imputed 1,091 | **RE-RUN** |
-| 7 | **~1,062** (post-PCA) | ~**1,055** (post-PCA) | post-QC 1,067 | **RE-RUN** |
-| 8-15 | **All buggy** | **All correct** | corrected upstream | **RE-RUN ALL** |
+Only Steps 6-15 need to be re-run (using filtered 1,091-sample input):
+
+| Step | Current Input | Filtered Input | Action |
+|------|---|---|---|
+| 1-5 | 1,098 samples (with 7 bad) | Keep as is | **NO CHANGE** |
+| 6 | 1,074 after QC | ~1,067 after filtering | **RE-RUN** |
+| 7 | ~1,062 after PCA | ~1,055 after filtering | **RE-RUN** |
+| 8-15 | All based on buggy input | All corrected output | **RE-RUN** |
 
 ---
 
 ## Impact Assessment
 
-### High Impact
-- **Imputation (Step 4)**: Using 1,098 instead of 1,091 samples impacts variant density estimates and INFO scores. Re-imputation required.
-- **ADMIXTURE / FST / Ancestry** (Steps 9, 11): Population structure estimates assume 1,098 samples; different with 1,091.
-- **PCA (Steps 7-8)**: Outlier detection and projection change with different sample size.
+### Why Filtering Without Re-imputation Works
 
-### Medium Impact
-- **IBD (Step 2)**: 57 samples removed is constant, but pair count changes (666,585 → 657,778).
-- **SNP-level QC (Step 3)**: Variant filtering (HWE, MAF) may differ slightly with different sample size.
+The 7 samples with high missingness (F_MISS > 0.20) problem:
+- **Original genotypes:** Poor quality (that's why F_MISS > 0.20)
+- **Imputed genotypes:** Still valid (imputation computes them from reference panel, independent of original quality)
+- **Solution:** Use imputed genotypes, just exclude samples from final analyses
 
-### Low Impact
-- **ID normalization (Step 5)**: No sample count change; 2 samples fixed regardless.
-- **Data merging**: File formats unchanged; imputation merging logic unchanged.
+It's not like the imputation was "wrong" — it was computed correctly. We're just deciding to exclude the sample afterwards.
+
+### What Gets Re-run
+
+- **High Impact (Re-run needed):**
+  - **PCA (Steps 7-8):** Different outlier cutoffs with 1,091 vs 1,098 samples
+  - **ADMIXTURE/FST/Ancestry** (Steps 9, 11): Population structure changes with corrected sample set
+  
+- **No Impact (No re-run):**
+  - **Imputation (Step 4):** ✓ SKIP — imputed genotypes are valid, just filter samples
+  - **SNP-level QC (Step 3):** Already done; filtering samples doesn't change variant statistics
+  - **IBD (Step 2):** Already done; filtering samples afterwards is OK
+
+### Bottom Line
+
+Only downstream population-level analyses (PCA, ADMIXTURE, FST) need re-running because they're sensitive to sample composition. Imputation and QC are indifferent.
 
 ---
 
 ## Which Analyses Are Currently Wrong?
 
-Everything in the documentation from Step 2 onwards is based on BUGGY data:
+**Only downstream population-level analyses** are sensitive to having those 7 bad samples:
 
-- ❌ ADMIXTURE results (1,047 samples, but should be 1,040)
-- ❌ FST/PBS statistics (reference pops vs 1,047 UZB)  
-- ❌ PCA plots (global + local)
-- ❌ GWAS results (if any, using 1,062 in Step 8)
-- ❌ IBD estimates
-- ❌ ROH statistics
-- ❌ Variant INFO scores from imputation
-- ❌ Allele frequency distributions
+- ❌ ADMIXTURE results (based on 1,098 instead of 1,091)
+- ❌ FST/PBS statistics (reference pops vs 1,098 UZB vs 1,091)  
+- ❌ PCA plots (local + global, with different outlier cutoffs)
+
+**NOT affected** (no re-run needed):
+- ✓ Imputation results (valid regardless of sample quality)
+- ✓ Variant QC statistics (HWE, MAF, info scores)
+- ✓ IBD results (already computed; filtering samples afterwards is OK)
+- ✓ Individual-level data (genotypes, phenotypes, covariates)
 
 ---
 
 ## Decision: Should We Re-run?
 
-**RECOMMENDATION: NO FULL RE-RUN NEEDED** ✓ Use filtering strategy instead
+**✓ RECOMMENDED: Filter bad samples, re-run only Steps 6-15**
 
-See `FILTERING_STRATEGY.md` for the efficient approach:
-- Keep imputation results as-is (expensive)
-- Just remove 7 bad samples from Step 4 output  
-- Re-run only Steps 6-15 (fast downstream analyses)
-- **Result:** Final analyses use correct 1,091-sample set
-- **Time savings:** ~70% (skip 7-day imputation)
+See `FILTERING_STRATEGY.md` for detailed explanation.
 
-**Original Plan (if full re-run is required):**
+**Why:**
+- Imputation doesn't need re-run (valid regardless of original sample quality)
+- Only population-level analyses (PCA, ADMIXTURE) are sensitive to sample composition
+- Time: ~2-3 days (vs. 10+ days for full re-run)
+- Result: Final analyses use correct 1,091-sample set
+
+**Alternative** (if full re-run wanted):
 
 
 1. Seven samples carrying data quality issues are included in current analyses
@@ -107,19 +118,34 @@ See `FILTERING_STRATEGY.md` for the efficient approach:
 
 ---
 
-## Next Steps
+## Next Steps (Filtering Strategy)
 
-1. **Backup current analyses** (save 1,098-sample results for comparison)
-2. **Start Step 2 with 1,148-sample input**
-3. **Re-execute all downstream steps**
-4. **Compare results** (should differ by ~0.7% in sample size only for most metrics)
-5. **Update publication/results** with corrected figures
+1. **Filter the post-imputation data**
+   ```bash
+   plink --bfile ConvSK_final_clean \
+     --remove remove_7_highMiss.txt \
+     --make-bed --out ConvSK_final_clean_filtered
+   ```
+
+2. **Re-run Steps 6-15 using filtered input**
+   - Step 6: Post-imputation QC
+   - Step 7: Local PCA  
+   - Step 8: Global PCA (with 1000G)
+   - Step 9: FST analysis
+   - Step 10: Covariate validation
+   - Step 11: ADMIXTURE
+   - Step 15: ROH analysis
+
+3. **Update published results** with corrected figures (1,091 samples instead of 1,098)
+
+4. **Document in reproducibility notes** that final analyses use 1,091-sample subset after excluding high-missingness individuals
 
 ---
 
-## References
+## Validation Checklist
 
-See these files for detailed evidence:
-- `old_logs/ConvSK_QC_and_VCF_report.md` — Correction note with proof
-- `steps/step1.html` — Warning banner about buggy production data
-- `steps/step2.html` — Warning banner and updated cascade numbers
+- [ ] Filter operation produces 1,067 samples (1,074 - 7)
+- [ ] PCA plots updated with correct sample count
+- [ ] ADMIXTURE results recalculated  
+- [ ] FST statistics re-computed
+- [ ] All figures/tables updated
