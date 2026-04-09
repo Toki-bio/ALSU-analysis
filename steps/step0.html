@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 0: Pre-QC Sample Investigation - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%); min-height: 100vh; padding: 20px;}
+        .page-wrapper {display: flex; gap: 20px; max-width: 1400px; margin: 0 auto;}
+        .sidebar {width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px;}
+        .sidebar h3 {font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px;}
+        .roadmap-mini {display: flex; flex-direction: column; gap: 8px;}
+        .roadmap-mini a {padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em;}
+        .roadmap-mini a:hover {background: #f0f0f0; border-left-color: #666;}
+        .roadmap-mini a.current {background: #555; color: white; border-left-color: #333; font-weight: 600;}
+        .main-content {flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .header {background: linear-gradient(135deg, #8B0000 0%, #4a0000 100%); color: white; padding: 30px;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block;}
+        .back-link:hover {color: white;}
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        .header p {opacity: 0.9;}
+        .step-badge {display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px;}
+        .content {padding: 30px;}
+        .section {margin-bottom: 40px;}
+        .section-header {color: #333; font-size: 1.5em; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #999;}
+        .section-content {line-height: 1.8; color: #555;}
+        .metric-table {width: 100%; border-collapse: collapse; margin: 10px 0; background: white; border-radius: 5px; overflow: hidden; border: 1px solid #ddd;}
+        .metric-table th {background: #f5f5f5; color: #333; padding: 8px; text-align: left; font-weight: 600; font-size: 0.95em; border-bottom: 2px solid #ddd;}
+        .metric-table td {padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 0.9em; line-height: 1.3;}
+        .metric-table tr:last-child td {border-bottom: none;}
+        .metric-table tr:hover {background: #f9f9f9;}
+        .info-box {background: #f0f0f0; border-left: 4px solid #666; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .warning-box {background: #fff8e1; border-left: 4px solid #f9a825; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .danger-box {background: #ffebee; border-left: 4px solid #d32f2f; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .success-box {background: #e8f5e9; border-left: 4px solid #388e3c; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .stats-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 20px 0;}
+        .stat-card {background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%); color: white; padding: 12px; border-radius: 5px; text-align: center;}
+        .stat-card.danger {background: linear-gradient(135deg, #b71c1c 0%, #7f0000 100%);}
+        .stat-card.warn {background: linear-gradient(135deg, #e65100 0%, #bf360c 100%);}
+        .stat-card.ok {background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);}
+        .stat-value {font-size: 1.3em; font-weight: bold;}
+        .stat-label {font-size: 0.75em; opacity: 0.9; margin-top: 3px;}
+        .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
+        details {margin: 15px 0; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;}
+        details summary {padding: 12px 15px; background: #f5f5f5; cursor: pointer; font-weight: 600; color: #333; user-select: none;}
+        details summary:hover {background: #eee;}
+        details[open] summary {border-bottom: 1px solid #ddd;}
+        details .detail-content {padding: 15px; max-height: 500px; overflow-y: auto;}
+        .tag {display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 600; color: white;}
+        .tag-remove {background: #d32f2f;}
+        .tag-keep {background: #388e3c;}
+        .tag-unverified {background: #e65100;}
+        .tag-chip {background: #b71c1c;}
+        .tag-ibd {background: #6a1b9a;}
+        .tag-dt {background: #00695c;}
+        .tag-contam {background: #d84315;}
+        .tag-fmiss {background: #4e342e;}
+        .crossref {color: #1565c0; text-decoration: none; font-weight: 600;}
+        .crossref:hover {text-decoration: underline;}
+        .checklist {list-style: none; padding: 0;}
+        .checklist li {padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: baseline; gap: 8px;}
+        .checklist li:last-child {border-bottom: none;}
+        .check-icon {font-size: 1.1em;}
+        .sample-table {width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.85em;}
+        .sample-table th {background: #444; color: white; padding: 6px 8px; text-align: left;}
+        .sample-table td {padding: 5px 8px; border-bottom: 1px solid #eee; font-family: 'Consolas', monospace;}
+        .sample-table tr:hover {background: #f5f5f5;}
+        .sample-table tr.bad {background: #fff3f0;}
+        @media (max-width: 1024px) {.page-wrapper {flex-direction: column;} .sidebar {width: 100%; position: relative; top: 0;}}
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step0.html" class="current">Step 0: Investigation</a>
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+                <a href="step7.html">Step 7: PCA Analysis</a>
+                <a href="step8.html">Step 8: Global PCA</a>
+                <a href="step9.html">Step 9: Fst Analysis</a>
+                <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+                <a href="step11.html">Step 11: ADMIXTURE</a>
+                <a href="step12.html">Step 12: Annotation</a>
+                <a href="step13.html">Step 13: LD Analysis</a>
+                <a href="step14.html">Step 14: Fst &amp; MDS</a>
+                <a href="step15.html">Step 15: ROH &amp; IBD</a>
+                <a href="next_steps.html">Next Steps</a>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <div class="header">
+                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <h1>Step 0: Pre-QC Sample Investigation</h1>
+                <p>Chip-level and sample-level quality audit of the raw 1,247-sample dataset before any filtering</p>
+                <span class="step-badge">Investigation — April 2026</span>
+            </div>
+
+            <div class="content">
+
+                <!-- PURPOSE -->
+                <div class="section">
+                    <h2 class="section-header">Purpose</h2>
+                    <div class="section-content">
+                        <p>
+                            This page summarizes the findings from a comprehensive pre-QC investigation of the raw PLINK files
+                            (<code>ConvSK_raw</code>: 654,027 variants × 1,247 samples, Illumina GSA-24v3-0_A2 array).
+                            The investigation examined chip-level quality, sample identity (IBD), d/t replicate integrity,
+                            heterozygosity, sex check, and contamination indicators <strong>before any QC filtering was applied</strong>.
+                        </p>
+                        <p style="margin-top: 10px;">
+                            <strong>Full interactive dashboard:</strong>
+                            <a href="../sample_investigation_v2.html" class="crossref">sample_investigation_v2.html</a>
+                            (17 sections with Plotly charts, sortable tables, and per-sample verdicts).
+                            Data source: <code>data/investigation_data_v2.json</code>.
+                        </p>
+                        <p style="margin-top: 10px;">This page has two objectives:</p>
+                        <ol style="margin: 10px 0 0 20px;">
+                            <li><strong>Cross-check Steps 1–15</strong> — verify that all QC decisions are consistent with investigation findings</li>
+                            <li><strong>GWAS sample filtering</strong> — definitive reference for which samples to keep, remove, and flag for future phenotype-association analyses</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- 1. DATASET OVERVIEW -->
+                <div class="section">
+                    <h2 class="section-header">1. Raw Dataset</h2>
+                    <div class="section-content">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">1,247</div>
+                                <div class="stat-label">Total Samples</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">654,027</div>
+                                <div class="stat-label">Variants</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">52</div>
+                                <div class="stat-label">Physical Chips</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Samples per Chip</div>
+                            </div>
+                        </div>
+                        <table class="metric-table">
+                            <tr><th>Property</th><th>Value</th></tr>
+                            <tr><td>Array</td><td>Illumina GSA-24v3-0_A2 (Infinium Global Screening Array)</td></tr>
+                            <tr><td>Source files</td><td><code>ConvSK_raw.bed/.bim/.fam</code></td></tr>
+                            <tr><td>Server path</td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
+                            <tr><td>Genome build</td><td>GRCh37 (hg19)</td></tr>
+                            <tr><td>Sample sheet</td><td>1,248 rows → 1,200 unique Sample_IDs (48 duplicated IDs with d/t suffixes)</td></tr>
+                            <tr><td>Global het rate</td><td>Mean = 0.193, SD = 0.067</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. VERDICT SUMMARY -->
+                <div class="section">
+                    <h2 class="section-header">2. Sample Verdicts — Summary</h2>
+                    <div class="section-content">
+                        <div class="stats-grid">
+                            <div class="stat-card ok">
+                                <div class="stat-value">1,056</div>
+                                <div class="stat-label">KEEP</div>
+                            </div>
+                            <div class="stat-card danger">
+                                <div class="stat-value">191</div>
+                                <div class="stat-label">REMOVE</div>
+                            </div>
+                            <div class="stat-card warn">
+                                <div class="stat-value">30</div>
+                                <div class="stat-label">KEEP — Unverified Identity</div>
+                            </div>
+                        </div>
+
+                        <h3 style="margin-top: 20px; color: #333;">Removal Breakdown (191 samples)</h3>
+                        <table class="metric-table">
+                            <tr><th>Category</th><th>Count</th><th>Description</th></tr>
+                            <tr>
+                                <td><span class="tag tag-chip">chip_failure</span></td>
+                                <td><strong>98</strong></td>
+                                <td>On one of 4 catastrophic chips (208993030xxx series) — mean F_MISS 24–29%, all positions failed</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-dt">dt_artifact</span></td>
+                                <td><strong>45</strong></td>
+                                <td>d/t replicate entries (suffix samples removed, base kept where possible)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-ibd">ibd_duplicate</span></td>
+                                <td><strong>33</strong></td>
+                                <td>IBD deduplication — one member of each unexpected identical pair removed</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fmiss">high_fmiss</span></td>
+                                <td><strong>12</strong></td>
+                                <td>F_MISS &gt; 0.20 on non-catastrophic chips</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-contam">contaminated</span></td>
+                                <td><strong>3</strong></td>
+                                <td>08-495, 08-25, 08-701 — extreme het (z = +5 to +7), F_MISS 29–33%, pattern consistent with two-person DNA mixture</td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin-top: 20px; color: #333;">Identity Status (1,056 KEEP samples)</h3>
+                        <table class="metric-table">
+                            <tr><th>Status</th><th>Count</th><th>GWAS Eligibility</th></tr>
+                            <tr>
+                                <td><span class="tag tag-keep">verified</span></td>
+                                <td><strong>1,026</strong></td>
+                                <td>OK for all analyses (PCA, ADMIXTURE, FST, GWAS)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-unverified">unverified</span></td>
+                                <td><strong>30</strong></td>
+                                <td>OK for PCA / ADMIXTURE / FST. <strong>Must exclude from GWAS</strong> — cannot match genotype to correct phenotype record</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. CATASTROPHIC CHIPS -->
+                <div class="section">
+                    <h2 class="section-header">3. Catastrophic Chips</h2>
+                    <div class="section-content">
+                        <p>4 chips in the <code>208993030xxx</code> series failed entirely. All 24 positions on each chip are affected — the failure is chip-wide.</p>
+                        <table class="metric-table">
+                            <tr><th>Chip Barcode</th><th>Samples</th><th>Mean F_MISS</th><th>Max F_MISS</th></tr>
+                            <tr class="bad"><td><code>208993030034</code></td><td>25</td><td>0.290</td><td>0.409</td></tr>
+                            <tr class="bad"><td><code>208993030039</code></td><td>25</td><td>0.273</td><td>0.372</td></tr>
+                            <tr class="bad"><td><code>208993030044</code></td><td>25</td><td>0.236</td><td>0.380</td></tr>
+                            <tr class="bad"><td><code>208993030046</code></td><td>24</td><td>0.281</td><td>0.420</td></tr>
+                        </table>
+                        <div class="info-box">
+                            <strong>Step 1 cross-check:</strong> The bulk of Step 1 removals (F_MISS &gt; 0.20) come from these 4 chips.
+                            Samples on other chips with F_MISS &gt; 0.20 are in the <code>high_fmiss</code> category (12 samples).
+                        </div>
+                        <!-- TODO: chip numbers above are from the investigation dashboard. If exact values differ, update from server data. -->
+                    </div>
+                </div>
+
+                <!-- 4. IDENTITY CLUSTERS -->
+                <div class="section">
+                    <h2 class="section-header">4. Identity Pairs &amp; Clusters</h2>
+                    <div class="section-content">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">65</div>
+                                <div class="stat-label">Total Pairs (PI_HAT ≥ 0.98)</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">49</div>
+                                <div class="stat-label">Clusters</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">106</div>
+                                <div class="stat-label">Samples Involved</div>
+                            </div>
+                        </div>
+
+                        <table class="metric-table">
+                            <tr><th>Pair Category</th><th>Count</th><th>Description</th></tr>
+                            <tr>
+                                <td>Expected d/t matches</td>
+                                <td><strong>10</strong></td>
+                                <td>d/t sample correctly matches its base — expected QC replicates</td>
+                            </tr>
+                            <tr>
+                                <td>Unexpected — same chip</td>
+                                <td><strong>18</strong></td>
+                                <td>Two different sample IDs on the same chip with identical DNA</td>
+                            </tr>
+                            <tr>
+                                <td>Unexpected — cross-chip</td>
+                                <td><strong>37</strong></td>
+                                <td>Two different sample IDs on different chips with identical DNA</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total unexpected</strong></td>
+                                <td><strong>55</strong></td>
+                                <td>These 55 pairs involve identity problems that cannot be resolved without external verification</td>
+                            </tr>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>Step 2 cross-check:</strong> Step 2 uses PI_HAT ≥ 0.98 to identify 65 pairs → 49 clusters → removes 57 samples via graph-based deduplication.
+                            The 55 unexpected pairs mean that for each such pair, we kept one sample but <strong>cannot verify whose DNA it actually contains</strong>.
+                            This produces the 30 "unverified identity" KEEP samples (some pairs share a kept member across multiple clusters).
+                        </div>
+
+                        <div class="warning-box">
+                            <strong>⚠ GWAS implication:</strong> The 30 unverified-identity samples are genotypically clean
+                            (they pass all QC thresholds) but their sample labels may be wrong. For PCA / ADMIXTURE / FST,
+                            this doesn't matter — the DNA is from a real Uzbek individual. For <strong>GWAS / phenotype association</strong>,
+                            these 30 samples <strong>must be excluded</strong> because we cannot match genotype to the correct phenotype record.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. d/t REPLICATES -->
+                <div class="section">
+                    <h2 class="section-header">5. d/t Replicate Verification</h2>
+                    <div class="section-content">
+                        <p>
+                            48 samples carry a "d" or "t" suffix (45 base IDs: 42 pairs + 3 triplets = 48 entries).
+                            Each d/t is on a <strong>different physical chip</strong> than its base — these are independent replicate experiments,
+                            not software artifacts. The pipeline operator added d/t suffixes within GenomeStudio to disambiguate
+                            duplicate Sample_IDs before PLINK export.
+                        </p>
+                        <div class="stats-grid">
+                            <div class="stat-card ok">
+                                <div class="stat-value" id="dt_correct">—</div>
+                                <div class="stat-label">✓ Match Base</div>
+                            </div>
+                            <div class="stat-card danger">
+                                <div class="stat-value" id="dt_wrong">—</div>
+                                <div class="stat-label">✗ Match Wrong Person</div>
+                            </div>
+                            <div class="stat-card warn">
+                                <div class="stat-value" id="dt_nomatch">—</div>
+                                <div class="stat-label">? No Match at ≥0.98</div>
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <strong>Disposition:</strong> All 45 d/t suffix entries (and 3 t-suffix entries) are removed in the REMOVE list (status <code>dt_artifact</code>).
+                            The base sample is kept when it passes QC. This ensures no duplicate individuals in downstream analyses.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. CONTAMINATION -->
+                <div class="section">
+                    <h2 class="section-header">6. Possible Contamination</h2>
+                    <div class="section-content">
+                        <p>3 samples show a statistical pattern consistent with two-person DNA mixture:</p>
+                        <table class="metric-table">
+                            <tr><th>Sample</th><th>Het Rate</th><th>z-score</th><th>F_MISS</th><th>F(X)</th></tr>
+                            <tr class="bad"><td><code>08-495</code></td><td>0.624</td><td>+6.4</td><td>0.326</td><td>-1.47</td></tr>
+                            <tr class="bad"><td><code>08-25</code></td><td>0.668</td><td>+7.1</td><td>0.331</td><td>-1.18</td></tr>
+                            <tr class="bad"><td><code>08-701</code></td><td>0.550</td><td>+5.3</td><td>0.291</td><td>-0.80</td></tr>
+                        </table>
+                        <p style="margin-top: 10px;">
+                            <strong>Evidence:</strong> Het rates 5–7σ above the mean, high missingness (29–33%), extreme negative F(X).
+                            This pattern is consistent with a two-person DNA mixture but <strong>has not been independently confirmed</strong>.
+                        </p>
+                        <div class="info-box">
+                            <strong>Verification needed:</strong> Examine BAF (B-Allele Frequency) plots in GenomeStudio for these 3 samples.
+                            A contaminated sample shows a characteristic 5-band pattern (BAF ≈ 0, 0.25, 0.50, 0.75, 1.0) instead of the normal 3-band pattern.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. CROSS-CHECK TABLE -->
+                <div class="section">
+                    <h2 class="section-header">7. Step-by-Step Cross-Check Reference</h2>
+                    <div class="section-content">
+                        <p>Use this table to verify that each pipeline step's inputs and outputs are consistent with the investigation findings.</p>
+                        <table class="metric-table">
+                            <tr><th>Step</th><th>Operation</th><th>Expected Input</th><th>Expected Output</th><th>Investigation Notes</th></tr>
+                            <tr>
+                                <td><a href="step1.html" class="crossref">Step 1</a></td>
+                                <td>F_MISS &gt; 0.20 filter</td>
+                                <td>654,027 × 1,247</td>
+                                <td>1,155 samples retained (92 removed)</td>
+                                <td>Investigation found 99 should be removed (the pipeline used a slightly different removal list — 7-sample discrepancy documented in Step 1)</td>
+                            </tr>
+                            <tr>
+                                <td><a href="step2.html" class="crossref">Step 2</a></td>
+                                <td>IBD dedup (PI_HAT ≥ 0.98)</td>
+                                <td>1,155 samples</td>
+                                <td>1,098 samples (57 removed from 49 clusters)</td>
+                                <td>Investigation confirms 65 pairs, 49 clusters. 55 of 65 are unexpected. Dedup resolves duplicate genotypes but not identity ambiguity.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="step3.html" class="crossref">Step 3</a></td>
+                                <td>SNP QC + VCF export</td>
+                                <td>654,027 variants × 1,098</td>
+                                <td>472,191 variants in VCF</td>
+                                <td>No sample-level issues. SNP QC removes MAF/HWE/geno failures, I/D alleles, duplicate positions.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="step4.html" class="crossref">Step 4</a></td>
+                                <td>Imputation (TOPMed)</td>
+                                <td>472,191 variants</td>
+                                <td>10,846,569 variants</td>
+                                <td>Quality depends on input sample quality. Samples from bad chips or with contamination may have unreliable imputed genotypes.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="step5.html" class="crossref">Step 5</a>–<a href="step6.html" class="crossref">6</a></td>
+                                <td>ID normalize + final QC</td>
+                                <td>1,098 samples</td>
+                                <td>Post-imputation clean set</td>
+                                <td>Verify that the 3 contaminated samples (if still present) are flagged or removed at this stage.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="step7.html" class="crossref">Step 7</a>–<a href="step8.html" class="crossref">8</a></td>
+                                <td>PCA (local + global)</td>
+                                <td>Post-imputation set</td>
+                                <td>PCA coordinates</td>
+                                <td>30 unverified-identity samples are acceptable for PCA (DNA is from a real Uzbek individual regardless of label).</td>
+                            </tr>
+                            <tr>
+                                <td><a href="step9.html" class="crossref">Step 9</a>–<a href="step14.html" class="crossref">14</a></td>
+                                <td>FST, ADMIXTURE, PBS, LD, MDS</td>
+                                <td>Post-imputation set</td>
+                                <td>Population structure results</td>
+                                <td>Same as PCA — unverified identity has minimal effect on population-level analyses.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="step15.html" class="crossref">Step 15</a></td>
+                                <td>ROH &amp; IBD</td>
+                                <td>Post-imputation set</td>
+                                <td>ROH segments, IBD sharing</td>
+                                <td>ROH is per-sample — unverified identity doesn't affect ROH detection. IBD sharing between unverified samples may be artifactual.</td>
+                            </tr>
+                            <tr style="background:#fff8e1;">
+                                <td><strong>Future GWAS</strong></td>
+                                <td>Phenotype–genotype association</td>
+                                <td>Post-imputation set</td>
+                                <td>Association statistics</td>
+                                <td><strong>Must exclude the 30 unverified-identity samples</strong> in addition to all 191 REMOVE samples. Effective GWAS N = 1,026.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 8. GWAS FILTERING -->
+                <div class="section">
+                    <h2 class="section-header">8. GWAS Sample Filtering Criteria</h2>
+                    <div class="section-content">
+                        <p>For phenotype–genotype association (GWAS), apply the following exclusions in order:</p>
+
+                        <table class="metric-table">
+                            <tr><th>#</th><th>Filter</th><th>Samples Removed</th><th>Cumulative Remaining</th></tr>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="tag tag-chip">chip_failure</span> — catastrophic chips (208993030xxx)</td>
+                                <td>98</td>
+                                <td>1,149</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="tag tag-dt">dt_artifact</span> — d/t replicate suffixes</td>
+                                <td>45</td>
+                                <td>1,104</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="tag tag-ibd">ibd_duplicate</span> — one member of each unexpected identical pair</td>
+                                <td>33</td>
+                                <td>1,071</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="tag tag-fmiss">high_fmiss</span> — F_MISS &gt; 0.20 on non-catastrophic chips</td>
+                                <td>12</td>
+                                <td>1,059</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><span class="tag tag-contam">contaminated</span> — pattern consistent with DNA mixture</td>
+                                <td>3</td>
+                                <td>1,056</td>
+                            </tr>
+                            <tr style="background: #fff8e1;">
+                                <td>6</td>
+                                <td><span class="tag tag-unverified">unverified</span> — identity ambiguous (cannot match to phenotype)</td>
+                                <td>30</td>
+                                <td><strong>1,026</strong></td>
+                            </tr>
+                        </table>
+
+                        <div class="success-box">
+                            <strong>Population-structure analyses</strong> (PCA, ADMIXTURE, FST, PBS, MDS): Filters 1–5 only → N = <strong>1,056</strong>.<br>
+                            <strong>GWAS / phenotype association</strong>: Filters 1–6 → N = <strong>1,026</strong>.
+                        </div>
+
+                        <div class="info-box">
+                            <strong>Generating the removal list:</strong> The full per-sample verdict table is in the
+                            <a href="../sample_investigation_v2.html" class="crossref">interactive dashboard (Section 14)</a>.
+                            Each sample has an <code>action</code> (KEEP / REMOVE), <code>status</code> (reason category), and <code>identity_status</code> (verified / unverified).
+                            Filter <code>data/investigation_data_v2.json → sample_verdicts</code> where <code>action == "REMOVE"</code> or (for GWAS) additionally where <code>identity_status == "unverified"</code>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. OPEN ITEMS -->
+                <div class="section">
+                    <h2 class="section-header">9. Open Items</h2>
+                    <div class="section-content">
+                        <ul class="checklist">
+                            <li><span class="check-icon">⬜</span> <strong>BAF verification of 3 contaminated samples</strong> — check GenomeStudio BAF plots for 5-band pattern (08-495, 08-25, 08-701)</li>
+                            <li><span class="check-icon">⬜</span> <strong>SNP fingerprinting for identity resolution</strong> — 96-SNP panel on ~69 original DNA tubes to resolve the 55 unexpected identical pairs (see <a href="../sample_investigation_v2.html" class="crossref">dashboard Section 17</a>)</li>
+                            <li><span class="check-icon">⬜</span> <strong>Request original plate-loading manifest</strong> from the lab (physical tube-to-well mapping) to help resolve identity mismatches</li>
+                            <li><span class="check-icon">⬜</span> <strong>7-sample discrepancy</strong> — Step 1 in production removed 92 samples instead of the correct 99. All downstream steps (2–15) used 1,155 → 1,098 cascade instead of 1,148 → corrected value. Re-execution needed for publication-quality results.</li>
+                            <li><span class="check-icon">⬜</span> <strong>Scanner QC results</strong> — raw IDAT control probe analysis for the 4 bad chips (see <a href="../sample_investigation_v2.html" class="crossref">dashboard Section 13</a>)</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer">
+                Step 0: Pre-QC Sample Investigation — ALSU Genotyping Pipeline<br>
+                Data: <code>investigation_data_v2.json</code> |
+                Full dashboard: <a href="../sample_investigation_v2.html" style="color:#555;">sample_investigation_v2.html</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Populate d/t counts from the data file
+    fetch('../data/investigation_data_v2.json')
+      .then(r => r.json())
+      .then(D => {
+        const DS = D.dt_sex;
+        const pairs = D.pairs_098;
+        function stripSuffix(iid) { const m = iid.match(/^(.+?)[dt]$/); return m ? m[1] : iid; }
+
+        let nCorrect = 0, nWrong = 0, nNoMatch = 0;
+        DS.forEach(ds => {
+          const iid = ds.iid;
+          const base = ds.base;
+          const matchPair = pairs.find(p =>
+            (p.iid1 === iid && p.iid2 === base) || (p.iid1 === base && p.iid2 === iid)
+          );
+          const wrongMatch = pairs.find(p =>
+            ((p.iid1 === iid && stripSuffix(p.iid2) !== base) || (p.iid2 === iid && stripSuffix(p.iid1) !== base)) &&
+            p.pihat >= 0.98
+          );
+          if (matchPair && matchPair.pihat >= 0.98) nCorrect++;
+          else if (wrongMatch) nWrong++;
+          else nNoMatch++;
+        });
+
+        document.getElementById('dt_correct').textContent = nCorrect + '/48';
+        document.getElementById('dt_wrong').textContent = nWrong + '/48';
+        document.getElementById('dt_nomatch').textContent = nNoMatch + '/48';
+      })
+      .catch(e => console.warn('Could not load investigation data:', e));
+    </script>
+</body>
+</html>
