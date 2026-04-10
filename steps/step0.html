@@ -213,6 +213,12 @@
                             </tr>
                         </table>
 
+                        <details id="list-chip-failure"><summary>chip_failure — 98 samples (click to expand)</summary><div class="detail-content" id="list-chip-failure-body">Loading…</div></details>
+                        <details id="list-dt-artifact"><summary>dt_artifact — 45 samples</summary><div class="detail-content" id="list-dt-artifact-body">Loading…</div></details>
+                        <details id="list-ibd-duplicate"><summary>ibd_duplicate — 33 samples</summary><div class="detail-content" id="list-ibd-duplicate-body">Loading…</div></details>
+                        <details id="list-high-fmiss"><summary>high_fmiss — 12 samples</summary><div class="detail-content" id="list-high-fmiss-body">Loading…</div></details>
+                        <details id="list-contaminated"><summary>contaminated — 3 samples</summary><div class="detail-content" id="list-contaminated-body">Loading…</div></details>
+
                         <h3 style="margin-top: 20px; color: #333;">Identity Status (1,056 KEEP samples)</h3>
                         <table class="metric-table">
                             <tr><th>Status</th><th>Count</th><th>GWAS Eligibility</th></tr>
@@ -227,6 +233,8 @@
                                 <td>OK for PCA / ADMIXTURE / FST. <strong>Must exclude from GWAS</strong> — cannot match genotype to correct phenotype record</td>
                             </tr>
                         </table>
+
+                        <details id="list-unverified"><summary>unverified identity — 30 KEEP samples</summary><div class="detail-content" id="list-unverified-body">Loading…</div></details>
                     </div>
                 </div>
 
@@ -246,6 +254,12 @@
                             <strong>Step 1 cross-check:</strong> The bulk of Step 1 removals (F_MISS &gt; 0.20) come from these 4 chips.
                             Samples on other chips with F_MISS &gt; 0.20 are in the <code>high_fmiss</code> category (12 samples).
                         </div>
+
+                        <details id="list-chip-208993030034"><summary>208993030034 — samples</summary><div class="detail-content" id="list-chip-208993030034-body">Loading…</div></details>
+                        <details id="list-chip-208993030039"><summary>208993030039 — samples</summary><div class="detail-content" id="list-chip-208993030039-body">Loading…</div></details>
+                        <details id="list-chip-208993030044"><summary>208993030044 — samples</summary><div class="detail-content" id="list-chip-208993030044-body">Loading…</div></details>
+                        <details id="list-chip-208993030046"><summary>208993030046 — samples</summary><div class="detail-content" id="list-chip-208993030046-body">Loading…</div></details>
+
                         <!-- TODO: chip numbers above are from the investigation dashboard. If exact values differ, update from server data. -->
                     </div>
                 </div>
@@ -299,6 +313,9 @@
                             This produces the 30 "unverified identity" KEEP samples (some pairs share a kept member across multiple clusters).
                         </div>
 
+                        <details id="list-pairs-expected"><summary>Expected d/t pairs — 10 pairs</summary><div class="detail-content" id="list-pairs-expected-body">Loading…</div></details>
+                        <details id="list-pairs-unexpected"><summary>Unexpected identical pairs — 55 pairs</summary><div class="detail-content" id="list-pairs-unexpected-body">Loading…</div></details>
+
                         <div class="warning-box">
                             <strong>⚠ GWAS implication:</strong> The 30 unverified-identity samples are genotypically clean
                             (they pass all QC thresholds) but their sample labels may be wrong. For PCA / ADMIXTURE / FST,
@@ -336,6 +353,8 @@
                             <strong>Disposition:</strong> All 45 d/t suffix entries (and 3 t-suffix entries) are removed in the REMOVE list (status <code>dt_artifact</code>).
                             The base sample is kept when it passes QC. This ensures no duplicate individuals in downstream analyses.
                         </div>
+
+                        <details id="list-dt-samples"><summary>d/t replicate entries — 48 samples</summary><div class="detail-content" id="list-dt-samples-body">Loading…</div></details>
                     </div>
                 </div>
 
@@ -520,14 +539,16 @@
     </div>
 
     <script>
-    // Populate d/t counts from the data file
     fetch('../data/investigation_data_v2.json')
       .then(r => r.json())
       .then(D => {
         const DS = D.dt_sex;
         const pairs = D.pairs_098;
+        const SV = D.sample_verdicts;
+        const ES = D.enriched_samples;
         function stripSuffix(iid) { const m = iid.match(/^(.+?)[dt]$/); return m ? m[1] : iid; }
 
+        // === d/t stat cards ===
         let nCorrect = 0, nWrong = 0, nNoMatch = 0;
         DS.forEach(ds => {
           const iid = ds.iid;
@@ -547,6 +568,95 @@
         document.getElementById('dt_correct').textContent = nCorrect + '/48';
         document.getElementById('dt_wrong').textContent = nWrong + '/48';
         document.getElementById('dt_nomatch').textContent = nNoMatch + '/48';
+
+        // === Helper: render a sample list as monospace lines ===
+        function renderList(elId, items, cols) {
+          const el = document.getElementById(elId);
+          if (!el) return;
+          if (!items.length) { el.textContent = '(none)'; return; }
+          if (cols) {
+            let html = '<table class="sample-table"><tr>' + cols.map(c => '<th>' + c + '</th>').join('') + '</tr>';
+            items.forEach(row => {
+              html += '<tr>' + row.map(v => '<td>' + v + '</td>').join('') + '</tr>';
+            });
+            html += '</table>';
+            el.innerHTML = html;
+          } else {
+            el.innerHTML = '<code style="white-space:pre-wrap;word-break:break-all;font-size:0.85em;">' + items.join(', ') + '</code>';
+          }
+        }
+
+        // === Section 2: Verdict breakdown lists ===
+        const statusGroups = {};
+        SV.forEach(s => {
+          if (s.action !== 'REMOVE') return;
+          if (!statusGroups[s.status]) statusGroups[s.status] = [];
+          statusGroups[s.status].push(s);
+        });
+
+        const statusMap = {
+          'chip_failure': 'list-chip-failure-body',
+          'dt_artifact': 'list-dt-artifact-body',
+          'ibd_duplicate': 'list-ibd-duplicate-body',
+          'high_fmiss': 'list-high-fmiss-body',
+          'contaminated': 'list-contaminated-body'
+        };
+        for (const [status, elId] of Object.entries(statusMap)) {
+          const arr = statusGroups[status] || [];
+          const rows = arr.sort((a,b) => a.iid.localeCompare(b.iid))
+            .map(s => [s.iid, s.barcode || '—', s.fmiss !== undefined ? s.fmiss.toFixed(3) : '—', (s.reasons || []).join('; ')]);
+          renderList(elId, rows, ['Sample ID', 'Chip', 'F_MISS', 'Reasons']);
+        }
+
+        // Unverified identity KEEP samples
+        const unverified = SV.filter(s => s.action === 'KEEP' && s.identity_status === 'unverified')
+          .sort((a,b) => a.iid.localeCompare(b.iid))
+          .map(s => [s.iid, s.barcode || '—', s.identity_note || '—']);
+        renderList('list-unverified-body', unverified, ['Sample ID', 'Chip', 'Identity Note']);
+
+        // === Section 3: Per-chip sample lists ===
+        const badChips = ['208993030034', '208993030039', '208993030044', '208993030046'];
+        badChips.forEach(bc => {
+          const samples = ES.filter(s => s.barcode === bc)
+            .sort((a,b) => a.iid.localeCompare(b.iid))
+            .map(s => [s.iid, 'R' + (s.position || '?'), s.fmiss !== undefined ? s.fmiss.toFixed(3) : '—']);
+          const summaryEl = document.querySelector('#list-chip-' + bc + ' summary');
+          if (summaryEl) summaryEl.textContent = bc + ' — ' + samples.length + ' samples';
+          renderList('list-chip-' + bc + '-body', samples, ['Sample ID', 'Position', 'F_MISS']);
+        });
+
+        // === Section 4: Identity pairs ===
+        const chipLookup = {};
+        ES.forEach(s => { chipLookup[s.iid] = s.barcode || '?'; });
+        const dtIids = new Set(DS.map(d => d.iid));
+        const expectedPairs = pairs.filter(p => {
+          const s1dt = dtIids.has(p.iid1), s2dt = dtIids.has(p.iid2);
+          if (s1dt) { const b = stripSuffix(p.iid1); return p.iid2 === b; }
+          if (s2dt) { const b = stripSuffix(p.iid2); return p.iid1 === b; }
+          return false;
+        });
+        const unexpectedPairs = pairs.filter(p => !expectedPairs.includes(p));
+        renderList('list-pairs-expected-body',
+          expectedPairs.map(p => [p.iid1, p.iid2, p.pihat.toFixed(4)]),
+          ['Sample 1', 'Sample 2', 'PI_HAT']
+        );
+        renderList('list-pairs-unexpected-body',
+          unexpectedPairs.sort((a,b) => b.pihat - a.pihat).map(p => {
+            const c1 = chipLookup[p.iid1] || '?', c2 = chipLookup[p.iid2] || '?';
+            return [p.iid1, p.iid2, p.pihat.toFixed(4), c1 === c2 ? 'same chip' : 'cross-chip'];
+          }),
+          ['Sample 1', 'Sample 2', 'PI_HAT', 'Chip Relation']
+        );
+        // Update summaries with actual counts
+        const peSummary = document.querySelector('#list-pairs-expected summary');
+        if (peSummary) peSummary.textContent = 'Expected d/t pairs — ' + expectedPairs.length + ' pairs';
+        const puSummary = document.querySelector('#list-pairs-unexpected summary');
+        if (puSummary) puSummary.textContent = 'Unexpected identical pairs — ' + unexpectedPairs.length + ' pairs';
+
+        // === Section 5: d/t samples ===
+        const dtRows = DS.sort((a,b) => a.iid.localeCompare(b.iid))
+          .map(d => [d.iid, d.base, d.suffix || '—']);
+        renderList('list-dt-samples-body', dtRows, ['d/t Sample', 'Base ID', 'Suffix']);
       })
       .catch(e => console.warn('Could not load investigation data:', e));
     </script>
