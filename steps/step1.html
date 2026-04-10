@@ -62,6 +62,8 @@
         .param-table th {background: #444; color: white; padding: 10px; text-align: left; font-size: 0.9em;}
         .param-table td {padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 0.9em; vertical-align: top;}
         .param-table tr:hover {background: #f9f9f9;}
+        .highlight-row {background: #fff3e0 !important;}
+        .highlight-row:hover {background: #ffe0b2 !important;}
         @media (max-width: 1024px) {.page-wrapper {flex-direction: column;} .sidebar {width: 100%; position: relative; top: 0;}}
     </style>
 </head>
@@ -97,10 +99,10 @@
             <div class="search-results" id="searchResults"></div>
 
             <div class="header">
-                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
                 <h1>Step 1: Sample Missingness Filter</h1>
                 <p>Remove samples with excessive missing genotypes to ensure downstream analytical reliability</p>
-                <span class="step-badge">✓ Completed — December 15, 2025</span>
+                <span class="step-badge">&check; Completed &mdash; Spring 2026 (re-analysis)</span>
             </div>
 
             <div class="content">
@@ -110,18 +112,18 @@
                     <div class="section-content">
                         <p>
                             Per-sample missingness (<code>F_MISS</code>) quantifies the fraction of genotype calls that failed for a given individual.
-                            Elevated missingness typically indicates technical failures during genotyping — degraded DNA, low input concentration,
+                            Elevated missingness typically indicates technical failures during genotyping &mdash; degraded DNA, low input concentration,
                             partial hybridisation on the array, or scanning artefacts. Retaining such samples introduces differential
                             missingness bias: variants appear to differ in frequency between high-quality and low-quality samples even when
                             no true genetic difference exists, producing spurious associations and inflated test statistics.
                         </p>
 
                         <div class="info-box">
-                            <strong>Rationale:</strong> Sample-level missingness filtering is recommended as the first QC step because
+                            <strong>Rationale:</strong> Sample-level missingness filtering is the first QC step because
                             it prevents high-missingness samples from influencing SNP-level statistics computed later (e.g., HWE p-values,
-                            allele frequency estimates). Common thresholds range from 1–5% in carefully designed studies. A relaxed 20%
-                            threshold was used here because this is a clinical biobank array dataset where some samples may have lower DNA quality;
-                            the goal is to remove only catastrophic failures while retaining as much of the Central Asian cohort as possible.
+                            allele frequency estimates). A relaxed 20% threshold was chosen for this clinical biobank array dataset
+                            to remove only catastrophic failures while retaining as much of the Central Asian cohort as possible.
+                            See Section 2 for threshold comparison with the literature.
                         </div>
 
                         <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
@@ -145,22 +147,22 @@
                         </div>
 
                         <div class="warning-box" style="border-left-color: #d32f2f; background: #ffebee;">
-                            <strong style="color: #d32f2f;">⚠ CRITICAL: Pipeline Data Quality Issue</strong><br>
+                            <strong style="color: #d32f2f;">&starf; Spring 2026 Re-analysis</strong><br>
                             <div style="margin-top: 10px; font-size: 0.9em;">
-                            This documented step (Step 1) shows the <strong>CORRECT</strong> values (99 removed → 1,148 retained).
-                            However, <strong>all production analyses from Step 2 onwards are based on BUGGY data</strong> (92 removed → 1,155 retained).
+                            This page documents the <strong>corrected</strong> Step 1 (99 removed &rarr; 1,148 retained).
+                            The original winter 2025 pipeline removed only 92 of these 99 samples &mdash; 7 samples with
+                            F_MISS &gt; 0.20 were incorrectly retained and propagated through all downstream analyses.
+                            The root cause of the 92-vs-99 discrepancy was never identified.
                             <br><br>
-                            <strong>Evidence:</strong> The correct 99-sample removal list was created but the pipeline was never re-run.
-                            All downstream analyses (imputation, ADMIXTURE, FST, ROH, etc.) used the incorrect 1,155→1,098 cascade.
-                            <br><br>
-                            <strong>Impact:</strong> 7 samples with F_MISS > 0.20 were incorrectly retained in production analyses.
-                            To use correct data, Steps 2-15 must be re-executed using 1,148-sample input.
+                            <strong>Overlap with Step 0:</strong> All 99 removed samples were independently flagged by the
+                            <a href="step0.html">chip-level investigation</a> (84 chip failures, 12 high-missingness outliers,
+                            3 contaminated). See <a href="#crossref">Section 4</a> for the full cross-reference.
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. PARAMETER EXPLANATION -->
+                <!-- 2. QC PARAMETER -->
                 <div class="section">
                     <h2 class="section-header">2. QC Parameter: Per-Sample Missingness</h2>
                     <div class="section-content">
@@ -181,7 +183,7 @@
                             <tr>
                                 <td><code>--mind</code></td>
                                 <td>0.20 (20%)</td>
-                                <td>0.01–0.10</td>
+                                <td>0.01&ndash;0.10</td>
                                 <td>Samples with &gt;20% missing genotypes are removed. This corresponds to failing &gt;130,000 out of 654,027 genotype calls.</td>
                             </tr>
                         </table>
@@ -216,7 +218,7 @@
                             <tr>
                                 <td><strong>20% (--mind 0.20)</strong></td>
                                 <td><strong>Very relaxed</strong></td>
-                                <td><strong>Used here — removes only catastrophic failures</strong></td>
+                                <td><strong>Used here &mdash; removes only catastrophic failures</strong></td>
                             </tr>
                         </table>
                     </div>
@@ -227,68 +229,134 @@
                     <h2 class="section-header">3. Per-Sample Missingness Distribution</h2>
                     <div class="section-content">
                         <p>
-                            The histogram below shows the distribution of per-sample missingness rates (<code>F_MISS</code>) across all 1,247 input samples.
-                            The vast majority of samples have very low missingness (&lt;0.5%), with a long right tail
-                            representing the 92 samples exceeding the 20% threshold.
+                            The histogram below shows the distribution of per-sample missingness rates (<code>F_MISS</code>) across all 1,247 input samples
+                            using 1%-wide bins. The vast majority of samples cluster below 2% missingness, with a long right tail
+                            representing the 99 samples exceeding the 20% threshold.
                         </p>
 
                         <div class="chart-container">
                             <div class="chart-title">Per-Sample Missingness Distribution (F_MISS)</div>
-                            <div class="chart-subtitle">N = 1,247 samples | Red dashed line = 20% removal threshold</div>
-                            <canvas id="missingnessHist" width="700" height="350"></canvas>
+                            <div class="chart-subtitle">N = 1,247 samples &middot; 1%-wide bins &middot; Red dashed line = 20% removal threshold</div>
+                            <canvas id="missingnessHist" width="800" height="380"></canvas>
+                        </div>
+
+                        <p style="margin-top:15px;">
+                            The first bin (0.00&ndash;0.01) contains 815 samples, dominating the scale. The zoomed chart below
+                            shows the distribution of the 99 removed samples (F_MISS &gt; 0.20) in detail.
+                        </p>
+
+                        <div class="chart-container">
+                            <div class="chart-title">Removed Samples &mdash; Zoomed View (F_MISS &gt; 0.20)</div>
+                            <div class="chart-subtitle">N = 99 removed samples &middot; 1%-wide bins</div>
+                            <canvas id="removedHist" width="800" height="280"></canvas>
                         </div>
 
                         <h3 style="margin-top: 20px; color: #333;">Missingness Summary Statistics</h3>
+                        <p style="font-size: 0.9em; color: #888; margin-bottom: 5px;">
+                            Source: <code>ConvSK_raw_miss.imiss</code> on Biotech2024
+                            (<code>/staging/ALSU-analysis/spring2026/</code>)
+                        </p>
                         <table class="metric-table">
-                            <tr><th>Statistic</th><th>Value</th><th>Interpretation</th></tr>
-                            <tr><td>Minimum</td><td>0.0000</td><td>Some samples have zero missing calls</td></tr>
-                            <tr><td>1st Quartile</td><td>0.0014</td><td>75% of samples have &lt;0.14% missingness</td></tr>
-                            <tr><td>Median</td><td>0.0021</td><td>Typical sample has 0.21% missing genotypes</td></tr>
-                            <tr><td>Mean</td><td>0.0024</td><td>Average across all retained samples</td></tr>
-                            <tr><td>3rd Quartile</td><td>0.0028</td><td>Only 25% exceed 0.28% missingness</td></tr>
-                            <tr><td>Max (retained)</td><td>0.1998</td><td>Highest retained sample is just under threshold</td></tr>
-                            <tr><td>Max (overall)</td><td>0.3421</td><td>Worst sample missing 34.2% of genotypes</td></tr>
+                            <tr><th>Statistic</th><th>All 1,247</th><th>Retained 1,148</th><th>Removed 99</th></tr>
+                            <tr><td>Mean F_MISS</td><td>0.0406</td><td>0.0198</td><td>0.2085&ndash;0.4156 range</td></tr>
+                            <tr><td>Std Dev</td><td>0.0781</td><td>0.0320</td><td>&mdash;</td></tr>
+                            <tr><td>Minimum</td><td>0.0078</td><td>0.0078</td><td>0.2085 (08-507)</td></tr>
+                            <tr><td>Maximum</td><td>0.4156</td><td>0.1979</td><td>0.4156 (08-621)</td></tr>
                         </table>
 
                         <div class="info-box">
-                            <strong>Interpretation:</strong> The median missingness of 0.21% indicates excellent overall genotyping quality.
-                            The 92 removed samples (F_MISS &gt; 0.20) represent a distinct cluster of technical failures — their missingness
-                            ranges from 20.0% to 34.2%, far from the bulk of the distribution.
-                            This bimodal pattern (most samples near 0%, a small group at 20–35%) is consistent with plate-specific
-                            or batch-specific genotyping failures rather than a gradual degradation across samples.
+                            <strong>Interpretation:</strong> The retained samples have a mean missingness of ~2%, indicating
+                            excellent overall genotyping quality. The 99 removed samples form a distinct cluster with
+                            F_MISS ranging from 20.9% to 41.6%, far from the bulk of the distribution. This bimodal pattern
+                            (most samples near 1%, a small group at 20&ndash;42%) is consistent with plate-specific or batch-specific
+                            genotyping failures rather than gradual degradation.
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. INPUT / OUTPUT -->
+                <!-- 4. STEP 0 CROSS-REFERENCE -->
+                <div class="section" id="crossref">
+                    <h2 class="section-header">4. Cross-Reference with Step 0 Investigation</h2>
+                    <div class="section-content">
+                        <p>
+                            The <a href="step0.html">Step 0 chip-level investigation</a> independently categorised all 1,247 samples
+                            by examining chip barcodes, raw scan metrics, and contamination indicators. Every one of the 99 samples
+                            removed by the F_MISS &gt; 0.20 filter had already been flagged by the investigation &mdash;
+                            a <strong>100% overlap</strong> confirming that the missingness threshold correctly captures all major
+                            technical failures.
+                        </p>
+
+                        <h3 style="margin-top: 20px; color: #333;">Breakdown by Investigation Category</h3>
+                        <table class="metric-table">
+                            <tr><th>Step 0 Category</th><th>Count</th><th>Description</th></tr>
+                            <tr><td><code>chip_failure</code></td><td>84</td><td>Samples on catastrophically failed chip barcodes (208993030112, 208993030034, 208993030080, 208993030109)</td></tr>
+                            <tr><td><code>high_fmiss</code></td><td>12</td><td>Individual high-missingness outliers on otherwise functional chips</td></tr>
+                            <tr><td><code>contaminated</code></td><td>3</td><td>Samples flagged for DNA contamination (08-25, 08-495, 08-701)</td></tr>
+                            <tr><td><strong>Total</strong></td><td><strong>99</strong></td><td><strong>100% overlap with missingness filter</strong></td></tr>
+                        </table>
+
+                        <h3 style="margin-top: 20px; color: #333;">The 7-Sample Discrepancy (Winter 2025 vs Spring 2026)</h3>
+                        <p>
+                            The original winter 2025 pipeline removed only 92 samples despite the same 20% threshold.
+                            Seven samples with F_MISS well above 0.20 were incorrectly retained.
+                            The root cause was never identified. All 7 have F_MISS ranging from 0.2605 to 0.3732 &mdash;
+                            these are not borderline cases.
+                        </p>
+                        <table class="metric-table">
+                            <tr><th>FID</th><th>IID</th><th>F_MISS</th><th>Step 0 Category</th></tr>
+                            <tr><td>840</td><td>08-25</td><td>0.3308</td><td>contaminated</td></tr>
+                            <tr><td>458</td><td>08-365</td><td>0.3732</td><td>high_fmiss</td></tr>
+                            <tr><td>862</td><td>08-495</td><td>0.3258</td><td>contaminated</td></tr>
+                            <tr><td>499</td><td>08-701</td><td>0.2908</td><td>contaminated</td></tr>
+                            <tr><td>886</td><td>08-77</td><td>0.2605</td><td>high_fmiss</td></tr>
+                            <tr><td>898</td><td>08-825</td><td>0.3605</td><td>chip_failure</td></tr>
+                            <tr><td>910</td><td>12-11</td><td>0.3719</td><td>high_fmiss</td></tr>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>Implication:</strong> These 7 samples (3 contaminated, 3 high-missingness outliers, 1 chip failure)
+                            propagated through all winter 2025 downstream analyses (Steps 2&ndash;15). The spring 2026 re-analysis
+                            corrects this by using the verified 99-sample removal list.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. INPUT / OUTPUT -->
                 <div class="section">
-                    <h2 class="section-header">4. Input &amp; Output Data</h2>
+                    <h2 class="section-header">5. Input &amp; Output Data</h2>
                     <div class="section-content">
                         <h3 style="color: #333;">Input</h3>
                         <table class="metric-table">
-                            <tr><td><strong>Files</strong></td><td>ConvSK_raw.bed, ConvSK_raw.bim, ConvSK_raw.fam</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
+                            <tr><td><strong>Files</strong></td><td>ConvSK_raw.bed, ConvSK_raw.bim, ConvSK_raw.fam (symlinks to winter 2025 originals)</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/spring2026/</code></td></tr>
                             <tr><td><strong>Format</strong></td><td>PLINK binary format (.bed/.bim/.fam)</td></tr>
                             <tr><td><strong>Samples</strong></td><td>1,247 individuals</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs (Illumina GSA-24v3 array)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs (Illumina GSA-24v3-0_A2 array)</td></tr>
                         </table>
 
                         <h3 style="color: #333; margin-top: 20px;">Output</h3>
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20.bed, ConvSK_mind20.bim, ConvSK_mind20.fam</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/spring2026/</code></td></tr>
                             <tr><td><strong>Samples</strong></td><td>1,148 individuals (99 removed)</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs (unchanged — sample filter does not affect SNP count)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs (unchanged &mdash; sample filter does not affect SNP count)</td></tr>
+                        </table>
+
+                        <h3 style="color: #333; margin-top: 20px;">Intermediate Files</h3>
+                        <table class="metric-table">
+                            <tr><td><code>ConvSK_raw_miss.imiss</code></td><td>Per-individual missingness (1,247 rows)</td></tr>
+                            <tr><td><code>ConvSK_raw_miss.lmiss</code></td><td>Per-SNP missingness (654,027 rows)</td></tr>
+                            <tr><td><code>remove_miss20.txt</code></td><td>FID/IID pairs for 99 samples with F_MISS &gt; 0.20</td></tr>
                         </table>
                     </div>
                 </div>
 
-                <!-- 5. COMMANDS -->
+                <!-- 6. COMMANDS -->
                 <div class="section">
-                    <h2 class="section-header">5. Commands Executed</h2>
+                    <h2 class="section-header">6. Commands Executed</h2>
                     <div class="section-content">
-                        <h3 style="color: #333;">Step 1: Calculate per-sample missingness</h3>
-                        <div class="code-block">$ cd /staging/ALSU-analysis/winter2025/PLINK_301125_0312/
+                        <h3 style="color: #333;">Step 1a: Calculate per-sample missingness</h3>
+                        <div class="code-block">$ cd /staging/ALSU-analysis/spring2026/
 
 $ plink --bfile ConvSK_raw \
   --missing \
@@ -298,224 +366,225 @@ $ plink --bfile ConvSK_raw \
 #   ConvSK_raw_miss.imiss  (per-individual missingness)
 #   ConvSK_raw_miss.lmiss  (per-SNP missingness)</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 2: Extract samples with F_MISS &gt; 0.20</h3>
+                        <h3 style="color: #333; margin-top: 20px;">Step 1b: Extract samples with F_MISS &gt; 0.20</h3>
                         <div class="code-block"># Column 6 of .imiss = F_MISS
-$ awk 'NR>1 && $6+0 > 0.20 {print $1"\t"$2}' \
+$ awk 'NR>1 &amp;&amp; $6+0 > 0.20 {print $1"\t"$2}' \
   ConvSK_raw_miss.imiss > remove_miss20.txt
 
 $ wc -l remove_miss20.txt
-92 remove_miss20.txt</div>
+99 remove_miss20.txt</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 3: Remove high-missingness samples</h3>
+                        <h3 style="color: #333; margin-top: 20px;">Step 1c: Remove high-missingness samples</h3>
                         <div class="code-block">$ plink --bfile ConvSK_raw \
   --remove remove_miss20.txt \
   --make-bed \
   --out ConvSK_mind20
 
-PLINK v1.90b6.21 64-bit (2 May 2018)
-Reading map file from [ ConvSK_raw.bim ] ... 654027 markers loaded.
-Reading fam file from [ ConvSK_raw.fam ] ... 1247 individuals loaded.
---remove: 99 people removed, 1148 remaining.
-
-Writing pedigree information to [ ConvSK_mind20.fam ].
-Writing map (bim) file to [ ConvSK_mind20.bim ].
-Writing bed file to [ ConvSK_mind20.bed ].
-
-Total elapsed time: 2.45 seconds.</div>
+# Expected output: 99 people removed, 1148 remaining.
+# Result: ConvSK_mind20.bed/bim/fam (654,027 variants x 1,148 samples)</div>
                     </div>
                 </div>
 
-                <!-- 6. REMOVED SAMPLES -->
+                <!-- 7. REMOVED SAMPLES -->
                 <div class="section">
-                    <h2 class="section-header">6. Removed Samples</h2>
+                    <h2 class="section-header">7. Removed Samples</h2>
                     <div class="section-content">
-                        <p>92 samples were removed for exceeding the 20% missingness threshold. The removed samples
-                        had F_MISS values ranging from 0.200 to 0.342 (mean: 0.246).</p>
+                        <p>99 samples were removed for exceeding the 20% missingness threshold. Their F_MISS values
+                        range from 0.2085 (08-507) to 0.4156 (08-621).</p>
 
                         <details>
-                            <summary>92 removed sample IDs (click to expand)</summary>
+                            <summary>All 99 removed samples with F_MISS values (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    <strong>Source:</strong> <code>remove_miss20.txt</code> on Biotech2024 server
-                                    (<code>/staging/.../PLINK_301125_0312/</code>). Extracted 2026-04-07.
+                                    <strong>Source:</strong> <code>ConvSK_raw_miss.imiss</code> + <code>remove_miss20.txt</code>
+                                    on Biotech2024 (<code>/staging/ALSU-analysis/spring2026/</code>).
+                                    <span style="color: #e65100;">&starf; = not in winter 2025 removal list (7 extra samples)</span>
                                 </p>
-                                <div class="code-block" style="max-height: 400px; overflow-y: auto; font-size: 0.8em;">FID	IID
-1003	08-664
-1030	08-438
-1042	02-55
-1043	02-99
-1054	04-51
-1055	08-68
-1065	02-96
-1068	08-48
-1081	02-103
-1104	03-328
-1105	03-72
-1106	03-73
-1107	03-85
-1108	07-42
-1109	07-79
-1110	07-96
-1111	08-290
-1112	08-291
-1113	08-292
-1114	08-296
-1115	08-297
-1116	08-298
-1117	08-305
-1118	08-306
-1119	08-309
-1120	08-310
-1121	08-311
-1122	08-314
-1123	08-317
-1124	08-321
-1125	08-322
-1126	08-323
-1127	08-326
-1128	08-331
-1129	08-332
-1130	08-336
-1131	08-341
-1132	08-352
-1133	08-356
-1134	08-360
-1135	08-374
-1136	08-386
-1137	08-390
-1138	08-391
-1139	08-392
-1140	08-399
-1141	08-407
-1142	08-410
-1143	08-411
-1144	08-416
-1145	08-419
-1146	08-421
-1147	08-430
-1148	08-433
-1149	08-487
-1150	08-490
-1151	08-505
-1152	08-507
-1159	08-568
-1160	08-582
-1161	08-59
-1162	08-598
-1163	08-621
-1171	08-747
-1172	08-749
-1173	08-754
-1174	08-761
-1175	08-762
-1176	08-766
-1177	08-768
-1178	08-778
-1179	08-779
-1180	08-780
-1181	08-781
-1182	08-782
-1183	08-783
-1184	08-784
-1185	08-786
-1186	08-787
-1187	08-788
-1188	08-789
-1189	08-792
-1190	08-793
-1191	08-794
-1192	08-825d
-1193	15-12M
-1194	20-07
-1195	08-425
-1196	08-454
-1197	08-412
-1198	08-492
-1199	08-403</div>
-                            </div>
-                        </details>
-
-                        <details>
-                            <summary>1,155 retained sample IDs (click to expand)</summary>
-                            <div class="detail-content">
-                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    The retained 1,155 samples proceed to Step 2 (IBD deduplication).
-                                    After all QC steps, 1,047 samples remain in the final analysis dataset.
-                                </p>
-                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># Full list on server:
-$ cut -f2 ConvSK_mind20.fam | head -20
-# 2_01-02
-# 3_01-03
-# 4_01-07
-# 5_01-12
-# 6_01-15
-# 7_01-19
-# 8_01-24
-# 9_01-25
-# 10_01-26
-# 12_02-81
-# ... (1,155 total)</div>
+                                <div class="code-block" style="max-height: 500px; overflow-y: auto; font-size: 0.8em;">FID      IID        F_MISS
+458      08-365     0.3732  ★
+499      08-701     0.2908  ★
+840      08-25      0.3308  ★
+862      08-495     0.3258  ★
+886      08-77      0.2605  ★
+898      08-825     0.3605  ★
+910      12-11      0.3719  ★
+1003     08-664     0.2487
+1030     08-438     0.2362
+1042     02-55      0.2564
+1043     02-99      0.2748
+1054     04-51      0.3115
+1055     08-68      0.2113
+1065     02-96      0.3713
+1068     08-48      0.2461
+1081     02-103     0.3567
+1104     03-328     0.2810
+1105     03-72      0.2843
+1106     03-73      0.2856
+1107     03-85      0.2896
+1108     07-42      0.2883
+1109     07-79      0.2913
+1110     07-96      0.3048
+1111     08-290     0.2913
+1112     08-291     0.2928
+1113     08-292     0.2807
+1114     08-296     0.2927
+1115     08-297     0.3020
+1116     08-298     0.2762
+1117     08-305     0.2821
+1118     08-306     0.2785
+1119     08-309     0.2981
+1120     08-310     0.2948
+1121     08-311     0.3063
+1122     08-314     0.3037
+1123     08-317     0.2933
+1124     08-321     0.2943
+1125     08-322     0.2819
+1126     08-323     0.2936
+1127     08-326     0.3144
+1128     08-331     0.3196
+1129     08-332     0.2567
+1130     08-336     0.2709
+1131     08-341     0.2582
+1132     08-352     0.2438
+1133     08-356     0.2285
+1134     08-360     0.2553
+1135     08-374     0.2637
+1136     08-386     0.3078
+1137     08-390     0.2908
+1138     08-391     0.3182
+1139     08-392     0.3345
+1140     08-399     0.2698
+1141     08-407     0.2579
+1142     08-410     0.2514
+1143     08-411     0.2525
+1144     08-416     0.2499
+1145     08-419     0.2308
+1146     08-421     0.2432
+1147     08-430     0.2638
+1148     08-433     0.3217
+1149     08-487     0.3156
+1150     08-490     0.3166
+1151     08-505     0.2807
+1152     08-507     0.2085
+1159     08-568     0.2482
+1160     08-582     0.2853
+1161     08-59      0.3112
+1162     08-598     0.3664
+1163     08-621     0.4156
+1171     08-747     0.2309
+1172     08-749     0.2858
+1173     08-754     0.3210
+1174     08-761     0.3477
+1175     08-762     0.4032
+1176     08-766     0.2315
+1177     08-768     0.2513
+1178     08-778     0.2385
+1179     08-779     0.2554
+1180     08-780     0.2513
+1181     08-781     0.2580
+1182     08-782     0.2562
+1183     08-783     0.2540
+1184     08-784     0.2511
+1185     08-786     0.2575
+1186     08-787     0.2661
+1187     08-788     0.2621
+1188     08-789     0.2303
+1189     08-792     0.2555
+1190     08-793     0.2534
+1191     08-794     0.2608
+1192     08-825d    0.2573
+1193     15-12M     0.2577
+1194     20-07      0.2616
+1195     08-425     0.2585
+1196     08-454     0.2447
+1197     08-412     0.2548
+1198     08-492     0.2622
+1199     08-403     0.2669</div>
                             </div>
                         </details>
                     </div>
                 </div>
 
-                <!-- 7. QUALITY VERIFICATION -->
+                <!-- 8. QUALITY VERIFICATION -->
                 <div class="section">
-                    <h2 class="section-header">7. Quality Verification</h2>
+                    <h2 class="section-header">8. Quality Verification</h2>
                     <div class="section-content">
                         <div class="success-box">
-                            <strong>✓ Post-filter check:</strong> All 1,155 remaining samples have F_MISS ≤ 0.20.
-                            No variants were removed in this step (654,027 SNPs carried forward).
+                            <strong>&check; Post-filter verification:</strong>
+                            <ul style="margin-top: 8px; padding-left: 20px;">
+                                <li><code>remove_miss20.txt</code> contains exactly 99 lines (FID &harr; IID pairs, tab-separated)</li>
+                                <li>All 99 have F_MISS &gt; 0.20 (min = 0.2085, max = 0.4156)</li>
+                                <li>All 1,148 retained samples have F_MISS &le; 0.1979</li>
+                                <li>No variants removed &mdash; 654,027 SNPs carried forward unchanged</li>
+                                <li>100% overlap with Step 0 investigation verdicts</li>
+                            </ul>
                         </div>
-                        <div class="code-block">$ wc -l ConvSK_mind20.fam ConvSK_mind20.bim
-    1148	ConvSK_mind20.fam
-  654027 ConvSK_mind20.bim
+                        <div class="code-block">$ wc -l remove_miss20.txt
+99 remove_miss20.txt
 
-$ ls -lh ConvSK_mind20.{bed,bim,fam}
--rw-r--r-- 1 user group 187M Dec 15 09:35 ConvSK_mind20.bed
--rw-r--r-- 1 user group 9.2M Dec 15 09:35 ConvSK_mind20.bim
--rw-r--r-- 1 user group 123K Dec 15 09:35 ConvSK_mind20.fam</div>
+# Verify no retained sample exceeds threshold:
+$ awk 'NR>1 &amp;&amp; $6+0 > 0.20' ConvSK_raw_miss.imiss | wc -l
+99
+
+# Highest retained F_MISS:
+$ awk 'NR>1 &amp;&amp; $6+0 &lt;= 0.20' ConvSK_raw_miss.imiss | \
+  awk '{if($6+0 > max) max=$6+0} END{print max}'
+0.1979</div>
                     </div>
                 </div>
 
-                <!-- 8. TIMELINE -->
+                <!-- 9. TIMELINE -->
                 <div class="section">
-                    <h2 class="section-header">8. Chronological Log</h2>
+                    <h2 class="section-header">9. Chronological Log</h2>
                     <div class="section-content">
                         <div class="timeline">
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 09:15</div>
-                                <div class="timeline-description"><strong>Session started</strong><br>Connected to Biotech2024, working directory: <code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></div>
+                                <div class="timeline-time">Winter 2025 (original run)</div>
+                                <div class="timeline-description">
+                                    <strong>Initial pipeline</strong><br>
+                                    Missingness filter applied at <code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code>.
+                                    Removal list contained <strong>92 samples</strong> &mdash; 7 samples with F_MISS &gt; 0.20 were
+                                    incorrectly retained. All downstream analyses (Steps 2&ndash;15) used this buggy dataset.
+                                </div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 09:16</div>
-                                <div class="timeline-description"><strong>Input verified</strong><br>ConvSK_raw: 1,247 samples × 654,027 variants</div>
+                                <div class="timeline-time">Spring 2026 (re-analysis)</div>
+                                <div class="timeline-description">
+                                    <strong>Workspace set up</strong><br>
+                                    Created <code>/staging/ALSU-analysis/spring2026/</code> with symlinks to unchanged raw PLINK files.
+                                </div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 09:18</div>
-                                <div class="timeline-description"><strong>Missingness computed</strong><br><code>plink --missing</code> produced .imiss (per-sample) and .lmiss (per-SNP) files</div>
+                                <div class="timeline-time">Spring 2026</div>
+                                <div class="timeline-description">
+                                    <strong>Missingness recomputed</strong><br>
+                                    <code>plink --missing</code> on ConvSK_raw: .imiss (1,247 samples) and .lmiss (654,027 SNPs) produced.
+                                </div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 09:25</div>
-                                <div class="timeline-description"><strong>Removal list generated</strong><br>92 samples with F_MISS &gt; 0.20 written to <code>remove_miss20.txt</code></div>
+                                <div class="timeline-time">Spring 2026</div>
+                                <div class="timeline-description">
+                                    <strong>Correct removal list generated</strong><br>
+                                    99 samples with F_MISS &gt; 0.20 extracted to <code>remove_miss20.txt</code>.
+                                    Cross-referenced with Step 0: 84 chip_failure + 12 high_fmiss + 3 contaminated = 99.
+                                </div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 09:28</div>
-                                <div class="timeline-description"><strong>Samples removed</strong><br><code>plink --remove</code>: 1,247 → 1,155 samples. Output: ConvSK_mind20</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 09:35</div>
-                                <div class="timeline-description"><strong>Verification passed</strong><br>All retained samples confirmed F_MISS ≤ 0.20; SNP count unchanged</div>
+                                <div class="timeline-time">Spring 2026</div>
+                                <div class="timeline-description">
+                                    <strong>Samples removed</strong><br>
+                                    <code>plink --remove</code>: 1,247 &rarr; 1,148 samples. Output: ConvSK_mind20.
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="footer">
-                <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> |
-                Last updated: January 2, 2026 | Step 1 of 15
+                <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">&#x1F3E0; Back to Home</a> |
+                Last updated: Spring 2026 | Step 1 of 15
             </div>
         </div>
     </div>
@@ -532,81 +601,84 @@ $ ls -lh ConvSK_mind20.{bed,bim,fam}
         resultsDiv.classList.add('active');
     }
 
-    /* ── Per-Sample Missingness Histogram ── */
+    /* ── Main Histogram: Per-Sample Missingness (all 1,247 samples) ── */
     (function() {
         var canvas = document.getElementById('missingnessHist');
         if (!canvas) return;
         var ctx = canvas.getContext('2d');
         var W = canvas.width, H = canvas.height;
-        var pad = {top: 30, right: 30, bottom: 55, left: 60};
+        var pad = {top: 30, right: 30, bottom: 55, left: 65};
         var plotW = W - pad.left - pad.right;
         var plotH = H - pad.top - pad.bottom;
 
-        /* Real F_MISS distribution from ConvSK_raw_miss.imiss (N=1247, Biotech2024 server, extracted 2026-04-07) */
-        var bins = [
-            {lo: 0.000, hi: 0.005, count: 0},
-            {lo: 0.005, hi: 0.010, count: 815},
-            {lo: 0.010, hi: 0.020, count: 168},
-            {lo: 0.020, hi: 0.050, count: 50},
-            {lo: 0.050, hi: 0.100, count: 60},
-            {lo: 0.100, hi: 0.150, count: 33},
-            {lo: 0.150, hi: 0.200, count: 22},
-            {lo: 0.200, hi: 0.300, count: 73},
-            {lo: 0.300, hi: 0.500, count: 26},
-            {lo: 0.500, hi: 1.000, count: 0}
-        ];
-        var maxCount = 0;
-        bins.forEach(function(b) { if (b.count > maxCount) maxCount = b.count; });
-        var maxY = Math.ceil(maxCount / 100) * 100 + 100;
-        var maxX = 1.0;
+        /*
+         * Real F_MISS distribution from ConvSK_raw_miss.imiss
+         * N = 1,247 samples, Biotech2024 server, /staging/ALSU-analysis/spring2026/
+         * 1%-wide bins: bin i = [i/100, (i+1)/100)
+         * Last bin (40) includes all F_MISS >= 0.40
+         */
+        var counts = [815,168,33,9,8,14,12,12,12,10,7,10,12,3,1,3,7,2,8,2,1,1,1,6,7,21,10,4,11,11,5,7,3,2,1,1,2,3,0,0,2];
+        var nBins = counts.length; /* 41 bins: 0.00-0.41 */
+        var binWidth = 0.01;
+        var maxX = 0.42;
+        var maxY = 900;
 
+        /* Axes */
         ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(pad.left, pad.top);
         ctx.lineTo(pad.left, pad.top + plotH);
         ctx.lineTo(pad.left + plotW, pad.top + plotH); ctx.stroke();
 
+        /* Y-axis labels */
         ctx.fillStyle = '#555'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'right';
-        [0, 200, 400, 600, 800, 1000, 1200].forEach(function(v) {
-            var y = pad.top + plotH - (v / maxY) * plotH;
-            ctx.fillText(v.toString(), pad.left - 8, y + 4);
-            if (v > 0) {
+        for (var yv = 0; yv <= maxY; yv += 100) {
+            var y = pad.top + plotH - (yv / maxY) * plotH;
+            ctx.fillText(yv.toString(), pad.left - 8, y + 4);
+            if (yv > 0) {
                 ctx.save(); ctx.strokeStyle = '#e0e0e0'; ctx.setLineDash([3,3]);
                 ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + plotW, y); ctx.stroke();
                 ctx.restore();
             }
-        });
+        }
 
+        /* Y-axis label */
         ctx.save(); ctx.translate(15, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
         ctx.textAlign = 'center'; ctx.font = '12px Segoe UI'; ctx.fillStyle = '#333';
         ctx.fillText('Number of Samples', 0, 0); ctx.restore();
 
-        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI';
+        /* X-axis label */
+        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI'; ctx.fillStyle = '#333';
         ctx.fillText('F_MISS (per-sample missingness rate)', pad.left + plotW / 2, H - 5);
 
+        /* X-axis ticks */
         ctx.font = '10px Segoe UI'; ctx.fillStyle = '#555';
-        for (var x = 0; x <= 0.35; x = Math.round((x + 0.05) * 100) / 100) {
-            var xp = pad.left + (x / maxX) * plotW;
-            ctx.fillText(x.toFixed(2), xp, pad.top + plotH + 18);
+        for (var xt = 0; xt <= 0.40; xt = Math.round((xt + 0.05) * 100) / 100) {
+            var xp = pad.left + (xt / maxX) * plotW;
+            ctx.fillText(xt.toFixed(2), xp, pad.top + plotH + 18);
             ctx.beginPath(); ctx.moveTo(xp, pad.top + plotH); ctx.lineTo(xp, pad.top + plotH + 5);
-            ctx.strokeStyle = '#333'; ctx.stroke();
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.stroke();
         }
 
-        bins.forEach(function(b) {
-            var x1 = pad.left + (b.lo / maxX) * plotW;
-            var x2 = pad.left + (b.hi / maxX) * plotW;
-            var barH = (b.count / maxY) * plotH;
-            var y = pad.top + plotH - barH;
-            var removed = b.lo >= 0.20;
+        /* Bars */
+        for (var i = 0; i < nBins; i++) {
+            var lo = i * binWidth;
+            var x1 = pad.left + (lo / maxX) * plotW;
+            var x2 = pad.left + ((lo + binWidth) / maxX) * plotW;
+            var barH = (counts[i] / maxY) * plotH;
+            var yBar = pad.top + plotH - barH;
+            var removed = (i >= 20);
             ctx.fillStyle = removed ? 'rgba(198,40,40,0.75)' : 'rgba(66,66,66,0.75)';
-            ctx.fillRect(x1 + 1, y, x2 - x1 - 2, barH);
+            ctx.fillRect(x1 + 0.5, yBar, x2 - x1 - 1, barH);
             ctx.strokeStyle = removed ? '#b71c1c' : '#333'; ctx.lineWidth = 0.5;
-            ctx.strokeRect(x1 + 1, y, x2 - x1 - 2, barH);
-            if (b.count > 0) {
-                ctx.fillStyle = '#333'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'center';
-                ctx.fillText(b.count.toString(), (x1 + x2) / 2, y - 4);
+            ctx.strokeRect(x1 + 0.5, yBar, x2 - x1 - 1, barH);
+            /* Count labels for bars >= 10 */
+            if (counts[i] >= 10) {
+                ctx.fillStyle = '#333'; ctx.font = '9px Segoe UI'; ctx.textAlign = 'center';
+                ctx.fillText(counts[i].toString(), (x1 + x2) / 2, yBar - 3);
             }
-        });
+        }
 
+        /* Threshold line at 0.20 */
         var threshX = pad.left + (0.20 / maxX) * plotW;
         ctx.save(); ctx.strokeStyle = '#c62828'; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
         ctx.beginPath(); ctx.moveTo(threshX, pad.top); ctx.lineTo(threshX, pad.top + plotH);
@@ -615,16 +687,98 @@ $ ls -lh ConvSK_mind20.{bed,bim,fam}
         ctx.fillStyle = '#c62828'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'left';
         ctx.fillText('Threshold = 0.20', threshX + 5, pad.top + 15);
         ctx.font = '10px Segoe UI';
-        ctx.fillText('92 samples removed \u2192', threshX + 5, pad.top + 30);
+        ctx.fillText('99 samples removed \u2192', threshX + 5, pad.top + 30);
 
+        /* Legend */
         ctx.fillStyle = 'rgba(66,66,66,0.75)';
-        ctx.fillRect(pad.left + plotW - 170, pad.top + 5, 14, 14);
+        ctx.fillRect(pad.left + plotW - 175, pad.top + 5, 14, 14);
         ctx.fillStyle = '#333'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'left';
-        ctx.fillText('Retained (n=1,155)', pad.left + plotW - 150, pad.top + 16);
+        ctx.fillText('Retained (n=1,148)', pad.left + plotW - 155, pad.top + 16);
         ctx.fillStyle = 'rgba(198,40,40,0.75)';
-        ctx.fillRect(pad.left + plotW - 170, pad.top + 25, 14, 14);
+        ctx.fillRect(pad.left + plotW - 175, pad.top + 25, 14, 14);
         ctx.fillStyle = '#333';
-        ctx.fillText('Removed (n=92)', pad.left + plotW - 150, pad.top + 36);
+        ctx.fillText('Removed (n=99)', pad.left + plotW - 155, pad.top + 36);
+    })();
+
+    /* ── Zoomed Histogram: Removed samples only (F_MISS > 0.20) ── */
+    (function() {
+        var canvas = document.getElementById('removedHist');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var W = canvas.width, H = canvas.height;
+        var pad = {top: 25, right: 30, bottom: 50, left: 55};
+        var plotW = W - pad.left - pad.right;
+        var plotH = H - pad.top - pad.bottom;
+
+        /*
+         * Removed samples only: bins 20-40 from the full histogram
+         * 21 bins, each 0.01 wide, starting at 0.20
+         */
+        var counts = [1,1,1,6,7,21,10,4,11,11,5,7,3,2,1,1,2,3,0,0,2];
+        var nBins = counts.length;
+        var binWidth = 0.01;
+        var startX = 0.20;
+        var maxX = 0.42;
+        var rangeX = maxX - startX;
+        var maxY = 25;
+
+        /* Axes */
+        ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(pad.left, pad.top);
+        ctx.lineTo(pad.left, pad.top + plotH);
+        ctx.lineTo(pad.left + plotW, pad.top + plotH); ctx.stroke();
+
+        /* Y-axis labels */
+        ctx.fillStyle = '#555'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'right';
+        for (var yv = 0; yv <= maxY; yv += 5) {
+            var y = pad.top + plotH - (yv / maxY) * plotH;
+            ctx.fillText(yv.toString(), pad.left - 8, y + 4);
+            if (yv > 0) {
+                ctx.save(); ctx.strokeStyle = '#e0e0e0'; ctx.setLineDash([3,3]);
+                ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + plotW, y); ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        /* Y-axis label */
+        ctx.save(); ctx.translate(14, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI'; ctx.fillStyle = '#333';
+        ctx.fillText('Number of Samples', 0, 0); ctx.restore();
+
+        /* X-axis label */
+        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI'; ctx.fillStyle = '#333';
+        ctx.fillText('F_MISS', pad.left + plotW / 2, H - 5);
+
+        /* X-axis ticks */
+        ctx.font = '10px Segoe UI'; ctx.fillStyle = '#555';
+        for (var xt = 0.20; xt <= 0.42; xt = Math.round((xt + 0.02) * 100) / 100) {
+            var xp = pad.left + ((xt - startX) / rangeX) * plotW;
+            ctx.fillText(xt.toFixed(2), xp, pad.top + plotH + 18);
+            ctx.beginPath(); ctx.moveTo(xp, pad.top + plotH); ctx.lineTo(xp, pad.top + plotH + 5);
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.stroke();
+        }
+
+        /* Bars */
+        for (var i = 0; i < nBins; i++) {
+            if (counts[i] === 0) continue;
+            var lo = startX + i * binWidth;
+            var x1 = pad.left + ((lo - startX) / rangeX) * plotW;
+            var x2 = pad.left + ((lo + binWidth - startX) / rangeX) * plotW;
+            var barH = (counts[i] / maxY) * plotH;
+            var yBar = pad.top + plotH - barH;
+            ctx.fillStyle = 'rgba(198,40,40,0.75)';
+            ctx.fillRect(x1 + 1, yBar, x2 - x1 - 2, barH);
+            ctx.strokeStyle = '#b71c1c'; ctx.lineWidth = 0.5;
+            ctx.strokeRect(x1 + 1, yBar, x2 - x1 - 2, barH);
+            /* Count labels */
+            ctx.fillStyle = '#333'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'center';
+            ctx.fillText(counts[i].toString(), (x1 + x2) / 2, yBar - 3);
+        }
+
+        /* Mode annotation */
+        ctx.fillStyle = '#555'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'left';
+        ctx.fillText('Mode: 0.25\u20130.26 (n=21)', pad.left + plotW - 170, pad.top + 12);
+        ctx.fillText('Total: 99 samples', pad.left + plotW - 170, pad.top + 26);
     })();
     </script>
 </body>
