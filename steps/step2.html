@@ -237,24 +237,13 @@
                             <canvas id="pihatChart" width="700" height="300"></canvas>
                         </div>
 
-                        <h3 style="margin-top: 20px; color: #333;">PI_HAT Value Summary</h3>
-                        <table class="metric-table">
-                            <tr><th>PI_HAT Range</th><th>Pairs</th><th>Notes</th></tr>
-                            <tr><td>1.0000 (exact)</td><td>16</td><td>Genetically identical within measurement precision</td></tr>
-                            <tr><td>0.9995&ndash;0.9999</td><td>37</td><td>Near-perfect duplicates, minimal genotyping noise</td></tr>
-                            <tr><td>0.9990&ndash;0.9994</td><td>7</td><td>Clear duplicates with slightly more noise</td></tr>
-                            <tr><td>0.9980&ndash;0.9989</td><td>2</td><td>Clear duplicates (02-59 &harr; 02-45t, 02-45d &harr; 02-45t)</td></tr>
-                            <tr><td>0.9846</td><td>1</td><td>Borderline: 08-799 &harr; 06-41d (still clearly above relative threshold)</td></tr>
-                            <tr><td><strong>Total</strong></td><td><strong>63</strong></td><td></td></tr>
-                        </table>
-
-                        <div class="info-box">
-                            <strong>Naming convention:</strong> 32 samples carry a &ldquo;d&rdquo; suffix (confirmed duplicate)
-                            and 3 carry a &ldquo;t&rdquo; suffix (confirmed triplicate). All 35 suffix-labelled samples are in
-                            the removal list, confirming that the laboratory&rsquo;s duplicate-flagging was accurate. The remaining
-                            20 removed samples had different IID roots from their partners &mdash; these were the same individual
-                            registered under different codes (cross-patient duplications).
-                        </div>
+                        <p style="margin-top: 15px;">
+                            The lowest PI_HAT is 0.9846 (08-799 &harr; 06-41d) &mdash; still far above first-degree
+                            relatives (~0.50). All 63 pairs are unambiguous technical duplicates; none are biological
+                            relatives. 32 &ldquo;d&rdquo;-suffix and 3 &ldquo;t&rdquo;-suffix samples are all in the removal
+                            list, confirming the laboratory&rsquo;s duplicate labelling. The remaining 20 removed samples
+                            had different IID roots (same individual registered under different codes).
+                        </p>
                     </div>
                 </div>
 
@@ -423,25 +412,19 @@ C47      2     12-04 (FID:908)  12-05 (FID:909)</div>
                     <h2 class="section-header">5. Comparison with Winter 2025</h2>
                     <div class="section-content">
                         <p>
-                            The winter 2025 pipeline started Step 2 with 1,155 samples (only 92 removed in Step 1 due to
-                            the 7-sample bug). With 7 additional bad-quality samples present, there were slightly more IBD
-                            pairs and clusters. The corrected spring 2026 analysis removes those 7 samples first, resulting
-                            in fewer pairs.
+                            Winter 2025 found 65 pairs / 49 clusters / 57 removed (from 1,155 input).
+                            Spring 2026 finds 63 pairs / 47 clusters / 55 removed (from 1,148 input).
+                            The 2 extra winter pairs were formed by 2 of the 7 samples that Step 1 incorrectly retained
+                            (see <a href="step1.html#crossref">Step 1 &sect;4</a>).
                         </p>
-                        <table class="metric-table">
-                            <tr><th>Metric</th><th>Winter 2025 (buggy)</th><th>Spring 2026 (correct)</th></tr>
-                            <tr><td>Step 2 input</td><td>1,155 samples</td><td>1,148 samples</td></tr>
-                            <tr><td>IBD pairs (PI_HAT &ge; 0.98)</td><td>65</td><td>63</td></tr>
-                            <tr><td>Clusters</td><td>49</td><td>47</td></tr>
-                            <tr><td>Samples involved</td><td>106</td><td>102</td></tr>
-                            <tr><td>Samples removed</td><td>57</td><td>55</td></tr>
-                            <tr><td>Step 2 output</td><td>1,098 samples</td><td>1,093 samples</td></tr>
-                        </table>
-                        <div class="info-box">
-                            <strong>Interpretation:</strong> The difference (2 fewer pairs, 2 fewer clusters, 2 fewer removed)
-                            is consistent with 2 of the 7 removed Step 1 samples having been involved in IBD pairs in winter 2025.
-                            The winter-only clusters likely involved samples from the bad chips that were incorrectly retained.
-                        </div>
+                        <p style="margin-top: 10px;">
+                            <strong>Methodological note:</strong> winter 2025 computed IBD on LD-pruned variants
+                            (44,782 SNPs after <code>--indep-pairwise 50 5 0.1</code>), while spring 2026 uses
+                            all 621,580 autosomal variants. At PI_HAT &ge; 0.98 (duplicates), the variant set
+                            has negligible effect &mdash; the 2-pair difference is attributable to the sample correction.
+                        </p>
+                        <!-- TODO: identify which 2 of the 7 Step-1-leakers formed winter-only pairs
+                             (requires winter ConvSK_mind20_ibd.genome from server) -->
                     </div>
                 </div>
 
@@ -497,12 +480,74 @@ IBD calculations complete.
 Finished writing ConvSK_mind20.genome .</div>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 2b: Build clusters and generate removal list</h3>
-                        <div class="code-block"># Python script: build connected components from .genome pairs,
-# keep lowest FID per cluster, write removal list.
-# See scripts/step2_dedup.sh for full source.
+                        <div class="code-block"># Save as step2_dedup_graph.py in the working directory, then run:
+# $ python3 step2_dedup_graph.py
+#
+# Reads: ConvSK_mind20.genome (output of Step 2a)
+# Writes: duplicates_pihat098.txt (removal list for Step 2c)
+#         dup_clusters_summary.tsv (cluster audit log)
 
-$ python3 step2_dedup_graph.py
+from collections import defaultdict
 
+pairs = []
+fid_of = {}
+with open('ConvSK_mind20.genome') as f:
+    header = f.readline()
+    for line in f:
+        parts = line.split()
+        fid1, iid1 = int(parts[0]), parts[1]
+        fid2, iid2 = int(parts[2]), parts[3]
+        pairs.append((iid1, iid2))
+        fid_of[iid1] = fid1
+        fid_of[iid2] = fid2
+
+# Build adjacency graph
+adj = defaultdict(set)
+for s1, s2 in pairs:
+    adj[s1].add(s2)
+    adj[s2].add(s1)
+
+# Find connected components (BFS)
+visited = set()
+clusters = []
+for node in sorted(adj.keys()):
+    if node in visited:
+        continue
+    comp = set()
+    q = [node]
+    while q:
+        n = q.pop(0)
+        if n in visited:
+            continue
+        visited.add(n)
+        comp.add(n)
+        q.extend(nb for nb in adj[n] if nb not in visited)
+    clusters.append(comp)
+
+# Strategy: keep the sample with the lowest FID (earliest registered) per cluster
+to_remove = []
+with open('dup_clusters_summary.tsv', 'w') as cf:
+    cf.write('cluster_id\tsize\tkept_fid\tkept_iid\tremoved\n')
+    for i, cluster in enumerate(sorted(clusters, key=lambda c: min(fid_of[s] for s in c)), 1):
+        members = sorted(cluster, key=lambda s: fid_of[s])
+        keep = members[0]
+        remove = members[1:]
+        to_remove.extend(remove)
+        removed_str = ','.join(f'{fid_of[s]}:{s}' for s in remove)
+        cf.write(f'{i}\t{len(cluster)}\t{fid_of[keep]}\t{keep}\t{removed_str}\n')
+
+with open('duplicates_pihat098.txt', 'w') as f:
+    for iid in sorted(to_remove, key=lambda s: fid_of[s]):
+        f.write(f'{fid_of[iid]}\t{iid}\n')
+
+print(f'Pairs: {len(pairs)}')
+print(f'Clusters: {len(clusters)}')
+print(f'Samples involved: {len(adj)}')
+print(f'To remove: {len(to_remove)}')
+print(f'To keep: {len(clusters)}')
+print(f'Expected final: 1148 - {len(to_remove)} = {1148 - len(to_remove)}')</div>
+
+                        <div class="code-block"># Expected output:
 Pairs: 63
 Clusters: 47
 Samples involved: 102
