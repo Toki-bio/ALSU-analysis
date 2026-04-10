@@ -97,10 +97,10 @@
             <div class="search-results" id="searchResults"></div>
 
             <div class="header">
-                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
                 <h1>Step 2: IBD-Based Duplicate Removal</h1>
                 <p>Identify and remove duplicate or near-identical samples using genome-wide identity-by-descent</p>
-                <span class="step-badge">✓ Completed — December 15, 2025</span>
+                <span class="step-badge">&check; Completed &mdash; Spring 2026 (re-analysis)</span>
             </div>
 
             <div class="content">
@@ -110,70 +110,67 @@
                     <div class="section-content">
                         <p>
                             Identity-by-descent (IBD) analysis estimates the proportion of the genome shared between every pair of
-                            individuals. The statistic <code>PI_HAT</code> (also written π̂) summarises this:
-                            PI_HAT = P(IBD=2) + 0.5 × P(IBD=1). For unrelated individuals, PI_HAT ≈ 0;
-                            for parent–offspring or full siblings, PI_HAT ≈ 0.50; for monozygotic twins or duplicate
-                            samples, PI_HAT ≈ 1.0.
+                            individuals. The statistic <code>PI_HAT</code> (&pi;&#770;) summarises this:
+                            PI_HAT = P(IBD=2) + 0.5 &times; P(IBD=1). For unrelated individuals, PI_HAT &asymp; 0;
+                            for parent&ndash;offspring or full siblings, PI_HAT &asymp; 0.50; for monozygotic twins or duplicate
+                            samples, PI_HAT &asymp; 1.0.
                         </p>
                         <p style="margin-top: 10px;">
-                            Duplicate or near-identical samples (PI_HAT ≥ 0.98) violate the independence assumption
+                            Duplicate or near-identical samples (PI_HAT &ge; 0.98) violate the independence assumption
                             required by virtually all downstream statistical tests. Retaining them inflates test statistics,
                             biases allele frequency estimates, and produces artefactual signals in PCA and ADMIXTURE analyses.
-                            The high PI_HAT threshold of 0.98 specifically targets technical duplicates (same DNA run twice)
-                            rather than biological relatives.
                         </p>
 
                         <div class="info-box">
-                            <strong>Rationale:</strong> A PI_HAT threshold of ≥ 0.98 identifies samples that are
-                            near-genetically-identical — either the same individual genotyped twice, aliquots from the same
+                            <strong>Rationale:</strong> A PI_HAT threshold of &ge; 0.98 identifies samples that are
+                            near-genetically-identical &mdash; either the same individual genotyped twice, aliquots from the same
                             DNA extraction, or monozygotic twins. This is well above the expected PI_HAT for first-degree relatives
-                            (~0.50), ensuring that biological relatives are retained at this stage. Relatedness at lower thresholds
+                            (~0.50), ensuring that biological relatives are retained. Relatedness at lower thresholds
                             is assessed separately in <a href="step15.html">Step 15 (ROH &amp; IBD)</a>.
                         </div>
 
                         <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-value">1,155</div>
+                                <div class="stat-value">1,148</div>
                                 <div class="stat-label">Starting Samples</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">57</div>
+                                <div class="stat-value">55</div>
                                 <div class="stat-label">Duplicates Removed</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">1,098</div>
+                                <div class="stat-value">1,093</div>
                                 <div class="stat-label">Final Samples</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">4.9%</div>
+                                <div class="stat-value">4.8%</div>
                                 <div class="stat-label">Removal Rate</div>
                             </div>
                         </div>
 
                         <div class="warning-box">
-                            <strong>Deduplication summary:</strong> 65 sample pairs had PI_HAT ≥ 0.98, involving
-                            106 unique samples that formed 49 connected clusters (some individuals appeared in multiple
-                            pairs, indicating the same DNA was genotyped 3+ times). The best sample per cluster was
-                            retained (lowest F_MISS), and the remaining 57 were removed.
-                            A 4.9% duplication rate in a clinical biobank cohort is typical and often results from
-                            re-genotyping of samples that initially failed QC, or from accidental double-loading of plates.
+                            <strong>Deduplication summary:</strong> 63 sample pairs had PI_HAT &ge; 0.98, involving
+                            102 unique samples that formed 47 connected clusters (some individuals appeared in multiple
+                            pairs, indicating the same DNA was genotyped 3+ times under different IDs). The earliest-registered
+                            sample per cluster was retained (lowest FID), and the remaining 55 were removed.
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. PARAMETER EXPLANATION -->
+                <!-- 2. QC PARAMETER -->
                 <div class="section">
                     <h2 class="section-header">2. QC Parameter: PI_HAT &amp; Kinship Categories</h2>
                     <div class="section-content">
                         <p>
                             PLINK's <code>--genome</code> command computes pairwise IBD estimates for all sample pairs.
                             The key outputs are Z0, Z1, Z2 (probabilities of sharing 0, 1, or 2 alleles IBD) and
-                            PI_HAT = Z2 + 0.5 × Z1.
+                            PI_HAT = Z2 + 0.5 &times; Z1.
                         </p>
                         <p style="margin-top: 10px;">
-                            To avoid LD-induced inflation of IBD estimates, the calculation is performed on a pruned
-                            subset of SNPs (LD r² &lt; 0.10, 44,782 independent markers).
+                            The <code>--min 0.98</code> flag restricts output to pairs exceeding the duplicate threshold,
+                            avoiding a massive output file for all ~658k sample pairs when only near-identical duplicates
+                            are of interest. IBD was computed on 621,580 autosomal variants (654,027 total minus 32,447 non-autosomal).
                         </p>
 
                         <h3 style="margin-top: 20px; color: #333;">Expected PI_HAT by Relationship</h3>
@@ -188,10 +185,10 @@
                                 <td><strong>Duplicate / MZ twin</strong></td>
                                 <td>~1.00</td>
                                 <td>0, 0, 1</td>
-                                <td style="color: #c62828; font-weight: 600;">Removed (≥ 0.98)</td>
+                                <td style="color: #c62828; font-weight: 600;">Removed (&ge; 0.98)</td>
                             </tr>
                             <tr>
-                                <td>Parent–offspring</td>
+                                <td>Parent&ndash;offspring</td>
                                 <td>~0.50</td>
                                 <td>0, 1, 0</td>
                                 <td>Retained</td>
@@ -224,318 +221,440 @@
                     </div>
                 </div>
 
-                <!-- 3. PI_HAT DISTRIBUTION -->
+                <!-- 3. IBD RESULTS -->
                 <div class="section">
-                    <h2 class="section-header">3. PI_HAT Distribution</h2>
+                    <h2 class="section-header">3. IBD Analysis Results</h2>
                     <div class="section-content">
                         <p>
-                            The chart below illustrates the distribution of pairwise PI_HAT values across all
-                            <span style="font-weight:600;">657,778</span> sample pairs (1,148 × 1,147 / 2).
-                            The vast majority of pairs are unrelated (PI_HAT &lt; 0.05). The 65 pairs with
-                            PI_HAT ≥ 0.98 form a discrete cluster at the far right — these are the duplicate
-                            samples targeted for removal.
+                            63 pairs exceeded PI_HAT &ge; 0.98. All are clearly technical duplicates (same individual
+                            genotyped under different IDs), as evidenced by Z2 &asymp; 1.0 and Z0 &asymp; 0.0 in every pair.
+                            PI_HAT values range from 0.9846 to 1.0000, with the vast majority at 0.9998&ndash;1.0000.
                         </p>
 
                         <div class="chart-container">
-                            <div class="chart-title">Pairwise PI_HAT Distribution</div>
-                            <div class="chart-subtitle">N = 657,778 sample pairs | Red zone = PI_HAT ≥ 0.98 (65 pairs, 57 samples removed)</div>
-                            <canvas id="pihatChart" width="700" height="320"></canvas>
+                            <div class="chart-title">PI_HAT Distribution of 63 Duplicate Pairs</div>
+                            <div class="chart-subtitle">All pairs have PI_HAT &ge; 0.98 &middot; grouped by PI_HAT value</div>
+                            <canvas id="pihatChart" width="700" height="300"></canvas>
                         </div>
 
-                        <h3 style="margin-top: 20px; color: #333;">Kinship Breakdown (from IBD analysis)</h3>
+                        <h3 style="margin-top: 20px; color: #333;">PI_HAT Value Summary</h3>
                         <table class="metric-table">
-                            <tr><th>Category</th><th>PI_HAT Range</th><th>Pairs Found</th><th>Interpretation</th></tr>
-                            <tr><td><strong>Duplicates / MZ</strong></td><td>≥ 0.98</td><td style="color:#c62828; font-weight:600;">65 pairs (106 samples, 49 clusters → 57 removed)</td><td>Technical duplicates — removed in this step</td></tr>
-                            <tr><td>First-degree relatives</td><td>0.354 – 0.98</td><td>~12</td><td>Parent–offspring or full siblings — retained</td></tr>
-                            <tr><td>Second-degree relatives</td><td>0.177 – 0.354</td><td>~35</td><td>Half-siblings, grandparent–grandchild, avuncular — retained</td></tr>
-                            <tr><td>Third-degree relatives</td><td>0.0884 – 0.177</td><td>~180</td><td>First cousins — retained (common in Central Asian populations)</td></tr>
-                            <tr><td>Unrelated</td><td>&lt; 0.0884</td><td>~666,300</td><td>Background population — no action needed</td></tr>
+                            <tr><th>PI_HAT Range</th><th>Pairs</th><th>Notes</th></tr>
+                            <tr><td>1.0000 (exact)</td><td>16</td><td>Genetically identical within measurement precision</td></tr>
+                            <tr><td>0.9995&ndash;0.9999</td><td>37</td><td>Near-perfect duplicates, minimal genotyping noise</td></tr>
+                            <tr><td>0.9990&ndash;0.9994</td><td>7</td><td>Clear duplicates with slightly more noise</td></tr>
+                            <tr><td>0.9980&ndash;0.9989</td><td>2</td><td>Clear duplicates (02-59 &harr; 02-45t, 02-45d &harr; 02-45t)</td></tr>
+                            <tr><td>0.9846</td><td>1</td><td>Borderline: 08-799 &harr; 06-41d (still clearly above relative threshold)</td></tr>
+                            <tr><td><strong>Total</strong></td><td><strong>63</strong></td><td></td></tr>
                         </table>
 
                         <div class="info-box">
-                            <strong>Population context:</strong> The relatively high number of second- and third-degree
-                            relative pairs is expected in a Central Asian cohort, where consanguinity rates are historically
-                            elevated compared to European populations. These related pairs are not removed here but are
-                            accounted for in downstream analyses (genomic control, mixed models).
-                        </div>
-
-                        <div class="warning-box" style="border-left-color: #d32f2f; background: #ffebee;">
-                            <strong style="color: #d32f2f;">⚠ CRITICAL: Step 2 Output from BUGGY Pipeline</strong><br>
-                            <div style="margin-top: 10px; font-size: 0.9em;">
-                            This step's documented output (1,148 → 1,091) is the <strong>CORRECT</strong> cascade.
-                            However, <strong>production analyses used BUGGY Step 1 output</strong> (1,155 input instead of 1,148).
-                            <br><br>
-                            <strong>Actual production Step 2 output:</strong> 1,155 → 1,098 (57 removed).
-                            <br>
-                            <strong>Correct Step 2 output should be:</strong> 1,148 → 1,091 (57 removed).
-                            <br><br>
-                            All downstream analyses (Step 3-15) use the 1,098-sample buggy version.
-                            </div>
+                            <strong>Naming convention:</strong> 32 samples carry a &ldquo;d&rdquo; suffix (confirmed duplicate)
+                            and 3 carry a &ldquo;t&rdquo; suffix (confirmed triplicate). All 35 suffix-labelled samples are in
+                            the removal list, confirming that the laboratory&rsquo;s duplicate-flagging was accurate. The remaining
+                            20 removed samples had different IID roots from their partners &mdash; these were the same individual
+                            registered under different codes (cross-patient duplications).
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. INPUT / OUTPUT -->
+                <!-- 4. CLUSTER ANALYSIS -->
                 <div class="section">
-                    <h2 class="section-header">4. Input &amp; Output Data</h2>
+                    <h2 class="section-header">4. Cluster Analysis &amp; Deduplication Strategy</h2>
+                    <div class="section-content">
+                        <p>
+                            The 63 pairs were modelled as an undirected graph (samples = nodes, PI_HAT &ge; 0.98 = edges).
+                            Connected components identify clusters of multiply-duplicated individuals. A total of 47 clusters
+                            were found: 39 of size 2 (simple pairs) and 8 of size 3 (one individual genotyped three times).
+                        </p>
+
+                        <h3 style="margin-top: 20px; color: #333;">Deduplication Rule</h3>
+                        <p>
+                            <strong>Keep the sample with the lowest FID</strong> (earliest registered) per cluster.
+                            This is deterministic, reproducible, and does not require missingness data. Since all cluster
+                            members are near-identical (PI_HAT &gt; 0.98), genotyping quality differences are negligible.
+                        </p>
+
+                        <h3 style="margin-top: 20px; color: #333;">Cluster Size Distribution</h3>
+                        <table class="metric-table">
+                            <tr><th>Cluster Size</th><th>Clusters</th><th>Samples Involved</th><th>Samples Removed</th></tr>
+                            <tr><td>2 (pair)</td><td>39</td><td>78</td><td>39</td></tr>
+                            <tr><td>3 (triple)</td><td>8</td><td>24</td><td>16</td></tr>
+                            <tr><td><strong>Total</strong></td><td><strong>47</strong></td><td><strong>102</strong></td><td><strong>55</strong></td></tr>
+                        </table>
+
+                        <details>
+                            <summary>All 47 clusters with kept/removed members (click to expand)</summary>
+                            <div class="detail-content">
+                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
+                                    <strong>Source:</strong> <code>ConvSK_mind20.genome</code> on Biotech2024
+                                    (<code>/staging/ALSU-analysis/spring2026/</code>).
+                                    Strategy: keep lowest FID per cluster.
+                                </p>
+                                <div class="code-block" style="max-height: 450px; overflow-y: auto; font-size: 0.78em;">Cluster  Size  Keep             Remove
+C1       3     02-29 (FID:11)   01-29 (FID:52), 01-29t (FID:338)
+C2       2     08-131 (FID:42)  08-131d (FID:381)
+C3       2     02-39 (FID:71)   06-30 (FID:206)
+C4       2     01-17 (FID:90)   01-17d (FID:291)
+C5       2     09-37 (FID:91)   02-104 (FID:150)
+C6       2     03-154 (FID:129) 03-155d (FID:352)
+C7       3     03-155 (FID:130) 03-156 (FID:131), 03-156d (FID:353)
+C8       2     01-50 (FID:145)  01-50d (FID:327)
+C9       2     02-36 (FID:152)  07-19 (FID:270)
+C10      3     02-45 (FID:154)  08-107 (FID:237), 06-43d (FID:325)
+C11      2     02-52 (FID:157)  01-53 (FID:290)
+C12      3     02-59 (FID:158)  02-45d (FID:287), 02-45t (FID:347)
+C13      3     04-07 (FID:165)  06-34d (FID:273), 06-15d (FID:276)
+C14      2     04-08 (FID:166)  07-01d (FID:280)
+C15      2     08-493 (FID:168) 08-744 (FID:422)
+C16      2     04-13 (FID:169)  01-59d (FID:284)
+C17      2     04-14 (FID:170)  02-49d (FID:282)
+C18      2     04-22 (FID:176)  06-23d (FID:266)
+C19      2     04-25 (FID:178)  07-02d (FID:263)
+C20      2     04-45 (FID:187)  06-06d (FID:262)
+C21      2     06-04 (FID:194)  02-52d (FID:293)
+C22      2     06-28 (FID:204)  08-107d (FID:380)
+C23      3     06-29 (FID:205)  02-104d (FID:292), 02-104t (FID:342)
+C24      2     06-38 (FID:213)  06-42d (FID:268)
+C25      2     06-39 (FID:214)  07-10d (FID:278)
+C26      2     07-01 (FID:218)  02-64d (FID:283)
+C27      2     07-04 (FID:220)  04-20d (FID:297)
+C28      2     07-10 (FID:222)  04-54d (FID:279)
+C29      2     08-799 (FID:225) 06-41d (FID:300)
+C30      2     08-816 (FID:229) 02-36d (FID:326)
+C31      2     08-129 (FID:231) 08-493d (FID:415)
+C32      2     08-541 (FID:232) 04-22d (FID:294)
+C33      3     08-509 (FID:233) 04-36 (FID:296), 04-40 (FID:369)
+C34      2     08-774 (FID:234) 04-55d (FID:281)
+C35      2     07-15 (FID:243)  08-160 (FID:244)
+C36      2     07-16 (FID:245)  02-90 (FID:247)
+C37      2     08-436 (FID:246) 07-17 (FID:248)
+C38      3     08-179 (FID:249) 08-194 (FID:261), 03-37 (FID:265)
+C39      2     08-498 (FID:269) 08-795d (FID:272)
+C40      2     08-128 (FID:271) 08-124 (FID:275)
+C41      2     08-817 (FID:277) 08-81d (FID:306)
+C42      2     04-23 (FID:295)  04-23d (FID:329)
+C43      2     08-770 (FID:335) 08-770d (FID:519)
+C44      2     01-18 (FID:580)  09-76 (FID:581)
+C45      2     08-265 (FID:757) 08-267 (FID:758)
+C46      2     08-181 (FID:832) 08-45 (FID:849)
+C47      2     12-04 (FID:908)  12-05 (FID:909)</div>
+                            </div>
+                        </details>
+
+                        <details>
+                            <summary>All 63 pairs with PI_HAT values (click to expand)</summary>
+                            <div class="detail-content">
+                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
+                                    <strong>Source:</strong> <code>ConvSK_mind20.genome</code> &mdash;
+                                    all pairs with PI_HAT &ge; 0.98.
+                                </p>
+                                <div class="code-block" style="max-height: 450px; overflow-y: auto; font-size: 0.78em;">FID1  IID1      FID2  IID2       PI_HAT   Z2
+  11  02-29       52  01-29      0.9999   0.9997
+  11  02-29      338  01-29t     0.9998   0.9997
+  42  08-131     381  08-131d    0.9998   0.9995
+  52  01-29      338  01-29t     0.9999   0.9998
+  71  02-39      206  06-30      0.9999   0.9998
+  90  01-17      291  01-17d     0.9999   0.9999
+  91  09-37      150  02-104     0.9999   0.9999
+ 129  03-154     352  03-155d    0.9999   0.9999
+ 130  03-155     131  03-156     0.9998   0.9997
+ 130  03-155     353  03-156d    0.9999   0.9999
+ 131  03-156     353  03-156d    0.9998   0.9997
+ 145  01-50      327  01-50d     0.9999   0.9999
+ 152  02-36      270  07-19      0.9999   0.9999
+ 154  02-45      237  08-107     0.9999   0.9999
+ 154  02-45      325  06-43d     1.0000   0.9999
+ 157  02-52      290  01-53      0.9998   0.9998
+ 158  02-59      287  02-45d     0.9999   0.9999
+ 158  02-59      347  02-45t     0.9988   0.9977
+ 165  04-07      273  06-34d     0.9998   0.9997
+ 165  04-07      276  06-15d     0.9999   0.9998
+ 166  04-08      280  07-01d     0.9997   0.9994
+ 168  08-493     422  08-744     0.9993   0.9986
+ 169  04-13      284  01-59d     0.9999   0.9999
+ 170  04-14      282  02-49d     1.0000   1.0000
+ 176  04-22      266  06-23d     0.9999   0.9999
+ 178  04-25      263  07-02d     0.9991   0.9981
+ 187  04-45      262  06-06d     0.9982   0.9964
+ 194  06-04      293  02-52d     1.0000   1.0000
+ 204  06-28      380  08-107d    0.9997   0.9994
+ 205  06-29      292  02-104d    0.9999   0.9998
+ 205  06-29      342  02-104t    0.9999   0.9998
+ 213  06-38      268  06-42d     0.9999   0.9999
+ 214  06-39      278  07-10d     0.9999   0.9999
+ 218  07-01      283  02-64d     1.0000   0.9999
+ 220  07-04      297  04-20d     1.0000   0.9999
+ 222  07-10      279  04-54d     1.0000   1.0000
+ 225  08-799     300  06-41d     0.9846   0.9692
+ 229  08-816     326  02-36d     0.9995   0.9991
+ 231  08-129     415  08-493d    1.0000   1.0000
+ 232  08-541     294  04-22d     0.9999   0.9999
+ 233  08-509     296  04-36      1.0000   1.0000
+ 233  08-509     369  04-40      0.9999   0.9999
+ 234  08-774     281  04-55d     1.0000   1.0000
+ 237  08-107     325  06-43d     1.0000   1.0000
+ 243  07-15      244  08-160     1.0000   0.9999
+ 245  07-16      247  02-90      0.9998   0.9997
+ 246  08-436     248  07-17      0.9998   0.9997
+ 249  08-179     261  08-194     0.9992   0.9984
+ 249  08-179     265  03-37      0.9992   0.9984
+ 261  08-194     265  03-37      0.9991   0.9982
+ 269  08-498     272  08-795d    1.0000   1.0000
+ 271  08-128     275  08-124     0.9994   0.9989
+ 273  06-34d     276  06-15d     0.9999   0.9997
+ 277  08-817     306  08-81d     0.9999   0.9999
+ 287  02-45d     347  02-45t     0.9989   0.9978
+ 292  02-104d    342  02-104t    0.9999   0.9999
+ 295  04-23      329  04-23d     0.9999   0.9999
+ 296  04-36      369  04-40      0.9999   0.9999
+ 335  08-770     519  08-770d    1.0000   0.9999
+ 580  01-18      581  09-76      1.0000   0.9999
+ 757  08-265     758  08-267     1.0000   1.0000
+ 832  08-181     849  08-45      1.0000   0.9999
+ 908  12-04      909  12-05      0.9998   0.9995</div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- 5. COMPARISON WITH WINTER 2025 -->
+                <div class="section">
+                    <h2 class="section-header">5. Comparison with Winter 2025</h2>
+                    <div class="section-content">
+                        <p>
+                            The winter 2025 pipeline started Step 2 with 1,155 samples (only 92 removed in Step 1 due to
+                            the 7-sample bug). With 7 additional bad-quality samples present, there were slightly more IBD
+                            pairs and clusters. The corrected spring 2026 analysis removes those 7 samples first, resulting
+                            in fewer pairs.
+                        </p>
+                        <table class="metric-table">
+                            <tr><th>Metric</th><th>Winter 2025 (buggy)</th><th>Spring 2026 (correct)</th></tr>
+                            <tr><td>Step 2 input</td><td>1,155 samples</td><td>1,148 samples</td></tr>
+                            <tr><td>IBD pairs (PI_HAT &ge; 0.98)</td><td>65</td><td>63</td></tr>
+                            <tr><td>Clusters</td><td>49</td><td>47</td></tr>
+                            <tr><td>Samples involved</td><td>106</td><td>102</td></tr>
+                            <tr><td>Samples removed</td><td>57</td><td>55</td></tr>
+                            <tr><td>Step 2 output</td><td>1,098 samples</td><td>1,093 samples</td></tr>
+                        </table>
+                        <div class="info-box">
+                            <strong>Interpretation:</strong> The difference (2 fewer pairs, 2 fewer clusters, 2 fewer removed)
+                            is consistent with 2 of the 7 removed Step 1 samples having been involved in IBD pairs in winter 2025.
+                            The winter-only clusters likely involved samples from the bad chips that were incorrectly retained.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. INPUT / OUTPUT -->
+                <div class="section">
+                    <h2 class="section-header">6. Input &amp; Output Data</h2>
                     <div class="section-content">
                         <h3 style="color: #333;">Input</h3>
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20.bed, ConvSK_mind20.bim, ConvSK_mind20.fam</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,155 (from Step 1)</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/spring2026/</code></td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,148 (from Step 1)</td></tr>
                             <tr><td><strong>Variants</strong></td><td>654,027 SNPs</td></tr>
                         </table>
 
                         <h3 style="color: #333; margin-top: 20px;">Output</h3>
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20_dedup.bed, ConvSK_mind20_dedup.bim, ConvSK_mind20_dedup.fam</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,098 (57 samples removed from 49 duplicate clusters)</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/spring2026/</code></td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093 (55 removed from 47 duplicate clusters)</td></tr>
                             <tr><td><strong>Variants</strong></td><td>654,027 SNPs (unchanged)</td></tr>
                         </table>
 
                         <h3 style="color: #333; margin-top: 20px;">Intermediate Files</h3>
                         <table class="metric-table">
-                            <tr><th>File</th><th>Description</th><th>Size</th></tr>
-                            <tr><td><code>ConvSK_mind20_ibd.genome</code></td><td>All pairwise IBD estimates (PI_HAT, Z0, Z1, Z2)</td><td>~90 MB</td></tr>
-                            <tr><td><code>duplicates_pihat098.txt</code></td><td>65 duplicate pairs with PI_HAT ≥ 0.98</td><td>~4 KB</td></tr>
-                            <tr><td><code>dup_clusters_summary.tsv</code></td><td>49 clusters (cluster_id, kept sample, size, members)</td><td>~3 KB</td></tr>
-                            <tr><td><code>remove_dups_pihat098.txt</code></td><td>57 sample IDs to remove (FID + IID)</td><td>~2 KB</td></tr>
+                            <tr><th>File</th><th>Description</th></tr>
+                            <tr><td><code>ConvSK_mind20.genome</code></td><td>All pairwise IBD pairs with PI_HAT &ge; 0.98 (63 pairs + header)</td></tr>
+                            <tr><td><code>duplicates_pihat098.txt</code></td><td>55 sample IDs to remove (FID &harr; IID, tab-separated)</td></tr>
+                            <tr><td><code>dup_clusters_summary.tsv</code></td><td>47 clusters with kept/removed members</td></tr>
                         </table>
                     </div>
                 </div>
 
-                <!-- 5. COMMANDS -->
+                <!-- 7. COMMANDS -->
                 <div class="section">
-                    <h2 class="section-header">5. Commands Executed</h2>
+                    <h2 class="section-header">7. Commands Executed</h2>
                     <div class="section-content">
-                        <h3 style="color: #333;">Step 1: LD-prune for IBD calculation</h3>
-                        <div class="code-block"># Prune to independent SNPs (r² < 0.10) for unbiased IBD estimation
+                        <h3 style="color: #333;">Step 2a: Compute pairwise IBD</h3>
+                        <div class="code-block">$ cd /staging/ALSU-analysis/spring2026/
+
 $ plink --bfile ConvSK_mind20 \
-  --indep-pairwise 50 5 0.1 \
-  --out ConvSK_mind20_ibd_prune
-
-# Result: 44,782 independent SNPs retained in .prune.in</div>
-
-                        <h3 style="color: #333; margin-top: 20px;">Step 2: Compute genome-wide pairwise IBD</h3>
-                        <div class="code-block">$ plink --bfile ConvSK_mind20 \
-  --extract ConvSK_mind20_ibd_prune.prune.in \
   --genome \
-  --out ConvSK_mind20_ibd
+  --min 0.98 \
+  --out ConvSK_mind20
 
-# Output: ConvSK_mind20_ibd.genome
-# Contains PI_HAT for all 657,778 sample pairs</div>
+PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+654027 variants loaded from .bim file.
+1148 people (0 males, 0 females, 1148 ambiguous) loaded from .fam.
+Total genotyping rate is 0.980199.
+654027 variants and 1148 people pass filters and QC.
+Excluding 32447 variants on non-autosomes from IBD calculation.
+IBD calculations complete.
+Finished writing ConvSK_mind20.genome .</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 3: Extract duplicate pairs (PI_HAT ≥ 0.98)</h3>
-                        <div class="code-block"># Column 10 = PI_HAT
-$ awk 'NR>1 && $10 >= 0.98 {print $1, $2, $3, $4, $10}' \
-  ConvSK_mind20_ibd.genome > duplicates_pihat098.txt
+                        <h3 style="color: #333; margin-top: 20px;">Step 2b: Build clusters and generate removal list</h3>
+                        <div class="code-block"># Python script: build connected components from .genome pairs,
+# keep lowest FID per cluster, write removal list.
+# See scripts/step2_dedup.sh for full source.
 
-$ wc -l duplicates_pihat098.txt
-65 duplicates_pihat098.txt</div>
+$ python3 step2_dedup_graph.py
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 4: Cluster-based deduplication</h3>
-                        <div class="code-block"># Build relatedness graph from PI_HAT >= 0.98 edges
-# Find connected components = duplicate clusters
-# Keep best sample per cluster (lowest F_MISS from ConvSK_mind20_miss.imiss)
-# 65 pairs → 106 unique nodes → 49 clusters
-# Kept: 49 (1 per cluster) | Removed: 57
+Pairs: 63
+Clusters: 47
+Samples involved: 102
+To remove: 55
+To keep: 47
+Expected final: 1148 - 55 = 1093</div>
 
-# Output: remove_dups_pihat098.txt (FID IID)
-#         dup_clusters_summary.tsv (cluster_id, kept, size, members)</div>
-
-                        <h3 style="color: #333; margin-top: 20px;">Step 5: Remove duplicates from dataset</h3>
+                        <h3 style="color: #333; margin-top: 20px;">Step 2c: Remove duplicates</h3>
                         <div class="code-block">$ plink --bfile ConvSK_mind20 \
-  --remove remove_dups_pihat098.txt \
+  --remove duplicates_pihat098.txt \
   --make-bed \
   --out ConvSK_mind20_dedup
 
-PLINK v1.90b6.21 64-bit (2 May 2018)
---remove: 57 people removed, 1091 remaining.
-
-Writing pedigree information to [ ConvSK_mind20_dedup.fam ].
-Writing map (bim) file to [ ConvSK_mind20_dedup.bim ].
-Writing bed file to [ ConvSK_mind20_dedup.bed ].
-
-Total elapsed time: 3.12 seconds.</div>
+# Expected: 55 people removed, 1093 remaining.
+# Result: ConvSK_mind20_dedup.bed/bim/fam (654,027 variants x 1,093 samples)</div>
                     </div>
                 </div>
 
-                <!-- 6. REMOVED SAMPLES -->
+                <!-- 8. REMOVED SAMPLES -->
                 <div class="section">
-                    <h2 class="section-header">6. Removed Samples</h2>
+                    <h2 class="section-header">8. Removed Samples</h2>
                     <div class="section-content">
-                        <p>57 samples were removed from 49 duplicate clusters. The 65 pairs with PI_HAT ≥ 0.98 involved
-                        106 unique samples forming 49 connected components (graph-based clustering). From each cluster,
-                        the sample with the lowest F_MISS (best genotyping quality) was retained.</p>
+                        <p>55 samples were removed from 47 duplicate clusters. All 32 &ldquo;d&rdquo;-suffix and
+                        3 &ldquo;t&rdquo;-suffix samples are in the removal list, confirming that the
+                        laboratory&rsquo;s duplicate labelling was correct.</p>
 
                         <details>
-                            <summary>View 65 duplicate pairs and 49 clusters (click to expand)</summary>
+                            <summary>All 55 removed samples (click to expand)</summary>
                             <div class="detail-content">
                                 <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
-                                    <strong>Source:</strong> <code>dup_clusters_summary.tsv</code> and <code>remove_dups_pihat098.txt</code>
-                                    on Biotech2024 server. Extracted 2026-04-07.
+                                    <strong>Source:</strong> <code>duplicates_pihat098.txt</code> on Biotech2024
+                                    (<code>/staging/ALSU-analysis/spring2026/</code>).
                                 </p>
-                                <h4 style="margin: 10px 0 5px;">49 Clusters (kept sample + removed members)</h4>
-                                <div class="code-block" style="max-height: 350px; overflow-y: auto; font-size: 0.78em;">cluster  kept       F_MISS    size  members
-1        326:02-36d  0.0079   2     229:08-816, 326:02-36d
-2        422:08-744  0.0078   2     168:08-493, 422:08-744
-3        268:06-42d  0.0082   2     213:06-38, 268:06-42d
-4        194:06-04   0.0081   2     194:06-04, 293:02-52d
-5        225:08-799  0.0080   2     225:08-799, 300:06-41d
-6        284:01-59d  0.0083   2     169:04-13, 284:01-59d
-7        150:02-104  0.0079   2     91:09-37, 150:02-104
-8        280:07-01d  0.0082   2     166:04-08, 280:07-01d
-9        178:04-25   0.0084   2     178:04-25, 263:07-02d
-10       909:12-05   0.0087   2     908:12-04, 909:12-05
-11       152:02-36   0.0086   2     152:02-36, 270:07-19
-12       580:01-18   0.0081   2     580:01-18, 581:09-76
-13       246:08-436  0.0091   2     248:07-17, 246:08-436
-14       176:04-22   0.0081   2     176:04-22, 266:06-23d
-15       52:01-29    0.0086   3     11:02-29, 338:01-29t, 52:01-29
-16       519:08-770d 0.0079   2     335:08-770, 519:08-770d
-17       42:08-131   0.0078   2     42:08-131, 381:08-131d
-18       269:08-498  0.0081   2     269:08-498, 272:08-795d
-19       958:09-101  0.0110   2     958:09-101, 1170:08-742
-20       222:07-10   0.0080   2     222:07-10, 279:04-54d
-21       157:02-52   0.0083   2     290:01-53, 157:02-52
-22       342:02-104t 0.0085   3     205:06-29, 342:02-104t, 292:02-104d
-23       278:07-10d  0.0082   2     278:07-10d, 214:06-39
-24       353:03-156d 0.0083   3     130:03-155, 131:03-156, 353:03-156d
-25       283:02-64d  0.0081   2     218:07-01, 283:02-64d
-26       90:01-17    0.0088   2     90:01-17, 291:01-17d
-27       325:06-43d  0.0079   3     154:02-45, 325:06-43d, 237:08-107
-28       327:01-50d  0.0079   2     145:01-50, 327:01-50d
-29       276:06-15d  0.0086   3     273:06-34d, 276:06-15d, 165:04-07
-30       329:04-23d  0.0088   2     329:04-23d, 295:04-23
-31       265:03-37   0.0083   3     265:03-37, 261:08-194, 249:08-179
-32       187:04-45   0.0101   2     187:04-45, 262:06-06d
-33       352:03-155d 0.0081   2     352:03-155d, 129:03-154
-34       247:02-90   0.0091   2     247:02-90, 245:07-16
-35       275:08-124  0.0086   2     271:08-128, 275:08-124
-36       232:08-541  0.0080   2     232:08-541, 294:04-22d
-37       220:07-04   0.0080   2     220:07-04, 297:04-20d
-38       233:08-509  0.0079   3     369:04-40, 296:04-36, 233:08-509
-39       1096:08-719 &mdash;       2     1169:08-719d, 1096:08-719
-40       244:08-160  0.0086   2     243:07-15, 244:08-160
-41       757:08-265  0.0080   2     758:08-267, 757:08-265
-42       234:08-774  0.0079   2     281:04-55d, 234:08-774
-43       170:04-14   0.0080   2     282:02-49d, 170:04-14
-44       415:08-493d 0.0080   2     415:08-493d, 231:08-129
-45       277:08-817  0.0085   2     306:08-81d, 277:08-817
-46       380:08-107d 0.0093   2     380:08-107d, 204:06-28
-47       206:06-30   0.0082   2     206:06-30, 71:02-39
-48       832:08-181  0.0080   2     849:08-45, 832:08-181
-49       158:02-59   0.0080   3     347:02-45t, 287:02-45d, 158:02-59</div>
-                                <h4 style="margin: 15px 0 5px;">57 Removed Sample IDs</h4>
-                                <div class="code-block" style="max-height: 250px; overflow-y: auto; font-size: 0.78em;">FID	IID
-229	08-816
-168	08-493
-213	06-38
-293	02-52d
-300	06-41d
-169	04-13
-91	09-37
-166	04-08
-263	07-02d
-908	12-04
-270	07-19
-581	09-76
-248	07-17
-266	06-23d
-11	02-29
-338	01-29t
-335	08-770
-381	08-131d
-272	08-795d
-1170	08-742
-279	04-54d
-290	01-53
-205	06-29
-292	02-104d
-214	06-39
-130	03-155
-131	03-156
-218	07-01
-291	01-17d
-154	02-45
-237	08-107
-145	01-50
-273	06-34d
-165	04-07
-295	04-23
-261	08-194
-249	08-179
-262	06-06d
-129	03-154
-245	07-16
-271	08-128
-294	04-22d
-297	04-20d
-369	04-40
-296	04-36
-1169	08-719d
-243	07-15
-758	08-267
-281	04-55d
-282	02-49d
-231	08-129
-306	08-81d
-204	06-28
-71	02-39
-849	08-45
-347	02-45t
-287	02-45d</div>
+                                <div class="code-block" style="max-height: 500px; overflow-y: auto; font-size: 0.8em;">FID      IID         Cluster  Partner(s) Kept
+52       01-29       C1       02-29 (FID:11)
+131      03-156      C7       03-155 (FID:130)
+150      02-104      C5       09-37 (FID:91)
+206      06-30       C3       02-39 (FID:71)
+237      08-107      C10      02-45 (FID:154)
+244      08-160      C35      07-15 (FID:243)
+247      02-90       C36      07-16 (FID:245)
+248      07-17       C37      08-436 (FID:246)
+261      08-194      C38      08-179 (FID:249)
+262      06-06d      C20      04-45 (FID:187)
+263      07-02d      C19      04-25 (FID:178)
+265      03-37       C38      08-179 (FID:249)
+266      06-23d      C18      04-22 (FID:176)
+268      06-42d      C24      06-38 (FID:213)
+270      07-19       C9       02-36 (FID:152)
+272      08-795d     C39      08-498 (FID:269)
+273      06-34d      C13      04-07 (FID:165)
+275      08-124      C40      08-128 (FID:271)
+276      06-15d      C13      04-07 (FID:165)
+278      07-10d      C25      06-39 (FID:214)
+279      04-54d      C28      07-10 (FID:222)
+280      07-01d      C14      04-08 (FID:166)
+281      04-55d      C34      08-774 (FID:234)
+282      02-49d      C17      04-14 (FID:170)
+283      02-64d      C26      07-01 (FID:218)
+284      01-59d      C16      04-13 (FID:169)
+287      02-45d      C12      02-59 (FID:158)
+290      01-53       C11      02-52 (FID:157)
+291      01-17d      C4       01-17 (FID:90)
+292      02-104d     C23      06-29 (FID:205)
+293      02-52d      C21      06-04 (FID:194)
+294      04-22d      C32      08-541 (FID:232)
+296      04-36       C33      08-509 (FID:233)
+297      04-20d      C27      07-04 (FID:220)
+300      06-41d      C29      08-799 (FID:225)
+306      08-81d      C41      08-817 (FID:277)
+325      06-43d      C10      02-45 (FID:154)
+326      02-36d      C30      08-816 (FID:229)
+327      01-50d      C8       01-50 (FID:145)
+329      04-23d      C42      04-23 (FID:295)
+338      01-29t      C1       02-29 (FID:11)
+342      02-104t     C23      06-29 (FID:205)
+347      02-45t      C12      02-59 (FID:158)
+352      03-155d     C6       03-154 (FID:129)
+353      03-156d     C7       03-155 (FID:130)
+369      04-40       C33      08-509 (FID:233)
+380      08-107d     C22      06-28 (FID:204)
+381      08-131d     C2       08-131 (FID:42)
+415      08-493d     C31      08-129 (FID:231)
+422      08-744      C15      08-493 (FID:168)
+519      08-770d     C43      08-770 (FID:335)
+581      09-76       C44      01-18 (FID:580)
+758      08-267      C45      08-265 (FID:757)
+849      08-45       C46      08-181 (FID:832)
+909      12-05       C47      12-04 (FID:908)</div>
                             </div>
                         </details>
                     </div>
                 </div>
 
-                <!-- 7. QUALITY VERIFICATION -->
+                <!-- 9. QUALITY VERIFICATION -->
                 <div class="section">
-                    <h2 class="section-header">7. Quality Verification</h2>
+                    <h2 class="section-header">9. Quality Verification</h2>
                     <div class="section-content">
                         <div class="success-box">
-                            <strong>✓ Post-removal check:</strong> No remaining pairs have PI_HAT ≥ 0.98.
-                            All 1,098 samples are unique individuals with no near-identical duplicates.
+                            <strong>&check; Verification checks:</strong>
+                            <ul style="margin-top: 8px; padding-left: 20px;">
+                                <li><code>duplicates_pihat098.txt</code> contains exactly 55 lines</li>
+                                <li>All 32 &ldquo;d&rdquo;-suffix and 3 &ldquo;t&rdquo;-suffix samples are in the removal list</li>
+                                <li>No cluster has more than one sample kept</li>
+                                <li>No variants removed &mdash; 654,027 SNPs carried forward</li>
+                                <li>Expected: <code>ConvSK_mind20_dedup.fam</code> has 1,093 lines</li>
+                            </ul>
                         </div>
-                        <div class="code-block">$ wc -l ConvSK_mind20_dedup.fam
-1091	ConvSK_mind20_dedup.fam
+                        <div class="code-block">$ wc -l duplicates_pihat098.txt
+55 duplicates_pihat098.txt
 
-# Verify no duplicates remain
-$ plink --bfile ConvSK_mind20_dedup \
-  --extract ConvSK_mind20_ibd_prune.prune.in \
-  --genome --out ConvSK_mind20_dedup_check
-$ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
-0</div>
+$ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
+   1093 ConvSK_mind20_dedup.fam
+ 654027 ConvSK_mind20_dedup.bim</div>
                     </div>
                 </div>
 
-                <!-- 8. TIMELINE -->
+                <!-- 10. TIMELINE -->
                 <div class="section">
-                    <h2 class="section-header">8. Chronological Log</h2>
+                    <h2 class="section-header">10. Chronological Log</h2>
                     <div class="section-content">
                         <div class="timeline">
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 10:30</div>
-                                <div class="timeline-description"><strong>LD pruning</strong><br>Reduced to 44,782 independent SNPs for IBD calculation (r² &lt; 0.10)</div>
+                                <div class="timeline-time">Winter 2025 (original run)</div>
+                                <div class="timeline-description">
+                                    <strong>Initial IBD deduplication</strong><br>
+                                    Input: 1,155 samples (from buggy Step 1). Found 65 pairs in 49 clusters.
+                                    Removed 57 &rarr; 1,098 retained. Used LD pruning + full genome computation.
+                                </div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 10:45</div>
-                                <div class="timeline-description"><strong>IBD calculation completed</strong><br>Computed pairwise PI_HAT for all 657,778 pairs across 1,148 samples</div>
+                                <div class="timeline-time">Spring 2026 (re-analysis)</div>
+                                <div class="timeline-description">
+                                    <strong>IBD computed on corrected input</strong><br>
+                                    <code>plink --genome --min 0.98</code> on ConvSK_mind20 (1,148 samples).
+                                    IBD computed on 621,580 autosomal variants. Found 63 pairs.
+                                </div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 11:15</div>
-                                <div class="timeline-description"><strong>Identified 65 duplicate pairs in 49 clusters</strong><br>All pairs with PI_HAT ≥ 0.98 — 106 unique samples in 49 connected components</div>
+                                <div class="timeline-time">Spring 2026</div>
+                                <div class="timeline-description">
+                                    <strong>Cluster analysis</strong><br>
+                                    63 pairs &rarr; 47 connected components (102 unique samples).
+                                    Strategy: keep lowest FID per cluster.
+                                </div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 11:30</div>
-                                <div class="timeline-description"><strong>Duplicates removed</strong><br>1,155 → 1,098 samples. One member of each pair removed.</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-15 11:45</div>
-                                <div class="timeline-description"><strong>Verification passed</strong><br>Re-ran IBD on deduplicated set, confirmed 0 pairs with PI_HAT ≥ 0.98</div>
+                                <div class="timeline-time">Spring 2026</div>
+                                <div class="timeline-description">
+                                    <strong>Duplicates removed</strong><br>
+                                    <code>plink --remove</code>: 1,148 &rarr; 1,093 samples. Output: ConvSK_mind20_dedup.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -543,8 +662,8 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
             </div>
 
             <div class="footer">
-                <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> |
-                Last updated: January 2, 2026 | Step 2 of 15
+                <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">&#x1F3E0; Back to Home</a> |
+                Last updated: Spring 2026 | Step 2 of 15
             </div>
         </div>
     </div>
@@ -561,93 +680,97 @@ $ awk 'NR>1 && $10 >= 0.98' ConvSK_mind20_dedup_check.genome | wc -l
         resultsDiv.classList.add('active');
     }
 
-    /* ── PI_HAT Distribution Chart ── */
+    /* ── PI_HAT Distribution Chart (63 duplicate pairs) ── */
     (function() {
         var canvas = document.getElementById('pihatChart');
         if (!canvas) return;
         var ctx = canvas.getContext('2d');
         var W = canvas.width, H = canvas.height;
-        var pad = {top: 25, right: 30, bottom: 55, left: 65};
+        var pad = {top: 25, right: 30, bottom: 50, left: 55};
         var plotW = W - pad.left - pad.right;
         var plotH = H - pad.top - pad.bottom;
 
-        /* Real PI_HAT distribution from ConvSK_mind20_ibd.genome (1,155 samples, Biotech2024 server, extracted 2026-04-07) */
-        var bins = [
-            {lo: 0.00, hi: 0.05, count: 646771, label: '<0.05'},
-            {lo: 0.05, hi: 0.10, count: 4846, label: '0.05-0.10'},
-            {lo: 0.10, hi: 0.20, count: 2106, label: '0.10-0.20'},
-            {lo: 0.20, hi: 0.35, count: 4416, label: '0.20-0.35'},
-            {lo: 0.35, hi: 0.50, count: 163, label: '0.35-0.50'},
-            {lo: 0.50, hi: 0.75, count: 8, label: '0.50-0.75'},
-            {lo: 0.75, hi: 0.98, count: 3, label: '0.75-0.98'},
-            {lo: 0.98, hi: 1.00, count: 65, label: '≥0.98'}
+        /*
+         * Real PI_HAT values from ConvSK_mind20.genome (63 pairs)
+         * Biotech2024, /staging/ALSU-analysis/spring2026/
+         * Grouped by rounded value:
+         *   0.9846:1  0.9982:1  0.9988:1  0.9989:1  0.9991:2  0.9992:2
+         *   0.9993:1  0.9994:1  0.9995:1  0.9997:2  0.9998:7  0.9999:27  1.0000:16
+         */
+        var values = [
+            {label:'0.9846', count:1},
+            {label:'0.9982', count:1},
+            {label:'0.9988', count:1},
+            {label:'0.9989', count:1},
+            {label:'0.9991', count:2},
+            {label:'0.9992', count:2},
+            {label:'0.9993', count:1},
+            {label:'0.9994', count:1},
+            {label:'0.9995', count:1},
+            {label:'0.9997', count:2},
+            {label:'0.9998', count:7},
+            {label:'0.9999', count:27},
+            {label:'1.0000', count:16}
         ];
-
-        /* Use log10 scale for Y axis */
-        var maxLogY = 6; /* 10^6 */
-
-        function logY(count) {
-            if (count <= 0) return pad.top + plotH;
-            return pad.top + plotH - (Math.log10(count) / maxLogY) * plotH;
-        }
+        var maxY = 30;
+        var nBars = values.length;
+        var barW = plotW / nBars;
 
         /* Axes */
         ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(pad.left, pad.top);
+        ctx.beginPath(); ctx.moveTo(pad.left, pad.top);
         ctx.lineTo(pad.left, pad.top + plotH);
-        ctx.lineTo(pad.left + plotW, pad.top + plotH);
-        ctx.stroke();
+        ctx.lineTo(pad.left + plotW, pad.top + plotH); ctx.stroke();
 
-        /* Y axis (log scale) */
+        /* Y-axis */
         ctx.fillStyle = '#555'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'right';
-        [1, 10, 100, 1000, 10000, 100000, 1000000].forEach(function(v) {
-            var y = logY(v);
-            var label = v >= 1000 ? (v/1000) + 'k' : v.toString();
-            if (v >= 1000000) label = '1M';
-            if (v >= 100000 && v < 1000000) label = '100k';
-            ctx.fillText(label, pad.left - 8, y + 4);
-            ctx.save(); ctx.strokeStyle = '#e8e8e8'; ctx.setLineDash([2,3]);
-            ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + plotW, y); ctx.stroke();
+        for (var yv = 0; yv <= maxY; yv += 5) {
+            var y = pad.top + plotH - (yv / maxY) * plotH;
+            ctx.fillText(yv.toString(), pad.left - 8, y + 4);
+            if (yv > 0) {
+                ctx.save(); ctx.strokeStyle = '#e8e8e8'; ctx.setLineDash([2,3]);
+                ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + plotW, y); ctx.stroke();
+                ctx.restore();
+            }
+        }
+        ctx.save(); ctx.translate(14, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = 'center'; ctx.font = '11px Segoe UI'; ctx.fillStyle = '#333';
+        ctx.fillText('Number of Pairs', 0, 0); ctx.restore();
+
+        ctx.textAlign = 'center'; ctx.font = '11px Segoe UI'; ctx.fillStyle = '#333';
+        ctx.fillText('PI_HAT value', pad.left + plotW / 2, H - 5);
+
+        /* Bars */
+        values.forEach(function(v, i) {
+            var x = pad.left + i * barW;
+            var barH = (v.count / maxY) * plotH;
+            var yBar = pad.top + plotH - barH;
+            ctx.fillStyle = v.label === '0.9846' ? 'rgba(255,152,0,0.8)' : 'rgba(198,40,40,0.75)';
+            ctx.fillRect(x + 2, yBar, barW - 4, barH);
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 0.5;
+            ctx.strokeRect(x + 2, yBar, barW - 4, barH);
+
+            /* Count label */
+            ctx.fillStyle = '#333'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'center';
+            ctx.fillText(v.count.toString(), x + barW / 2, yBar - 3);
+
+            /* X label (rotated) */
+            ctx.save();
+            ctx.translate(x + barW / 2, pad.top + plotH + 8);
+            ctx.rotate(-Math.PI / 4);
+            ctx.fillStyle = '#555'; ctx.font = '9px Segoe UI'; ctx.textAlign = 'right';
+            ctx.fillText(v.label, 0, 0);
             ctx.restore();
         });
 
-        ctx.save(); ctx.translate(14, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
-        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI'; ctx.fillStyle = '#333';
-        ctx.fillText('Number of Pairs (log scale)', 0, 0); ctx.restore();
+        /* Annotation */
+        ctx.fillStyle = '#555'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'left';
+        ctx.fillText('Total: 63 pairs', pad.left + 5, pad.top + 12);
 
-        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI'; ctx.fillStyle = '#333';
-        ctx.fillText('PI_HAT (proportion of genome shared IBD)', pad.left + plotW / 2, H - 5);
-
-        /* Bars */
-        var barW = plotW / bins.length;
-        bins.forEach(function(b, i) {
-            var x = pad.left + i * barW;
-            var y = logY(b.count);
-            var h = pad.top + plotH - y;
-            var isDup = b.lo >= 0.98;
-
-            ctx.fillStyle = isDup ? 'rgba(198,40,40,0.8)' : 'rgba(66,66,66,0.7)';
-            ctx.fillRect(x + 3, y, barW - 6, h);
-            ctx.strokeStyle = isDup ? '#b71c1c' : '#444'; ctx.lineWidth = 0.5;
-            ctx.strokeRect(x + 3, y, barW - 6, h);
-
-            /* Count label */
-            ctx.fillStyle = '#333'; ctx.font = '9px Segoe UI'; ctx.textAlign = 'center';
-            var countStr = b.count >= 1000 ? Math.round(b.count/1000) + 'k' : b.count.toString();
-            if (b.count >= 100000) countStr = Math.round(b.count/1000) + 'k';
-            ctx.fillText(countStr, x + barW / 2, y - 4);
-
-            /* X label */
-            ctx.fillStyle = '#555'; ctx.font = '9px Segoe UI';
-            ctx.fillText(b.label, x + barW / 2, pad.top + plotH + 16);
-        });
-
-        /* Duplicate annotation */
-        var lastBar = pad.left + (bins.length - 1) * barW + barW / 2;
-        ctx.fillStyle = '#c62828'; ctx.font = 'bold 10px Segoe UI';
-        ctx.fillText('65 pairs', lastBar, logY(65) - 16);
-        ctx.fillText('57 removed', lastBar, logY(65) - 6);
+        ctx.fillStyle = 'rgba(255,152,0,0.8)';
+        ctx.fillRect(pad.left + 5, pad.top + 18, 12, 12);
+        ctx.fillStyle = '#555'; ctx.font = '10px Segoe UI';
+        ctx.fillText('Borderline', pad.left + 20, pad.top + 28);
     })();
     </script>
 </body>
