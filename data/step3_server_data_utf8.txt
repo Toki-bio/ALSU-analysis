@@ -1,0 +1,20 @@
+﻿﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== STEP 3 DATA EXTRACTION ===
+Date: Fri Apr 10 05:37:36 PDT 2026
+ConvSK_mind20_dedup not found. Running Step 2 dedup first...
+plink.exe : Traceback (most recent call last):
+At line:1 char:64
++ ... a.sh -Raw | & plink.exe -batch -i C:\Users\toki\.ssh\id_ed25519.ppk - ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last) 
+   ::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<stdin>", line 36, in <module>
+PermissionError: [Errno 13] Permission denied: 'duplicates_pihat098.txt'

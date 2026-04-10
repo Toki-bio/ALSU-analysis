@@ -1,0 +1,88 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+================================================================================
+MANIFEST [Controls] SECTION
+================================================================================
+HEADER: [Controls]
+Total control lines: 23
+  [0] 0027630314:0027630314:0027630314:0027630314,Staining,Red,DNP (High)
+  [1] 0043603326:0043603326:0043603326:0043603326,Staining,Purple,DNP (Bgnd)
+  [2] 0041666334:0041666334:0041666334:0041666334,Staining,Green,Biotin (High)
+  [3] 0034648333:0034648333:0034648333:0034648333,Staining,Blue,Biotin (Bgnd)
+  [4] 0017616306:0017616306:0017616306:0017616306,Extension,Red,Extension (A)
+  [5] 0014607337:0014607337:0014607337:0014607337,Extension,Purple,Extension (T)
+  [6] 0012613307:0012613307:0012613307:0012613307,Extension,Green,Extension (C)
+  [7] 0011603365:0011603365:0011603365:0011603365,Extension,Blue,Extension (G)
+  ... (15 more)
+
+Parsed 0 control probes
+
+================================================================================
+IDAT FORMAT DISCOVERY
+================================================================================
+Test file: /staging/ALSU-analysis/Conversion/OUTPUT/207591080076/207591080076_R01C01_Grn.idat
+File size: 9157044 bytes (8.7 MB)
+Magic: b'IDAT', Version: 3, Fields: 19
+Field table:
+  Code   102 -> offset          210
+  Code   103 -> offset      2817070
+  Code   104 -> offset      4225500
+  Code   107 -> offset      5633930
+  Code   200 -> offset      6338145
+  Code   300 -> offset      9155060
+  Code   400 -> offset      9155009
+  Code   401 -> offset      9155013
+  Code   402 -> offset      9155014
+  Code   403 -> offset      9155027
+  Code   404 -> offset      9155043
+  Code   405 -> offset      9155050
+  Code   406 -> offset      9155055
+  Code   407 -> offset      9155056
+  Code   408 -> offset      9155057
+  Code   409 -> offset      9155058
+  Code   410 -> offset      9155051
+  Code   510 -> offset      9155059
+  Code  1000 -> offset          206
+
+nSNPsRead = 704215
+
+Field 102 at 210: hex=6b6a1800836a18008f6a1800a56a1800a76a1800
+  As [count_prefix=1600107] + int32[]: (1600131, 1600143, 1600165, 1600167)
+  As direct int32[] (no prefix): (1600107, 1600131, 1600143, 1600165, 1600167)
+
+Field 104 at 4225500: hex=5c0c8008b00220078a00680676014a018d00a80a
+  As [count_prefix=142609500] + uint16[]: (688, 1824, 138, 1640, 374, 330, 141, 2728)
+  As direct uint16[] (no prefix): (3164, 2176, 688, 1824, 138, 1640, 374, 330, 141, 2728)
+
+Field 103 at 2817070: hex=c7025e01ea006b016100d800ff009b0062005d02
+
+Field 107 at 5633930: hex=04080a080b0a100611100d0e040d100c0d11090e
+
+Field 300 (RunInfo) at 9155060: hex=100000001530352f30392f3230323320373a3539 ascii=b'\x10\x00\x00\x00\x1505/09/2023 7:59:40 AM\x08Decoding;Call'
+
+Field 400 (RedGreen) at 9155009: hex=00000000000c3230373539313038303037360f42 ascii=b'\x00\x00\x00\x00\x00\x0c207591080076\x0fBeadChip 24x1x4\x06R01C0'
+
+Field 402 (Barcode) at 9155014: hex=0c3230373539313038303037360f426561644368 ascii=b'\x0c207591080076\x0fBeadChip 24x1x4\x06R01C01\x00\x01\x00\x00'
+
+Field 403 (ChipType) at 9155027: hex=0f42656164436869702032347831783406523031 ascii=b'\x0fBeadChip 24x1x4\x06R01C01\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x10\x00\x00\x00\x1505'
+
+Field 406 (SampleID) at 9155055: hex=0000000000100000001530352f30392f32303233 ascii=b'\x00\x00\x00\x00\x00\x10\x00\x00\x00\x1505/09/2023 7:59:40 AM\x08Decoding'
+
+
+================================================================================
+EXTRACTING CONTROL PROBE DATA
+================================================================================
+No control probes parsed from manifest. Cannot proceed.
+
+Let me try: dump first 5 lines after [Controls] as raw bytes:
+  0: '0027630314:0027630314:0027630314:0027630314,Staining,Red,DNP (High)'
+  1: '0043603326:0043603326:0043603326:0043603326,Staining,Purple,DNP (Bgnd)'
+  2: '0041666334:0041666334:0041666334:0041666334,Staining,Green,Biotin (High)'
+  3: '0034648333:0034648333:0034648333:0034648333,Staining,Blue,Biotin (Bgnd)'
+  4: '0017616306:0017616306:0017616306:0017616306,Extension,Red,Extension (A)'
+

@@ -1,0 +1,141 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== TOP LEVEL ===
+total 1620
+drwxr-xr-x 58 root root  4096 Jun 13  2025 .
+drwxr-xr-x  3 root root   236 Aug 27  2025 ..
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207585740001
+drwxr-xr-x  2 root root 28672 Jun 13  2025 207585740002
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207585740024
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207585740037
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207585740039
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207585740042
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207585740046
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207585740063
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070002
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070004
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070018
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070021
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070023
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070028
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070029
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070030
+drwxr-xr-x  2 root root 40960 Jun 13  2025 207591070033
+drwxr-xr-x  2 root root 40960 Jun 13  2025 207591070038
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070048
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070053
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070055
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070056
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070058
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070062
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070064
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070065
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070077
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070078
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070080
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070083
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070088
+drwxr-xr-x  2 root root 28672 Jun 13  2025 207591070089
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070093
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070097
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591070098
+drwxr-xr-x  2 root root 28672 Jun 13  2025 207591070101
+drwxr-xr-x  2 root root 24576 Jun 13  2025 207591080022
+=== SUBDIRS ===
+.
+./207585740001
+./207585740002
+./207585740024
+./207585740037
+./207585740039
+./207585740042
+./207585740046
+./207585740063
+./207591070002
+./207591070004
+./207591070018
+./207591070021
+./207591070023
+./207591070028
+./207591070029
+./207591070030
+./207591070033
+./207591070038
+./207591070048
+./207591070053
+./207591070055
+./207591070056
+./207591070058
+./207591070062
+./207591070064
+./207591070065
+./207591070077
+./207591070078
+./207591070080
+=== FILE TYPES ===
+  10806 jpg
+   9982 xml
+   2494 idat
+    768 locs
+    110 txt
+     51 sdf
+     51 cfg
+      2 pdf
+      1 bsc
+=== SAMPLE SHEETS ===
+./ConvSK/PLINK_sept2025/plink_samples.txt
+=== IDAT FILES ===
+./207585740001/207585740001_R02C01_Red.idat
+./207585740001/207585740001_R02C01_Grn.idat
+./207585740001/207585740001_R01C01_Grn.idat
+./207585740001/207585740001_R01C01_Red.idat
+./207585740001/207585740001_R01C02_Grn.idat
+./207585740001/207585740001_R01C02_Red.idat
+./207585740001/207585740001_R02C02_Grn.idat
+./207585740001/207585740001_R02C02_Red.idat
+./207585740001/207585740001_R04C01_Red.idat
+./207585740001/207585740001_R04C01_Grn.idat
+IDAT count:
+2494
+=== GTC FILES ===
+GTC count:
+0
+=== LOOK FOR SENTRIX PATTERNS ===
+=== CHECK FOR GENOMESTUDIO PROJECT ===
+./207585740001/207585740001_R02C01_2_Red.xml
+./207585740001/207585740001_R01C01_1_Green.xml
+./207585740001/207585740001_R01C01_1_Red.xml
+./207585740001/207585740001_R02C01_2_Green.xml
+./207585740001/207585740001_R02C01_4_Red.xml
+./207585740001/207585740001_R01C01_2_Green.xml
+./207585740001/207585740001_R01C01_2_Red.xml
+./207585740001/207585740001_R02C01_4_Green.xml
+./207585740001/207585740001_R01C01_3_Green.xml
+./207585740001/207585740001_R01C01_3_Red.xml
+./207585740001/207585740001_R01C01_4_Green.xml
+./207585740001/207585740001_R01C01_4_Red.xml
+./207585740001/207585740001_R01C02_1_Green.xml
+./207585740001/207585740001_R01C02_1_Red.xml
+./207585740001/207585740001_R02C02_1_Red.xml
+./207585740001/207585740001_R02C02_1_Green.xml
+./207585740001/207585740001_R01C02_2_Green.xml
+./207585740001/207585740001_R01C02_2_Red.xml
+./207585740001/207585740001_R01C02_3_Green.xml
+./207585740001/207585740001_R01C02_3_Red.xml
+=== PARENT DIR ===
+total 394260
+drwxr-xr-x  3 root root       236 Aug 27  2025 .
+drwxr-xr-x  9 root root       235 Feb 16 16:11 ..
+-rw-r--r--  1 root root     51149 Mar 17  2025 1248_merged_sample_sheet_12022025.csv.csv
+-rw-r--r--  1 root root 113522162 Aug  7  2019 GSA-24v3-0_A2.bpm
+-rw-r--r--  1 root root 284225383 Aug  7  2019 GSA-24v3-0_A2.csv
+-rw-r--r--  1 root root   5494860 May 27  2025 GWAS.xlsx
+drwxr-xr-x 58 root root      4096 Jun 13  2025 OUTPUT
+-rw-r--r--  1 root root    411173 Jun  9  2025 plink-input-report-plugin-v2-1-4 (1).zip
+-rw-r--r--  1 root root       180 Aug 27  2025 snp_list.txt
+=== DONE ===

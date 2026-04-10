@@ -1,0 +1,367 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+=== rename_samples.tsv ===
+808_03-25╨╝	808_03-25m
+1038_08-176╨Ñ-00006	1038_08-176X-00006
+
+=== .fam files in ConvSK ===
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK_renamed.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_geno90.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_mind90.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_maf01.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_mind90_clean.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_1/ConvSK_qc1_geno_mind.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_1/ConvSK_qc2_hwe_filtered.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc1_mind_geno.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc2_pheno.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc3_maf.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc4_hwe_filtered.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc5_pca_input.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_1.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_2.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_3.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_4.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_5.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_7.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_8.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/HapMap_hwe_filter_step1.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_9.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_10.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_12.fam
+
+=== .fam files in PLINK dirs ===
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK_renamed.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_geno90.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_mind90.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_maf01.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_mind90_clean.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_1/ConvSK_qc1_geno_mind.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_1/ConvSK_qc2_hwe_filtered.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc1_mind_geno.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc2_pheno.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc3_maf.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc4_hwe_filtered.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK_qc5_pca_input.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_1.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_2.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_3.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_4.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_5.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_7.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_8.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/HapMap_hwe_filter_step1.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_9.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_10.fam
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_12.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/impute_in.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_mind20_dedup_miss02.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_mind20_dedup.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_mind20.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_mind20.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_mind20_dedup.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_mind20_dedup_snpqc.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/filtered_clean/UZB_imputed_HQ_clean.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/filtered_clean/test_chr19/UZB_test_chr19.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/filtered_clean/UZB_imputed_HQ_qc.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/filtered_clean/UZB_imputed_HQ_unique.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_mind20_dedup_ascii.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step7_ld_pruning/UZB_imputed_HQ_clean.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step7_ld_pruning/UZB_for_pruning.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step7_ld_pruning/UZB_pruned_std.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step7_ld_pruning/UZB_pruned_strict.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step9_1000g.pca/1000g_grch38/chr16_ref.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step9_1000g.pca/1000g_grch38/chr1_ref.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/step9_1000g.pca/1000g_grch38/chr2_ref.fam
+
+=== d/t in any .fam ===
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK.fam ---
+1199
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK_renamed.fam ---
+1199
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK.fam ---
+1199
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_geno90.fam ---
+1199
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_mind90.fam ---
+1063
+
+=== First PLINK dir fam sample ===
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_100625_0236/ ---
+total 3084964
+drwxr-xr-x  2 root root        129 Sep 18  2025 .
+drwxr-xr-x 11 root root       4096 Sep 26  2025 ..
+-rw-r--r--  1 root root        121 Jun 10  2025 ConvSK.bat
+-rw-r--r--  1 root root   22249462 Jun 10  2025 ConvSK.map
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ ---
+total 3487212
+drwxr-xr-x  2 root root       4096 Sep 18  2025 .
+drwxr-xr-x 11 root root       4096 Sep 26  2025 ..
+-rw-r--r--  1 root root        121 Jun 12  2025 ConvSK.bat
+-rw-r--r--  1 root root  196208103 Sep 18  2025 ConvSK.bed
+FAM: /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK.fam
+Lines: 1199
+Sample d/t entries:
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ ---
+total 4705540
+drwxr-xr-x  2 root root       4096 Nov 23 23:03 .
+drwxr-xr-x 11 root root       4096 Sep 26  2025 ..
+-rw-r--r--  1 root root      24856 Sep 26  2025 case-control.txt
+-rw-r--r--  1 root root  196208103 Sep 18  2025 ConvSK.bed
+FAM: /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK.fam
+Lines: 1199
+Sample d/t entries:
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_1/ ---
+total 570752
+drwxr-xr-x  2 root root      4096 Sep 26  2025 .
+drwxr-xr-x 11 root root      4096 Sep 26  2025 ..
+-rw-r--r--  1 root root         0 Sep 26  2025 --bfile
+-rw-r--r--  1 root root 169100850 Sep 26  2025 ConvSK_qc1_geno_mind.bed
+FAM: /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_1/ConvSK_qc1_geno_mind.fam
+Lines: 1050
+Sample d/t entries:
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ ---
+total 4111160
+drwxr-xr-x  2 root root       4096 Sep 26  2025 .
+drwxr-xr-x 11 root root       4096 Sep 26  2025 ..
+-rw-r--r--  1 root root  196208103 Sep 18  2025 ConvSK.bed
+-rw-r--r--  1 root root   24242852 Sep 18  2025 ConvSK.bim
+FAM: /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_2/ConvSK.fam
+Lines: 1199
+Sample d/t entries:
+--- /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ ---
+total 2433704
+drwxr-xr-x  2 root root      4096 Sep 27  2025 .
+drwxr-xr-x 11 root root      4096 Sep 26  2025 ..
+-rw-r--r--  1 root root  32483812 Sep 26  2025 1_QC_GWAS.zip
+-rw-r--r--  1 root root       235 Sep 27  2025 check_heterozygosity_rate.R
+FAM: /staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025_3/ConvSK_1.fam
+Lines: 1199
+Sample d/t entries:
+
+=== .log files in ConvSK ===
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/ConvSK_duplicates.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/genotype_freqs.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_120625_0107/genotype_counts.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/qc_summary.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_geno90.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_mind90.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_maf01.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/ConvSK_prune.log
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/PLINK_sept2025/relatedness.log
+
+=== renamed directory ===
+total 108
+drwxr-xr-x 4 root root     64 Nov 30 19:20 .
+drwxr-xr-x 7 root root    193 Jan  2 19:58 ..
+drwxr-xr-x 2 root root     10 Nov 30 18:05 CNV
+drwxr-xr-x 3 root root    264 Nov 30 19:20 Data
+-rw-r--r-- 1 root root 109310 Nov 30 13:54 renamed.bsc
+
+=== PLINK_301125_0312 full listing ===
+total 5105168
+drwxr-xr-x 9 root root       8192 Apr  7 04:11 .
+drwxr-xr-x 7 root root        193 Jan  2 19:58 ..
+-rw-r--r-- 1 root root        951 Dec 17 08:31 chr10.log
+-rw-r--r-- 1 root root      11637 Dec 17 08:31 chr10.nosex
+-rw-r--r-- 1 root root    6556105 Dec 17 08:31 chr10.vcf.gz
+-rw-r--r-- 1 root root      71622 Dec 17 08:31 chr10.vcf.gz.tbi
+-rw-r--r-- 1 root root        951 Dec 17 08:31 chr11.log
+-rw-r--r-- 1 root root      11637 Dec 17 08:31 chr11.nosex
+-rw-r--r-- 1 root root    6348106 Dec 17 08:31 chr11.vcf.gz
+-rw-r--r-- 1 root root      71582 Dec 17 08:31 chr11.vcf.gz.tbi
+-rw-r--r-- 1 root root        951 Dec 17 08:31 chr12.log
+-rw-r--r-- 1 root root      11637 Dec 17 08:31 chr12.nosex
+-rw-r--r-- 1 root root    6288504 Dec 17 08:31 chr12.vcf.gz
+-rw-r--r-- 1 root root      71978 Dec 17 08:31 chr12.vcf.gz.tbi
+-rw-r--r-- 1 root root        951 Dec 17 08:31 chr13.log
+-rw-r--r-- 1 root root      11637 Dec 17 08:31 chr13.nosex
+-rw-r--r-- 1 root root    4727431 Dec 17 08:31 chr13.vcf.gz
+-rw-r--r-- 1 root root      52887 Dec 17 08:31 chr13.vcf.gz.tbi
+-rw-r--r-- 1 root root        950 Dec 17 08:31 chr14.log
+-rw-r--r-- 1 root root      11637 Dec 17 08:31 chr14.nosex
+-rw-r--r-- 1 root root    4230753 Dec 17 08:31 chr14.vcf.gz
+-rw-r--r-- 1 root root      47975 Dec 17 08:31 chr14.vcf.gz.tbi
+-rw-r--r-- 1 root root        951 Dec 17 08:31 chr15.log
+-rw-r--r-- 1 root root      11637 Dec 17 08:31 chr15.nosex
+-rw-r--r-- 1 root root    4068819 Dec 17 08:31 chr15.vcf.gz
+-rw-r--r-- 1 root root      42564 Dec 17 08:31 chr15.vcf.gz.tbi
+-rw-r--r-- 1 root root        951 Dec 17 08:31 chr16.log
+-rw-r--r-- 1 root root      11637 Dec 17 08:31 chr16.nosex
+-rw-r--r-- 1 root root    4344134 Dec 17 08:31 chr16.vcf.gz
+
+=== ConvSK_raw in winter2025 ===
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.log
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_raw_miss.nosex
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_raw_miss.log
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_raw_miss.lmiss
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_raw_miss.imiss
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.nosex
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.bed
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.fam
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.bim
+/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw_miss.log
+
+=== d/t in winter2025 .fam files ===
+--- /staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/impute_in.fam ---
+Lines: 933
+04-36d
+06-42d
+06-15d
+07-10d
+07-01d
+02-64d
+01-59d
+01-29d
+06-43d
+02-36d
+01-50d
+04-23d
+02-104t
+02-29d
+03-155d
+03-156d
+08-107d
+08-493d
+08-774d
+01-01d
+--- /staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_mind20_dedup_miss02.fam ---
+Lines: 933
+04-36d
+06-42d
+06-15d
+07-10d
+07-01d
+02-64d
+01-59d
+01-29d
+06-43d
+02-36d
+01-50d
+04-23d
+02-104t
+02-29d
+03-155d
+03-156d
+08-107d
+08-493d
+08-774d
+01-01d
+--- /staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_mind20_dedup.fam ---
+Lines: 1091
+04-36d
+06-42d
+07-04d
+06-15d
+07-10d
+07-01d
+02-64d
+01-59d
+01-29d
+06-43d
+02-36d
+01-50d
+04-23d
+02-104t
+02-29d
+03-155d
+03-156d
+08-107d
+08-493d
+08-774d
+--- /staging/ALSU-analysis/winter2025/PLINK_301125_0312/old/ConvSK_mind20.fam ---
+Lines: 1148
+04-36d
+06-06d
+07-02d
+06-23d
+06-42d
+08-795d
+06-34d
+07-04d
+06-15d
+07-10d
+04-54d
+07-01d
+04-55d
+02-49d
+02-64d
+01-59d
+01-29d
+02-45d
+01-17d
+02-104d
+--- /staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.fam ---
+Lines: 1247
+04-36d
+06-06d
+07-02d
+06-23d
+06-42d
+08-795d
+06-34d
+07-04d
+06-15d
+07-10d
+04-54d
+07-01d
+04-55d
+02-49d
+02-64d
+01-59d
+01-29d
+02-45d
+01-17d
+02-104d
+
+=== alsu.txt content ===
+The PLINK Input Report files have been created in the BeadStudio project directory.
+
+D:\ALSU-analysis\Conversion\OUTPUT\ConvSK\PLINK_120625_0107
+
+=== ConvSK_Custom.txt content ===
+The PLINK Input Report files have been created in the BeadStudio project directory.
+
+D:\ALSU-analysis\Conversion\OUTPUT\ConvSK\PLINK_100625_0236
+
+=== Data dir ===
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/Data/:
+total 3418028
+drwxr-xr-x  3 root root        264 Jun 13  2025 .
+drwxr-xr-x 11 root root       4096 Sep 26  2025 ..
+-rw-r--r--  1 root root 3262286692 Jun 13  2025 ad.bin
+drwxr-xr-x  2 root root          6 Jun 13  2025 Bookmark Analyses
+-rw-r--r--  1 root root         61 Jun 13  2025 Duplicates.bin
+-rw-r--r--  1 root root         68 Jun 13  2025 heredity.bin
+-rw-r--r--  1 root root  219650515 Jun 13  2025 ld.bin
+-rw-r--r--  1 root root         16 Jun  9  2025 PairedData.bin
+-rw-r--r--  1 root root     655092 Jun 13  2025 pairtable.bin
+-rw-r--r--  1 root root         51 Jun 13  2025 projdat.bin
+-rw-r--r--  1 root root    4398013 Jun 13  2025 sd.bin
+-rw-r--r--  1 root root     654027 Jun  9  2025 seqdata.bin
+-rw-r--r--  1 root root   12388822 Jun 13  2025 tabledat.bin
+
+/staging/ALSU-analysis/Conversion/OUTPUT/ConvSK/Data/Bookmark Analyses:
+total 0
+drwxr-xr-x 2 root root   6 Jun 13  2025 .
+drwxr-xr-x 3 root root 264 Jun 13  2025 ..
+
+=== new dir ===
+total 28
+drwxr-xr-x  2 root root   91 Jun 13  2025 .
+drwxr-xr-x 11 root root 4096 Sep 26  2025 ..
+-rw-r--r--  1 root root 4622 Jun 12  2025 histimiss.pdf
+-rw-r--r--  1 root root 4685 Jun 12  2025 histlmiss.pdf
+-rw-r--r--  1 root root 5065 Jun 12  2025 hist_lmiss_zoom.pdf

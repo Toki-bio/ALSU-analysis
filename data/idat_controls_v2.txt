@@ -1,0 +1,208 @@
+﻿Dragen Version           Size (MB)  Install Date         Path
+4.4.4                    846.30     2025-07-22 00:16:45  /opt/dragen/4.4.4
+
+Bitstream Version        Size (MB)  Install Date         Path
+07.031.779 (0x18101306)  601.18     2025-07-22 00:16:36  /opt/bitstream/07.031.779
+
+To remove a dragen version, call `yum remove` on its Path.
+Control probes: 23
+  addr=  27630314  type=Staining             color=Red      ext=DNP (High)
+  addr=  43603326  type=Staining             color=Purple   ext=DNP (Bgnd)
+  addr=  41666334  type=Staining             color=Green    ext=Biotin (High)
+  addr=  34648333  type=Staining             color=Blue     ext=Biotin (Bgnd)
+  addr=  17616306  type=Extension            color=Red      ext=Extension (A)
+  addr=  14607337  type=Extension            color=Purple   ext=Extension (T)
+  addr=  12613307  type=Extension            color=Green    ext=Extension (C)
+  addr=  11603365  type=Extension            color=Blue     ext=Extension (G)
+  addr=  31623323  type=Target Removal       color=Green    ext=Target Removal
+  addr=  19612319  type=Hybridization        color=Green    ext=Hyb (High)
+  addr=  20636378  type=Hybridization        color=Blue     ext=Hyb (Medium)
+  addr=  23617335  type=Hybridization        color=Black    ext=Hyb (Low)
+  addr=  32629312  type=Stringency           color=Red      ext=String (PM)
+  addr=  33668307  type=Stringency           color=Purple   ext=String (MM)
+  addr=  26619332  type=Non-Specific Binding color=Red      ext=NSB (Bgnd)
+  addr=  27624356  type=Non-Specific Binding color=Purple   ext=NSB (Bgnd)
+  addr=  25617343  type=Non-Specific Binding color=Blue     ext=NSB (Bgnd)
+  addr=  24616350  type=Non-Specific Binding color=Green    ext=NSB (Bgnd)
+  addr=  34633358  type=Non-Polymorphic      color=Red      ext=NP(A)
+  addr=  16648324  type=Non-Polymorphic      color=Purple   ext=NP(T)
+  addr=  43641328  type=Non-Polymorphic      color=Green    ext=NP(C)
+  addr=  13642359  type=Non-Polymorphic      color=Blue     ext=NP(G)
+  addr=  28637363  type=Restoration          color=Green    ext=Restoration
+
+Test IDAT: 704215 probes, control match: 23/23
+
+====================================================================================================
+PARSING ALL CHIPS (position R01C01)
+====================================================================================================
+  OK 208993030034 (BAD ): 704215 probes
+  OK 208993030080 (BAD ): 704215 probes
+  OK 208993030112 (BAD ): 704215 probes
+  OK 208993030109 (BAD ): 704215 probes
+  OK 207591080076 (GOOD): 704215 probes
+  OK 207585740001 (GOOD): 704215 probes
+  OK 207591070002 (GOOD): 704215 probes
+
+============================================================================================================================================
+CONTROL PROBE INTENSITIES (R01C01, 1 sample per chip)
+============================================================================================================================================
+Type                 Ext                    Col     | 0034B:Grn  Red | 0080B:Grn  Red | 0112B:Grn  Red | 0109B:Grn  Red | 0076G:Grn  Red | 0001G:Grn  Red | 0002G:Grn  Red
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Staining             DNP (High)             Red     |    198 44435 |    275 36959 |    200 36183 |    318 33378 |    264 50570 |    229 36913 |    197 30995
+Staining             DNP (Bgnd)             Purple  |    191   474 |    233  2668 |    105  1417 |    228   404 |    217   301 |    192   816 |     77   537
+Staining             Biotin (High)          Green   |  30655   797 |  23644  2667 |  27445  1634 |  19284   718 |  33162   467 |  16138   689 |  13349   696
+Staining             Biotin (Bgnd)          Blue    |    158   400 |    224  2390 |    180  1486 |    181   503 |    229   361 |    191   634 |    155   720
+Extension            Extension (A)          Red     |    614 40639 |    641 36630 |    723 32217 |    729 30788 |    728 46452 |    430 30065 |    426 25757
+Extension            Extension (T)          Purple  |    444 41739 |    425 38436 |    473 33344 |    510 33236 |    488 49445 |    388 31955 |    340 30112
+Extension            Extension (C)          Green   |  32412  1671 |  24964  1764 |  29617  1301 |  22186  1393 |  35676  1627 |  14602  1337 |  12705  1321
+Extension            Extension (G)          Blue    |  33591  2050 |  25726  2038 |  29921  1730 |  22072  1700 |  36783  1905 |  14488  1456 |  12103  1474
+Target Removal       Target Removal         Green   |    158   579 |    327   970 |    218  1085 |    360  1028 |    211   488 |    317  1039 |    278   870
+Hybridization        Hyb (High)             Green   |   4051   369 |  21111  1548 |  13097   876 |  20606  1770 |  33892  1599 |  15624  1825 |  12997  1774
+Hybridization        Hyb (Medium)           Blue    |    691   259 |   1114   853 |   1000   628 |   4704   409 |  23547   562 |  11624  1077 |   9306   845
+Hybridization        Hyb (Low)              Black   |    491   642 |   1577  1293 |    959  1150 |   3062  1665 |   6303  1811 |   3280  1783 |   2358  1469
+Stringency           String (PM)            Red     |    163  6951 |    332 15635 |    210  5811 |    525 17727 |    277 22435 |    546 21635 |    436 19411
+Stringency           String (MM)            Purple  |    140   249 |    245   828 |    201  1008 |    317  1104 |    202  4545 |    169  2166 |    175  2132
+Non-Specific Binding NSB (Bgnd)             Red     |    155   172 |    158   716 |    138   717 |    344   300 |    165   240 |    252   573 |    255   566
+Non-Specific Binding NSB (Bgnd)             Purple  |    112   192 |    265   555 |    145   644 |    257   383 |    160   260 |    211   666 |    236   547
+Non-Specific Binding NSB (Bgnd)             Blue    |    153   360 |    187   647 |    178   693 |    327   425 |    263  1138 |    261   952 |    264  1696
+Non-Specific Binding NSB (Bgnd)             Green   |    196   185 |    177   696 |    135   716 |    271   358 |    784   345 |    291   755 |    807   626
+Non-Polymorphic      NP(A)                  Red     |    183  4878 |    244  8008 |    170  3909 |    297  9025 |    261 18153 |    365 15894 |    300 13955
+Non-Polymorphic      NP(T)                  Purple  |    101  1356 |    208  2338 |    131  1955 |    282  9070 |    161  6066 |    324 17968 |    296 15380
+Non-Polymorphic      NP(C)                  Green   |   2008   219 |   6294   728 |   3175   716 |  10842   732 |   9599   356 |   9316  1057 |   8306  1094
+Non-Polymorphic      NP(G)                  Blue    |   3064   192 |   4755   661 |   4550   723 |  10229   789 |   4760   355 |   8401  1056 |   6577  1053
+Restoration          Restoration            Green   |    191   198 |    249   636 |    214   729 |    310   313 |    296   291 |    315   594 |    215   554
+
+==============================================================================================================
+MEAN INTENSITY BY CONTROL TYPE: BAD vs GOOD
+==============================================================================================================
+Control Type              |   BAD_Grn   BAD_Red |  GOOD_Grn  GOOD_Red |  B/G Grn  B/G Red
+--------------------------------------------------------------------------------------------------------------
+Extension                 |     14066     18792 |     10763     18576 |    1.307    1.012
+Hybridization             |      6039       955 |     13215      1416 |    0.457    0.674
+Non-Polymorphic           |      2908      2831 |      4056      7699 |    0.717    0.368
+Non-Specific Binding      |       200       485 |       329       697 |    0.607    0.696
+Restoration               |       241       469 |       275       480 |    0.875    0.978
+Staining                  |      6470     10407 |      5367     10308 |    1.206    1.010
+Stringency                |       267      6164 |       301     12054 |    0.886    0.511
+Target Removal            |       266       916 |       269       799 |    0.989    1.146
+
+================================================================================
+STAINING CONTROLS ??? DNP = Green channel dye, Biotin = Red channel dye
+================================================================================
+
+  DNP (High) (color=Red, addr=27630314):
+    208993030034 (BAD ): Grn=   198  Red= 44435
+    208993030080 (BAD ): Grn=   275  Red= 36959
+    208993030112 (BAD ): Grn=   200  Red= 36183
+    208993030109 (BAD ): Grn=   318  Red= 33378
+    207591080076 (GOOD): Grn=   264  Red= 50570
+    207585740001 (GOOD): Grn=   229  Red= 36913
+    207591070002 (GOOD): Grn=   197  Red= 30995
+
+  DNP (Bgnd) (color=Purple, addr=43603326):
+    208993030034 (BAD ): Grn=   191  Red=   474
+    208993030080 (BAD ): Grn=   233  Red=  2668
+    208993030112 (BAD ): Grn=   105  Red=  1417
+    208993030109 (BAD ): Grn=   228  Red=   404
+    207591080076 (GOOD): Grn=   217  Red=   301
+    207585740001 (GOOD): Grn=   192  Red=   816
+    207591070002 (GOOD): Grn=    77  Red=   537
+
+  Biotin (High) (color=Green, addr=41666334):
+    208993030034 (BAD ): Grn= 30655  Red=   797
+    208993030080 (BAD ): Grn= 23644  Red=  2667
+    208993030112 (BAD ): Grn= 27445  Red=  1634
+    208993030109 (BAD ): Grn= 19284  Red=   718
+    207591080076 (GOOD): Grn= 33162  Red=   467
+    207585740001 (GOOD): Grn= 16138  Red=   689
+    207591070002 (GOOD): Grn= 13349  Red=   696
+
+  Biotin (Bgnd) (color=Blue, addr=34648333):
+    208993030034 (BAD ): Grn=   158  Red=   400
+    208993030080 (BAD ): Grn=   224  Red=  2390
+    208993030112 (BAD ): Grn=   180  Red=  1486
+    208993030109 (BAD ): Grn=   181  Red=   503
+    207591080076 (GOOD): Grn=   229  Red=   361
+    207585740001 (GOOD): Grn=   191  Red=   634
+    207591070002 (GOOD): Grn=   155  Red=   720
+
+================================================================================
+PER-CHIP DIAGNOSTIC SUMMARY
+================================================================================
+
+--- Staining (4 probes: DNP (High), DNP (Bgnd), Biotin (High), Biotin (Bgnd)) ---
+  208993030034 (BAD ): Grn avg=   7800 max= 30655 min=  158  Red avg=  11526 max= 44435 min=  400
+  208993030080 (BAD ): Grn avg=   6094 max= 23644 min=  224  Red avg=  11171 max= 36959 min= 2390
+  208993030112 (BAD ): Grn avg=   6982 max= 27445 min=  105  Red avg=  10180 max= 36183 min= 1417
+  208993030109 (BAD ): Grn avg=   5003 max= 19284 min=  181  Red avg=   8751 max= 33378 min=  404
+  207591080076 (GOOD): Grn avg=   8468 max= 33162 min=  217  Red avg=  12925 max= 50570 min=  301
+  207585740001 (GOOD): Grn avg=   4188 max= 16138 min=  191  Red avg=   9763 max= 36913 min=  634
+  207591070002 (GOOD): Grn avg=   3444 max= 13349 min=   77  Red avg=   8237 max= 30995 min=  537
+
+--- Hybridization (3 probes: Hyb (High), Hyb (Medium), Hyb (Low)) ---
+  208993030034 (BAD ): Grn avg=   1744 max=  4051 min=  491  Red avg=    423 max=   642 min=  259
+  208993030080 (BAD ): Grn avg=   7934 max= 21111 min= 1114  Red avg=   1231 max=  1548 min=  853
+  208993030112 (BAD ): Grn avg=   5019 max= 13097 min=  959  Red avg=    885 max=  1150 min=  628
+  208993030109 (BAD ): Grn avg=   9457 max= 20606 min= 3062  Red avg=   1281 max=  1770 min=  409
+  207591080076 (GOOD): Grn avg=  21247 max= 33892 min= 6303  Red avg=   1324 max=  1811 min=  562
+  207585740001 (GOOD): Grn avg=  10176 max= 15624 min= 3280  Red avg=   1562 max=  1825 min= 1077
+  207591070002 (GOOD): Grn avg=   8220 max= 12997 min= 2358  Red avg=   1363 max=  1774 min=  845
+
+--- Extension (4 probes: Extension (A), Extension (T), Extension (C), Extension (G)) ---
+  208993030034 (BAD ): Grn avg=  16765 max= 33591 min=  444  Red avg=  21525 max= 41739 min= 1671
+  208993030080 (BAD ): Grn avg=  12939 max= 25726 min=  425  Red avg=  19717 max= 38436 min= 1764
+  208993030112 (BAD ): Grn avg=  15184 max= 29921 min=  473  Red avg=  17148 max= 33344 min= 1301
+  208993030109 (BAD ): Grn avg=  11374 max= 22186 min=  510  Red avg=  16779 max= 33236 min= 1393
+  207591080076 (GOOD): Grn avg=  18419 max= 36783 min=  488  Red avg=  24857 max= 49445 min= 1627
+  207585740001 (GOOD): Grn avg=   7477 max= 14602 min=  388  Red avg=  16203 max= 31955 min= 1337
+  207591070002 (GOOD): Grn avg=   6394 max= 12705 min=  340  Red avg=  14666 max= 30112 min= 1321
+
+--- Non-Polymorphic (4 probes: NP(A), NP(T), NP(C), NP(G)) ---
+  208993030034 (BAD ): Grn avg=   1339 max=  3064 min=  101  Red avg=   1661 max=  4878 min=  192
+  208993030080 (BAD ): Grn avg=   2875 max=  6294 min=  208  Red avg=   2934 max=  8008 min=  661
+  208993030112 (BAD ): Grn avg=   2006 max=  4550 min=  131  Red avg=   1826 max=  3909 min=  716
+  208993030109 (BAD ): Grn avg=   5412 max= 10842 min=  282  Red avg=   4904 max=  9070 min=  732
+  207591080076 (GOOD): Grn avg=   3695 max=  9599 min=  161  Red avg=   6232 max= 18153 min=  355
+  207585740001 (GOOD): Grn avg=   4602 max=  9316 min=  324  Red avg=   8994 max= 17968 min= 1056
+  207591070002 (GOOD): Grn avg=   3870 max=  8306 min=  296  Red avg=   7870 max= 15380 min= 1053
+
+--- Target Removal (1 probes: Target Removal) ---
+  208993030034 (BAD ): Grn avg=    158 max=   158 min=  158  Red avg=    579 max=   579 min=  579
+  208993030080 (BAD ): Grn avg=    327 max=   327 min=  327  Red avg=    970 max=   970 min=  970
+  208993030112 (BAD ): Grn avg=    218 max=   218 min=  218  Red avg=   1085 max=  1085 min= 1085
+  208993030109 (BAD ): Grn avg=    360 max=   360 min=  360  Red avg=   1028 max=  1028 min= 1028
+  207591080076 (GOOD): Grn avg=    211 max=   211 min=  211  Red avg=    488 max=   488 min=  488
+  207585740001 (GOOD): Grn avg=    317 max=   317 min=  317  Red avg=   1039 max=  1039 min= 1039
+  207591070002 (GOOD): Grn avg=    278 max=   278 min=  278  Red avg=    870 max=   870 min=  870
+
+--- Stringency (2 probes: String (PM), String (MM)) ---
+  208993030034 (BAD ): Grn avg=    152 max=   163 min=  140  Red avg=   3600 max=  6951 min=  249
+  208993030080 (BAD ): Grn avg=    288 max=   332 min=  245  Red avg=   8232 max= 15635 min=  828
+  208993030112 (BAD ): Grn avg=    206 max=   210 min=  201  Red avg=   3410 max=  5811 min= 1008
+  208993030109 (BAD ): Grn avg=    421 max=   525 min=  317  Red avg=   9416 max= 17727 min= 1104
+  207591080076 (GOOD): Grn avg=    240 max=   277 min=  202  Red avg=  13490 max= 22435 min= 4545
+  207585740001 (GOOD): Grn avg=    358 max=   546 min=  169  Red avg=  11900 max= 21635 min= 2166
+  207591070002 (GOOD): Grn avg=    306 max=   436 min=  175  Red avg=  10772 max= 19411 min= 2132
+
+--- Non-Specific Binding (4 probes: NSB (Bgnd), NSB (Bgnd), NSB (Bgnd), NSB (Bgnd)) ---
+  208993030034 (BAD ): Grn avg=    154 max=   196 min=  112  Red avg=    227 max=   360 min=  172
+  208993030080 (BAD ): Grn avg=    197 max=   265 min=  158  Red avg=    654 max=   716 min=  555
+  208993030112 (BAD ): Grn avg=    149 max=   178 min=  135  Red avg=    692 max=   717 min=  644
+  208993030109 (BAD ): Grn avg=    300 max=   344 min=  257  Red avg=    366 max=   425 min=  300
+  207591080076 (GOOD): Grn avg=    343 max=   784 min=  160  Red avg=    496 max=  1138 min=  240
+  207585740001 (GOOD): Grn avg=    254 max=   291 min=  211  Red avg=    736 max=   952 min=  573
+  207591070002 (GOOD): Grn avg=    390 max=   807 min=  236  Red avg=    859 max=  1696 min=  547
+
+================================================================================
+OVERALL PROBE INTENSITY (median/mean/p95 of ALL 704K probes)
+================================================================================
+  208993030034 (BAD ): Grn median=  259 mean=    562 p95=  1945  Red median=  265 mean=    500 p95=  1575
+  208993030080 (BAD ): Grn median=  396 mean=   1396 p95=  7202  Red median=  865 mean=   1717 p95=  7133
+  208993030112 (BAD ): Grn median=  523 mean=   1086 p95=  3942  Red median=  796 mean=   1118 p95=  2639
+  208993030109 (BAD ): Grn median=  948 mean=   2451 p95=  9061  Red median=  707 mean=   2307 p95= 10221
+  207591080076 (GOOD): Grn median= 1133 mean=   1695 p95=  5341  Red median=  690 mean=   1717 p95=  6037
+  207585740001 (GOOD): Grn median= 3448 mean=   3372 p95=  7920  Red median= 2604 mean=   5297 p95= 15101
+  207591070002 (GOOD): Grn median= 3049 mean=   2936 p95=  6789  Red median= 2456 mean=   4771 p95= 13429
+
+DONE
+

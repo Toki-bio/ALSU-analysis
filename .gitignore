@@ -3,6 +3,10 @@ test_layout.html
 *.msi
 *.csv
 
+# Large binary VCF files — too big for git
+data/michigan_upload/*.vcf.gz
+data/michigan_upload/*.vcf.gz.tbi
+
 # Scratch/debug files — never commit
 tmp_*
 *_out.txt

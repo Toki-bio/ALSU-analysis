@@ -1,0 +1,624 @@
+﻿======================================================================
+ALSU SAMPLE INVESTIGATION REPORT
+======================================================================
+
+Total samples in .fam: 1247
+Unique base IDs: 1199
+Samples with d suffix: 45
+Samples with t suffix: 3
+Samples removed for >20% missingness: 92
+Samples in mind20 dataset: 1155
+Total pairs with PI_HAT >= 0.15: 8506
+Total pairs with PI_HAT >= 0.98: 65
+
+======================================================================
+ANALYSIS 1: DO d/t SUFFIX SAMPLES MATCH THEIR ORIGINALS?
+======================================================================
+
+Total d/t suffix samples: 48
+
+--- d/t samples that CORRECTLY match their base (PI_HAT >= 0.98): 8 ---
+  01-17d Γåö 01-17: PI_HAT = 1.0000
+  01-29t Γåö 01-29: PI_HAT = 1.0000  (also matches: 02-29=1.0000)
+  01-50d Γåö 01-50: PI_HAT = 1.0000
+  03-156d Γåö 03-156: PI_HAT = 1.0000  (also matches: 03-155=1.0000)
+  04-23d Γåö 04-23: PI_HAT = 1.0000
+  08-131d Γåö 08-131: PI_HAT = 1.0000
+  08-719d Γåö 08-719: PI_HAT = 0.9905
+  08-770d Γåö 08-770: PI_HAT = 1.0000
+
+--- d/t samples that match a DIFFERENT sample (WRONG identity): 28 ---
+  01-59d ΓÇö Expected: 01-59 (PI_HAT with 01-59 < 0.15)
+    Actual match(es): 04-13=1.0000
+  02-104d ΓÇö Expected: 02-104 (PI_HAT with 02-104 < 0.15)
+    Actual match(es): 06-29=1.0000, 02-104t=1.0000
+  02-104t ΓÇö Expected: 02-104 (PI_HAT with 02-104 < 0.15)
+    Actual match(es): 06-29=1.0000, 02-104d=1.0000
+  02-36d ΓÇö Expected: 02-36 (PI_HAT with 02-36 < 0.15)
+    Actual match(es): 08-816=1.0000
+  02-45d ΓÇö Expected: 02-45 (PI_HAT with 02-45 < 0.15)
+    Actual match(es): 02-59=1.0000, 02-45t=0.9999
+  02-45t ΓÇö Expected: 02-45 (PI_HAT with 02-45 < 0.15)
+    Actual match(es): 02-59=0.9999, 02-45d=0.9999
+  02-49d ΓÇö Expected: 02-49 (PI_HAT with 02-49 < 0.15)
+    Actual match(es): 04-14=1.0000
+  02-52d ΓÇö Expected: 02-52 (PI_HAT with 02-52 < 0.15)
+    Actual match(es): 06-04=1.0000
+  02-64d ΓÇö Expected: 02-64 (PI_HAT with 02-64 < 0.15)
+    Actual match(es): 07-01=1.0000
+  03-155d ΓÇö Expected: 03-155 (PI_HAT with 03-155 < 0.15)
+    Actual match(es): 03-154=1.0000
+  04-20d ΓÇö Expected: 04-20 (PI_HAT with 04-20 < 0.15)
+    Actual match(es): 07-04=1.0000
+  04-22d ΓÇö Expected: 04-22 (PI_HAT with 04-22 < 0.15)
+    Actual match(es): 08-541=1.0000
+  04-54d ΓÇö Expected: 04-54 (PI_HAT with 04-54 < 0.15)
+    Actual match(es): 07-10=1.0000
+  04-55d ΓÇö Expected: 04-55 (PI_HAT with 04-55 < 0.15)
+    Actual match(es): 08-774=1.0000
+  06-06d ΓÇö Expected: 06-06 (PI_HAT with 06-06 < 0.15)
+    Actual match(es): 04-45=1.0000
+  06-15d ΓÇö Expected: 06-15 (PI_HAT with 06-15 < 0.15)
+    Actual match(es): 04-07=1.0000, 06-34d=0.9998
+  06-23d ΓÇö Expected: 06-23 (PI_HAT with 06-23 < 0.15)
+    Actual match(es): 04-22=1.0000
+  06-34d ΓÇö Expected: 06-34 (PI_HAT with 06-34 < 0.15)
+    Actual match(es): 04-07=0.9998, 06-15d=0.9998
+  06-41d ΓÇö Expected: 06-41 (PI_HAT with 06-41 < 0.15)
+    Actual match(es): 08-799=0.9999
+  06-42d ΓÇö Expected: 06-42 (PI_HAT with 06-42 < 0.15)
+    Actual match(es): 06-38=1.0000
+  06-43d ΓÇö Expected: 06-43 (PI_HAT with 06-43 < 0.15)
+    Actual match(es): 02-45=1.0000, 08-107=1.0000
+  07-01d ΓÇö Expected: 07-01 (PI_HAT with 07-01 < 0.15)
+    Actual match(es): 04-08=1.0000
+  07-02d ΓÇö Expected: 07-02 (PI_HAT with 07-02 < 0.15)
+    Actual match(es): 04-25=1.0000
+  07-10d ΓÇö Expected: 07-10 (PI_HAT with 07-10 < 0.15)
+    Actual match(es): 06-39=1.0000
+  08-107d ΓÇö Expected: 08-107 (PI_HAT with 08-107 < 0.15)
+    Actual match(es): 06-28=1.0000
+  08-493d ΓÇö Expected: 08-493 (PI_HAT with 08-493 < 0.15)
+    Actual match(es): 08-129=1.0000
+  08-795d ΓÇö Expected: 08-795 (PI_HAT with 08-795 < 0.15)
+    Actual match(es): 08-498=1.0000
+  08-81d ΓÇö Expected: 08-81 (PI_HAT with 08-81 < 0.15)
+    Actual match(es): 08-817=1.0000
+
+--- d/t samples with NO match at PI_HAT >= 0.98: 11 ---
+  01-01d ΓÇö PI_HAT with 01-01 < 0.15 (completely unrelated!)
+  01-29d ΓÇö PI_HAT with 01-29 < 0.15 (completely unrelated!)
+  02-29d ΓÇö PI_HAT with 02-29 < 0.15 (completely unrelated!)
+  02-39d ΓÇö PI_HAT with 02-39 < 0.15 (completely unrelated!)
+  04-36d ΓÇö PI_HAT with 04-36 < 0.15 (completely unrelated!)
+  07-04d ΓÇö PI_HAT with 07-04 = 0.3278 (low!)
+  08-623d ΓÇö PI_HAT with 08-623 < 0.15 (completely unrelated!)
+  08-66d ΓÇö PI_HAT with 08-66 < 0.15 (completely unrelated!)
+  08-701d ΓÇö PI_HAT with 08-701 = 0.4429 (low!)
+  08-774d ΓÇö PI_HAT with 08-774 < 0.15 (completely unrelated!)
+  09-37d ΓÇö PI_HAT with 09-37 < 0.15 (completely unrelated!)
+
+--- d/t samples REMOVED in missingness filter (couldn't compare): 1 ---
+  08-825d / 08-825: 08-825d removed
+
+======================================================================
+ANALYSIS 2: UNEXPECTED IDENTICAL PAIRS (DIFFERENT BASE IDs, PI_HAT >= 0.98)
+======================================================================
+
+Expected (same base ID): 10 pairs
+Unexpected (different base IDs): 55 pairs
+
+--- Unexpected identical pairs: ---
+   580 01-18 Γåö  581 09-76  PI_HAT=1.0000
+    11 02-29 Γåö   52 01-29  PI_HAT=1.0000
+    11 02-29 Γåö  338 01-29t [t]  PI_HAT=1.0000
+   152 02-36 Γåö  270 07-19  PI_HAT=1.0000
+    71 02-39 Γåö  206 06-30  PI_HAT=1.0000
+   154 02-45 Γåö  325 06-43d [d]  PI_HAT=1.0000
+   154 02-45 Γåö  237 08-107  PI_HAT=1.0000
+   157 02-52 Γåö  290 01-53  PI_HAT=0.9997
+   158 02-59 Γåö  287 02-45d [d]  PI_HAT=1.0000
+   158 02-59 Γåö  347 02-45t [t]  PI_HAT=0.9999
+   129 03-154 Γåö  352 03-155d [d]  PI_HAT=1.0000
+   130 03-155 Γåö  131 03-156  PI_HAT=1.0000
+   130 03-155 Γåö  353 03-156d [d]  PI_HAT=1.0000
+   165 04-07 Γåö  276 06-15d [d]  PI_HAT=1.0000
+   165 04-07 Γåö  273 06-34d [d]  PI_HAT=0.9998
+   166 04-08 Γåö  280 07-01d [d]  PI_HAT=1.0000
+   169 04-13 Γåö  284 01-59d [d]  PI_HAT=1.0000
+   170 04-14 Γåö  282 02-49d [d]  PI_HAT=1.0000
+   176 04-22 Γåö  266 06-23d [d]  PI_HAT=1.0000
+   178 04-25 Γåö  263 07-02d [d]  PI_HAT=1.0000
+   296 04-36 Γåö  369 04-40  PI_HAT=1.0000
+   187 04-45 Γåö  262 06-06d [d]  PI_HAT=1.0000
+   194 06-04 Γåö  293 02-52d [d]  PI_HAT=1.0000
+   204 06-28 Γåö  380 08-107d [d]  PI_HAT=1.0000
+   205 06-29 Γåö  292 02-104d [d]  PI_HAT=1.0000
+   205 06-29 Γåö  342 02-104t [t]  PI_HAT=1.0000
+   273 06-34d [d] Γåö  276 06-15d [d]  PI_HAT=0.9998
+   213 06-38 Γåö  268 06-42d [d]  PI_HAT=1.0000
+   214 06-39 Γåö  278 07-10d [d]  PI_HAT=1.0000
+   218 07-01 Γåö  283 02-64d [d]  PI_HAT=1.0000
+   220 07-04 Γåö  297 04-20d [d]  PI_HAT=1.0000
+   222 07-10 Γåö  279 04-54d [d]  PI_HAT=1.0000
+   243 07-15 Γåö  244 08-160  PI_HAT=1.0000
+   245 07-16 Γåö  247 02-90  PI_HAT=1.0000
+   237 08-107 Γåö  325 06-43d [d]  PI_HAT=1.0000
+   271 08-128 Γåö  275 08-124  PI_HAT=0.9992
+   231 08-129 Γåö  415 08-493d [d]  PI_HAT=1.0000
+   249 08-179 Γåö  265 03-37  PI_HAT=1.0000
+   249 08-179 Γåö  261 08-194  PI_HAT=1.0000
+   832 08-181 Γåö  849 08-45  PI_HAT=1.0000
+   261 08-194 Γåö  265 03-37  PI_HAT=1.0000
+   757 08-265 Γåö  758 08-267  PI_HAT=1.0000
+   246 08-436 Γåö  248 07-17  PI_HAT=1.0000
+   168 08-493 Γåö  422 08-744  PI_HAT=1.0000
+   269 08-498 Γåö  272 08-795d [d]  PI_HAT=1.0000
+   233 08-509 Γåö  296 04-36  PI_HAT=1.0000
+   233 08-509 Γåö  369 04-40  PI_HAT=1.0000
+   232 08-541 Γåö  294 04-22d [d]  PI_HAT=1.0000
+   234 08-774 Γåö  281 04-55d [d]  PI_HAT=1.0000
+   225 08-799 Γåö  300 06-41d [d]  PI_HAT=0.9999
+   229 08-816 Γåö  326 02-36d [d]  PI_HAT=1.0000
+   277 08-817 Γåö  306 08-81d [d]  PI_HAT=1.0000
+   958 09-101 Γåö 1170 08-742  PI_HAT=0.9913
+    91 09-37 Γåö  150 02-104  PI_HAT=1.0000
+   908 12-04 Γåö  909 12-05  PI_HAT=0.9998
+
+======================================================================
+ANALYSIS 3: IDENTITY CLUSTERS (connected components at PI_HAT >= 0.98)
+======================================================================
+
+Total identity clusters: 49
+Sizes: [3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+
+  Cluster 1 [3 members, 2 unique base IDs]:
+    Members: 01-29 (F_MISS=0.0086), 01-29t (F_MISS=0.0086), 02-29 (F_MISS=0.0120)
+    Originals: ['01-29', '02-29']
+    d/t copies: ['01-29t']
+    Γ£ô 01-29t correctly clusters with its base 01-29
+
+  Cluster 2 [3 members, 2 unique base IDs]:
+    Members: 03-155 (F_MISS=0.0083), 03-156 (F_MISS=0.0110), 03-156d (F_MISS=0.0083)
+    Originals: ['03-155', '03-156']
+    d/t copies: ['03-156d']
+    Γ£ô 03-156d correctly clusters with its base 03-156
+
+  Cluster 3 [3 members, 3 unique base IDs]:
+    Members: 02-45 (F_MISS=0.0086), 06-43d (F_MISS=0.0079), 08-107 (F_MISS=0.0080)
+    Originals: ['02-45', '08-107']
+    d/t copies: ['06-43d']
+    ΓÜá 06-43d has base '06-43' but '06-43' is NOT in this cluster!
+
+  Cluster 4 [3 members, 2 unique base IDs]:
+    Members: 02-45d (F_MISS=0.0084), 02-45t (F_MISS=0.0199), 02-59 (F_MISS=0.0080)
+    Originals: ['02-59']
+    d/t copies: ['02-45d', '02-45t']
+    ΓÜá 02-45d has base '02-45' but '02-45' is NOT in this cluster!
+    ΓÜá 02-45t has base '02-45' but '02-45' is NOT in this cluster!
+
+  Cluster 5 [3 members, 3 unique base IDs]:
+    Members: 04-07 (F_MISS=0.0092), 06-15d (F_MISS=0.0086), 06-34d (F_MISS=0.0410)
+    Originals: ['04-07']
+    d/t copies: ['06-15d', '06-34d']
+    ΓÜá 06-15d has base '06-15' but '06-15' is NOT in this cluster!
+    ΓÜá 06-34d has base '06-34' but '06-34' is NOT in this cluster!
+
+  Cluster 6 [3 members, 2 unique base IDs]:
+    Members: 02-104d (F_MISS=0.0091), 02-104t (F_MISS=0.0085), 06-29 (F_MISS=0.0093)
+    Originals: ['06-29']
+    d/t copies: ['02-104d', '02-104t']
+    ΓÜá 02-104d has base '02-104' but '02-104' is NOT in this cluster!
+    ΓÜá 02-104t has base '02-104' but '02-104' is NOT in this cluster!
+
+  Cluster 7 [3 members, 3 unique base IDs]:
+    Members: 04-36 (F_MISS=0.0090), 04-40 (F_MISS=0.0099), 08-509 (F_MISS=0.0079)
+    Originals: ['04-36', '04-40', '08-509']
+    d/t copies: []
+
+  Cluster 8 [3 members, 3 unique base IDs]:
+    Members: 03-37 (F_MISS=0.0083), 08-179 (F_MISS=0.0186), 08-194 (F_MISS=0.0197)
+    Originals: ['03-37', '08-179', '08-194']
+    d/t copies: []
+
+  Cluster 9 [2 members, 1 unique base IDs]:
+    Members: 08-131 (F_MISS=0.0078), 08-131d (F_MISS=0.0121)
+    Originals: ['08-131']
+    d/t copies: ['08-131d']
+    Γ£ô 08-131d correctly clusters with its base 08-131
+
+  Cluster 10 [2 members, 2 unique base IDs]:
+    Members: 02-39 (F_MISS=0.0107), 06-30 (F_MISS=0.0082)
+    Originals: ['02-39', '06-30']
+    d/t copies: []
+
+  Cluster 11 [2 members, 1 unique base IDs]:
+    Members: 01-17 (F_MISS=0.0088), 01-17d (F_MISS=0.0095)
+    Originals: ['01-17']
+    d/t copies: ['01-17d']
+    Γ£ô 01-17d correctly clusters with its base 01-17
+
+  Cluster 12 [2 members, 2 unique base IDs]:
+    Members: 02-104 (F_MISS=0.0079), 09-37 (F_MISS=0.0086)
+    Originals: ['02-104', '09-37']
+    d/t copies: []
+
+  Cluster 13 [2 members, 2 unique base IDs]:
+    Members: 03-154 (F_MISS=0.0094), 03-155d (F_MISS=0.0081)
+    Originals: ['03-154']
+    d/t copies: ['03-155d']
+    ΓÜá 03-155d has base '03-155' but '03-155' is NOT in this cluster!
+
+  Cluster 14 [2 members, 1 unique base IDs]:
+    Members: 01-50 (F_MISS=0.0083), 01-50d (F_MISS=0.0079)
+    Originals: ['01-50']
+    d/t copies: ['01-50d']
+    Γ£ô 01-50d correctly clusters with its base 01-50
+
+  Cluster 15 [2 members, 2 unique base IDs]:
+    Members: 02-36 (F_MISS=0.0086), 07-19 (F_MISS=0.0088)
+    Originals: ['02-36', '07-19']
+    d/t copies: []
+
+  Cluster 16 [2 members, 2 unique base IDs]:
+    Members: 01-53 (F_MISS=0.0102), 02-52 (F_MISS=0.0083)
+    Originals: ['01-53', '02-52']
+    d/t copies: []
+
+  Cluster 17 [2 members, 2 unique base IDs]:
+    Members: 04-08 (F_MISS=0.0110), 07-01d (F_MISS=0.0082)
+    Originals: ['04-08']
+    d/t copies: ['07-01d']
+    ΓÜá 07-01d has base '07-01' but '07-01' is NOT in this cluster!
+
+  Cluster 18 [2 members, 2 unique base IDs]:
+    Members: 08-493 (F_MISS=0.0149), 08-744 (F_MISS=0.0078)
+    Originals: ['08-493', '08-744']
+    d/t copies: []
+
+  Cluster 19 [2 members, 2 unique base IDs]:
+    Members: 01-59d (F_MISS=0.0083), 04-13 (F_MISS=0.0091)
+    Originals: ['04-13']
+    d/t copies: ['01-59d']
+    ΓÜá 01-59d has base '01-59' but '01-59' is NOT in this cluster!
+
+  Cluster 20 [2 members, 2 unique base IDs]:
+    Members: 02-49d (F_MISS=0.0081), 04-14 (F_MISS=0.0080)
+    Originals: ['04-14']
+    d/t copies: ['02-49d']
+    ΓÜá 02-49d has base '02-49' but '02-49' is NOT in this cluster!
+
+  Cluster 21 [2 members, 2 unique base IDs]:
+    Members: 04-22 (F_MISS=0.0081), 06-23d (F_MISS=0.0082)
+    Originals: ['04-22']
+    d/t copies: ['06-23d']
+    ΓÜá 06-23d has base '06-23' but '06-23' is NOT in this cluster!
+
+  Cluster 22 [2 members, 2 unique base IDs]:
+    Members: 04-25 (F_MISS=0.0084), 07-02d (F_MISS=0.0184)
+    Originals: ['04-25']
+    d/t copies: ['07-02d']
+    ΓÜá 07-02d has base '07-02' but '07-02' is NOT in this cluster!
+
+  Cluster 23 [2 members, 2 unique base IDs]:
+    Members: 04-45 (F_MISS=0.0101), 06-06d (F_MISS=0.0255)
+    Originals: ['04-45']
+    d/t copies: ['06-06d']
+    ΓÜá 06-06d has base '06-06' but '06-06' is NOT in this cluster!
+
+  Cluster 24 [2 members, 2 unique base IDs]:
+    Members: 02-52d (F_MISS=0.0089), 06-04 (F_MISS=0.0081)
+    Originals: ['06-04']
+    d/t copies: ['02-52d']
+    ΓÜá 02-52d has base '02-52' but '02-52' is NOT in this cluster!
+
+  Cluster 25 [2 members, 2 unique base IDs]:
+    Members: 06-28 (F_MISS=0.0128), 08-107d (F_MISS=0.0093)
+    Originals: ['06-28']
+    d/t copies: ['08-107d']
+    ΓÜá 08-107d has base '08-107' but '08-107' is NOT in this cluster!
+
+  Cluster 26 [2 members, 2 unique base IDs]:
+    Members: 06-38 (F_MISS=0.0087), 06-42d (F_MISS=0.0082)
+    Originals: ['06-38']
+    d/t copies: ['06-42d']
+    ΓÜá 06-42d has base '06-42' but '06-42' is NOT in this cluster!
+
+  Cluster 27 [2 members, 2 unique base IDs]:
+    Members: 06-39 (F_MISS=0.0093), 07-10d (F_MISS=0.0082)
+    Originals: ['06-39']
+    d/t copies: ['07-10d']
+    ΓÜá 07-10d has base '07-10' but '07-10' is NOT in this cluster!
+
+  Cluster 28 [2 members, 2 unique base IDs]:
+    Members: 02-64d (F_MISS=0.0081), 07-01 (F_MISS=0.0083)
+    Originals: ['07-01']
+    d/t copies: ['02-64d']
+    ΓÜá 02-64d has base '02-64' but '02-64' is NOT in this cluster!
+
+  Cluster 29 [2 members, 2 unique base IDs]:
+    Members: 04-20d (F_MISS=0.0090), 07-04 (F_MISS=0.0080)
+    Originals: ['07-04']
+    d/t copies: ['04-20d']
+    ΓÜá 04-20d has base '04-20' but '04-20' is NOT in this cluster!
+
+  Cluster 30 [2 members, 2 unique base IDs]:
+    Members: 04-54d (F_MISS=0.0080), 07-10 (F_MISS=0.0080)
+    Originals: ['07-10']
+    d/t copies: ['04-54d']
+    ΓÜá 04-54d has base '04-54' but '04-54' is NOT in this cluster!
+
+  Cluster 31 [2 members, 2 unique base IDs]:
+    Members: 06-41d (F_MISS=0.0882), 08-799 (F_MISS=0.0080)
+    Originals: ['08-799']
+    d/t copies: ['06-41d']
+    ΓÜá 06-41d has base '06-41' but '06-41' is NOT in this cluster!
+
+  Cluster 32 [2 members, 2 unique base IDs]:
+    Members: 02-36d (F_MISS=0.0079), 08-816 (F_MISS=0.0134)
+    Originals: ['08-816']
+    d/t copies: ['02-36d']
+    ΓÜá 02-36d has base '02-36' but '02-36' is NOT in this cluster!
+
+  Cluster 33 [2 members, 2 unique base IDs]:
+    Members: 08-129 (F_MISS=0.0080), 08-493d (F_MISS=0.0080)
+    Originals: ['08-129']
+    d/t copies: ['08-493d']
+    ΓÜá 08-493d has base '08-493' but '08-493' is NOT in this cluster!
+
+  Cluster 34 [2 members, 2 unique base IDs]:
+    Members: 04-22d (F_MISS=0.0095), 08-541 (F_MISS=0.0080)
+    Originals: ['08-541']
+    d/t copies: ['04-22d']
+    ΓÜá 04-22d has base '04-22' but '04-22' is NOT in this cluster!
+
+  Cluster 35 [2 members, 2 unique base IDs]:
+    Members: 04-55d (F_MISS=0.0080), 08-774 (F_MISS=0.0079)
+    Originals: ['08-774']
+    d/t copies: ['04-55d']
+    ΓÜá 04-55d has base '04-55' but '04-55' is NOT in this cluster!
+
+  Cluster 36 [2 members, 2 unique base IDs]:
+    Members: 07-15 (F_MISS=0.0089), 08-160 (F_MISS=0.0086)
+    Originals: ['07-15', '08-160']
+    d/t copies: []
+
+  Cluster 37 [2 members, 2 unique base IDs]:
+    Members: 02-90 (F_MISS=0.0091), 07-16 (F_MISS=0.0100)
+    Originals: ['02-90', '07-16']
+    d/t copies: []
+
+  Cluster 38 [2 members, 2 unique base IDs]:
+    Members: 07-17 (F_MISS=0.0109), 08-436 (F_MISS=0.0091)
+    Originals: ['07-17', '08-436']
+    d/t copies: []
+
+  Cluster 39 [2 members, 2 unique base IDs]:
+    Members: 08-498 (F_MISS=0.0081), 08-795d (F_MISS=0.0081)
+    Originals: ['08-498']
+    d/t copies: ['08-795d']
+    ΓÜá 08-795d has base '08-795' but '08-795' is NOT in this cluster!
+
+  Cluster 40 [2 members, 2 unique base IDs]:
+    Members: 08-124 (F_MISS=0.0086), 08-128 (F_MISS=0.0599)
+    Originals: ['08-124', '08-128']
+    d/t copies: []
+
+  Cluster 41 [2 members, 2 unique base IDs]:
+    Members: 08-817 (F_MISS=0.0085), 08-81d (F_MISS=0.0092)
+    Originals: ['08-817']
+    d/t copies: ['08-81d']
+    ΓÜá 08-81d has base '08-81' but '08-81' is NOT in this cluster!
+
+  Cluster 42 [2 members, 1 unique base IDs]:
+    Members: 04-23 (F_MISS=0.0089), 04-23d (F_MISS=0.0088)
+    Originals: ['04-23']
+    d/t copies: ['04-23d']
+    Γ£ô 04-23d correctly clusters with its base 04-23
+
+  Cluster 43 [2 members, 1 unique base IDs]:
+    Members: 08-770 (F_MISS=0.0084), 08-770d (F_MISS=0.0079)
+    Originals: ['08-770']
+    d/t copies: ['08-770d']
+    Γ£ô 08-770d correctly clusters with its base 08-770
+
+  Cluster 44 [2 members, 2 unique base IDs]:
+    Members: 01-18 (F_MISS=0.0081), 09-76 (F_MISS=0.0082)
+    Originals: ['01-18', '09-76']
+    d/t copies: []
+
+  Cluster 45 [2 members, 2 unique base IDs]:
+    Members: 08-265 (F_MISS=0.0080), 08-267 (F_MISS=0.0080)
+    Originals: ['08-265', '08-267']
+    d/t copies: []
+
+  Cluster 46 [2 members, 2 unique base IDs]:
+    Members: 08-181 (F_MISS=0.0080), 08-45 (F_MISS=0.0083)
+    Originals: ['08-181', '08-45']
+    d/t copies: []
+
+  Cluster 47 [2 members, 2 unique base IDs]:
+    Members: 12-04 (F_MISS=0.0240), 12-05 (F_MISS=0.0087)
+    Originals: ['12-04', '12-05']
+    d/t copies: []
+
+  Cluster 48 [2 members, 2 unique base IDs]:
+    Members: 08-742 (F_MISS=0.1834), 09-101 (F_MISS=0.0110)
+    Originals: ['08-742', '09-101']
+    d/t copies: []
+
+  Cluster 49 [2 members, 1 unique base IDs]:
+    Members: 08-719 (F_MISS=0.1536), 08-719d (F_MISS=0.1685)
+    Originals: ['08-719']
+    d/t copies: ['08-719d']
+    Γ£ô 08-719d correctly clusters with its base 08-719
+
+======================================================================
+ANALYSIS 4: MISSINGNESS vs SAMPLE INDEX (FID)
+======================================================================
+
+Samples with F_MISS > 0.20: 99
+Samples with F_MISS <= 0.20: 1148
+
+High-missingness sample FID range: 458 - 1199
+Low-missingness sample FID range: 1 - 1247
+  FID >= 500: 97/99 high-miss samples (98.0%), total samples >= 500: 748
+  FID >= 700: 97/99 high-miss samples (98.0%), total samples >= 700: 548
+  FID >= 900: 93/99 high-miss samples (93.9%), total samples >= 900: 348
+  FID >= 1000: 92/99 high-miss samples (92.9%), total samples >= 1000: 248
+  FID >= 1100: 83/99 high-miss samples (83.8%), total samples >= 1100: 148
+  FID >= 1150: 37/99 high-miss samples (37.4%), total samples >= 1150: 98
+  FID >= 1200: 0/99 high-miss samples (0.0%), total samples >= 1200: 48
+
+Of high-missingness samples:
+  d/t suffix: 1
+  Original: 98
+
+--- High-missingness samples (sorted by FID): ---
+  FID= 458  IID=08-365  F_MISS=0.3732
+  FID= 499  IID=08-701  F_MISS=0.2908
+  FID= 840  IID=08-25  F_MISS=0.3308
+  FID= 862  IID=08-495  F_MISS=0.3258
+  FID= 886  IID=08-77  F_MISS=0.2605
+  FID= 898  IID=08-825  F_MISS=0.3605
+  FID= 910  IID=12-11  F_MISS=0.3719
+  FID=1003  IID=08-664  F_MISS=0.2487
+  FID=1030  IID=08-438  F_MISS=0.2362
+  FID=1042  IID=02-55  F_MISS=0.2564
+  FID=1043  IID=02-99  F_MISS=0.2748
+  FID=1054  IID=04-51  F_MISS=0.3115
+  FID=1055  IID=08-68  F_MISS=0.2113
+  FID=1065  IID=02-96  F_MISS=0.3713
+  FID=1068  IID=08-48  F_MISS=0.2461
+  FID=1081  IID=02-103  F_MISS=0.3567
+  FID=1104  IID=03-328  F_MISS=0.2810
+  FID=1105  IID=03-72  F_MISS=0.2843
+  FID=1106  IID=03-73  F_MISS=0.2856
+  FID=1107  IID=03-85  F_MISS=0.2896
+  FID=1108  IID=07-42  F_MISS=0.2883
+  FID=1109  IID=07-79  F_MISS=0.2913
+  FID=1110  IID=07-96  F_MISS=0.3048
+  FID=1111  IID=08-290  F_MISS=0.2913
+  FID=1112  IID=08-291  F_MISS=0.2928
+  FID=1113  IID=08-292  F_MISS=0.2807
+  FID=1114  IID=08-296  F_MISS=0.2927
+  FID=1115  IID=08-297  F_MISS=0.3020
+  FID=1116  IID=08-298  F_MISS=0.2762
+  FID=1117  IID=08-305  F_MISS=0.2821
+  FID=1118  IID=08-306  F_MISS=0.2785
+  FID=1119  IID=08-309  F_MISS=0.2981
+  FID=1120  IID=08-310  F_MISS=0.2948
+  FID=1121  IID=08-311  F_MISS=0.3063
+  FID=1122  IID=08-314  F_MISS=0.3037
+  FID=1123  IID=08-317  F_MISS=0.2933
+  FID=1124  IID=08-321  F_MISS=0.2943
+  FID=1125  IID=08-322  F_MISS=0.2819
+  FID=1126  IID=08-323  F_MISS=0.2936
+  FID=1127  IID=08-326  F_MISS=0.3144
+  FID=1128  IID=08-331  F_MISS=0.3196
+  FID=1129  IID=08-332  F_MISS=0.2567
+  FID=1130  IID=08-336  F_MISS=0.2709
+  FID=1131  IID=08-341  F_MISS=0.2582
+  FID=1132  IID=08-352  F_MISS=0.2438
+  FID=1133  IID=08-356  F_MISS=0.2285
+  FID=1134  IID=08-360  F_MISS=0.2553
+  FID=1135  IID=08-374  F_MISS=0.2637
+  FID=1136  IID=08-386  F_MISS=0.3078
+  FID=1137  IID=08-390  F_MISS=0.2908
+  FID=1138  IID=08-391  F_MISS=0.3182
+  FID=1139  IID=08-392  F_MISS=0.3345
+  FID=1140  IID=08-399  F_MISS=0.2698
+  FID=1141  IID=08-407  F_MISS=0.2579
+  FID=1142  IID=08-410  F_MISS=0.2514
+  FID=1143  IID=08-411  F_MISS=0.2525
+  FID=1144  IID=08-416  F_MISS=0.2499
+  FID=1145  IID=08-419  F_MISS=0.2308
+  FID=1146  IID=08-421  F_MISS=0.2432
+  FID=1147  IID=08-430  F_MISS=0.2638
+  FID=1148  IID=08-433  F_MISS=0.3217
+  FID=1149  IID=08-487  F_MISS=0.3156
+  FID=1150  IID=08-490  F_MISS=0.3166
+  FID=1151  IID=08-505  F_MISS=0.2807
+  FID=1152  IID=08-507  F_MISS=0.2085
+  FID=1159  IID=08-568  F_MISS=0.2482
+  FID=1160  IID=08-582  F_MISS=0.2853
+  FID=1161  IID=08-59  F_MISS=0.3112
+  FID=1162  IID=08-598  F_MISS=0.3664
+  FID=1163  IID=08-621  F_MISS=0.4156
+  FID=1171  IID=08-747  F_MISS=0.2309
+  FID=1172  IID=08-749  F_MISS=0.2858
+  FID=1173  IID=08-754  F_MISS=0.3210
+  FID=1174  IID=08-761  F_MISS=0.3477
+  FID=1175  IID=08-762  F_MISS=0.4032
+  FID=1176  IID=08-766  F_MISS=0.2315
+  FID=1177  IID=08-768  F_MISS=0.2513
+  FID=1178  IID=08-778  F_MISS=0.2385
+  FID=1179  IID=08-779  F_MISS=0.2554
+  FID=1180  IID=08-780  F_MISS=0.2513
+  FID=1181  IID=08-781  F_MISS=0.2580
+  FID=1182  IID=08-782  F_MISS=0.2562
+  FID=1183  IID=08-783  F_MISS=0.2540
+  FID=1184  IID=08-784  F_MISS=0.2511
+  FID=1185  IID=08-786  F_MISS=0.2575
+  FID=1186  IID=08-787  F_MISS=0.2661
+  FID=1187  IID=08-788  F_MISS=0.2621
+  FID=1188  IID=08-789  F_MISS=0.2303
+  FID=1189  IID=08-792  F_MISS=0.2555
+  FID=1190  IID=08-793  F_MISS=0.2534
+  FID=1191  IID=08-794  F_MISS=0.2608
+  FID=1192  IID=08-825d [d]  F_MISS=0.2573
+  FID=1193  IID=15-12M  F_MISS=0.2577
+  FID=1194  IID=20-07  F_MISS=0.2616
+  FID=1195  IID=08-425  F_MISS=0.2585
+  FID=1196  IID=08-454  F_MISS=0.2447
+  FID=1197  IID=08-412  F_MISS=0.2548
+  FID=1198  IID=08-492  F_MISS=0.2622
+  FID=1199  IID=08-403  F_MISS=0.2669
+
+======================================================================
+ANALYSIS 5: POTENTIAL FIRST-DEGREE RELATIVES (0.40 <= PI_HAT < 0.60)
+======================================================================
+
+Pairs in first-degree range (different base IDs): 34
+  08-495 Γåö 08-825: PI_HAT=0.5758 Z0=0.0684 Z1=0.7115 Z2=0.2201
+  08-131 Γåö 08-493: PI_HAT=0.5396 Z0=0.2238 Z1=0.4731 Z2=0.3030
+  08-131 Γåö 08-744: PI_HAT=0.5396 Z0=0.2238 Z1=0.4732 Z2=0.3030
+  08-734 Γåö 20-05: PI_HAT=0.5396 Z0=0.0000 Z1=0.9207 Z2=0.0793
+  08-493 Γåö 08-131d: PI_HAT=0.5395 Z0=0.2239 Z1=0.4732 Z2=0.3029
+  08-131d Γåö 08-744: PI_HAT=0.5395 Z0=0.2238 Z1=0.4733 Z2=0.3029
+  08-365 Γåö 08-825: PI_HAT=0.5390 Z0=0.0411 Z1=0.8399 Z2=0.1190
+  08-117 Γåö 08-86: PI_HAT=0.5282 Z0=0.0576 Z1=0.8286 Z2=0.1139
+  08-825 Γåö 12-11: PI_HAT=0.5135 Z0=0.0393 Z1=0.8944 Z2=0.0663
+  08-365 Γåö 08-25: PI_HAT=0.5124 Z0=0.0584 Z1=0.8585 Z2=0.0831
+  08-701 Γåö 12-11: PI_HAT=0.5031 Z0=0.0385 Z1=0.9166 Z2=0.0448
+  08-365 Γåö 08-701: PI_HAT=0.5019 Z0=0.0477 Z1=0.9007 Z2=0.0516
+  08-106 Γåö 07-04d: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+  08-128 Γåö 08-164: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+  08-365 Γåö 08-77: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+  08-365 Γåö 12-11: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+  08-701 Γåö 08-77: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+  08-25 Γåö 08-77: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+  08-25 Γåö 12-11: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+  08-495 Γåö 08-77: PI_HAT=0.5000 Z0=0.0000 Z1=1.0000 Z2=0.0000
+
+======================================================================
+ANALYSIS 6: POTENTIAL 2ND-DEGREE RELATIVES (0.20 <= PI_HAT < 0.40)
+======================================================================
+
+2nd-degree pairs (different base IDs): 7725
+
+Most connected (2nd degree range):
+  08-495: 1147 connections
+  08-123: 1146 connections
+  20-05: 1146 connections
+  08-25: 1146 connections
+  08-86: 1146 connections
+  07-04d: 1145 connections
+  08-701: 856 connections
+  08-128: 8 connections
+  06-34d: 8 connections
+  07-50: 8 connections
+
+
+Structured data saved to data/investigation_data.json
+Ready for visualization.

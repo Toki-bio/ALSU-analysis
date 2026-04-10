@@ -655,8 +655,11 @@
 
         // === Section 5: d/t samples ===
         const dtRows = DS.sort((a,b) => a.iid.localeCompare(b.iid))
-          .map(d => [d.iid, d.base, d.suffix || '—']);
-        renderList('list-dt-samples-body', dtRows, ['d/t Sample', 'Base ID', 'Suffix']);
+          .map(d => {
+            const sfx = d.iid.endsWith('d') ? 'd' : d.iid.endsWith('t') ? 't' : '?';
+            return [d.iid, d.base, sfx, d.match ? '✓ match' : '✗ no match'];
+          });
+        renderList('list-dt-samples-body', dtRows, ['d/t Sample', 'Base ID', 'Suffix', 'Sex Match']);
       })
       .catch(e => console.warn('Could not load investigation data:', e));
     </script>

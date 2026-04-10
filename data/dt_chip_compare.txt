@@ -1,0 +1,11 @@
+﻿.venv\Scripts\python.exe :   File "<string>", line 15
+At line:1 char:27
++ cd C:\work\ALSU-analysis; .venv\Scripts\python.exe -c "
++                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (  File "<string>", line 15:String 
+   ) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    print(f'{iid:>12} {b1} {sdt.get(" position\,\?\):>6}
+                                    ^
+SyntaxError: unterminated string literal (detected at line 15)

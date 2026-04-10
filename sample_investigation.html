@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ALSU Sample Investigation — Quality &amp; Relatedness</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d1117; color: #c9d1d9; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+  h1 { color: #58a6ff; margin-bottom: 8px; font-size: 1.6rem; }
+  h2 { color: #79c0ff; margin: 28px 0 12px; font-size: 1.25rem; border-bottom: 1px solid #30363d; padding-bottom: 6px; }
+  h3 { color: #d2a8ff; margin: 16px 0 8px; font-size: 1.05rem; }
+  .subtitle { color: #8b949e; margin-bottom: 20px; }
+  .chart { background: #161b22; border: 1px solid #30363d; border-radius: 8px; margin: 12px 0; padding: 8px; }
+  .findings { background: #1c2128; border: 1px solid #30363d; border-radius: 8px; padding: 16px; margin: 12px 0; }
+  .findings li { margin: 6px 0; line-height: 1.5; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; }
+  .stat-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
+  .stat-value { font-size: 2rem; font-weight: bold; color: #58a6ff; }
+  .stat-label { font-size: 0.85rem; color: #8b949e; margin-top: 4px; }
+  .stat-card.danger .stat-value { color: #f85149; }
+  .stat-card.warning .stat-value { color: #d29922; }
+  .stat-card.success .stat-value { color: #3fb950; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+  th, td { padding: 6px 10px; border: 1px solid #30363d; text-align: left; }
+  th { background: #161b22; color: #79c0ff; }
+  tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+  .tag-correct { background: #238636; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+  .tag-wrong { background: #da3633; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+  .tag-unknown { background: #6e7681; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+  .tag-removed { background: #d29922; color: black; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+  #loading { text-align: center; padding: 40px; color: #8b949e; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>ALSU Sample Investigation Report</h1>
+  <p class="subtitle">Data from ConvSK_raw — 654,027 variants × 1,247 samples — Real server-computed values only</p>
+  
+  <div id="loading">Loading data...</div>
+  <div id="content" style="display:none;">
+    
+    <div class="stat-grid" id="summaryStats"></div>
+    
+    <h2>1. Sample Quality vs Position in GenomeStudio Project</h2>
+    <div class="chart" id="chart_quality"></div>
+    <div class="findings" id="findings_quality"></div>
+    
+    <h2>2. Missingness Distribution by Collector Prefix</h2>
+    <div class="chart" id="chart_collector"></div>
+    
+    <h2>3. Relatedness Network (PI_HAT ≥ 0.98)</h2>
+    <div class="chart" id="chart_network"></div>
+    <div class="findings" id="findings_network"></div>
+    
+    <h2>4. d/t Duplicate Sample Verification</h2>
+    <div class="findings" id="findings_dt"></div>
+    <div id="dt_table"></div>
+    
+    <h2>5. Suspiciously Connected Samples (PI_HAT 0.15–0.50)</h2>
+    <div class="chart" id="chart_connections"></div>
+    <div class="findings" id="findings_connections"></div>
+    
+    <h2>6. Recommended Further Tests</h2>
+    <div class="findings" id="recommendations"></div>
+  </div>
+</div>
+
+<script>
+// Load data
+fetch('data/investigation_data.json')
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    render(data);
+  })
+  .catch(err => {
+    document.getElementById('loading').textContent = 'Error loading data: ' + err;
+  });
+
+function render(data) {
+  const { fam, imiss_raw, pairs_098, clusters, high_miss, unexpected_pairs } = data;
+  
+  // Build imiss lookup by IID
+  const imissByIID = {};
+  for (const [key, fmiss] of Object.entries(imiss_raw)) {
+    const iid = key.split(':')[1];
+    imissByIID[iid] = fmiss;
+  }
+  
+  // Helper: strip d/t suffix
+  function stripSuffix(iid) {
+    const m = iid.match(/^(.+?)[dt]$/);
+    return m ? m[1] : iid;
+  }
+  function getSuffix(iid) {
+    if (iid.endsWith('d')) return 'd';
+    if (iid.endsWith('t')) return 't';
+    return '';
+  }
+  function getPrefix(iid) {
+    const base = stripSuffix(iid);
+    const m = base.match(/^(\d+)-/);
+    return m ? m[1] : '??';
+  }
+  
+  // ============================================================
+  // SUMMARY STATS
+  // ============================================================
+  const dt_samples = fam.filter(s => getSuffix(s.iid));
+  const dt_correct = 8; // from analysis
+  const dt_wrong = 28;
+  const dt_no_match = 11;
+  
+  document.getElementById('summaryStats').innerHTML = `
+    <div class="stat-card"><div class="stat-value">1,247</div><div class="stat-label">Total Samples</div></div>
+    <div class="stat-card"><div class="stat-value">1,199</div><div class="stat-label">Unique Base IDs</div></div>
+    <div class="stat-card warning"><div class="stat-value">48</div><div class="stat-label">d/t "Repeat" Samples</div></div>
+    <div class="stat-card danger"><div class="stat-value">28</div><div class="stat-label">Mislabeled d/t (58%)</div></div>
+    <div class="stat-card success"><div class="stat-value">8</div><div class="stat-label">Correct d/t (17%)</div></div>
+    <div class="stat-card danger"><div class="stat-value">99</div><div class="stat-label">High Missingness (>20%)</div></div>
+    <div class="stat-card danger"><div class="stat-value">55</div><div class="stat-label">Unexpected Identical Pairs</div></div>
+    <div class="stat-card"><div class="stat-value">49</div><div class="stat-label">Identity Clusters</div></div>
+  `;
+  
+  // ============================================================
+  // CHART 1: Quality vs Position
+  // ============================================================
+  const positions = fam.map(s => s.idx);
+  const fmissValues = fam.map(s => imissByIID[s.iid] || 0);
+  const colors = fam.map(s => {
+    const suf = getSuffix(s.iid);
+    const fmiss = imissByIID[s.iid] || 0;
+    if (fmiss > 0.20) return '#f85149'; // high miss
+    if (suf === 'd') return '#d29922'; // duplicate
+    if (suf === 't') return '#a371f7'; // triplicate
+    return '#58a6ff'; // normal
+  });
+  const hoverText = fam.map(s => {
+    const fmiss = imissByIID[s.iid];
+    return `${s.iid}<br>FID: ${s.idx}<br>F_MISS: ${fmiss !== undefined ? fmiss.toFixed(4) : 'N/A'}<br>Prefix: ${getPrefix(s.iid)}`;
+  });
+  
+  Plotly.newPlot('chart_quality', [{
+    x: positions,
+    y: fmissValues,
+    mode: 'markers',
+    type: 'scattergl',
+    marker: { color: colors, size: 4, opacity: 0.7 },
+    text: hoverText,
+    hoverinfo: 'text'
+  }], {
+    title: { text: 'Sample Missingness (F_MISS) vs Position in GenomeStudio Project', font: { color: '#c9d1d9' } },
+    xaxis: { title: 'Sample Index (FID in .fam)', color: '#8b949e', gridcolor: '#21262d' },
+    yaxis: { title: 'F_MISS (fraction missing genotypes)', color: '#8b949e', gridcolor: '#21262d' },
+    paper_bgcolor: '#161b22',
+    plot_bgcolor: '#161b22',
+    font: { color: '#c9d1d9' },
+    shapes: [{
+      type: 'line', x0: 0, x1: 1250, y0: 0.20, y1: 0.20,
+      line: { color: '#f85149', dash: 'dash', width: 1 }
+    }],
+    annotations: [{
+      x: 100, y: 0.21, text: 'F_MISS = 0.20 threshold',
+      showarrow: false, font: { color: '#f85149', size: 11 }
+    }, {
+      x: 1100, y: 0.35, text: '← Block of degraded samples (FID ≥ 1100)',
+      showarrow: true, ax: 60, ay: -30,
+      font: { color: '#f85149', size: 11 }, arrowcolor: '#f85149'
+    }],
+    legend: { font: { color: '#c9d1d9' } }
+  }, { responsive: true });
+  
+  document.getElementById('findings_quality').innerHTML = `
+    <h3>Key Findings:</h3>
+    <ul>
+      <li><strong>99 samples</strong> exceed 20% missingness threshold — <strong>92 of them (93%)</strong> have FID ≥ 1000</li>
+      <li>FID 1104–1199: a near-<strong>contiguous block of 50 samples</strong> with F_MISS 0.21–0.42 — strongly suggests a <strong>degraded chip/plate batch</strong></li>
+      <li><strong>98 of 99</strong> high-missingness samples are originals (not d/t); only 1 is a d/t copy (08-825d)</li>
+      <li>Color key: <span style="color:#58a6ff">●</span> normal, <span style="color:#d29922">●</span> d-suffix, <span style="color:#a371f7">●</span> t-suffix, <span style="color:#f85149">●</span> F_MISS &gt; 0.20</li>
+    </ul>
+  `;
+  
+  // ============================================================
+  // CHART 2: Collector Prefix Box Plot
+  // ============================================================
+  const prefixes = [...new Set(fam.map(s => getPrefix(s.iid)))].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+  const boxTraces = prefixes.map(prefix => {
+    const samples = fam.filter(s => getPrefix(s.iid) === prefix);
+    return {
+      y: samples.map(s => imissByIID[s.iid] || 0),
+      type: 'box',
+      name: prefix,
+      marker: { color: prefix === '08' ? '#f85149' : '#58a6ff' },
+      boxpoints: 'outliers'
+    };
+  });
+  
+  Plotly.newPlot('chart_collector', boxTraces, {
+    title: { text: 'Missingness Distribution by Collector Prefix', font: { color: '#c9d1d9' } },
+    xaxis: { title: 'Collector Prefix', color: '#8b949e' },
+    yaxis: { title: 'F_MISS', color: '#8b949e', gridcolor: '#21262d' },
+    paper_bgcolor: '#161b22',
+    plot_bgcolor: '#161b22',
+    font: { color: '#c9d1d9' },
+    showlegend: false,
+    shapes: [{
+      type: 'line', x0: -0.5, x1: prefixes.length - 0.5, y0: 0.20, y1: 0.20,
+      line: { color: '#f85149', dash: 'dash', width: 1 }
+    }]
+  }, { responsive: true });
+  
+  // ============================================================
+  // CHART 3: Relatedness Network
+  // ============================================================
+  // Build node positions using a force-directed-like layout
+  const allNodesSet = new Set();
+  pairs_098.forEach(p => { allNodesSet.add(p.iid1); allNodesSet.add(p.iid2); });
+  const allNodes = [...allNodesSet];
+  
+  // Simple cluster-based layout
+  const clusterOf = {};
+  clusters.forEach((cl, ci) => {
+    cl.forEach(n => { clusterOf[n] = ci; });
+  });
+  
+  const nodePos = {};
+  const nClusters = clusters.length;
+  clusters.forEach((cl, ci) => {
+    const angle = (2 * Math.PI * ci) / nClusters;
+    const radius = 5;
+    const cx = radius * Math.cos(angle);
+    const cy = radius * Math.sin(angle);
+    cl.forEach((n, ni) => {
+      const offset = (ni - (cl.length - 1) / 2) * 0.3;
+      nodePos[n] = { x: cx + offset * Math.cos(angle + Math.PI/2), y: cy + offset * Math.sin(angle + Math.PI/2) };
+    });
+  });
+  
+  // Edges
+  const edgeX = [], edgeY = [];
+  pairs_098.forEach(p => {
+    const p1 = nodePos[p.iid1], p2 = nodePos[p.iid2];
+    if (p1 && p2) {
+      edgeX.push(p1.x, p2.x, null);
+      edgeY.push(p1.y, p2.y, null);
+    }
+  });
+  
+  // Nodes
+  const nodeX = allNodes.map(n => nodePos[n]?.x || 0);
+  const nodeY = allNodes.map(n => nodePos[n]?.y || 0);
+  const nodeColors = allNodes.map(n => {
+    const suf = getSuffix(n);
+    if (suf === 'd') return '#d29922';
+    if (suf === 't') return '#a371f7';
+    return '#58a6ff';
+  });
+  const nodeLabels = allNodes.map(n => {
+    const fmiss = imissByIID[n];
+    const suf = getSuffix(n);
+    const base = stripSuffix(n);
+    let label = `${n}`;
+    if (fmiss !== undefined) label += `<br>F_MISS: ${fmiss.toFixed(4)}`;
+    if (suf) {
+      // Check if it matches its base in the cluster
+      const cl = clusters.find(c => c.includes(n));
+      const baseInCluster = cl && cl.includes(base);
+      label += baseInCluster ? '<br>✓ Correct duplicate' : '<br>⚠ MISLABELED';
+    }
+    return label;
+  });
+  
+  Plotly.newPlot('chart_network', [
+    {
+      x: edgeX, y: edgeY, mode: 'lines', type: 'scatter',
+      line: { color: '#30363d', width: 1 },
+      hoverinfo: 'none'
+    },
+    {
+      x: nodeX, y: nodeY, mode: 'markers+text', type: 'scatter',
+      marker: { color: nodeColors, size: 10, line: { color: '#c9d1d9', width: 1 } },
+      text: allNodes,
+      textposition: 'top center',
+      textfont: { size: 8, color: '#8b949e' },
+      hovertext: nodeLabels,
+      hoverinfo: 'text'
+    }
+  ], {
+    title: { text: 'Identity Clusters (PI_HAT ≥ 0.98) — 49 clusters, 106 samples', font: { color: '#c9d1d9' } },
+    xaxis: { visible: false },
+    yaxis: { visible: false },
+    paper_bgcolor: '#161b22',
+    plot_bgcolor: '#161b22',
+    font: { color: '#c9d1d9' },
+    showlegend: false,
+    hovermode: 'closest'
+  }, { responsive: true });
+  
+  document.getElementById('findings_network').innerHTML = `
+    <h3>Key Findings:</h3>
+    <ul>
+      <li><strong>49 clusters</strong> of identical genotypes (PI_HAT ≥ 0.98): 8 triplets + 41 pairs</li>
+      <li>Only <strong>10 of 65 pairs</strong> are expected (same base ID). <strong>55 pairs</strong> involve different people sharing identical genotypes.</li>
+      <li>Color key: <span style="color:#58a6ff">●</span> original, <span style="color:#d29922">●</span> d-suffix, <span style="color:#a371f7">●</span> t-suffix</li>
+      <li>Hover over nodes for details. Mislabeled duplicates are flagged.</li>
+    </ul>
+  `;
+  
+  // ============================================================
+  // TABLE: d/t Duplicate Sample Verification
+  // ============================================================
+  // Categorize d/t samples
+  const dtData = [
+    // Correct matches
+    { iid: '01-17d', base: '01-17', status: 'correct', pihat: 1.0, matchedTo: '01-17' },
+    { iid: '01-29t', base: '01-29', status: 'correct', pihat: 1.0, matchedTo: '01-29 (also 02-29)' },
+    { iid: '01-50d', base: '01-50', status: 'correct', pihat: 1.0, matchedTo: '01-50' },
+    { iid: '03-156d', base: '03-156', status: 'correct', pihat: 1.0, matchedTo: '03-156 (also 03-155)' },
+    { iid: '04-23d', base: '04-23', status: 'correct', pihat: 1.0, matchedTo: '04-23' },
+    { iid: '08-131d', base: '08-131', status: 'correct', pihat: 1.0, matchedTo: '08-131' },
+    { iid: '08-719d', base: '08-719', status: 'correct', pihat: 0.9905, matchedTo: '08-719' },
+    { iid: '08-770d', base: '08-770', status: 'correct', pihat: 1.0, matchedTo: '08-770' },
+    // Wrong matches  
+    { iid: '01-59d', base: '01-59', status: 'wrong', pihat: null, matchedTo: '04-13' },
+    { iid: '02-104d', base: '02-104', status: 'wrong', pihat: null, matchedTo: '06-29 + 02-104t' },
+    { iid: '02-104t', base: '02-104', status: 'wrong', pihat: null, matchedTo: '06-29 + 02-104d' },
+    { iid: '02-36d', base: '02-36', status: 'wrong', pihat: null, matchedTo: '08-816' },
+    { iid: '02-45d', base: '02-45', status: 'wrong', pihat: null, matchedTo: '02-59 + 02-45t' },
+    { iid: '02-45t', base: '02-45', status: 'wrong', pihat: null, matchedTo: '02-59 + 02-45d' },
+    { iid: '02-49d', base: '02-49', status: 'wrong', pihat: null, matchedTo: '04-14' },
+    { iid: '02-52d', base: '02-52', status: 'wrong', pihat: null, matchedTo: '06-04' },
+    { iid: '02-64d', base: '02-64', status: 'wrong', pihat: null, matchedTo: '07-01' },
+    { iid: '03-155d', base: '03-155', status: 'wrong', pihat: null, matchedTo: '03-154' },
+    { iid: '04-20d', base: '04-20', status: 'wrong', pihat: null, matchedTo: '07-04' },
+    { iid: '04-22d', base: '04-22', status: 'wrong', pihat: null, matchedTo: '08-541' },
+    { iid: '04-54d', base: '04-54', status: 'wrong', pihat: null, matchedTo: '07-10' },
+    { iid: '04-55d', base: '04-55', status: 'wrong', pihat: null, matchedTo: '08-774' },
+    { iid: '06-06d', base: '06-06', status: 'wrong', pihat: null, matchedTo: '04-45' },
+    { iid: '06-15d', base: '06-15', status: 'wrong', pihat: null, matchedTo: '04-07 + 06-34d' },
+    { iid: '06-23d', base: '06-23', status: 'wrong', pihat: null, matchedTo: '04-22' },
+    { iid: '06-34d', base: '06-34', status: 'wrong', pihat: null, matchedTo: '04-07 + 06-15d' },
+    { iid: '06-41d', base: '06-41', status: 'wrong', pihat: null, matchedTo: '08-799' },
+    { iid: '06-42d', base: '06-42', status: 'wrong', pihat: null, matchedTo: '06-38' },
+    { iid: '06-43d', base: '06-43', status: 'wrong', pihat: null, matchedTo: '02-45 + 08-107' },
+    { iid: '07-01d', base: '07-01', status: 'wrong', pihat: null, matchedTo: '04-08' },
+    { iid: '07-02d', base: '07-02', status: 'wrong', pihat: null, matchedTo: '04-25' },
+    { iid: '07-10d', base: '07-10', status: 'wrong', pihat: null, matchedTo: '06-39' },
+    { iid: '08-107d', base: '08-107', status: 'wrong', pihat: null, matchedTo: '06-28' },
+    { iid: '08-493d', base: '08-493', status: 'wrong', pihat: null, matchedTo: '08-129' },
+    { iid: '08-795d', base: '08-795', status: 'wrong', pihat: null, matchedTo: '08-498' },
+    { iid: '08-81d', base: '08-81', status: 'wrong', pihat: null, matchedTo: '08-817' },
+    // No match
+    { iid: '01-01d', base: '01-01', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '01-29d', base: '01-29', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '02-29d', base: '02-29', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '02-39d', base: '02-39', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '04-36d', base: '04-36', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '07-04d', base: '07-04', status: 'no_match', pihat: 0.3278, matchedTo: 'Nobody ≥0.98 (PI_HAT=0.33 with base)' },
+    { iid: '08-623d', base: '08-623', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '08-66d', base: '08-66', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '08-701d', base: '08-701', status: 'no_match', pihat: 0.4429, matchedTo: 'Nobody ≥0.98 (PI_HAT=0.44 with base)' },
+    { iid: '08-774d', base: '08-774', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    { iid: '09-37d', base: '09-37', status: 'no_match', pihat: null, matchedTo: 'Nobody (PI_HAT <0.15 with base)' },
+    // Removed
+    { iid: '08-825d', base: '08-825', status: 'removed', pihat: null, matchedTo: 'N/A — removed in missingness filter' },
+  ];
+  
+  document.getElementById('findings_dt').innerHTML = `
+    <h3>d/t Duplicate Verification Summary:</h3>
+    <ul>
+      <li><span class="tag-correct">✓ Correct</span> <strong>8 / 48</strong> (17%) — d/t sample is genuinely the same person as its base</li>
+      <li><span class="tag-wrong">✗ Mislabeled</span> <strong>28 / 48</strong> (58%) — d/t sample is genetically identical to a DIFFERENT person</li>
+      <li><span class="tag-unknown">? No match</span> <strong>11 / 48</strong> (23%) — d/t sample doesn't match base OR anyone else at ≥0.98</li>
+      <li><span class="tag-removed">Removed</span> <strong>1 / 48</strong> (2%) — removed in missingness filter, couldn't compare</li>
+    </ul>
+    <p style="margin-top:12px"><strong>Interpretation:</strong> Only 17% of "duplicate" samples are genuinely repeated from the same DNA. 
+    58% are confirmed mislabeled — the DNA loaded under the "duplicate" label belongs to an entirely different person 
+    (identified by the IBD match). 23% are unidentifiable — they match nobody, suggesting either a unique individual 
+    not otherwise in the study, or severe genotyping failure.</p>
+  `;
+  
+  let tableHtml = '<table><tr><th>d/t Sample</th><th>Expected Base</th><th>Status</th><th>Actual Match</th></tr>';
+  dtData.forEach(d => {
+    const statusTag = d.status === 'correct' ? '<span class="tag-correct">✓ Correct</span>' :
+                      d.status === 'wrong' ? '<span class="tag-wrong">✗ Mislabeled</span>' :
+                      d.status === 'removed' ? '<span class="tag-removed">Removed</span>' :
+                      '<span class="tag-unknown">? No match</span>';
+    tableHtml += `<tr><td>${d.iid}</td><td>${d.base}</td><td>${statusTag}</td><td>${d.matchedTo}</td></tr>`;
+  });
+  tableHtml += '</table>';
+  document.getElementById('dt_table').innerHTML = tableHtml;
+  
+  // ============================================================
+  // CHART 5: Connection Count at PI_HAT 0.15-0.50
+  // ============================================================
+  // Count connections per sample from ALL pairs
+  const connCount = {};
+  data.pairs_098.forEach(() => {}); // skip these
+  
+  // We need to count from the full pair data — use a simplified version from high_miss data
+  // For now, show the samples with abnormally many connections (from analysis 6)
+  const hyperConnected = [
+    { iid: '08-495', connections: 1147, fmiss: imissByIID['08-495'] || 0 },
+    { iid: '08-123', connections: 1146, fmiss: imissByIID['08-123'] || 0 },
+    { iid: '20-05', connections: 1146, fmiss: imissByIID['20-05'] || 0 },
+    { iid: '08-25', connections: 1146, fmiss: imissByIID['08-25'] || 0 },
+    { iid: '08-86', connections: 1146, fmiss: imissByIID['08-86'] || 0 },
+    { iid: '07-04d', connections: 1145, fmiss: imissByIID['07-04d'] || 0 },
+    { iid: '08-701', connections: 856, fmiss: imissByIID['08-701'] || 0 },
+    { iid: '08-128', connections: 8, fmiss: imissByIID['08-128'] || 0 },
+    { iid: '06-34d', connections: 8, fmiss: imissByIID['06-34d'] || 0 },
+    { iid: '07-50', connections: 8, fmiss: imissByIID['07-50'] || 0 },
+  ];
+  
+  Plotly.newPlot('chart_connections', [{
+    x: hyperConnected.map(s => s.iid),
+    y: hyperConnected.map(s => s.connections),
+    type: 'bar',
+    marker: { color: hyperConnected.map(s => s.connections > 100 ? '#f85149' : '#58a6ff') },
+    text: hyperConnected.map(s => `F_MISS: ${s.fmiss.toFixed(4)}`),
+    hoverinfo: 'text+y'
+  }], {
+    title: { text: 'Samples with Most "Relatives" (PI_HAT 0.20–0.40 range)', font: { color: '#c9d1d9' } },
+    xaxis: { title: 'Sample ID', color: '#8b949e', tickangle: -45 },
+    yaxis: { title: 'Number of "Related" Samples', color: '#8b949e', gridcolor: '#21262d' },
+    paper_bgcolor: '#161b22',
+    plot_bgcolor: '#161b22',
+    font: { color: '#c9d1d9' },
+    annotations: [{
+      x: '08-495', y: 1147, text: '1,147 — related to nearly ALL samples!',
+      showarrow: true, ay: -30, font: { color: '#f85149', size: 11 }, arrowcolor: '#f85149'
+    }]
+  }, { responsive: true });
+  
+  document.getElementById('findings_connections').innerHTML = `
+    <h3>Key Finding — Phantom Relatives:</h3>
+    <ul>
+      <li><strong>6 samples</strong> (08-495, 08-123, 20-05, 08-25, 08-86, 07-04d) appear "related" (PI_HAT 0.20–0.40) to &gt;1,100 other samples</li>
+      <li>This is <strong>NOT biological</strong>. It's a classic genotyping artifact: systematic allele dropout inflates IBD sharing with everyone.</li>
+      <li>These are <strong>technically failed samples</strong> masquerading as population outliers. They have Z0≈0.3–0.5, Z1≈0.5–0.7, Z2≈0 with nearly everyone — the signature of heterozygote undercalling.</li>
+      <li>08-701 has 856 connections (moderate failure). 08-128, 06-34d, 07-50 have just 8 (real OR borderline).</li>
+    </ul>
+  `;
+  
+  // ============================================================
+  // RECOMMENDATIONS
+  // ============================================================
+  document.getElementById('recommendations').innerHTML = `
+    <h3>Proven, Actionable Next Steps:</h3>
+    <ol style="line-height: 2;">
+      <li><strong>Extract Sentrix IDs from GenomeStudio project or Sample Sheet</strong> — The original .csv sample sheet used by GenomeStudio maps each sample to a specific <code>Sentrix_ID</code> (chip barcode) and <code>Sentrix_Position</code> (well A–H, 1–12). This will reveal:
+        <ul>
+          <li>Whether the high-missingness block (FID 1100–1199) comes from specific chip(s)</li>
+          <li>Whether mislabeled d/t samples were loaded on the same chip as their "actual" genetic match</li>
+        </ul>
+      </li>
+      <li><strong>Check the lab's plate-loading manifest</strong> — The physical tube-to-plate mapping document. Compare it against GenomeStudio sample names. The 28 mislabeled d/t samples likely had a systematic plate-mapping error.</li>
+      <li><strong>Genotype concordance test</strong> — For the 11 "no match" d/t samples (match nobody at PI_HAT ≥ 0.98), compute full genotype concordance with ALL other samples to find their true identity at lower thresholds.</li>
+      <li><strong>Sex check</strong> — <code>plink --check-sex</code> on all samples. If d/t samples that "should be" from a female donor show male genotypes (or vice versa), this independently confirms mislabeling.</li>
+      <li><strong>Heterozygosity rate check</strong> — <code>plink --het</code> on all samples. The 6 hyper-connected samples (08-495, 08-123, etc.) should show anomalously low heterozygosity if allele dropout is the cause.</li>
+      <li><strong>Per-chip/plate call rate</strong> — If Sentrix data is available, compute mean F_MISS per chip. A single bad chip batch will be immediately visible.</li>
+      <li><strong>Cross-reference with clinical manifest</strong> — The GWAS Sheet1.csv has 1,815 subjects. Only 1,199 unique base IDs went through genotyping. Check which subjects from the manifest correspond to the mislabeled pairs (by name/DOB) to trace physical tube identity.</li>
+      <li><strong>Re-cluster from GenomeStudio raw intensities</strong> — If the .idat files are still available, re-running GenomeStudio clustering only on the good-quality samples (excluding the degraded block) may improve genotype calls for borderline samples.</li>
+    </ol>
+    
+    <h3 style="margin-top: 20px;">Root Cause Hypotheses (ranked by evidence):</h3>
+    <ol style="line-height: 2;">
+      <li><strong>Systematic plate-loading swap for "repeat" samples (HIGH confidence):</strong> 28 of 48 d/t samples contain DNA from a completely different person. The d/t tube labels were wrong — either the lab mixed up tubes when preparing the repeat plate, or the plate map (which tube goes in which well) was shifted/rotated.</li>
+      <li><strong>Degraded chip batch for high-FID samples (HIGH confidence):</strong> 50+ consecutive samples (FID 1104–1199) all have ~25–40% missingness. This block is almost entirely collector-08 samples. Either the chip(s) were defective, the DNA extraction batch was degraded, or the hybridization protocol failed for this batch.</li>
+      <li><strong>Genotyping artifacts creating phantom relatedness (HIGH confidence):</strong> 6 samples appear related to >1,000 others. This is allele dropout, not biology.</li>
+    </ol>
+  `;
+}
+</script>
+</body>
+</html>

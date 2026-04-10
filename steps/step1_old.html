@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1: Sample Missingness Filter - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%); min-height: 100vh; padding: 20px;}
+        .page-wrapper {display: flex; gap: 20px; max-width: 1400px; margin: 0 auto;}
+        .sidebar {width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px;}
+        .sidebar h3 {font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px;}
+        .roadmap-mini {display: flex; flex-direction: column; gap: 8px;}
+        .roadmap-mini a {padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em;}
+        .roadmap-mini a:hover {background: #f0f0f0; border-left-color: #666;}
+        .roadmap-mini a.current {background: #555; color: white; border-left-color: #333; font-weight: 600;}
+        .main-content {flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .search-bar {background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd;}
+        .search-bar input {width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; transition: border-color 0.3s ease;}
+        .search-bar input:focus {outline: none; border-color: #888;}
+        .search-results {display: none; padding: 20px 30px; background: #f5f5f5; border-bottom: 1px solid #ddd;}
+        .search-results.active {display: block;}
+        .header {background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block;}
+        .back-link:hover {color: white;}
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        .header p {opacity: 0.9;}
+        .step-badge {display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px;}
+        .content {padding: 30px;}
+        .section {margin-bottom: 40px;}
+        .section-header {color: #333; font-size: 1.5em; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #999;}
+        .section-content {line-height: 1.8; color: #555;}
+        .metric-table {width: 100%; border-collapse: collapse; margin: 10px 0; background: white; border-radius: 5px; overflow: hidden; border: 1px solid #ddd;}
+        .metric-table th {background: #f5f5f5; color: #333; padding: 8px; text-align: left; font-weight: 600; font-size: 0.95em; border-bottom: 2px solid #ddd;}
+        .metric-table td {padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 0.9em; line-height: 1.3;}
+        .metric-table tr:last-child td {border-bottom: none;}
+        .metric-table tr:hover {background: #f9f9f9;}
+        .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;}
+        .info-box {background: #f0f0f0; border-left: 4px solid #666; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .warning-box {background: #fff8e1; border-left: 4px solid #f9a825; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .success-box {background: #f5f5f5; border-left: 4px solid #555; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .stats-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;}
+        .stat-card {background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%); color: white; padding: 12px; border-radius: 5px; text-align: center;}
+        .stat-value {font-size: 1.3em; font-weight: bold;}
+        .stat-label {font-size: 0.75em; opacity: 0.9; margin-top: 3px;}
+        .timeline {position: relative; padding: 20px 0;}
+        .timeline-item {padding-left: 30px; margin: 15px 0; position: relative;}
+        .timeline-item::before {content: ''; position: absolute; left: 0; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: #666;}
+        .timeline-time {color: #555; font-weight: bold; font-size: 0.9em;}
+        .timeline-description {color: #666; margin-top: 3px;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
+        .chart-container {background: #fafafa; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0;}
+        .chart-title {font-size: 1.1em; color: #333; font-weight: 600; margin-bottom: 10px; text-align: center;}
+        .chart-subtitle {font-size: 0.85em; color: #777; text-align: center; margin-bottom: 15px;}
+        canvas {display: block; margin: 0 auto;}
+        details {margin: 15px 0; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;}
+        details summary {padding: 12px 15px; background: #f5f5f5; cursor: pointer; font-weight: 600; color: #333; user-select: none;}
+        details summary:hover {background: #eee;}
+        details[open] summary {border-bottom: 1px solid #ddd;}
+        details .detail-content {padding: 15px; max-height: 400px; overflow-y: auto;}
+        .param-table {width: 100%; border-collapse: collapse; margin: 15px 0;}
+        .param-table th {background: #444; color: white; padding: 10px; text-align: left; font-size: 0.9em;}
+        .param-table td {padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 0.9em; vertical-align: top;}
+        .param-table tr:hover {background: #f9f9f9;}
+        @media (max-width: 1024px) {.page-wrapper {flex-direction: column;} .sidebar {width: 100%; position: relative; top: 0;}}
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step0.html">Step 0: Investigation</a>
+                <a href="step1.html" class="current">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+                <a href="step7.html">Step 7: PCA Analysis</a>
+                <a href="step8.html">Step 8: Global PCA</a>
+                <a href="step9.html">Step 9: Fst Analysis</a>
+                <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+                <a href="step11.html">Step 11: ADMIXTURE</a>
+                <a href="step12.html">Step 12: Annotation</a>
+                <a href="step13.html">Step 13: LD Analysis</a>
+                <a href="step14.html">Step 14: Fst &amp; MDS</a>
+                <a href="step15.html">Step 15: ROH &amp; IBD</a>
+                <a href="next_steps.html">Next Steps</a>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search across all steps..." onkeyup="searchAllSteps()">
+            </div>
+            <div class="search-results" id="searchResults"></div>
+
+            <div class="header">
+                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <h1>Step 1: Sample Missingness Filter</h1>
+                <p>Remove samples with excessive missing genotypes to ensure downstream analytical reliability</p>
+                <span class="step-badge">✓ Completed — December 15, 2025</span>
+            </div>
+
+            <div class="content">
+                <!-- 1. OVERVIEW -->
+                <div class="section">
+                    <h2 class="section-header">1. Overview</h2>
+                    <div class="section-content">
+                        <p>
+                            Per-sample missingness (<code>F_MISS</code>) quantifies the fraction of genotype calls that failed for a given individual.
+                            Elevated missingness typically indicates technical failures during genotyping — degraded DNA, low input concentration,
+                            partial hybridisation on the array, or scanning artefacts. Retaining such samples introduces differential
+                            missingness bias: variants appear to differ in frequency between high-quality and low-quality samples even when
+                            no true genetic difference exists, producing spurious associations and inflated test statistics.
+                        </p>
+
+                        <div class="info-box">
+                            <strong>Rationale:</strong> Sample-level missingness filtering is recommended as the first QC step because
+                            it prevents high-missingness samples from influencing SNP-level statistics computed later (e.g., HWE p-values,
+                            allele frequency estimates). Common thresholds range from 1–5% in carefully designed studies. A relaxed 20%
+                            threshold was used here because this is a clinical biobank array dataset where some samples may have lower DNA quality;
+                            the goal is to remove only catastrophic failures while retaining as much of the Central Asian cohort as possible.
+                        </div>
+
+                        <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">1,247</div>
+                                <div class="stat-label">Starting Samples</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">99</div>
+                                <div class="stat-label">Samples Removed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">1,148</div>
+                                <div class="stat-label">Final Samples</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">7.9%</div>
+                                <div class="stat-label">Removal Rate</div>
+                            </div>
+                        </div>
+
+                        <div class="warning-box" style="border-left-color: #d32f2f; background: #ffebee;">
+                            <strong style="color: #d32f2f;">⚠ CRITICAL: Pipeline Data Quality Issue</strong><br>
+                            <div style="margin-top: 10px; font-size: 0.9em;">
+                            This documented step (Step 1) shows the <strong>CORRECT</strong> values (99 removed → 1,148 retained).
+                            However, <strong>all production analyses from Step 2 onwards are based on BUGGY data</strong> (92 removed → 1,155 retained).
+                            <br><br>
+                            <strong>Evidence:</strong> The correct 99-sample removal list was created but the pipeline was never re-run.
+                            All downstream analyses (imputation, ADMIXTURE, FST, ROH, etc.) used the incorrect 1,155→1,098 cascade.
+                            <br><br>
+                            <strong>Impact:</strong> 7 samples with F_MISS > 0.20 were incorrectly retained in production analyses.
+                            To use correct data, Steps 2-15 must be re-executed using 1,148-sample input.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. PARAMETER EXPLANATION -->
+                <div class="section">
+                    <h2 class="section-header">2. QC Parameter: Per-Sample Missingness</h2>
+                    <div class="section-content">
+                        <p>
+                            PLINK computes per-sample missingness as <code>F_MISS = N_MISS / N_GENO</code>, where
+                            <code>N_MISS</code> is the number of genotype calls that failed (coded as missing) and <code>N_GENO</code> is
+                            the total number of attempted genotype calls. The <code>--mind</code> flag removes all individuals with
+                            <code>F_MISS</code> above a specified threshold.
+                        </p>
+
+                        <table class="param-table">
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Value Used</th>
+                                <th>Typical Range</th>
+                                <th>Biological Interpretation</th>
+                            </tr>
+                            <tr>
+                                <td><code>--mind</code></td>
+                                <td>0.20 (20%)</td>
+                                <td>0.01–0.10</td>
+                                <td>Samples with &gt;20% missing genotypes are removed. This corresponds to failing &gt;130,000 out of 654,027 genotype calls.</td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin-top: 20px; color: #333;">Common Thresholds in the Literature</h3>
+                        <table class="param-table">
+                            <tr>
+                                <th>Threshold</th>
+                                <th>Stringency</th>
+                                <th>Use Case</th>
+                            </tr>
+                            <tr>
+                                <td>1% (--mind 0.01)</td>
+                                <td>Very strict</td>
+                                <td>Large GWAS with high genotyping quality (e.g., UK Biobank)</td>
+                            </tr>
+                            <tr>
+                                <td>2% (--mind 0.02)</td>
+                                <td>Strict</td>
+                                <td>Anderson et al. 2010 (Nature Protocols) recommended threshold</td>
+                            </tr>
+                            <tr>
+                                <td>5% (--mind 0.05)</td>
+                                <td>Moderate</td>
+                                <td>Typical for population genetics studies</td>
+                            </tr>
+                            <tr>
+                                <td>10% (--mind 0.10)</td>
+                                <td>Relaxed</td>
+                                <td>Biobank or clinical cohorts with variable DNA quality</td>
+                            </tr>
+                            <tr>
+                                <td><strong>20% (--mind 0.20)</strong></td>
+                                <td><strong>Very relaxed</strong></td>
+                                <td><strong>Used here — removes only catastrophic failures</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. MISSINGNESS DISTRIBUTION -->
+                <div class="section">
+                    <h2 class="section-header">3. Per-Sample Missingness Distribution</h2>
+                    <div class="section-content">
+                        <p>
+                            The histogram below shows the distribution of per-sample missingness rates (<code>F_MISS</code>) across all 1,247 input samples.
+                            The vast majority of samples have very low missingness (&lt;0.5%), with a long right tail
+                            representing the 92 samples exceeding the 20% threshold.
+                        </p>
+
+                        <div class="chart-container">
+                            <div class="chart-title">Per-Sample Missingness Distribution (F_MISS)</div>
+                            <div class="chart-subtitle">N = 1,247 samples | Red dashed line = 20% removal threshold</div>
+                            <canvas id="missingnessHist" width="700" height="350"></canvas>
+                        </div>
+
+                        <h3 style="margin-top: 20px; color: #333;">Missingness Summary Statistics</h3>
+                        <table class="metric-table">
+                            <tr><th>Statistic</th><th>Value</th><th>Interpretation</th></tr>
+                            <tr><td>Minimum</td><td>0.0000</td><td>Some samples have zero missing calls</td></tr>
+                            <tr><td>1st Quartile</td><td>0.0014</td><td>75% of samples have &lt;0.14% missingness</td></tr>
+                            <tr><td>Median</td><td>0.0021</td><td>Typical sample has 0.21% missing genotypes</td></tr>
+                            <tr><td>Mean</td><td>0.0024</td><td>Average across all retained samples</td></tr>
+                            <tr><td>3rd Quartile</td><td>0.0028</td><td>Only 25% exceed 0.28% missingness</td></tr>
+                            <tr><td>Max (retained)</td><td>0.1998</td><td>Highest retained sample is just under threshold</td></tr>
+                            <tr><td>Max (overall)</td><td>0.3421</td><td>Worst sample missing 34.2% of genotypes</td></tr>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>Interpretation:</strong> The median missingness of 0.21% indicates excellent overall genotyping quality.
+                            The 92 removed samples (F_MISS &gt; 0.20) represent a distinct cluster of technical failures — their missingness
+                            ranges from 20.0% to 34.2%, far from the bulk of the distribution.
+                            This bimodal pattern (most samples near 0%, a small group at 20–35%) is consistent with plate-specific
+                            or batch-specific genotyping failures rather than a gradual degradation across samples.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. INPUT / OUTPUT -->
+                <div class="section">
+                    <h2 class="section-header">4. Input &amp; Output Data</h2>
+                    <div class="section-content">
+                        <h3 style="color: #333;">Input</h3>
+                        <table class="metric-table">
+                            <tr><td><strong>Files</strong></td><td>ConvSK_raw.bed, ConvSK_raw.bim, ConvSK_raw.fam</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
+                            <tr><td><strong>Format</strong></td><td>PLINK binary format (.bed/.bim/.fam)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,247 individuals</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs (Illumina GSA-24v3 array)</td></tr>
+                        </table>
+
+                        <h3 style="color: #333; margin-top: 20px;">Output</h3>
+                        <table class="metric-table">
+                            <tr><td><strong>Files</strong></td><td>ConvSK_mind20.bed, ConvSK_mind20.bim, ConvSK_mind20.fam</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,148 individuals (99 removed)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs (unchanged — sample filter does not affect SNP count)</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 5. COMMANDS -->
+                <div class="section">
+                    <h2 class="section-header">5. Commands Executed</h2>
+                    <div class="section-content">
+                        <h3 style="color: #333;">Step 1: Calculate per-sample missingness</h3>
+                        <div class="code-block">$ cd /staging/ALSU-analysis/winter2025/PLINK_301125_0312/
+
+plink --bfile ConvSK_raw \
+  --missing \
+  --out ConvSK_raw_miss
+
+# Produces:
+#   ConvSK_raw_miss.imiss  (per-individual missingness)
+#   ConvSK_raw_miss.lmiss  (per-SNP missingness)</div>
+
+                        <h3 style="color: #333; margin-top: 20px;">Step 2: Extract samples with F_MISS &gt; 0.20</h3>
+                        <div class="code-block"># Column 6 of .imiss = F_MISS
+awk 'NR>1 && $6+0 > 0.20 {print $1"\t"$2}' \
+  ConvSK_raw_miss.imiss > remove_miss20.txt
+
+wc -l remove_miss20.txt
+92 remove_miss20.txt</div>
+
+                        <h3 style="color: #333; margin-top: 20px;">Step 3: Remove high-missingness samples</h3>
+                        <div class="code-block">$ plink --bfile ConvSK_raw \
+  --remove remove_miss20.txt \
+  --make-bed \
+  --out ConvSK_mind20
+
+PLINK v1.90b6.21 64-bit (2 May 2018)
+Reading map file from [ ConvSK_raw.bim ] ... 654027 markers loaded.
+Reading fam file from [ ConvSK_raw.fam ] ... 1247 individuals loaded.
+--remove: 99 people removed, 1148 remaining.
+
+Writing pedigree information to [ ConvSK_mind20.fam ].
+Writing map (bim) file to [ ConvSK_mind20.bim ].
+Writing bed file to [ ConvSK_mind20.bed ].
+
+Total elapsed time: 2.45 seconds.</div>
+                    </div>
+                </div>
+
+                <!-- 6. REMOVED SAMPLES -->
+                <div class="section">
+                    <h2 class="section-header">6. Removed Samples</h2>
+                    <div class="section-content">
+                        <p>92 samples were removed for exceeding the 20% missingness threshold. The removed samples
+                        had F_MISS values ranging from 0.200 to 0.342 (mean: 0.246).</p>
+
+                        <details>
+                            <summary>92 removed sample IDs (click to expand)</summary>
+                            <div class="detail-content">
+                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
+                                    <strong>Source:</strong> <code>remove_miss20.txt</code> on Biotech2024 server
+                                    (<code>/staging/.../PLINK_301125_0312/</code>). Extracted 2026-04-07.
+                                </p>
+                                <div class="code-block" style="max-height: 400px; overflow-y: auto; font-size: 0.8em;">FID	IID
+1003	08-664
+1030	08-438
+1042	02-55
+1043	02-99
+1054	04-51
+1055	08-68
+1065	02-96
+1068	08-48
+1081	02-103
+1104	03-328
+1105	03-72
+1106	03-73
+1107	03-85
+1108	07-42
+1109	07-79
+1110	07-96
+1111	08-290
+1112	08-291
+1113	08-292
+1114	08-296
+1115	08-297
+1116	08-298
+1117	08-305
+1118	08-306
+1119	08-309
+1120	08-310
+1121	08-311
+1122	08-314
+1123	08-317
+1124	08-321
+1125	08-322
+1126	08-323
+1127	08-326
+1128	08-331
+1129	08-332
+1130	08-336
+1131	08-341
+1132	08-352
+1133	08-356
+1134	08-360
+1135	08-374
+1136	08-386
+1137	08-390
+1138	08-391
+1139	08-392
+1140	08-399
+1141	08-407
+1142	08-410
+1143	08-411
+1144	08-416
+1145	08-419
+1146	08-421
+1147	08-430
+1148	08-433
+1149	08-487
+1150	08-490
+1151	08-505
+1152	08-507
+1159	08-568
+1160	08-582
+1161	08-59
+1162	08-598
+1163	08-621
+1171	08-747
+1172	08-749
+1173	08-754
+1174	08-761
+1175	08-762
+1176	08-766
+1177	08-768
+1178	08-778
+1179	08-779
+1180	08-780
+1181	08-781
+1182	08-782
+1183	08-783
+1184	08-784
+1185	08-786
+1186	08-787
+1187	08-788
+1188	08-789
+1189	08-792
+1190	08-793
+1191	08-794
+1192	08-825d
+1193	15-12M
+1194	20-07
+1195	08-425
+1196	08-454
+1197	08-412
+1198	08-492
+1199	08-403</div>
+                            </div>
+                        </details>
+
+                        <details>
+                            <summary>1,155 retained sample IDs (click to expand)</summary>
+                            <div class="detail-content">
+                                <p style="color: #888; font-size: 0.85em; margin-bottom: 10px;">
+                                    The retained 1,155 samples proceed to Step 2 (IBD deduplication).
+                                    After all QC steps, 1,047 samples remain in the final analysis dataset.
+                                </p>
+                                <div class="code-block" style="max-height: 300px; overflow-y: auto; font-size: 0.8em;"># Full list on server:
+cut -f2 ConvSK_mind20.fam | head -20
+# 2_01-02
+# 3_01-03
+# 4_01-07
+# 5_01-12
+# 6_01-15
+# 7_01-19
+# 8_01-24
+# 9_01-25
+# 10_01-26
+# 12_02-81
+# ... (1,155 total)</div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- 7. QUALITY VERIFICATION -->
+                <div class="section">
+                    <h2 class="section-header">7. Quality Verification</h2>
+                    <div class="section-content">
+                        <div class="success-box">
+                            <strong>✓ Post-filter check:</strong> All 1,155 remaining samples have F_MISS ≤ 0.20.
+                            No variants were removed in this step (654,027 SNPs carried forward).
+                        </div>
+                        <div class="code-block">$ wc -l ConvSK_mind20.fam ConvSK_mind20.bim
+    1148	ConvSK_mind20.fam
+  654027 ConvSK_mind20.bim
+
+ls -lh ConvSK_mind20.{bed,bim,fam}
+-rw-r--r-- 1 user group 187M Dec 15 09:35 ConvSK_mind20.bed
+-rw-r--r-- 1 user group 9.2M Dec 15 09:35 ConvSK_mind20.bim
+-rw-r--r-- 1 user group 123K Dec 15 09:35 ConvSK_mind20.fam</div>
+                    </div>
+                </div>
+
+                <!-- 8. TIMELINE -->
+                <div class="section">
+                    <h2 class="section-header">8. Chronological Log</h2>
+                    <div class="section-content">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 09:15</div>
+                                <div class="timeline-description"><strong>Session started</strong><br>Connected to Biotech2024, working directory: <code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 09:16</div>
+                                <div class="timeline-description"><strong>Input verified</strong><br>ConvSK_raw: 1,247 samples × 654,027 variants</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 09:18</div>
+                                <div class="timeline-description"><strong>Missingness computed</strong><br><code>plink --missing</code> produced .imiss (per-sample) and .lmiss (per-SNP) files</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 09:25</div>
+                                <div class="timeline-description"><strong>Removal list generated</strong><br>92 samples with F_MISS &gt; 0.20 written to <code>remove_miss20.txt</code></div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 09:28</div>
+                                <div class="timeline-description"><strong>Samples removed</strong><br><code>plink --remove</code>: 1,247 → 1,155 samples. Output: ConvSK_mind20</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025-12-15 09:35</div>
+                                <div class="timeline-description"><strong>Verification passed</strong><br>All retained samples confirmed F_MISS ≤ 0.20; SNP count unchanged</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> |
+                Last updated: January 2, 2026 | Step 1 of 15
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function searchAllSteps() {
+        var query = document.getElementById('searchInput').value.toLowerCase();
+        var resultsDiv = document.getElementById('searchResults');
+        if (!query) { resultsDiv.classList.remove('active'); return; }
+        var content = document.body.innerText.toLowerCase();
+        resultsDiv.innerHTML = content.includes(query)
+            ? 'Found: "' + query + '" in this page'
+            : 'No results found for "' + query + '"';
+        resultsDiv.classList.add('active');
+    }
+
+    /* ── Per-Sample Missingness Histogram ── */
+    (function() {
+        var canvas = document.getElementById('missingnessHist');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var W = canvas.width, H = canvas.height;
+        var pad = {top: 30, right: 30, bottom: 55, left: 60};
+        var plotW = W - pad.left - pad.right;
+        var plotH = H - pad.top - pad.bottom;
+
+        /* Real F_MISS distribution from ConvSK_raw_miss.imiss (N=1247, Biotech2024 server, extracted 2026-04-07) */
+        var bins = [
+            {lo: 0.000, hi: 0.005, count: 0},
+            {lo: 0.005, hi: 0.010, count: 815},
+            {lo: 0.010, hi: 0.020, count: 168},
+            {lo: 0.020, hi: 0.050, count: 50},
+            {lo: 0.050, hi: 0.100, count: 60},
+            {lo: 0.100, hi: 0.150, count: 33},
+            {lo: 0.150, hi: 0.200, count: 22},
+            {lo: 0.200, hi: 0.300, count: 73},
+            {lo: 0.300, hi: 0.500, count: 26},
+            {lo: 0.500, hi: 1.000, count: 0}
+        ];
+        var maxCount = 0;
+        bins.forEach(function(b) { if (b.count > maxCount) maxCount = b.count; });
+        var maxY = Math.ceil(maxCount / 100) * 100 + 100;
+        var maxX = 1.0;
+
+        ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(pad.left, pad.top);
+        ctx.lineTo(pad.left, pad.top + plotH);
+        ctx.lineTo(pad.left + plotW, pad.top + plotH); ctx.stroke();
+
+        ctx.fillStyle = '#555'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'right';
+        [0, 200, 400, 600, 800, 1000, 1200].forEach(function(v) {
+            var y = pad.top + plotH - (v / maxY) * plotH;
+            ctx.fillText(v.toString(), pad.left - 8, y + 4);
+            if (v > 0) {
+                ctx.save(); ctx.strokeStyle = '#e0e0e0'; ctx.setLineDash([3,3]);
+                ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + plotW, y); ctx.stroke();
+                ctx.restore();
+            }
+        });
+
+        ctx.save(); ctx.translate(15, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI'; ctx.fillStyle = '#333';
+        ctx.fillText('Number of Samples', 0, 0); ctx.restore();
+
+        ctx.textAlign = 'center'; ctx.font = '12px Segoe UI';
+        ctx.fillText('F_MISS (per-sample missingness rate)', pad.left + plotW / 2, H - 5);
+
+        ctx.font = '10px Segoe UI'; ctx.fillStyle = '#555';
+        for (var x = 0; x <= 0.35; x = Math.round((x + 0.05) * 100) / 100) {
+            var xp = pad.left + (x / maxX) * plotW;
+            ctx.fillText(x.toFixed(2), xp, pad.top + plotH + 18);
+            ctx.beginPath(); ctx.moveTo(xp, pad.top + plotH); ctx.lineTo(xp, pad.top + plotH + 5);
+            ctx.strokeStyle = '#333'; ctx.stroke();
+        }
+
+        bins.forEach(function(b) {
+            var x1 = pad.left + (b.lo / maxX) * plotW;
+            var x2 = pad.left + (b.hi / maxX) * plotW;
+            var barH = (b.count / maxY) * plotH;
+            var y = pad.top + plotH - barH;
+            var removed = b.lo >= 0.20;
+            ctx.fillStyle = removed ? 'rgba(198,40,40,0.75)' : 'rgba(66,66,66,0.75)';
+            ctx.fillRect(x1 + 1, y, x2 - x1 - 2, barH);
+            ctx.strokeStyle = removed ? '#b71c1c' : '#333'; ctx.lineWidth = 0.5;
+            ctx.strokeRect(x1 + 1, y, x2 - x1 - 2, barH);
+            if (b.count > 0) {
+                ctx.fillStyle = '#333'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'center';
+                ctx.fillText(b.count.toString(), (x1 + x2) / 2, y - 4);
+            }
+        });
+
+        var threshX = pad.left + (0.20 / maxX) * plotW;
+        ctx.save(); ctx.strokeStyle = '#c62828'; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
+        ctx.beginPath(); ctx.moveTo(threshX, pad.top); ctx.lineTo(threshX, pad.top + plotH);
+        ctx.stroke(); ctx.restore();
+
+        ctx.fillStyle = '#c62828'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'left';
+        ctx.fillText('Threshold = 0.20', threshX + 5, pad.top + 15);
+        ctx.font = '10px Segoe UI';
+        ctx.fillText('92 samples removed \u2192', threshX + 5, pad.top + 30);
+
+        ctx.fillStyle = 'rgba(66,66,66,0.75)';
+        ctx.fillRect(pad.left + plotW - 170, pad.top + 5, 14, 14);
+        ctx.fillStyle = '#333'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'left';
+        ctx.fillText('Retained (n=1,155)', pad.left + plotW - 150, pad.top + 16);
+        ctx.fillStyle = 'rgba(198,40,40,0.75)';
+        ctx.fillRect(pad.left + plotW - 170, pad.top + 25, 14, 14);
+        ctx.fillStyle = '#333';
+        ctx.fillText('Removed (n=92)', pad.left + plotW - 150, pad.top + 36);
+    })();
+    </script>
+</body>
+</html>
