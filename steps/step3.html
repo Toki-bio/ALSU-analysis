@@ -43,12 +43,6 @@
         .stat-card {background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%); color: white; padding: 12px; border-radius: 5px; text-align: center;}
         .stat-value {font-size: 1.3em; font-weight: bold;}
         .stat-label {font-size: 0.75em; opacity: 0.9; margin-top: 3px;}
-        .timeline {position: relative; padding: 20px 0;}
-        .timeline-item {padding-left: 30px; margin: 15px 0; position: relative;}
-        .timeline-item::before {content: ''; position: absolute; left: 0; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: #666;}
-        .timeline-time {color: #555; font-weight: bold; font-size: 0.9em;}
-        .timeline-description {color: #666; margin-top: 3px;}
-        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
         .chart-container {background: #fafafa; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0;}
         .chart-title {font-size: 1.1em; color: #333; font-weight: 600; margin-bottom: 10px; text-align: center;}
         .chart-subtitle {font-size: 0.85em; color: #777; text-align: center; margin-bottom: 15px;}
@@ -59,6 +53,7 @@
         .param-table th {background: #444; color: white; padding: 10px; text-align: left; font-size: 0.9em;}
         .param-table td {padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 0.9em; vertical-align: top;}
         .param-table tr:hover {background: #f9f9f9;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
         @media (max-width: 1024px) {.page-wrapper {flex-direction: column;} .sidebar {width: 100%; position: relative; top: 0;}}
     </style>
 </head>
@@ -97,7 +92,7 @@
                 <a href="../index.html" class="back-link">← Back to Roadmap</a>
                 <h1>Step 3: SNP Quality Control &amp; VCF Export</h1>
                 <p>Filter variants by allele frequency, Hardy-Weinberg equilibrium, and genotyping rate; export to VCF for imputation</p>
-                <span class="step-badge">✓ Completed — December 17, 2025</span>
+                <span class="step-badge">✓ Completed — April 10, 2026</span>
             </div>
 
             <div class="content">
@@ -128,23 +123,23 @@
                         <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-value">654,027</div>
-                                <div class="stat-label">Starting Variants</div>
+                                <div class="stat-value">620,492</div>
+                                <div class="stat-label">Autosomal Input</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">180,946</div>
+                                <div class="stat-value">249,842</div>
                                 <div class="stat-label">Removed by QC</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">473,081</div>
+                                <div class="stat-value">370,650</div>
                                 <div class="stat-label">After PLINK QC</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">472,191</div>
-                                <div class="stat-label">Sent to Imputation</div>
+                                <div class="stat-value">370,164</div>
+                                <div class="stat-label">Final VCF</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">72.2%</div>
+                                <div class="stat-value">59.7%</div>
                                 <div class="stat-label">Retention Rate</div>
                             </div>
                         </div>
@@ -153,123 +148,89 @@
 
                 <!-- 2. QC PARAMETERS -->
                 <div class="section">
-                    <h2 class="section-header">2. QC Parameters Explained</h2>
+                    <h2 class="section-header">2. QC Parameters</h2>
                     <div class="section-content">
 
-                        <!-- MAF -->
                         <h3 style="color: #333; margin-bottom: 10px;">2a. Minor Allele Frequency (MAF)</h3>
                         <p>
-                            MAF is the frequency of the less common allele at a biallelic locus. For a SNP with alleles A and G
-                            in N diploid individuals, if A appears 30 times and G appears 2,166 times, then
-                            MAF = 30 / (30 + 2,166) = 0.0137. Variants with very low MAF (&lt;1%) are problematic for several reasons:
+                            MAF is the frequency of the less common allele at a biallelic locus. Variants with very low MAF
+                            (&lt;1%) are removed because: (1) they provide little discriminatory power in frequency-based
+                            analyses, (2) at very low MAF a single genotyping error dramatically shifts the observed frequency,
+                            and (3) imputation accuracy for rare variants in the typed panel is limited.
                         </p>
-                        <ul style="margin: 10px 0 10px 25px;">
-                            <li><strong>Statistical power:</strong> Extremely rare variants provide little discriminatory power
-                                in frequency-based analyses (PCA, Fst, association tests).</li>
-                            <li><strong>Genotyping error:</strong> At very low MAF, even a single miscall can dramatically
-                                shift the observed frequency, creating false rare-variant signals.</li>
-                            <li><strong>Imputation quality:</strong> Imputation servers have limited accuracy for variants
-                                with MAF &lt; 1% in the typed panel.</li>
-                        </ul>
-
                         <table class="param-table">
                             <tr><th>Parameter</th><th>Value</th><th>Effect</th></tr>
                             <tr>
                                 <td><code>--maf 0.01</code></td>
                                 <td>MAF ≥ 1%</td>
                                 <td>Removes monomorphic and rare variants. The minor allele must appear in at least
-                                    ~22 of 2,196 allele copies (1,098 individuals × 2).</td>
+                                    ~22 of 2,186 allele copies (1,093 individuals × 2).</td>
                             </tr>
                         </table>
 
-                        <!-- HWE -->
                         <h3 style="color: #333; margin-top: 25px; margin-bottom: 10px;">2b. Hardy-Weinberg Equilibrium (HWE)</h3>
                         <p>
-                            The Hardy-Weinberg principle states that genotype frequencies in a large, randomly mating population
-                            remain constant across generations: if p is the frequency of allele A and q = 1 − p is the frequency of
-                            allele B, then genotype frequencies should be AA = p², AB = 2pq, BB = q². Departure from HWE
-                            at a given locus can indicate:
+                            Extreme departure from HWE (p &lt; 10⁻⁶) at a given locus almost always indicates a genotyping
+                            artefact rather than biology — e.g., miscalling heterozygotes as homozygotes due to poor cluster
+                            separation, copy number variation producing excess heterozygosity, or probe-specific technical
+                            failures. The lenient 10⁻⁶ threshold avoids removing loci under genuine selection or modest population
+                            substructure effects.
                         </p>
-                        <ul style="margin: 10px 0 10px 25px;">
-                            <li><strong>Genotyping error</strong> (most common cause in array data) — e.g., miscalling heterozygotes
-                                as homozygotes due to poor cluster separation.</li>
-                            <li><strong>Population stratification</strong> — different subpopulations have different allele frequencies,
-                                and mixing them violates the random-mating assumption.</li>
-                            <li><strong>Copy number variation (CNV)</strong> — duplicated regions produce excess heterozygosity.</li>
-                            <li><strong>Selection</strong> — genuine biological departure, but rare for individual loci.</li>
-                        </ul>
-                        <p>
-                            For QC purposes, extreme HWE violation (p &lt; 10⁻⁶) almost always indicates a technical problem
-                            rather than biology. Using a lenient threshold avoids discarding loci under genuine selection.
-                        </p>
-
                         <table class="param-table">
                             <tr><th>Parameter</th><th>Value</th><th>Effect</th></tr>
                             <tr>
                                 <td><code>--hwe 1e-6</code></td>
                                 <td>HWE p &gt; 10⁻⁶</td>
-                                <td>Removes only severely violating loci. A p-value of 10⁻⁶ indicates ~1 in a million
-                                    chance the observed genotype frequencies arose under HWE — strongly suggesting a technical problem.</td>
+                                <td>Removes only severely violating loci (260 of 620,492 autosomal variants).</td>
                             </tr>
                         </table>
 
-                        <!-- Genotyping rate -->
                         <h3 style="color: #333; margin-top: 25px; margin-bottom: 10px;">2c. Per-SNP Genotyping Rate</h3>
                         <p>
-                            Per-SNP missingness is the fraction of individuals for whom a given variant could not be called.
-                            High SNP-level missingness indicates a probe-specific technical failure (e.g., poor hybridisation,
-                            non-specific binding, or a probe overlapping a common deletion). Such variants produce unreliable
-                            allele frequency estimates and should be excluded.
+                            Per-SNP missingness measures the fraction of individuals for whom a variant could not be called.
+                            The <code>--geno 0.02</code> threshold requires ≥98% call rate per SNP (≤21 missing out of 1,093).
+                            This follows the Anderson et al. (2010, Nature Protocols) standard for GWAS QC.
                         </p>
-                        <p style="margin-top: 10px;">
-                            The <code>--geno</code> threshold of 0.01 requires ≥99% genotyping rate per SNP.
-                            This is stringent because imputation accuracy depends on reliable typed variants.
-                        </p>
+
+                        <div class="warning-box">
+                            <strong>Threshold choice rationale.</strong> The overall genotyping rate of this dataset is 97.99%,
+                            meaning the <em>average</em> per-SNP missingness is ~2%. Using <code>--geno 0.01</code> (99% call rate)
+                            would sit at the dataset mean, destroying 38% of autosomal variants (285,925 retained vs. 370,650).
+                            The <code>--geno 0.02</code> threshold is the standard from Anderson et al. (2010) and sits at the
+                            quality-per-variant-lost elbow — see the threshold sensitivity table below.
+                        </div>
 
                         <table class="param-table">
                             <tr><th>Parameter</th><th>Value</th><th>Effect</th></tr>
                             <tr>
-                                <td><code>--geno 0.01</code></td>
-                                <td>≥ 99% call rate per SNP</td>
-                                <td>Removes SNPs missing in &gt;1% of samples (&gt;11 of 1,098 individuals).</td>
+                                <td><code>--geno 0.02</code></td>
+                                <td>≥ 98% call rate per SNP</td>
+                                <td>Removes SNPs missing in >2% of samples (>21 of 1,093 individuals). Removed 129,562 variants.</td>
                             </tr>
                         </table>
 
-                        <!-- Additional filter -->
+                        <h3 style="color: #333; margin-top: 25px; margin-bottom: 10px;">Threshold Sensitivity (spring 2026 data, 1,093 samples)</h3>
+                        <p>Each row shows the combined result of <code>--maf 0.01 --hwe 1e-6 --geno X --chr 1-22</code>
+                            applied to the 620,492 autosomal variants in ConvSK_mind20_dedup.</p>
+                        <table class="param-table">
+                            <tr><th><code>--geno</code></th><th>geno removed</th><th>HWE removed</th><th>MAF removed</th><th>Variants retained</th><th>% of autosomal</th></tr>
+                            <tr><td>0.005</td><td>330,289</td><td>44</td><td>79,237</td><td>210,922</td><td>34.0%</td></tr>
+                            <tr><td>0.01</td><td>237,356</td><td>95</td><td>97,116</td><td>285,925</td><td>46.1%</td></tr>
+                            <tr style="background: #e8f5e9; font-weight: 600;"><td>0.02</td><td>129,562</td><td>260</td><td>120,020</td><td>370,650</td><td>59.7%</td></tr>
+                            <tr><td>0.03</td><td>84,920</td><td>388</td><td>129,591</td><td>405,593</td><td>65.4%</td></tr>
+                            <tr><td>0.05</td><td>38,323</td><td>570</td><td>140,349</td><td>441,250</td><td>71.1%</td></tr>
+                            <tr><td>0.10</td><td>9,345</td><td>767</td><td>150,557</td><td>459,823</td><td>74.1%</td></tr>
+                        </table>
+
                         <h3 style="color: #333; margin-top: 25px; margin-bottom: 10px;">2d. Autosome Restriction</h3>
-                        <p>
-                            Only autosomes (chromosomes 1–22) are retained for imputation. Sex chromosomes (X, Y) and
-                            mitochondrial variants require special handling (hemizygosity, different ploidy) and are excluded
-                            from the standard imputation pipeline.
-                        </p>
                         <table class="param-table">
                             <tr><th>Parameter</th><th>Value</th><th>Effect</th></tr>
                             <tr>
                                 <td><code>--chr 1-22</code></td>
                                 <td>Autosomes only</td>
-                                <td>Excludes chrX, chrY, chrMT, and any unplaced contigs</td>
+                                <td>Excludes 33,535 non-autosomal variants (chrX, chrY, chrMT, unplaced). 654,027 → 620,492.</td>
                             </tr>
                         </table>
-
-                        <!-- Summary -->
-                        <h3 style="color: #333; margin-top: 25px; margin-bottom: 10px;">Combined Filter Summary</h3>
-                        <table class="param-table">
-                            <tr><th>Filter</th><th>PLINK Flag</th><th>Threshold</th><th>SNPs Removed (approx.)</th></tr>
-                            <tr><td>Minor allele frequency</td><td><code>--maf 0.01</code></td><td>MAF ≥ 1%</td><td>~120,000</td></tr>
-                            <tr><td>Hardy-Weinberg equilibrium</td><td><code>--hwe 1e-6</code></td><td>p &gt; 10⁻⁶</td><td>~2,500</td></tr>
-                            <tr><td>Per-SNP genotyping rate</td><td><code>--geno 0.01</code></td><td>≥ 99% call rate</td><td>~15,000</td></tr>
-                            <tr><td>Autosome restriction</td><td><code>--chr 1-22</code></td><td>Autosomes only</td><td>~44,000</td></tr>
-                            <tr style="background: #f0f0f0; font-weight: 600;">
-                                <td>Total removed (combined)</td><td colspan="2">All filters applied simultaneously</td><td>180,946</td></tr>
-                        </table>
-
-                        <div class="warning-box">
-                            <strong>Note:</strong> Individual filter counts overlap (a SNP can fail multiple filters).
-                            The approximate per-filter counts are from separate runs and do not sum to 180,946.
-                            PLINK applies all filters simultaneously in a single pass; the combined effect is 654,027 → 473,081.
-                            An additional 890 variants are removed during VCF cleanup (494 I/D alleles + 396 duplicate positions),
-                            yielding 472,191 variants sent to imputation.
-                        </div>
                     </div>
                 </div>
 
@@ -278,73 +239,70 @@
                     <h2 class="section-header">3. QC Metric Distributions</h2>
                     <div class="section-content">
                         <p>
-                            The charts below show the distribution of the three QC metrics across all 654,027 input SNPs.
-                            The dashed red lines indicate the applied thresholds.
+                            Distributions of the three QC metrics across all 620,492 autosomal input variants
+                            (computed on the 1,093 post-dedup samples). Dashed red lines indicate applied thresholds.
                         </p>
 
-                        <!-- MAF histogram -->
                         <div class="chart-container">
                             <div class="chart-title">Minor Allele Frequency (MAF) Spectrum</div>
-                            <div class="chart-subtitle">N = 654,027 SNPs | Dashed line = MAF 0.01 threshold</div>
+                            <div class="chart-subtitle">N = 620,492 autosomal variants (1,093 samples) | Dashed line = MAF 0.01 threshold</div>
                             <canvas id="mafHist" width="700" height="300"></canvas>
                         </div>
 
                         <div class="chart-row">
-                            <!-- HWE p-value distribution -->
                             <div class="chart-container">
                                 <div class="chart-title">HWE p-value Distribution</div>
                                 <div class="chart-subtitle">-log₁₀(p) | Dashed line = 1e-6 threshold</div>
                                 <canvas id="hweHist" width="330" height="260"></canvas>
                             </div>
 
-                            <!-- Per-SNP missingness -->
                             <div class="chart-container">
                                 <div class="chart-title">Per-SNP Missingness Distribution</div>
-                                <div class="chart-subtitle">Fraction of samples missing | Dashed line = 1%</div>
+                                <div class="chart-subtitle">Fraction of samples missing | Dashed line = 2%</div>
                                 <canvas id="genoHist" width="330" height="260"></canvas>
                             </div>
                         </div>
 
                         <div class="info-box">
-                            <strong>Interpretation — MAF spectrum:</strong> The characteristic L-shape (excess of rare variants)
-                            is expected from population genetic theory (site frequency spectrum). The MAF &gt; 0.01 filter removes
-                            the leftmost bin, which contains monomorphic and near-monomorphic variants that provide no discriminatory
-                            power and are prone to genotyping artefacts.
+                            <strong>MAF spectrum:</strong> The characteristic L-shape (excess of rare variants) is expected
+                            from population genetic theory (site frequency spectrum). The 0.00–0.01 and 0.01–0.05 bins are
+                            nearly equal (157,939 and 157,971) — the MAF filter removes the leftmost bin.
                         </div>
 
                         <div class="info-box">
-                            <strong>Interpretation — HWE:</strong> The majority of SNPs have HWE p-values well above 10⁻⁶. Only
-                            ~2,500 SNPs show extreme departure (-log₁₀(p) &gt; 6), consistent with genotyping artefacts at specific probes.
-                            The Central Asian population may show modest HWE deviation at some loci due to population substructure,
-                            but the lenient 10⁻⁶ threshold avoids removing these.
+                            <strong>Per-SNP missingness:</strong> 62% of autosomal variants (383,136) have &lt;1% missingness.
+                            The long right tail (4,433 variants with &gt;30% missingness) represents probe-specific failures.
+                            The 2% threshold sits between the main mass and the tail, cutting 129,562 variants.
                         </div>
                     </div>
                 </div>
 
                 <!-- 4. INPUT / OUTPUT -->
                 <div class="section">
-                    <h2 class="section-header">4. Input &amp; Output Data</h2>
+                    <h2 class="section-header">4. Input &amp; Output</h2>
                     <div class="section-content">
                         <h3 style="color: #333;">Input</h3>
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20_dedup.bed, .bim, .fam</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,098</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>654,027 SNPs</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/spring2026/</code></td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027 (620,492 autosomal)</td></tr>
+                            <tr><td><strong>Genotyping rate</strong></td><td>0.9799 (97.99%)</td></tr>
                         </table>
 
-                        <h3 style="color: #333; margin-top: 20px;">Output — QC-filtered PLINK binary</h3>
+                        <h3 style="color: #333; margin-top: 20px;">Output — QC-filtered PLINK</h3>
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>ConvSK_mind20_dedup_snpqc.bed, .bim, .fam</td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,098 (unchanged)</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>473,081 SNPs (180,946 removed by PLINK QC filters)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093 (unchanged)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>370,650 (249,842 removed by combined filters)</td></tr>
+                            <tr><td><strong>Genotyping rate</strong></td><td>0.9944 (99.44%)</td></tr>
                         </table>
 
-                        <h3 style="color: #333; margin-top: 20px;">Output — Per-chromosome VCF for imputation</h3>
+                        <h3 style="color: #333; margin-top: 20px;">Output — Final VCF for imputation</h3>
                         <table class="metric-table">
-                            <tr><td><strong>Files</strong></td><td>chr1.vcf.gz through chr22.vcf.gz (22 files)</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/.../PLINK_301125_0312/</code></td></tr>
-                            <tr><td><strong>Variants</strong></td><td>472,191 (after removing 494 I/D alleles + 396 duplicate positions)</td></tr>
+                            <tr><td><strong>Files</strong></td><td>chr1.vcf.gz through chr22.vcf.gz (22 files) + impute_in.final.vcf.gz</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>370,164 (after removing 187 I/D alleles + 299 duplicate positions)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093 (2 Cyrillic IDs fixed to ASCII)</td></tr>
                             <tr><td><strong>Format</strong></td><td>bgzip-compressed VCF with tabix index</td></tr>
                         </table>
                     </div>
@@ -352,55 +310,91 @@
 
                 <!-- 5. COMMANDS -->
                 <div class="section">
-                    <h2 class="section-header">5. Commands Executed</h2>
+                    <h2 class="section-header">5. Commands</h2>
                     <div class="section-content">
-                        <h3 style="color: #333;">Step 1: Apply combined SNP QC filters</h3>
-                        <div class="code-block">$ plink --bfile ConvSK_mind20_dedup \
+                        <h3 style="color: #333;">Step 3a: Apply combined SNP QC filters</h3>
+                        <div class="code-block">cd /staging/ALSU-analysis/spring2026
+
+plink --bfile ConvSK_mind20_dedup \
   --maf 0.01 \
   --hwe 1e-6 \
-  --geno 0.01 \
+  --geno 0.02 \
   --chr 1-22 \
   --make-bed \
-  --out ConvSK_mind20_dedup_snpqc
+  --out ConvSK_mind20_dedup_snpqc</div>
 
-# Result: 473,081 variants remain (180,946 removed)
-# 1,098 samples unchanged</div>
+                        <div class="success-box">
+<strong>PLINK log output:</strong><br>
+<code>620492 out of 654027 variants loaded from .bim file.</code><br>
+<code>1093 people loaded from .fam.</code><br>
+<code>Total genotyping rate is 0.979912.</code><br>
+<code>129562 variants removed due to missing genotype data (--geno).</code><br>
+<code>--hwe: 260 variants removed due to Hardy-Weinberg exact test.</code><br>
+<code>120020 variants removed due to minor allele threshold(s).</code><br>
+<code>370650 variants and 1093 people pass filters and QC.</code>
+                        </div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 2: Export per-chromosome VCFs (excluding I/D alleles)</h3>
-                        <div class="code-block"># 494 variants have I/D alleles (insertion/deletion shorthand)
+                        <h3 style="color: #333; margin-top: 20px;">Step 3b: Build VCF-safe SNP list</h3>
+                        <div class="code-block"># 187 variants have I/D alleles (insertion/deletion shorthand)
 # These are not valid VCF alleles — must be excluded
 awk '($5!="I" &amp;&amp; $5!="D" &amp;&amp; $6!="I" &amp;&amp; $6!="D") {print $2}' \
   ConvSK_mind20_dedup_snpqc.bim > vcf_ok_snps.txt
+wc -l vcf_ok_snps.txt
+# 370463</div>
 
-# Export each chromosome using VCF-safe variants only
-for chr in {1..22}; do
+                        <h3 style="color: #333; margin-top: 20px;">Step 3c: Export per-chromosome VCFs</h3>
+                        <div class="code-block">for chr in $(seq 1 22); do
   plink --bfile ConvSK_mind20_dedup_snpqc \
     --chr $chr --extract vcf_ok_snps.txt \
     --recode vcf bgz --out chr${chr}
   tabix -f -p vcf chr${chr}.vcf.gz
 done</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 3: Clean VCF for imputation server</h3>
+                        <h3 style="color: #333; margin-top: 20px;">Step 3d: Concatenate and clean VCF</h3>
                         <div class="code-block"># Concatenate autosomes
 bcftools concat -Oz -o impute_in.autosomes.vcf.gz chr{1..22}.vcf.gz
+tabix -f -p vcf impute_in.autosomes.vcf.gz
+# 370,463 variants
 
-# Keep biallelic SNPs only
+# Keep biallelic SNPs only (no multiallelic found)
 bcftools view -m2 -M2 -v snps -Oz \
   -o impute_in.autosomes.clean.vcf.gz impute_in.autosomes.vcf.gz
+tabix -f -p vcf impute_in.autosomes.clean.vcf.gz
+# 370,463 variants
 
-# Remove duplicate positions (396 removed)
+# Remove duplicate positions (299 removed)
 bcftools norm -d all -Oz \
   -o impute_in.autosomes.clean.nodup.vcf.gz \
   impute_in.autosomes.clean.vcf.gz
+tabix -f -p vcf impute_in.autosomes.clean.nodup.vcf.gz
+# 370,164 variants</div>
 
-# Fix 2 non-ASCII sample IDs (Cyrillic chars)
+                        <h3 style="color: #333; margin-top: 20px;">Step 3e: Fix non-ASCII sample IDs</h3>
+                        <div class="code-block"># Two sample IDs contain Cyrillic characters:
+#   808_03-25м       (Cyrillic м = U+043C, UTF-8 \xd0\xbc)
+#   1038_08-176Х-00006  (Cyrillic Х = U+0425, UTF-8 \xd0\xa5)
+# These must be replaced with Latin equivalents for downstream tools.
+
+# Create rename file (printf guarantees correct UTF-8 bytes and real tabs)
+printf '808_03-25\xd0\xbc\t808_03-25m\n' > rename_samples.tsv
+printf '1038_08-176\xd0\xa5-00006\t1038_08-176X-00006\n' >> rename_samples.tsv
+
+# Verify tab separators
+cat -A rename_samples.tsv
+
+# Apply reheader
 bcftools reheader -s rename_samples.tsv \
   -o impute_in.final.vcf.gz \
   impute_in.autosomes.clean.nodup.vcf.gz
 
-# Final variant count: 472,191
+# Index and verify
+bcftools index impute_in.final.vcf.gz
 bcftools index -n impute_in.final.vcf.gz
-472191</div>
+# 370164
+
+# Confirm no non-ASCII IDs remain
+bcftools query -l impute_in.final.vcf.gz | grep -cP '[^\x00-\x7F]'
+# 0</div>
                     </div>
                 </div>
 
@@ -409,59 +403,66 @@ bcftools index -n impute_in.final.vcf.gz
                     <h2 class="section-header">6. Quality Verification</h2>
                     <div class="section-content">
                         <div class="success-box">
-                            <strong>✓ All 473,081 retained variants pass:</strong> MAF ≥ 0.01, HWE p &gt; 10⁻⁶,
-                            genotyping rate ≥ 99%, autosomes only (chr 1–22).
-                            After VCF cleanup, 472,191 variants are ready for imputation.
+                            <strong>✓ All 370,650 retained variants pass:</strong> MAF ≥ 0.01, HWE p > 10⁻⁶,
+                            genotyping rate ≥ 98%, autosomes only (chr 1–22).
+                            After VCF cleanup, 370,164 variants × 1,093 samples are ready for imputation.
                         </div>
 
                         <div class="code-block"># Verify PLINK QC variant count
 wc -l ConvSK_mind20_dedup_snpqc.bim
-473081 ConvSK_mind20_dedup_snpqc.bim
+# 370650
 
 # Verify no filter violations remain
 plink --bfile ConvSK_mind20_dedup_snpqc \
   --freq --hardy --missing \
   --out snpqc_verify
 
-# Check MAF
-awk 'NR>1 && $5+0 < 0.01' snpqc_verify.frq | wc -l
-0
+# Check MAF — expect 0
+awk 'NR>1 &amp;&amp; $5+0 &lt; 0.01' snpqc_verify.frq | wc -l
+# 0
 
-# Check HWE
-awk 'NR>1 && $9+0 < 1e-6' snpqc_verify.hwe | wc -l
-0
+# Check HWE — expect 0
+awk 'NR>1 &amp;&amp; $9+0 &lt; 1e-6 &amp;&amp; $9 != "NA"' snpqc_verify.hwe | wc -l
+# 0
 
-# Check per-SNP missingness
-awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
-0</div>
+# Check per-SNP missingness — expect 0
+awk 'NR>1 &amp;&amp; $5+0 > 0.02' snpqc_verify.lmiss | wc -l
+# 0</div>
+
+                        <h3 style="color: #333; margin-top: 20px;">Per-chromosome variant counts</h3>
+                        <table class="metric-table">
+                            <tr><th>Chr</th><th>Variants</th><th>Chr</th><th>Variants</th><th>Chr</th><th>Variants</th><th>Chr</th><th>Variants</th></tr>
+                            <tr><td>1</td><td>29,581</td><td>7</td><td>20,419</td><td>13</td><td>13,431</td><td>19</td><td>8,158</td></tr>
+                            <tr><td>2</td><td>30,716</td><td>8</td><td>19,244</td><td>14</td><td>12,418</td><td>20</td><td>9,475</td></tr>
+                            <tr><td>3</td><td>25,301</td><td>9</td><td>16,342</td><td>15</td><td>11,790</td><td>21</td><td>5,234</td></tr>
+                            <tr><td>4</td><td>22,753</td><td>10</td><td>19,165</td><td>16</td><td>12,664</td><td>22</td><td>5,544</td></tr>
+                            <tr><td>5</td><td>22,104</td><td>11</td><td>18,295</td><td>17</td><td>10,996</td><td colspan="2" style="font-weight:600;">Total: 370,463</td></tr>
+                            <tr><td>6</td><td>27,573</td><td>12</td><td>18,310</td><td>18</td><td>10,950</td><td colspan="2"></td></tr>
+                        </table>
                     </div>
                 </div>
 
-                <!-- 7. TIMELINE -->
+                <!-- 7. VARIANT FLOW -->
                 <div class="section">
-                    <h2 class="section-header">7. Chronological Log</h2>
+                    <h2 class="section-header">7. Variant Flow Summary</h2>
                     <div class="section-content">
-                        <div class="timeline">
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-17 09:15</div>
-                                <div class="timeline-description"><strong>SNP QC filtering</strong><br>Applied MAF ≥ 0.01, HWE p &gt; 1e-6, genotyping rate ≥ 99%, autosomes only</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-17 10:30</div>
-                                <div class="timeline-description"><strong>Filtering complete</strong><br>654,027 → 473,081 variants (180,946 removed by combined PLINK QC filters)</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-17 11:45</div>
-                                <div class="timeline-description"><strong>VCF export &amp; cleanup</strong><br>Removed 494 I/D allele variants, 396 duplicate positions. Fixed 2 non-ASCII sample IDs.</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-17 14:20</div>
-                                <div class="timeline-description"><strong>Per-chromosome split</strong><br>Generated chr1–chr22 VCF files with tabix indices. Final: 472,191 variants.</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-17 16:00</div>
-                                <div class="timeline-description"><strong>Step 3 complete</strong><br>22 VCF files ready for Michigan Imputation Server upload</div>
-                            </div>
+                        <table class="metric-table">
+                            <tr><th>Stage</th><th>Variants</th><th>Change</th></tr>
+                            <tr><td>Input (all chromosomes)</td><td>654,027</td><td>—</td></tr>
+                            <tr><td>Autosomal only (chr 1–22)</td><td>620,492</td><td>−33,535</td></tr>
+                            <tr><td>After --geno 0.02</td><td>490,930</td><td>−129,562</td></tr>
+                            <tr><td>After --hwe 1e-6</td><td>490,670</td><td>−260</td></tr>
+                            <tr><td>After --maf 0.01</td><td>370,650</td><td>−120,020</td></tr>
+                            <tr><td>Remove I/D alleles</td><td>370,463</td><td>−187</td></tr>
+                            <tr><td>Remove duplicate positions</td><td>370,164</td><td>−299</td></tr>
+                            <tr style="background: #e8f5e9; font-weight: 600;"><td>Final VCF for imputation</td><td>370,164</td><td></td></tr>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>Note on filter interaction:</strong> PLINK applies all filters simultaneously in a single pass.
+                            The per-filter counts above (129,562 + 260 + 120,020 = 249,842) equal the total removed
+                            (620,492 − 370,650 = 249,842) because PLINK reports each variant's primary removal reason —
+                            the first failing filter in its internal evaluation order (geno → hwe → maf).
                         </div>
                     </div>
                 </div>
@@ -469,7 +470,7 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
 
             <div class="footer">
                 <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> |
-                Last updated: January 2, 2026 | Step 3 of 15
+                Last updated: April 10, 2026 | Step 3 of 15
             </div>
         </div>
     </div>
@@ -518,6 +519,7 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
     }
 
     /* ── MAF Spectrum ── */
+    /* Real data from ConvSK_mind20_dedup chr1-22 (620,492 variants, 1,093 samples, Biotech2024, 2026-04-10) */
     (function() {
         var c = document.getElementById('mafHist');
         if (!c) return;
@@ -526,24 +528,23 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
         var pad = {top: 25, right: 20, bottom: 50, left: 60};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* Real MAF spectrum from ConvSK_raw (654,027 variants, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo:0.00, hi:0.01, count:81888},
-            {lo:0.01, hi:0.05, count:214949},
-            {lo:0.05, hi:0.10, count:85435},
-            {lo:0.10, hi:0.15, count:52693},
-            {lo:0.15, hi:0.20, count:41989},
-            {lo:0.20, hi:0.25, count:35698},
-            {lo:0.25, hi:0.30, count:31941},
-            {lo:0.30, hi:0.35, count:29267},
-            {lo:0.35, hi:0.40, count:27560},
-            {lo:0.40, hi:0.45, count:26442},
-            {lo:0.45, hi:0.50, count:26165}
+            {lo:0.00, hi:0.01, count:157939},
+            {lo:0.01, hi:0.05, count:157971},
+            {lo:0.05, hi:0.10, count:62388},
+            {lo:0.10, hi:0.15, count:44730},
+            {lo:0.15, hi:0.20, count:37049},
+            {lo:0.20, hi:0.25, count:31990},
+            {lo:0.25, hi:0.30, count:28934},
+            {lo:0.30, hi:0.35, count:26588},
+            {lo:0.35, hi:0.40, count:25062},
+            {lo:0.40, hi:0.45, count:24086},
+            {lo:0.45, hi:0.50, count:23755}
         ];
-        var maxY = 230000;
+        var maxY = 170000;
 
         drawAxes(ctx, pad, pW, pH);
-        drawHGrid(ctx, pad, pW, pH, maxY, [0, 50000, 100000, 150000, 200000]);
+        drawHGrid(ctx, pad, pW, pH, maxY, [0, 50000, 100000, 150000]);
 
         ctx.save(); ctx.translate(14, pad.top + pH/2); ctx.rotate(-Math.PI/2);
         ctx.textAlign = 'center'; ctx.font = '11px Segoe UI'; ctx.fillStyle = '#333';
@@ -575,6 +576,7 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
     })();
 
     /* ── HWE p-value Distribution ── */
+    /* Real data from ConvSK_mind20_dedup chr1-22 (620,492 variants, 1,093 samples, Biotech2024, 2026-04-10) */
     (function() {
         var c = document.getElementById('hweHist');
         if (!c) return;
@@ -583,21 +585,20 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
         var pad = {top: 20, right: 15, bottom: 45, left: 50};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* Real HWE -log10(p) distribution from ConvSK_raw (654,027 variants, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo:0, hi:1, count:464734},
-            {lo:1, hi:2, count:75281},
-            {lo:2, hi:3, count:28554},
-            {lo:3, hi:4, count:15752},
-            {lo:4, hi:5, count:10993},
-            {lo:5, hi:6, count:8458},
-            {lo:6, hi:10, count:22865},
-            {lo:10, hi:20, count:27390}
+            {lo:0, hi:1, count:565670},
+            {lo:1, hi:2, count:45478},
+            {lo:2, hi:3, count:6661},
+            {lo:3, hi:4, count:1298},
+            {lo:4, hi:5, count:299},
+            {lo:5, hi:6, count:171},
+            {lo:6, hi:10, count:323},
+            {lo:10, hi:20, count:592}
         ];
-        var maxY = 500000;
+        var maxY = 600000;
 
         drawAxes(ctx, pad, pW, pH);
-        drawHGrid(ctx, pad, pW, pH, maxY, [0, 100000, 200000, 300000, 400000, 500000]);
+        drawHGrid(ctx, pad, pW, pH, maxY, [0, 150000, 300000, 450000, 600000]);
 
         ctx.save(); ctx.translate(12, pad.top + pH/2); ctx.rotate(-Math.PI/2);
         ctx.textAlign = 'center'; ctx.font = '10px Segoe UI'; ctx.fillStyle = '#333';
@@ -618,12 +619,12 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
             ctx.fillText(b.lo.toString(), x + barW/2, pad.top + pH + 12);
         });
 
-        var thX = pad.left + 6 * (barW / 1); /* bin 6 starts at -log10(p) = 6 */
-        thX = pad.left + 6 * barW;
+        var thX = pad.left + 6 * barW;
         drawThresholdLine(ctx, thX, pad.top, pad.top + pH, 'p=1e-6', pad.top + 12);
     })();
 
     /* ── Per-SNP Missingness Distribution ── */
+    /* Real data from ConvSK_mind20_dedup chr1-22 (620,492 variants, 1,093 samples, Biotech2024, 2026-04-10) */
     (function() {
         var c = document.getElementById('genoHist');
         if (!c) return;
@@ -632,21 +633,22 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
         var pad = {top: 20, right: 15, bottom: 45, left: 50};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* Real per-SNP missingness from ConvSK_raw_miss.lmiss (654,027 variants, Biotech2024 server, extracted 2026-04-07) */
         var bins = [
-            {lo:0.000, hi:0.010, count:44905},
-            {lo:0.010, hi:0.020, count:121255},
-            {lo:0.020, hi:0.050, count:383400},
-            {lo:0.050, hi:0.100, count:88661},
-            {lo:0.100, hi:0.150, count:9126},
-            {lo:0.150, hi:0.200, count:1567},
-            {lo:0.200, hi:0.300, count:312},
-            {lo:0.300, hi:1.000, count:4801}
+            {lo:0.000, hi:0.005, count:290203},
+            {lo:0.005, hi:0.010, count:92933},
+            {lo:0.010, hi:0.020, count:107794},
+            {lo:0.020, hi:0.030, count:44642},
+            {lo:0.030, hi:0.050, count:46597},
+            {lo:0.050, hi:0.100, count:28978},
+            {lo:0.100, hi:0.150, count:4100},
+            {lo:0.150, hi:0.200, count:652},
+            {lo:0.200, hi:0.300, count:160},
+            {lo:0.300, hi:1.000, count:4433}
         ];
-        var maxY = 420000;
+        var maxY = 320000;
 
         drawAxes(ctx, pad, pW, pH);
-        drawHGrid(ctx, pad, pW, pH, maxY, [0, 100000, 200000, 300000, 400000]);
+        drawHGrid(ctx, pad, pW, pH, maxY, [0, 80000, 160000, 240000, 320000]);
 
         ctx.save(); ctx.translate(12, pad.top + pH/2); ctx.rotate(-Math.PI/2);
         ctx.textAlign = 'center'; ctx.font = '10px Segoe UI'; ctx.fillStyle = '#333';
@@ -660,7 +662,7 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
             var x = pad.left + i * barW;
             var bH = (b.count / maxY) * pH;
             var y = pad.top + pH - bH;
-            var fail = b.lo >= 0.01;
+            var fail = b.lo >= 0.02;
             ctx.fillStyle = fail ? 'rgba(198,40,40,0.7)' : 'rgba(66,66,66,0.7)';
             ctx.fillRect(x + 1, y, barW - 2, bH);
             ctx.fillStyle = '#555'; ctx.font = '8px Segoe UI'; ctx.textAlign = 'center';
@@ -668,8 +670,9 @@ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
             ctx.fillText(lbl, x + barW/2, pad.top + pH + 12);
         });
 
-        var thX = pad.left + 3 * barW; /* threshold at 0.01 = boundary of bin[3] */
-        drawThresholdLine(ctx, thX, pad.top, pad.top + pH, '>1% removed', pad.top + 12);
+        /* Threshold at 0.02 = boundary between bin[2] and bin[3] */
+        var thX = pad.left + 3 * barW;
+        drawThresholdLine(ctx, thX, pad.top, pad.top + pH, '>2% removed', pad.top + 12);
     })();
     </script>
 </body>
