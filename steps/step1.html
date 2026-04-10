@@ -358,7 +358,7 @@
                         <h3 style="color: #333;">Step 1a: Calculate per-sample missingness</h3>
                         <div class="code-block">$ cd /staging/ALSU-analysis/spring2026/
 
-$ plink --bfile ConvSK_raw \
+plink --bfile ConvSK_raw \
   --missing \
   --out ConvSK_raw_miss
 
@@ -368,10 +368,10 @@ $ plink --bfile ConvSK_raw \
 
                         <h3 style="color: #333; margin-top: 20px;">Step 1b: Extract samples with F_MISS &gt; 0.20</h3>
                         <div class="code-block"># Column 6 of .imiss = F_MISS
-$ awk 'NR>1 &amp;&amp; $6+0 > 0.20 {print $1"\t"$2}' \
+awk 'NR>1 &amp;&amp; $6+0 > 0.20 {print $1"\t"$2}' \
   ConvSK_raw_miss.imiss > remove_miss20.txt
 
-$ wc -l remove_miss20.txt
+wc -l remove_miss20.txt
 99 remove_miss20.txt</div>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 1c: Remove high-missingness samples</h3>
@@ -523,11 +523,11 @@ $ wc -l remove_miss20.txt
 99 remove_miss20.txt
 
 # Verify no retained sample exceeds threshold:
-$ awk 'NR>1 &amp;&amp; $6+0 > 0.20' ConvSK_raw_miss.imiss | wc -l
+awk 'NR>1 &amp;&amp; $6+0 > 0.20' ConvSK_raw_miss.imiss | wc -l
 99
 
 # Highest retained F_MISS:
-$ awk 'NR>1 &amp;&amp; $6+0 &lt;= 0.20' ConvSK_raw_miss.imiss | \
+awk 'NR>1 &amp;&amp; $6+0 &lt;= 0.20' ConvSK_raw_miss.imiss | \
   awk '{if($6+0 > max) max=$6+0} END{print max}'
 0.1979</div>
                     </div>

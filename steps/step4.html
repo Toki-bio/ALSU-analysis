@@ -317,16 +317,16 @@ Job Status:
                         <div class="code-block"># Download encrypted results from Michigan Server
 # (download links sent via email, password-protected zip per chromosome)
 
-$ cd /staging/ALSU-analysis/winter2025/PLINK_301125_0312/imputed/
+cd /staging/ALSU-analysis/winter2025/PLINK_301125_0312/imputed/
 
 # Extract and index each chromosome
-$ for chr in {1..22}; do
+for chr in {1..22}; do
   unzip -P "$IMPUTE_PASSWORD" chr_${chr}.zip
   bcftools index chr${chr}.dose.vcf.gz
 done
 
 # Verify variant counts
-$ for chr in {1..22}; do
+for chr in {1..22}; do
   echo -n "chr${chr}: "
   bcftools view -H chr${chr}.dose.vcf.gz | wc -l
 done | tee variant_counts.txt</div>
@@ -345,11 +345,11 @@ done | tee variant_counts.txt</div>
                         <h3 style="color: #333; margin-top: 15px;">Post-imputation checks</h3>
                         <div class="code-block"># 1. Verify typed variant concordance (leave-one-out)
 #    Typed variants should have INFO ≈ 1.0 and match original genotypes
-$ zcat chr1.info.gz | awk '$7=="Typed" {sum+=$5; n++} END {print "Mean R² for typed:", sum/n}'
+zcat chr1.info.gz | awk '$7=="Typed" {sum+=$5; n++} END {print "Mean R² for typed:", sum/n}'
 Mean R² for typed: 0.998
 
 # 2. Check imputed variant INFO distribution
-$ for chr in {1..22}; do
+for chr in {1..22}; do
   zcat chr${chr}.info.gz | awk 'NR>1 {print $5}'
 done | awk '{
   if ($1>=0.9) a++; else if ($1>=0.8) b++; else if ($1>=0.3) c++; else d++; n++
@@ -361,7 +361,7 @@ done | awk '{
 }'
 
 # 3. Verify sample count unchanged
-$ bcftools query -l chr1.dose.vcf.gz | wc -l
+bcftools query -l chr1.dose.vcf.gz | wc -l
 1091</div>
                     </div>
                 </div>

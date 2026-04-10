@@ -164,7 +164,7 @@
   --missing-indv \
   --out chr1_stats
 
-$ for chr in {1..22}; do
+for chr in {1..22}; do
   vcftools --gzvcf chr${chr}.dose_normalized.vcf.gz \
     --missing-indv --out chr${chr}_stats
 done</div>

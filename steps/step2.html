@@ -465,7 +465,7 @@ C47      2     12-04 (FID:908)  12-05 (FID:909)</div>
                         <h3 style="color: #333;">Step 2a: Compute pairwise IBD</h3>
                         <div class="code-block">$ cd /staging/ALSU-analysis/spring2026/
 
-$ plink --bfile ConvSK_mind20 \
+plink --bfile ConvSK_mind20 \
   --genome \
   --min 0.98 \
   --out ConvSK_mind20
@@ -659,7 +659,7 @@ Expected final: 1148 - 55 = 1093</div>
                         <div class="code-block">$ wc -l duplicates_pihat098.txt
 55 duplicates_pihat098.txt
 
-$ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
+wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
    1093 ConvSK_mind20_dedup.fam
  654027 ConvSK_mind20_dedup.bim</div>
                     </div>

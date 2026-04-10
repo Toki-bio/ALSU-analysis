@@ -369,11 +369,11 @@
                         <h3 style="color: #333; margin-top: 20px;">Step 2: Export per-chromosome VCFs (excluding I/D alleles)</h3>
                         <div class="code-block"># 494 variants have I/D alleles (insertion/deletion shorthand)
 # These are not valid VCF alleles — must be excluded
-$ awk '($5!="I" &amp;&amp; $5!="D" &amp;&amp; $6!="I" &amp;&amp; $6!="D") {print $2}' \
+awk '($5!="I" &amp;&amp; $5!="D" &amp;&amp; $6!="I" &amp;&amp; $6!="D") {print $2}' \
   ConvSK_mind20_dedup_snpqc.bim > vcf_ok_snps.txt
 
 # Export each chromosome using VCF-safe variants only
-$ for chr in {1..22}; do
+for chr in {1..22}; do
   plink --bfile ConvSK_mind20_dedup_snpqc \
     --chr $chr --extract vcf_ok_snps.txt \
     --recode vcf bgz --out chr${chr}
@@ -382,24 +382,24 @@ done</div>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 3: Clean VCF for imputation server</h3>
                         <div class="code-block"># Concatenate autosomes
-$ bcftools concat -Oz -o impute_in.autosomes.vcf.gz chr{1..22}.vcf.gz
+bcftools concat -Oz -o impute_in.autosomes.vcf.gz chr{1..22}.vcf.gz
 
 # Keep biallelic SNPs only
-$ bcftools view -m2 -M2 -v snps -Oz \
+bcftools view -m2 -M2 -v snps -Oz \
   -o impute_in.autosomes.clean.vcf.gz impute_in.autosomes.vcf.gz
 
 # Remove duplicate positions (396 removed)
-$ bcftools norm -d all -Oz \
+bcftools norm -d all -Oz \
   -o impute_in.autosomes.clean.nodup.vcf.gz \
   impute_in.autosomes.clean.vcf.gz
 
 # Fix 2 non-ASCII sample IDs (Cyrillic chars)
-$ bcftools reheader -s rename_samples.tsv \
+bcftools reheader -s rename_samples.tsv \
   -o impute_in.final.vcf.gz \
   impute_in.autosomes.clean.nodup.vcf.gz
 
 # Final variant count: 472,191
-$ bcftools index -n impute_in.final.vcf.gz
+bcftools index -n impute_in.final.vcf.gz
 472191</div>
                     </div>
                 </div>
@@ -415,24 +415,24 @@ $ bcftools index -n impute_in.final.vcf.gz
                         </div>
 
                         <div class="code-block"># Verify PLINK QC variant count
-$ wc -l ConvSK_mind20_dedup_snpqc.bim
+wc -l ConvSK_mind20_dedup_snpqc.bim
 473081 ConvSK_mind20_dedup_snpqc.bim
 
 # Verify no filter violations remain
-$ plink --bfile ConvSK_mind20_dedup_snpqc \
+plink --bfile ConvSK_mind20_dedup_snpqc \
   --freq --hardy --missing \
   --out snpqc_verify
 
 # Check MAF
-$ awk 'NR>1 && $5+0 < 0.01' snpqc_verify.frq | wc -l
+awk 'NR>1 && $5+0 < 0.01' snpqc_verify.frq | wc -l
 0
 
 # Check HWE
-$ awk 'NR>1 && $9+0 < 1e-6' snpqc_verify.hwe | wc -l
+awk 'NR>1 && $9+0 < 1e-6' snpqc_verify.hwe | wc -l
 0
 
 # Check per-SNP missingness
-$ awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
+awk 'NR>1 && $5+0 > 0.01' snpqc_verify.lmiss | wc -l
 0</div>
                     </div>
                 </div>
