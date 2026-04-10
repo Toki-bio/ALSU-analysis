@@ -123,9 +123,9 @@ plink --bfile {PREFIX} \
 |---|---|---|---|---|
 | `--maf` | 0.05 | 0.01 | 0.001 | 0.01 for GWAS prep; 0.001 for rare variant studies |
 | `--hwe` | 1e-10 | 1e-6 | 1e-4 | 1e-6 for controls; relax for cases; always apply to controls only if case-control |
-| `--geno` | 0.01 | 0.02 | 0.05 | 0.02 standard (Anderson 2010); 0.05 post-imputation |
+| `--geno` | 0.01 | 0.02 | 0.10 | 0.02 standard (Anderson 2010); 0.10 used in ALSU pipeline (forensically recovered) |
 
-**ALSU pipeline used:** `--maf 0.01 --hwe 1e-6 --geno 0.02` for pre-imputation VCF export
+**ALSU pipeline used:** `--maf 0.01 --hwe 1e-6 --geno 0.10` for pre-imputation VCF export
 
 ---
 
