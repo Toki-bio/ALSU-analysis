@@ -36,6 +36,10 @@
         .metric-table tr:last-child td {border-bottom: none;}
         .metric-table tr:hover {background: #f9f9f9;}
         .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;}
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .info-box {background: #f0f0f0; border-left: 4px solid #666; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .warning-box {background: #fff8e1; border-left: 4px solid #f9a825; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .success-box {background: #f5f5f5; border-left: 4px solid #555; padding: 15px; margin: 15px 0; border-radius: 3px;}
@@ -94,8 +98,8 @@
             <div class="header">
                 <a href="../index.html" class="back-link">← Back to Roadmap</a>
                 <h1>Step 4: Genotype Imputation</h1>
-                <p>Cloud-based imputation via Michigan Imputation Server — phasing (EAGLE2) and imputation (Minimac4) against the 1000 Genomes Phase 3 reference panel</p>
-                <span class="step-badge">✓ Completed — December 18–22, 2025</span>
+                <p>Cloud-based imputation via Michigan Imputation Server v2 — phasing (EAGLE v2.4) and imputation (Minimac v4.1.6) against the 1000 Genomes Phase 3 30x reference panel (GRCh38/hg38)</p>
+                <span class="step-badge">✓ Completed — April 2026</span>
             </div>
 
             <div class="content">
@@ -125,20 +129,24 @@
                         <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-value">472,191</div>
+                                <div class="stat-value">456,684</div>
                                 <div class="stat-label">Typed Variants (input)</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">10.85M</div>
+                                <div class="stat-value">448,305</div>
+                                <div class="stat-label">Matched to Reference</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">98.31%</div>
+                                <div class="stat-label">Reference Overlap</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">48.89M</div>
                                 <div class="stat-label">Total Variants (output)</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">23×</div>
-                                <div class="stat-label">Density Increase</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value">0.963</div>
-                                <div class="stat-label">Mean INFO Score</div>
+                                <div class="stat-value">0.407</div>
+                                <div class="stat-label">Mean R² Score</div>
                             </div>
                         </div>
                     </div>
@@ -183,7 +191,7 @@
 
                         <table class="param-table">
                             <tr><th>Parameter</th><th>Value</th></tr>
-                            <tr><td>Panel</td><td>1000 Genomes Phase 3 v5 (GRCh38/hg38)</td></tr>
+                            <tr><td>Panel</td><td>1000 Genomes Phase 3 30x (GRCh38/hg38)</td></tr>
                             <tr><td>Reference samples</td><td>2,504</td></tr>
                             <tr><td>Populations</td><td>26 (5 super-populations)</td></tr>
                             <tr><td>Panel variants</td><td>~80 million biallelic sites</td></tr>
@@ -224,22 +232,29 @@
                     <div class="section-content">
                         <div class="chart-container">
                             <div class="chart-title">Imputation Quality (INFO / R²) Distribution</div>
-                            <div class="chart-subtitle">N = 10,846,569 imputed variants | Mean INFO = 0.963</div>
+                            <div class="chart-subtitle">N = 48,887,364 imputed variants | Mean R² = 0.4069 | Spring 2026</div>
                             <canvas id="infoHist" width="700" height="300"></canvas>
                         </div>
 
                         <table class="param-table">
                             <tr><th>INFO Range</th><th>Variants</th><th>% of Total</th><th>Interpretation</th></tr>
-                            <tr><td>≥ 0.90 (high quality)</td><td>~6,909,000</td><td>63.7%</td><td>Suitable for all analyses</td></tr>
-                            <tr><td>0.80–0.90</td><td>~3,384,000</td><td>31.2%</td><td>Acceptable; slight noise increase</td></tr>
-                            <tr><td>0.30–0.80</td><td>~498,000</td><td>4.6%</td><td>Use with caution</td></tr>
-                            <tr><td>&lt; 0.30</td><td>~56,000</td><td>0.5%</td><td>Typically excluded</td></tr>
+                            <tr><td>≥ 0.90 (high quality)</td><td>7,295,240</td><td>14.9%</td><td>Suitable for all analyses</td></tr>
+                            <tr><td>0.80–0.90</td><td>3,788,515</td><td>7.7%</td><td>Acceptable; slight noise increase</td></tr>
+                            <tr><td>0.30–0.80</td><td>14,269,686</td><td>29.2%</td><td>Use with caution</td></tr>
+                            <tr><td>&lt; 0.30</td><td>23,533,923</td><td>48.1%</td><td>Typically excluded</td></tr>
                         </table>
 
                         <div class="success-box">
-                            <strong>✓ Imputation quality is high:</strong> 94.9% of variants have INFO ≥ 0.80.
-                            The Illumina GSA array has good genome-wide coverage for imputation, and sample size (N=1,098)
-                            provides sufficient phasing accuracy for EAGLE2.
+                            <strong>✓ Michigan QC passed:</strong> 448,305 of 456,684 input variants matched the 1000G Phase 3 30x reference
+                            (98.31% overlap). 647 sites excluded (264 invalid alleles, 383 allele mismatches). 0 strand flips.
+                        </div>
+
+                        <div class="warning-box">
+                            <strong>R² distribution is typical for raw imputation output:</strong> 48.1% of variants have R² &lt; 0.30
+                            and 22.7% have R² ≥ 0.80. This is expected — the raw output includes all imputed positions including
+                            rare variants (MAF &lt; 0.5%) and poorly-tagged regions. Standard post-imputation filtering
+                            (Step 5: INFO ≥ 0.30 or ≥ 0.80) retains only well-imputed variants for downstream analysis.
+                            Mean R² = 0.407, consistent with 1000G-based imputation of a Central Asian cohort.
                         </div>
 
                         <div class="info-box">
@@ -257,20 +272,32 @@
                     <div class="section-content">
                         <h3 style="color: #333;">Input (from Step 3)</h3>
                         <table class="metric-table">
-                            <tr><td><strong>Files</strong></td><td>chr1.dose.vcf.gz through chr22.dose.vcf.gz (22 files)</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,098</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>472,191 SNPs (quality-filtered, autosomes only)</td></tr>
+                            <tr><td><strong>Files</strong></td><td>chr1.vcf.gz through chr22.vcf.gz (22 per-chromosome VCFs, fixref'd)</td></tr>
+                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/spring2026/</code></td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>456,684 SNPs (fixref + PLINK QC, autosomes only)</td></tr>
+                        </table>
+
+                        <h3 style="color: #333; margin-top: 20px;">Michigan QC Summary</h3>
+                        <table class="metric-table">
+                            <tr><td><strong>Reference overlap</strong></td><td>98.31%</td></tr>
+                            <tr><td><strong>Variants matched</strong></td><td>448,305</td></tr>
+                            <tr><td><strong>Allele switches</strong></td><td>0</td></tr>
+                            <tr><td><strong>Strand flips</strong></td><td>0</td></tr>
+                            <tr><td><strong>A/T, C/G genotypes</strong></td><td>0</td></tr>
+                            <tr><td><strong>Excluded sites</strong></td><td>647 (264 invalid alleles, 383 allele mismatches)</td></tr>
+                            <tr><td><strong>Typed-only sites</strong></td><td>7,732</td></tr>
+                            <tr><td><strong>Chunks excluded</strong></td><td>3 of 155 (2 low reference overlap, 1 low sample call rate)</td></tr>
+                            <tr><td><strong>Chunks remaining</strong></td><td>152</td></tr>
                         </table>
 
                         <h3 style="color: #333; margin-top: 20px;">Output (from Michigan Server)</h3>
                         <table class="metric-table">
                             <tr><td><strong>Files</strong></td><td>chr1.dose.vcf.gz through chr22.dose.vcf.gz (22 imputed VCF files)</td></tr>
-                            <tr><td><strong>Location</strong></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/imputed/</code></td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,098 (unchanged)</td></tr>
-                            <tr><td><strong>Total variants</strong></td><td>10,846,569 (typed + imputed)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093 (unchanged)</td></tr>
+                            <tr><td><strong>Total variants</strong></td><td>48,887,364 (typed + imputed, before R² filtering)</td></tr>
                             <tr><td><strong>Format</strong></td><td>VCF with GT (hard call), DS (dosage), GP (genotype probabilities)</td></tr>
-                            <tr><td><strong>INFO file</strong></td><td>chr*.info.gz — per-variant quality scores (R², MAF, typed/imputed flag)</td></tr>
+                            <tr><td><strong>INFO file</strong></td><td>chr*.info.gz — VCF format with R² in INFO field (Minimac v4.1.6)</td></tr>
                         </table>
 
                         <h3 style="color: #333; margin-top: 20px;">Intermediate Files</h3>
@@ -289,47 +316,63 @@
                     <h2 class="section-header">5. Commands Executed</h2>
                     <div class="section-content">
                         <h3 style="color: #333;">Step 1: Submit to Michigan Imputation Server</h3>
-                        <div class="code-block"># Michigan Imputation Server (https://imputationserver.sph.umich.edu)
-# Upload: 22 per-chromosome VCF files from Step 3
+                        <div class="code-block"># Michigan Imputation Server v2 (https://imputationserver.sph.umich.edu)
+# Upload: 22 per-chromosome VCF files from Step 3 (fixref'd, GRCh38)
 
 Job Configuration:
-  Reference Panel: 1000G Phase 3 v5 (GRCh38/hg38)
+  Reference Panel: 1000G Phase 3 30x (GRCh38/hg38)
   Phasing:         EAGLE v2.4
-  Imputation:      Minimac4
-  QC Frequency:    Check allele frequencies against reference
-  Mode:            Quality Control &amp; Imputation</div>
+  Imputation:      Minimac v4.1.6
+  Population:      Mixed (no frequency check — skip allele frequency check)
+  Mode:            Quality Control &amp; Imputation
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 2: Server-side processing (4 days)</h3>
+Input: 456,684 variants × 1,093 samples (22 per-chromosome VCFs)
+  Source: /staging/ALSU-analysis/spring2026/chr{1..22}.vcf.gz</div>
+
+                        <h3 style="color: #333; margin-top: 20px;">Step 2: Server-side QC &amp; Processing</h3>
                         <div class="code-block"># Server-side pipeline (automated):
 # 1. Input Validation — strand check, allele frequency comparison
-# 2. Phasing — EAGLE2 resolves diploid to haploid (per chromosome)
-# 3. Imputation — Minimac4 fills untyped positions from reference
+# 2. Phasing — EAGLE v2.4 resolves diploid to haploid (per chromosome)
+# 3. Imputation — Minimac v4.1.6 fills untyped positions from reference
 # 4. Quality Estimation — compute INFO/R² per variant
 
-Job Status:
-  Submitted:           Dec 18, 10:15
-  Input QC passed:     Dec 18, 14:30  (472,191 variants validated)
-  Phasing complete:    Dec 19, ~08:00
-  Imputation complete: Dec 22, 16:45
-  Results available:   Dec 22, 17:00</div>
+Michigan QC Report (spring 2026):
+  Input variants:            456,684
+  Reference overlap:         98.31%
+  Matched variants:          448,305
+  Allele switches:           0
+  Strand flips:              0
+  A/T, C/G genotypes:       0
+  Alt allele freq &gt; 0.5:    77,363
+
+  Excluded sites:            647
+    - Invalid alleles:       264
+    - Allele mismatches:     383
+  Typed-only sites:          7,732
+  Chunks excluded:           3 of 155
+    - chunk_14 (chr14 0-20M): ref overlap 27.7%, 1 low-callrate sample
+    - chunk_15 (chr15 0-20M): 3 low-callrate samples
+    - chunk_9 (chr9 40-60M):  ref overlap 38.5%, 5 low-callrate samples
+  Remaining chunks:          152</div>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 3: Download results</h3>
                         <div class="code-block"># Download encrypted results from Michigan Server
-# (download links sent via email, password-protected zip per chromosome)
+# (download links sent via email, password-protected AES-encrypted zip per chromosome)
 
-cd /staging/ALSU-analysis/winter2025/PLINK_301125_0312/imputed/
-
-# Extract and index each chromosome
+# On DRAGEN server — info-only extraction strategy (disk-constrained):
+# Download one chr zip at a time, extract .info.gz, compute R² stats, delete zip
 for chr in {1..22}; do
-  unzip -P "$IMPUTE_PASSWORD" chr_${chr}.zip
-  bcftools index chr${chr}.dose.vcf.gz
-done
-
-# Verify variant counts
-for chr in {1..22}; do
-  echo -n "chr${chr}: "
-  bcftools view -H chr${chr}.dose.vcf.gz | wc -l
-done | tee variant_counts.txt</div>
+  # curl -s: silent mode (no progress meter)  -L: follow HTTP redirects
+  curl -sL -o chr_${chr}.zip "${MICHIGAN_URL}/chr_${chr}.zip"
+  # unzip -P: supply password for AES-encrypted zip  -o: overwrite without prompting
+  unzip -P "$IMPUTE_PASSWORD" -o chr_${chr}.zip chr${chr}.info.gz
+  # Extract R² from VCF-format .info.gz (Minimac v4.1.6)
+  zcat chr${chr}.info.gz | grep -v '^#' | sed 's/.*R2=\([0-9.]*\).*/\1/' | \
+    awk -v chr=$chr '{ n++; s+=$1; bin=int($1*10); if(bin>=10)bin=9; b[bin]++ }
+         END { printf "CHR %s N %d SUM %.2f", chr, n, s;
+               for(i=0;i&lt;10;i++) printf " B%d %d", i, b[i]; print "" }'
+  rm -f chr_${chr}.zip chr${chr}.info.gz
+done</div>
                     </div>
                 </div>
 
@@ -338,31 +381,41 @@ done | tee variant_counts.txt</div>
                     <h2 class="section-header">6. Quality Verification</h2>
                     <div class="section-content">
                         <div class="success-box">
-                            <strong>✓ Imputation completed successfully</strong> — 10,846,569 variants across 22 autosomes.
-                            94.9% of variants pass INFO ≥ 0.80 quality threshold.
+                            <strong>✓ Michigan QC passed</strong> — 448,305 of 456,684 variants matched reference (98.31%).
+                            0 strand flips. 0 allele switches. Fixref pre-processing eliminated all strand/allele issues.
                         </div>
 
-                        <h3 style="color: #333; margin-top: 15px;">Post-imputation checks</h3>
-                        <div class="code-block"># 1. Verify typed variant concordance (leave-one-out)
-#    Typed variants should have INFO ≈ 1.0 and match original genotypes
-zcat chr1.info.gz | awk '$7=="Typed" {sum+=$5; n++} END {print "Mean R² for typed:", sum/n}'
-Mean R² for typed: 0.998
+                        <h3 style="color: #333; margin-top: 15px;">Excluded Chunks (3 of 155)</h3>
+                        <table class="metric-table">
+                            <tr><th>Chunk</th><th>Region</th><th>SNPs</th><th>Ref Overlap</th><th>Low-Callrate Samples</th><th>Reason</th></tr>
+                            <tr><td>chunk_14</td><td>chr14: 0–20 Mb</td><td>13</td><td>27.7%</td><td>1</td><td>Reference overlap &lt; 50%</td></tr>
+                            <tr><td>chunk_15</td><td>chr15: 0–20 Mb</td><td>6</td><td>100%</td><td>3</td><td>Low sample call rate</td></tr>
+                            <tr><td>chunk_9</td><td>chr9: 40–60 Mb</td><td>5</td><td>38.5%</td><td>5</td><td>Reference overlap &lt; 50%</td></tr>
+                        </table>
 
-# 2. Check imputed variant INFO distribution
-for chr in {1..22}; do
-  zcat chr${chr}.info.gz | awk 'NR>1 {print $5}'
-done | awk '{
-  if ($1>=0.9) a++; else if ($1>=0.8) b++; else if ($1>=0.3) c++; else d++; n++
-} END {
-  printf "INFO≥0.9: %d (%.1f%%)\n", a, a/n*100
-  printf "0.8-0.9: %d (%.1f%%)\n", b, b/n*100
-  printf "0.3-0.8: %d (%.1f%%)\n", c, c/n*100
-  printf "&lt;0.3:    %d (%.1f%%)\n", d, d/n*100
-}'
+                        <div class="info-box" style="margin-top: 15px;">
+                            <strong>Excluded chunk regions</strong> correspond to centromeric/pericentromeric areas
+                            with very few typed SNPs on the Illumina GSA array. These regions are not imputable
+                            regardless of reference panel choice.
+                        </div>
 
-# 3. Verify sample count unchanged
-bcftools query -l chr1.dose.vcf.gz | wc -l
-1091</div>
+                        <h3 style="color: #333; margin-top: 15px;">Excluded SNPs (647 total)</h3>
+                        <table class="metric-table">
+                            <tr><th>Category</th><th>Count</th><th>Description</th></tr>
+                            <tr><td>Invalid alleles</td><td>264</td><td>Alleles not recognized by reference encoding</td></tr>
+                            <tr><td>Allele mismatch</td><td>383</td><td>ALT allele not present in reference at that position (monomorphic in ref)</td></tr>
+                        </table>
+
+                        <h3 style="color: #333; margin-top: 15px;">Post-imputation R² analysis</h3>
+                        <div class="code-block"># Extract R² from .info.gz VCFs (Minimac v4.1.6 format)
+# .info.gz files are VCFs with R2= in the INFO field, NOT plain-text Minimac4 info
+zcat chr1.info.gz | grep -v '^#' | sed 's/.*R2=\([0-9.]*\).*/\1/' | head -3
+0.00029
+0.01504
+0.00191
+
+# R² distribution analysis — running on DRAGEN server (spring 2026 data)
+# Results populate automatically when extraction of 22 chromosomes completes</div>
                     </div>
                 </div>
 
@@ -372,24 +425,24 @@ bcftools query -l chr1.dose.vcf.gz | wc -l
                     <div class="section-content">
                         <div class="timeline">
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-18 10:15</div>
-                                <div class="timeline-description"><strong>Job submitted to Michigan Imputation Server</strong><br>22 per-chromosome VCF files uploaded. Reference: 1000G Phase 3 v5, phasing: EAGLE2, imputation: Minimac4.</div>
+                                <div class="timeline-time">2026-04-10</div>
+                                <div class="timeline-description"><strong>Spring 2026 VCFs prepared (Step 3)</strong><br>22 per-chromosome VCFs generated via fixref pipeline: 456,684 variants × 1,093 samples on GRCh38. 0 strand flips after fixref correction.</div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-18 14:30</div>
-                                <div class="timeline-description"><strong>Server-side QC passed</strong><br>All 472,191 typed variants validated against reference. No strand flips or frequency mismatches flagged.</div>
+                                <div class="timeline-time">2026-04-10</div>
+                                <div class="timeline-description"><strong>Job submitted to Michigan Imputation Server v2</strong><br>Reference: 1000G Phase 3 30x (GRCh38/hg38), phasing: EAGLE v2.4, imputation: Minimac v4.1.6.</div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-19 ~08:00</div>
-                                <div class="timeline-description"><strong>Phasing complete</strong><br>EAGLE2 resolved haplotypes for all 1,098 samples across 22 chromosomes.</div>
+                                <div class="timeline-time">2026-04-10</div>
+                                <div class="timeline-description"><strong>Server-side QC passed</strong><br>448,305 variants matched reference (98.31% overlap). 647 excluded, 3 chunks excluded, 0 strand flips.</div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-22 16:45</div>
-                                <div class="timeline-description"><strong>Imputation completed</strong><br>Minimac4 produced 10,846,569 total variants. Mean INFO = 0.963.</div>
+                                <div class="timeline-time">2026-04-10</div>
+                                <div class="timeline-description"><strong>Imputation completed</strong><br>Results available for download. Per-chromosome encrypted archives (AES) with .dose.vcf.gz and .info.gz files.</div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-22 18:00</div>
-                                <div class="timeline-description"><strong>Results downloaded and indexed</strong><br>Extracted password-protected archives. Created bcftools indices for all 22 chromosomes.</div>
+                                <div class="timeline-time">2026-04-10</div>
+                                <div class="timeline-description"><strong>R² analysis initiated</strong><br>Info-only extraction: downloading each zip, extracting .info.gz, computing per-chromosome R² distributions, deleting zip (disk-constrained /tmp).</div>
                             </div>
                         </div>
                     </div>
@@ -398,7 +451,7 @@ bcftools query -l chr1.dose.vcf.gz | wc -l
 
             <div class="footer">
                 <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> |
-                Last updated: January 2, 2026 | Step 4 of 15
+                Last updated: April 10, 2026 | Step 4 of 15
             </div>
         </div>
     </div>
@@ -424,21 +477,24 @@ bcftools query -l chr1.dose.vcf.gz | wc -l
         var pad = {top: 25, right: 20, bottom: 50, left: 65};
         var pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom;
 
-        /* Real INFO (R2) scores from Michigan Imputation Server VCFs, all 22 autosomes
-           (48,887,352 total imputed variants before R2 filtering, Biotech2024 server, extracted 2026-04-07) */
+        /* Real R² scores from Michigan Imputation Server v2 .info.gz VCFs, all 22 autosomes
+           (48,887,364 total imputed variants, spring 2026, Biotech2024 server, extracted 2026-04-10) */
         var bins = [
-            {lo: 0.00, hi: 0.10, count: 17406316, label: '0.0'},
-            {lo: 0.10, hi: 0.20, count:  3448497, label: '0.1'},
-            {lo: 0.20, hi: 0.30, count:  2310017, label: '0.2'},
-            {lo: 0.30, hi: 0.40, count:  2072581, label: '0.3'},
-            {lo: 0.40, hi: 0.50, count:  2413120, label: '0.4'},
-            {lo: 0.50, hi: 0.60, count:  3049204, label: '0.5'},
-            {lo: 0.60, hi: 0.70, count:  3453235, label: '0.6'},
-            {lo: 0.70, hi: 0.80, count:  3473179, label: '0.7'},
-            {lo: 0.80, hi: 0.90, count:  3773113, label: '0.8'},
-            {lo: 0.90, hi: 1.01, count:  7488090, label: '0.9'}
+            {lo: 0.00, hi: 0.10, count: 17907131, label: '0.0'},
+            {lo: 0.10, hi: 0.20, count:  3369416, label: '0.1'},
+            {lo: 0.20, hi: 0.30, count:  2257376, label: '0.2'},
+            {lo: 0.30, hi: 0.40, count:  2027503, label: '0.3'},
+            {lo: 0.40, hi: 0.50, count:  2369540, label: '0.4'},
+            {lo: 0.50, hi: 0.60, count:  2999711, label: '0.5'},
+            {lo: 0.60, hi: 0.70, count:  3416808, label: '0.6'},
+            {lo: 0.70, hi: 0.80, count:  3456124, label: '0.7'},
+            {lo: 0.80, hi: 0.90, count:  3788515, label: '0.8'},
+            {lo: 0.90, hi: 1.01, count:  7295240, label: '0.9'}
         ];
-        var maxY = 18000000;
+
+        var total = bins.reduce(function(s,b){return s+b.count},0);
+        var maxY = Math.ceil(bins.reduce(function(m,b){return Math.max(m,b.count)},0) / 1000000) * 1000000;
+        if (maxY < 1000000) maxY = 1000000;
 
         /* Axes */
         ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
@@ -450,8 +506,9 @@ bcftools query -l chr1.dose.vcf.gz | wc -l
 
         /* Y-axis grid + labels */
         ctx.fillStyle = '#555'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'right';
-        var yTicks = [0, 3000000, 6000000, 9000000, 12000000, 15000000, 18000000];
-        yTicks.forEach(function(v) {
+        var nYTicks = 6;
+        for (var i = 0; i <= nYTicks; i++) {
+            var v = (maxY / nYTicks) * i;
             var y = pad.top + pH - (v / maxY) * pH;
             var label = v === 0 ? '0' : (v / 1000000).toFixed(0) + 'M';
             ctx.fillText(label, pad.left - 6, y + 4);
@@ -460,7 +517,7 @@ bcftools query -l chr1.dose.vcf.gz | wc -l
                 ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + pW, y); ctx.stroke();
                 ctx.restore();
             }
-        });
+        }
 
         /* Y-axis label */
         ctx.save(); ctx.translate(14, pad.top + pH / 2); ctx.rotate(-Math.PI / 2);
@@ -473,12 +530,14 @@ bcftools query -l chr1.dose.vcf.gz | wc -l
 
         /* Bars */
         var barW = pW / bins.length;
+        var ge80 = 0;
         bins.forEach(function(b, i) {
             var x = pad.left + i * barW;
             var bH = (b.count / maxY) * pH;
             var y = pad.top + pH - bH;
+            if (b.lo >= 0.80) ge80 += b.count;
 
-            /* Color: red < 0.30, yellow 0.30-0.80, green ≥ 0.80 */
+            /* Color: red < 0.30, yellow 0.30-0.80, dark ≥ 0.80 */
             if (b.lo < 0.30)      ctx.fillStyle = 'rgba(198,40,40,0.7)';
             else if (b.lo < 0.80) ctx.fillStyle = 'rgba(180,160,60,0.7)';
             else                  ctx.fillStyle = 'rgba(66,66,66,0.85)';
@@ -505,8 +564,40 @@ bcftools query -l chr1.dose.vcf.gz | wc -l
         ctx.fillText('INFO = 0.80', thX + 4, pad.top + 12);
 
         /* Annotation: percentage ≥ 0.80 */
+        var pctGe80 = (ge80 / total * 100).toFixed(1);
         ctx.fillStyle = '#333'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'right';
-        ctx.fillText('23.0% of variants ≥ 0.80 (R²)', pad.left + pW - 5, pad.top + 12);
+        ctx.fillText(pctGe80 + '% of variants \u2265 0.80 (R\u00B2)', pad.left + pW - 5, pad.top + 12);
+    })();
+    </script>
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
     })();
     </script>
 </body>

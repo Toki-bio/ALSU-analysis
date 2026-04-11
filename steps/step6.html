@@ -25,6 +25,10 @@
         .metric-table td {padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 0.9em; line-height: 1.3;}
         .metric-table tr:hover {background: #f9f9f9;}
         .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;}
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .info-box {background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .success-box {background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .stats-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;}
@@ -160,7 +164,9 @@
                 <h2 class="section-header">4. Commands Executed</h2>
                 <div class="section-content">
                     <h3 style="color: #333; margin-top: 0;">Step 1: Compute sample-level statistics</h3>
-                    <div class="code-block">$ vcftools --gzvcf chr1.dose_normalized.vcf.gz \
+                    <div class="code-block"># vcftools --missing-indv: compute per-sample missingness rate
+#   Outputs .imiss file with F_MISS column (fraction missing genotypes)
+$ vcftools --gzvcf chr1.dose_normalized.vcf.gz \
   --missing-indv \
   --out chr1_stats
 
@@ -196,7 +202,14 @@ Found 24 outlier samples:
   - 6 samples with ancestry outliers</div>
                     
                     <h3 style="color: #333; margin-top: 20px;">Step 4: Final filtering and export</h3>
-                    <div class="code-block">$ for chr in {1..22}; do
+                    <div class="code-block"># bcftools view: filter samples and variants from VCF
+#   --samples-file ^FILE: EXCLUDE samples listed in FILE
+#     The ^ prefix means "exclude" (without ^ it means "include only")
+#   --include 'ID=@FILE': keep only variants whose ID matches a line in FILE
+#     The @ prefix means "read values from file" (bcftools expression syntax)
+#   --output-type z: compressed VCF (.vcf.gz)
+#   --threads 4: use 4 compression threads (speeds up bgzf output)
+$ for chr in {1..22}; do
   bcftools view chr${chr}.dose.vcf.gz \
     --samples-file ^het_outliers_vcf_format.txt \
     --include 'ID=@HQ_variant_ids.txt' \
@@ -204,9 +217,8 @@ Found 24 outlier samples:
     --output filtered_clean/chr${chr}.clean.vcf.gz \
     --threads 4
   tabix -p vcf filtered_clean/chr${chr}.clean.vcf.gz
-done
-
-# Tools: bcftools v1.17+, tabix (htslib)</div>
+  # tabix -p vcf: create .tbi index for VCF (required for region queries)
+done</div>
                 </div>
             </div>
             
@@ -403,6 +415,37 @@ fi</div>
                 });
             });
         }
+    </script>
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
+    })();
     </script>
 </body>
 </html>

@@ -25,6 +25,10 @@
         .metric-table td {padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 0.9em; line-height: 1.3;}
         .metric-table tr:hover {background: #f9f9f9;}
         .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;}
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .info-box {background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .success-box {background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .stats-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;}
@@ -377,6 +381,12 @@ plink2 --bfile UZB_imputed_HQ_clean \
             </p>
             
                         <div class="code-block">
+# --set-all-var-ids FORMAT: assign variant IDs using a template string
+#   @  = chromosome code       $r = reference allele
+#   #  = base-pair position     $a = alternate allele
+#   Result: e.g. "1:12345:A:G" — guarantees unique IDs
+# --new-id-max-allele-len 50: allow allele strings up to 50 chars
+#   (default is 23; complex indels may exceed this)
 plink2 --bfile UZB_imputed_HQ_qc \
     --set-all-var-ids '@:#:$r:$a' \
     --new-id-max-allele-len 50 \
@@ -401,6 +411,12 @@ plink2 --bfile UZB_imputed_HQ_qc \
             
             <h3>Pruning Parameters</h3>
                         <div class="code-block">
+# --indep-pairwise WINDOW STEP R2: LD pruning in a sliding window
+#   1000kb = 1 Mb window (pairwise r² computed within this window)
+#   1      = slide by 1 variant per step (thorough but slower)
+#   0.05   = prune variant if r² > 0.05 with any remaining variant
+#            (very strict — retains only truly independent markers for PCA)
+# Output: .prune.in (keep list), .prune.out (remove list)
 plink2 --bfile UZB_imputed_HQ_unique \
     --indep-pairwise 1000kb 1 0.05 \
     --out UZB_pruned \
@@ -451,6 +467,9 @@ plink2 --bfile UZB_imputed_HQ_unique \
             </p>
             
                         <div class="code-block">
+# --extract FILE: use only variants listed in FILE (the LD-pruned set)
+# --pca 10: compute first 10 principal components
+#   Outputs .eigenvec (PC scores per sample) and .eigenval (variance explained)
 plink2 --bfile UZB_imputed_HQ_unique \
     --extract UZB_pruned.prune.in \
     --pca 10 \
@@ -762,6 +781,37 @@ PC2 explains: 10.87%
                 content.insertBefore(notice, content.firstChild);
             }
         });
+    </script>
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
+    })();
     </script>
 </body>
 </html>

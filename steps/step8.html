@@ -51,6 +51,10 @@
         ul { margin-left: 25px; }
         code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
         .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
         .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
         .stat-label { font-weight: 600; color: #1976d2; }
@@ -219,7 +223,10 @@ for chr in {1..22}; do
     # Create BED file with position ranges (matching VCF naming with 'chr' prefix)
     grep "^${chr}:" $PRUNED_LIST | awk -F':' '{print "chr"$1 "\t" ($2-1) "\t" $2}' > chr${chr}_targets.bed
     
-    # Extract SNPs using bcftools (position-based is faster and more accurate than ID-based)
+    # bcftools view -T FILE: extract variants at positions listed in BED file
+    #   (position-based lookup — faster and more accurate than ID-based for large VCFs)
+    # -m2 -M2: exactly 2 alleles (biallelic)  -v snps: SNPs only
+    # -Oz: bgzip-compressed VCF output
     bcftools view -T chr${chr}_targets.bed \
       -m2 -M2 -v snps \
       ALL.chr${chr}.shapeit2_integrated_v1a.GRCh38.20181129.phased.vcf.gz \
@@ -240,6 +247,11 @@ Found 1392 variants for Chromosome 22
                 
                 <h3>Convert VCF to PLINK Binary Format</h3>
                 <div class="code-block">
+# --set-all-var-ids '@:#:$r:$a': construct variant IDs from template
+#   @ = chromosome, # = position, $r = ref allele, $a = alt allele
+# --new-id-max-allele-len 50: truncate allele strings at 50 chars in IDs
+#   (prevents excessively long IDs for large indels)
+# --threads 8: use 8 CPU threads for parallel processing
 plink2 --vcf chr${chr}_subset.vcf.gz \
   --set-all-var-ids '@:#:$r:$a' \
   --new-id-max-allele-len 50 \
@@ -624,6 +636,37 @@ Rscript plot_global_pca.R
                 content.insertBefore(notice, content.firstChild);
             }
         });
+    </script>
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
+    })();
     </script>
 </body>
 </html>

@@ -51,6 +51,10 @@
         ul { margin-left: 25px; }
         code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
         .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
         .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
         .stat-label { font-weight: 600; color: #1976d2; }
@@ -253,12 +257,15 @@ Total genotyping rate is 0.96741.
                         <h3>3.2 Run UCSC LiftOver</h3>
                         <p>Extract BED-format positions from the BIM file and convert coordinates using the UCSC liftOver tool:</p>
                         <div class="code-block"># Create BED file from BIM (chr, start, end, SNP_ID)
+# BIM columns: $1=chr  $2=snpID  $3=cM  $4=bp_position  $5=A1  $6=A2
+# BED format requires 0-based start → $4-1; end stays 1-based → $4
 awk '{print "chr"$1, $4-1, $4, $2}' OFS='\t' uzbek_data_hg38.bim > uzbek_hg38_positions.bed
 
-# Run liftOver (downloads hg38ToHg19.over.chain from UCSC)
+# liftOver args: input.bed  chain_file  mapped_output.bed  unmapped_output.bed
 liftOver uzbek_hg38_positions.bed hg38ToHg19.over.chain uzbek_hg19_lifted.bed unlifted.bed
 
 # Create position update file (old_ID → new_position)
+# BED $4=SNP_ID, $3=end coord (= 1-based position for single-bp SNPs)
 awk '{print $4, $3}' uzbek_hg19_lifted.bed > update_positions.txt
 
 # List of SNPs that successfully lifted
@@ -275,7 +282,8 @@ plink --bfile uzbek_data_hg38 \
 --extract: 647854 variants remaining.
 --make-bed to uzbek_data_hg19_temp.bed + uzbek_data_hg19_temp.bim + uzbek_data_hg19_temp.fam ... done.</div>
 
-                        <div class="code-block"># Update positions to hg19 coordinates
+                        <div class="code-block"># --update-map FILE: 2-column file (SNP_ID  new_bp_position)
+#   Replaces genomic coordinates in .bim for each matched variant
 plink --bfile uzbek_data_hg19_temp \
     --update-map update_positions.txt \
     --make-bed \
@@ -305,6 +313,7 @@ Warning: Base-pair positions are now unsorted!
                         
                         <h3>4.1 Per-Chromosome Pipeline</h3>
                         <div class="code-block"># [1/7] Convert 1000G VCF to PLINK (EUR samples only)
+# --keep FILE: 2-column file (FID IID) — retain only listed samples
 plink --vcf 1000G_data/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz \
     --keep 1000G_data/european_samples_fixed.txt \
     --make-bed \
@@ -314,6 +323,7 @@ plink --vcf 1000G_data/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5b.20130502
 plink --bfile uzbek_data_hg19 --chr 22 --make-bed --out uzbek_chr22
 
 # [3/7] Rename SNPs to chr:pos format (for matching across datasets)
+# awk: overwrite $2 (SNP ID) with chr:pos so both datasets share naming scheme
 awk '{$2=$1":"$4; print}' OFS='\t' uzbek_chr22.bim > uzbek_chr22_renamed.bim
 cp uzbek_chr22.bed uzbek_chr22_renamed.bed
 cp uzbek_chr22.fam uzbek_chr22_renamed.fam
@@ -325,6 +335,7 @@ cp 1000G_data/1000G_EUR_chr22.fam 1000G_EUR_chr22_newnames.fam
 # [4/7] Find overlapping positions
 awk '{print $1":"$4}' uzbek_chr22_renamed.bim | sort > uzbek_chr22_pos.txt
 awk '{print $1":"$4}' 1000G_EUR_chr22_newnames.bim | sort > 1000G_chr22_pos.txt
+# comm -12: output only lines present in BOTH sorted files (set intersection)
 comm -12 uzbek_chr22_pos.txt 1000G_chr22_pos.txt > positions_chr22.txt
 
 # [5/7] Extract overlapping SNPs from both datasets
@@ -332,6 +343,8 @@ plink --bfile uzbek_chr22_renamed --extract positions_chr22.txt --make-bed --out
 plink --bfile 1000G_EUR_chr22_newnames --extract positions_chr22.txt --make-bed --out 1000G_EUR_chr22_matched
 
 # [6/7] Merge (with strand-flip handling)
+# --bmerge PREFIX: merge current --bfile dataset with a second PLINK fileset
+#   PLINK auto-flips strand for A/T↔T/A, C/G↔G/C; writes .missnp for 3+ allele conflicts
 plink --bfile uzbek_chr22_matched --bmerge 1000G_EUR_chr22_matched \
     --make-bed --out merged_chr22_temp
 
@@ -545,7 +558,11 @@ NA20832 NA20832 EUR</div>
                         </div>
 
                         <h3>6.2 Run F<sub>ST</sub></h3>
-                        <div class="code-block"># Weir & Cockerham Fst (PLINK --fst)
+                        <div class="code-block"># --fst: Weir & Cockerham (1984) Fst estimator — measures allele frequency
+#   divergence between populations; can produce slightly negative values
+#   when within-group variance exceeds between-group variance (≈ zero)
+# --within FILE: 3-column cluster file (FID  IID  GROUP_LABEL)
+#   assigns each sample to a comparison group
 plink --bfile merged_all_chrs \
     --fst \
     --within populations.txt \
@@ -988,6 +1005,37 @@ CHR     SNP     POS     NMISS   FST
                 content.insertBefore(notice, content.firstChild);
             }
         });
+    </script>
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
+    })();
     </script>
 </body>
 </html>

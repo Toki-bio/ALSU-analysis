@@ -36,6 +36,10 @@
         .metric-table tr:last-child td {border-bottom: none;}
         .metric-table tr:hover {background: #f9f9f9;}
         .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;}
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .info-box {background: #f0f0f0; border-left: 4px solid #666; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .warning-box {background: #fff8e1; border-left: 4px solid #f9a825; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .success-box {background: #f5f5f5; border-left: 4px solid #555; padding: 15px; margin: 15px 0; border-radius: 3px;}
@@ -347,13 +351,16 @@ plink --bfile ConvSK_mind20_dedup \
                         <h3 style="color: #333; margin-top: 20px;">Step 3b: Build VCF-safe SNP list</h3>
                         <pre class="code-block"># 479 variants have I/D alleles (insertion/deletion shorthand)
 # These are not valid VCF alleles — must be excluded
+# BIM cols: $1=chr  $2=snpID  $3=cM  $4=pos  $5=allele1  $6=allele2
 awk '($5!="I" &amp;&amp; $5!="D" &amp;&amp; $6!="I" &amp;&amp; $6!="D") {print $2}' \
   ConvSK_mind20_dedup_snpqc.bim > vcf_ok_snps.txt
 wc -l vcf_ok_snps.txt
 # 459344</pre>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 3c: Export per-chromosome VCFs</h3>
-                        <pre class="code-block">for chr in $(seq 1 22); do
+                        <pre class="code-block"># --recode vcf bgz: export PLINK binary as bgzip-compressed VCF (.vcf.gz)
+# tabix -f -p vcf: create tabix index (-f = overwrite, -p vcf = VCF format preset)
+for chr in $(seq 1 22); do
   plink --bfile ConvSK_mind20_dedup_snpqc \
     --chr $chr --extract vcf_ok_snps.txt \
     --recode vcf bgz --out chr${chr}
@@ -361,18 +368,22 @@ wc -l vcf_ok_snps.txt
 done</pre>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 3d: Concatenate and clean VCF</h3>
-                        <pre class="code-block"># Concatenate autosomes
+                        <pre class="code-block"># bcftools concat: join VCFs from different regions (same samples)
+#   -Oz: bgzip-compressed VCF output
 bcftools concat -Oz -o impute_in.autosomes.vcf.gz chr{1..22}.vcf.gz
 tabix -f -p vcf impute_in.autosomes.vcf.gz
 # 459,344 variants
 
 # Keep biallelic SNPs only (no multiallelic found)
+# -m2 -M2: require exactly 2 alleles (min 2, max 2 = biallelic)
+# -v snps: retain only SNP variant type (exclude indels/MNPs)
 bcftools view -m2 -M2 -v snps -Oz \
   -o impute_in.autosomes.clean.vcf.gz impute_in.autosomes.vcf.gz
 tabix -f -p vcf impute_in.autosomes.clean.vcf.gz
 # 459,344 variants
 
 # Remove duplicate positions (390 removed)
+# bcftools norm -d all: remove all types of duplicate records at same position
 bcftools norm -d all -Oz \
   -o impute_in.autosomes.clean.nodup.vcf.gz \
   impute_in.autosomes.clean.vcf.gz
@@ -392,21 +403,36 @@ printf '1038_08-176\xd0\xa5-00006\t1038_08-176X-00006\n' >> rename_samples.tsv
 # Verify tab separators
 cat -A rename_samples.tsv
 
-# Apply reheader
+# bcftools reheader -s FILE: replace sample names using old→new tsv
 bcftools reheader -s rename_samples.tsv \
   -o impute_in.final.vcf.gz \
   impute_in.autosomes.clean.nodup.vcf.gz
 
 # Index and verify
-bcftools index impute_in.final.vcf.gz
-bcftools index -n impute_in.final.vcf.gz
+bcftools index impute_in.final.vcf.gz          # create CSI index for random access
+bcftools index -n impute_in.final.vcf.gz       # -n: print variant count (quick check)
 # 458954
 
 # Confirm no non-ASCII IDs remain
+# bcftools query -l: list all sample names from VCF header
+# grep -cP '[^\x00-\x7F]': count lines containing non-ASCII bytes
 bcftools query -l impute_in.final.vcf.gz | grep -cP '[^\x00-\x7F]'
 # 0</pre>
 
-                        <h3 style="color: #333; margin-top: 20px;">Step 3f: Chromosome rename, reference strand alignment &amp; palindromic removal</h3>
+                        <h3 style="color: #333; margin-top: 20px;">Step 3f: Split back to per-chromosome VCFs</h3>
+                        <p>
+                            The concatenation + cleanup + reheader steps above produced a single genome-wide VCF.
+                            Michigan Imputation Server requires <strong>one VCF per chromosome</strong>, so we split
+                            <code>impute_in.final.vcf.gz</code> back into per-chromosome files:
+                        </p>
+                        <pre class="code-block"># bcftools view -r CHR: extract records from region (chromosome) CHR
+for chr in $(seq 1 22); do
+  bcftools view -r $chr impute_in.final.vcf.gz \
+    -Oz -o impute_chr${chr}.vcf.gz
+  bcftools index impute_chr${chr}.vcf.gz
+done</pre>
+
+                        <h3 style="color: #333; margin-top: 20px;">Step 3g: Chromosome rename, reference strand alignment &amp; palindromic removal</h3>
                         <div class="info-box">
                             <strong>Why these steps are needed:</strong> PLINK exports chromosomes as bare numbers (1, 2, …)
                             but Michigan Imputation Server with hg38 requires the <code>chr</code> prefix (chr1, chr2, …).
@@ -423,12 +449,19 @@ mkdir -p michigan_ready
 
 # For each chromosome: rename → fixref → remove palindromic
 for chr in $(seq 1 22); do
-  # Add chr prefix for hg38 compliance
+  # --rename-chrs FILE: 2-column mapping (old_name  new_name) for chromosome IDs
   bcftools annotate --rename-chrs chr_rename.tsv \
     impute_chr${chr}.vcf.gz -Oz -o tmp_chr${chr}.vcf.gz
   bcftools index tmp_chr${chr}.vcf.gz
 
-  # Align alleles to GRCh38 forward strand + remove palindromic A/T C/G
+  # bcftools +fixref: plugin that aligns alleles to reference genome forward strand
+  #   -Ou: uncompressed BCF output (fast for piping, never touches disk)
+  #   --: separator between bcftools args and plugin-specific args
+  #   -f FILE: reference FASTA for strand determination
+  #   -m top: strand matching mode (Illumina TOP/BOT convention)
+  # bcftools view -e EXPR: exclude records matching the filter expression
+  #   Removes palindromic A/T and C/G SNPs (ambiguous strand, unresolvable)
+  # bcftools index -t: create tabix (.tbi) index (vs default CSI)
   bcftools +fixref tmp_chr${chr}.vcf.gz -Ou \
     -- -f /staging/Genomes/Human/chr/GRCh38.fa -m top \
     2>fixref_chr${chr}.log \
@@ -485,20 +518,25 @@ done</pre>
 wc -l ConvSK_mind20_dedup_snpqc.bim
 # 459823
 
-# Verify no filter violations remain
+# --freq: output allele frequencies (.frq)
+# --hardy: output Hardy-Weinberg exact test p-values (.hwe)
+# --missing: output per-SNP (.lmiss) and per-sample (.imiss) missingness
 plink --bfile ConvSK_mind20_dedup_snpqc \
   --freq --hardy --missing \
   --out snpqc_verify
 
 # Check MAF — expect 0
+# .frq cols: CHR  SNP  A1  A2  MAF  NCHROBS → $5=MAF
 awk 'NR>1 &amp;&amp; $5+0 &lt; 0.01' snpqc_verify.frq | wc -l
 # 0
 
 # Check HWE — expect 0
+# .hwe cols: CHR SNP TEST A1 A2 GENO O(HET) E(HET) P → $9=P
 awk 'NR>1 &amp;&amp; $9+0 &lt; 1e-6 &amp;&amp; $9 != "NA"' snpqc_verify.hwe | wc -l
 # 0
 
 # Check per-SNP missingness — expect 0
+# .lmiss cols: CHR  SNP  N_MISS  N_GENO  F_MISS → $5=F_MISS
 awk 'NR>1 &amp;&amp; $5+0 > 0.10' snpqc_verify.lmiss | wc -l
 # 0</pre>
 
@@ -748,6 +786,37 @@ awk 'NR>1 &amp;&amp; $5+0 > 0.10' snpqc_verify.lmiss | wc -l
         /* Threshold at 0.10 = boundary between bin[5] and bin[6] */
         var thX = pad.left + 6 * barW;
         drawThresholdLine(ctx, thX, pad.top, pad.top + pH, '>10% removed', pad.top + 12);
+    })();
+    </script>
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
     })();
     </script>
 </body>

@@ -37,6 +37,10 @@
         ul { margin-left: 25px; }
         code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
         .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
         .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
         .stat-label { font-weight: 600; color: #1976d2; }
@@ -149,6 +153,9 @@
             <h3>2.2 Processing Pipeline</h3>
             <div class="code-block">
 # Per-chromosome VCF extraction from 1000G Phase 3
+# bcftools view -S FILE: keep only samples listed in FILE (one ID per line)
+#              -R FILE: restrict to regions/sites in FILE (chr:pos format)
+#              -Oz: output as bgzip-compressed VCF
 for chr in {1..22}; do
     bcftools view -S ref_samples.txt -R uzbek_snps_chr${chr}.txt \
         1000G_chr${chr}.vcf.gz -Oz -o ref_chr${chr}.vcf.gz
@@ -158,6 +165,7 @@ done
 for chr in {1..22}; do
     plink --vcf ref_chr${chr}.vcf.gz --bmerge uzbek_chr${chr} --make-bed --out merged_chr${chr}
 done
+# --merge-list FILE: merge base dataset with all filesets listed (one prefix per line)
 plink --merge-list chr_list.txt --make-bed --out global_merged
 
 # QC: MAF > 0.01, geno < 0.02, HWE 1e-6
@@ -168,6 +176,9 @@ plink --bfile global_qc --indep-pairwise 50 10 0.1 --out global_prune
 plink --bfile global_qc --extract global_prune.prune.in --make-bed --out global_for_admixture
 
 # ADMIXTURE v1.3.0, K=2–8 with 32 threads and cross-validation
+# --cv: enable 5-fold cross-validation (predictive error for model selection)
+# -j32: use 32 parallel threads for the EM algorithm
+# tee: copy stdout to log file while still printing to terminal
 for K in {2..8}; do
     admixture --cv -j32 global_for_admixture.bed $K | tee log_K${K}.out
 done</div>
@@ -354,15 +365,16 @@ geno_file &lt;- vcf2geno("global_for_admixture.vcf")
 # 172,537 biallelic SNPs retained (of 380,376 input)
 
 # Run sNMF: K=2-10, 10 replicates each, with cross-entropy
+# sNMF = sparse Non-negative Matrix Factorization (Frichot et al. 2014)
 obj &lt;- snmf(geno_file,
             K = 2:10,
             repetitions = 10,
-            entropy = TRUE,      # compute cross-entropy
-            alpha = 10,          # L2 regularization
-            iterations = 200,
-            tolerance = 1e-5,
-            project = "new",
-            CPU = 16)
+            entropy = TRUE,      # compute cross-entropy (model selection criterion)
+            alpha = 10,          # L2 regularization strength (shrinks Q toward uniform)
+            iterations = 200,    # max EM iterations per run (200 sufficient for convergence)
+            tolerance = 1e-5,    # convergence threshold (stop when improvement < 1e-5)
+            project = "new",     # start fresh project (vs "continue" to add runs)
+            CPU = 16)            # parallel threads for the 90 total runs
 
 # Extract Q-matrix at optimal K
 K_opt &lt;- which.min(sapply(2:10, function(k) mean(cross.entropy(obj, K=k))))
@@ -983,5 +995,36 @@ window.addEventListener('load', () => {
 });
 </script>
 
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
+    })();
+    </script>
 </body>
 </html>

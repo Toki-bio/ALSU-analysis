@@ -32,6 +32,10 @@
         .stat-value {font-size: 1.3em; font-weight: bold;}
         .stat-label {font-size: 0.75em; opacity: 0.9; margin-top: 3px;}
         .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;}
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
         .info-box {background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .warning-box {background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 3px;}
         .success-box {background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;}
@@ -163,21 +167,28 @@
                     <h2 class="section-header">4. Commands Executed</h2>
                     <div class="section-content">
                         <h3 style="color: #333; margin-top: 0;">Step 1: Identify samples with Cyrillic homoglyphs</h3>
-                        <div class="code-block">$ comm -3 \
+                        <div class="code-block"># comm -3: output lines unique to either file (symmetric difference)
+#   Compares two SORTED inputs; -3 suppresses lines common to both
+# <(...): bash process substitution — feeds command output as a virtual file
+$ comm -3 \
   <(awk '{print $2}' ConvSK_mind20_dedup.fam | sort) \
   <(bcftools query -l chr1.dose.vcf.gz | sed 's/^[0-9]\+_//' | sort)
+  #                                        └── sed: strip numeric prefix + underscore
+  #                                            added by Michigan server to sample IDs
 
 Found 2 samples with Cyrillic homoglyphs:
   - 03-25м (Cyrillic м U+043C)
   - 08-176Х-00006 (Cyrillic Х U+0425)</div>
                         
                         <h3 style="color: #333; margin-top: 20px;">Step 2: Create ID correction mapping</h3>
-                        <div class="code-block">$ awk 'BEGIN{OFS="\t"}
+                        <div class="code-block"># gsub(regex, replacement, target): global substitution in awk
+#   Replace visually-identical Cyrillic characters with ASCII equivalents
+$ awk 'BEGIN{OFS="\t"}
 {
   new=$2
-  gsub(/м/,"m",new)
-  gsub(/Х/,"X",new)
-  if(new!=$2) print $1,$2,$1,new
+  gsub(/м/,"m",new)   # Cyrillic м (U+043C) → Latin m (U+006D)
+  gsub(/Х/,"X",new)   # Cyrillic Х (U+0425) → Latin X (U+0058)
+  if(new!=$2) print $1,$2,$1,new  # Output: oldFID oldIID newFID newIID
 }' ConvSK_mind20_dedup.fam > update_ids_homoglyphs.txt
 
 Result:
@@ -186,13 +197,17 @@ Result:
   08-176Х-00006 → 08-176X-00006</div>
                         
                         <h3 style="color: #333; margin-top: 20px;">Step 3: Apply ID normalization to PLINK and VCF</h3>
-                        <div class="code-block">$ plink --bfile ConvSK_mind20_dedup \
+                        <div class="code-block"># --update-ids FILE: remap sample IDs using 4-column file
+#   Format: oldFID oldIID newFID newIID (tab-separated)
+$ plink --bfile ConvSK_mind20_dedup \
   --update-ids update_ids_homoglyphs.txt \
   --make-bed --out ConvSK_mind20_dedup_ascii
 
 --update-ids: 2 people updated.
 1091 people retained.
 
+# bcftools reheader -s FILE: rename samples in VCF header
+#   FILE format: oldID newID (one pair per line)
 For VCF files:
 bcftools reheader -s id_mapping.txt \
   chr1.dose.vcf.gz -o chr1.dose.vcf.gz</div>
@@ -327,6 +342,37 @@ bcftools reheader -s id_mapping.txt \
                 resultsDiv.classList.add('active');
             }
         }
+    </script>
+    <!-- Copy-to-clipboard for code blocks -->
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            /* Skip if already inside wrapper or is a data display (scrollable sample tables) */
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy code to clipboard');
+            btn.addEventListener('click', function() {
+                var text = block.textContent;
+                /* Strip leading $ prompts from command lines */
+                text = text.replace(/^\$ /gm, '');
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
+    })();
     </script>
 </body>
 </html>
