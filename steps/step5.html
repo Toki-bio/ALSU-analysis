@@ -97,8 +97,9 @@
             <div class="header">
                 <a href="../index.html" class="back-link">← Back to Roadmap</a>
                 <h1>Step 5: Sample ID Normalization</h1>
-                <p>Fix Cyrillic homoglyph inconsistencies in sample IDs</p>
-                <span class="step-badge">✓ Completed — December 22, 2025</span>
+                <p>Normalize sample IDs after imputation (prefix stripping / encoding fixes)</p>
+                <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
+                <span class="step-badge">✓ Winter 2025 — December 22, 2025</span>
             </div>
             
             <div class="content">
@@ -106,13 +107,41 @@
                     <h2 class="section-header">1. Overview</h2>
                     <div class="section-content">
                         <p>
-                            During imputation, 2 sample IDs contained Cyrillic homoglyphs that differed between PLINK and VCF formats. 
-                            This step corrects these encoding issues to ensure sample matching between different file formats.
+                            After imputation, Michigan Imputation Server v2 may alter sample IDs in the output VCFs.
+                            This step detects and corrects any ID mismatches so that downstream tools (PLINK, ADMIXTURE) see consistent identifiers.
                         </p>
+
+                        <h3 style="margin-top: 20px; color: #333;">Spring 2026 Run</h3>
                         <div class="info-box">
-                            <strong>Cyrillic Homoglyphs Fixed:</strong> Cyrillic м (U+043C) → Latin m, Cyrillic Х (U+0425) → Latin X
+                            <strong>Michigan v2 Prefix Quirk:</strong> Chromosomes 1–9 received a numeric prefix
+                            (<code>1_sampleID</code>, <code>2_sampleID</code>, …), while chromosomes 10–22 kept the original clean IDs.
+                            The prefixes were stripped via per-chromosome <code>bcftools reheader</code>; chr10-22 were symlinked without modification.
                         </div>
-                        <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">1,093</div>
+                                <div class="stat-label">Total Samples</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">Cyrillic Issues</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">9</div>
+                                <div class="stat-label">CHR Prefix-Stripped</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">13</div>
+                                <div class="stat-label">CHR Symlinked (clean)</div>
+                            </div>
+                        </div>
+
+                        <h3 style="margin-top: 20px; color: #333;">Winter 2025 Run</h3>
+                        <div class="warning-box">
+                            <strong>Historical:</strong> In winter 2025, 2 sample IDs contained Cyrillic homoglyphs
+                            (м→m, Х→X) that differed between PLINK and VCF formats. Step 3e now auto-detects
+                            and corrects all Cyrillic homoglyphs <em>before</em> Michigan upload, so this is no longer needed.
+                        </div>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-value">1,098</div>
@@ -137,13 +166,22 @@
                 <div class="section">
                     <h2 class="section-header">2. Input Data</h2>
                     <div class="section-content">
+                        <h3 style="color: #333; margin-top: 0;">Spring 2026</h3>
                         <table class="metric-table">
-
+                            <tr><th>Field</th><th>Value</th></tr>
+                            <tr><td><strong>Files</strong></td><td>chr1-chr22.dose.vcf.gz (from Michigan v2)</td></tr>
+                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/spring2026/imputation/</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093 (all ASCII — Cyrillic fixed in step 3e)</td></tr>
+                            <tr><td><strong>Issue</strong></td><td>Michigan v2 adds numeric prefix to chr1-9 sample IDs; chr10-22 are clean</td></tr>
+                            <tr><td><strong>Total Variants</strong></td><td>48,887,364 across 22 chromosomes</td></tr>
+                        </table>
+                        <h3 style="color: #333; margin-top: 20px;">Winter 2025</h3>
+                        <table class="metric-table">
+                            <tr><th>Field</th><th>Value</th></tr>
                             <tr><td><strong>Files</strong></td><td>chr1-chr22.dose.vcf.gz + ConvSK_mind20_dedup_snpqc.fam</td></tr>
                             <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
                             <tr><td><strong>Samples</strong></td><td>1,098 (2 with Cyrillic homoglyphs)</td></tr>
                             <tr><td><strong>Issue</strong></td><td>Sample IDs in VCF ≠ PLINK metadata due to encoding</td></tr>
-                            <tr><td><strong>Description</strong></td><td>Imputed genotypes with mismatched sample identifiers</td></tr>
                         </table>
                     </div>
                 </div>
@@ -151,22 +189,72 @@
                 <div class="section">
                     <h2 class="section-header">3. Output Data</h2>
                     <div class="section-content">
+                        <h3 style="color: #333; margin-top: 0;">Spring 2026</h3>
+                        <table class="metric-table">
+                            <tr><th>Field</th><th>Value</th></tr>
+                            <tr><td><strong>Files</strong></td><td>chr1-chr22.dose.vcf.gz (9 reheadered + 13 symlinked)</td></tr>
+                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/spring2026/post_imputation/</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,093 (all clean ASCII, no prefix)</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>48,887,364 (unchanged)</td></tr>
+                        </table>
+                        <div class="success-box">
+                            <strong>✓ Verification:</strong> All 1,093 sample IDs are clean ASCII across all 22 chromosomes.
+                            No Cyrillic issues (fixed in step 3e). No Michigan prefix remaining.
+                        </div>
+
+                        <h3 style="color: #333; margin-top: 20px;">Winter 2025</h3>
                         <table class="metric-table">
                             <tr><th>Field</th><th>Value</th></tr>
                             <tr><td><strong>Files</strong></td><td>chr1-chr22.dose_normalized.vcf.gz (22 VCF files)</td></tr>
                             <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
                             <tr><td><strong>Samples</strong></td><td>1,098 (all ASCII IDs)</td></tr>
                             <tr><td><strong>Variants</strong></td><td>10,846,569 SNPs (unchanged)</td></tr>
-                            <tr><td><strong>Description</strong></td><td>Imputed VCF files with normalized ASCII sample IDs</td></tr>
                         </table>
-                        <div class="success-box"><strong>✓ Verification:</strong> All sample IDs now ASCII-only, matching PLINK metadata</div>
+                        <div class="success-box"><strong>✓ Verification:</strong> All sample IDs ASCII-only, matching PLINK metadata</div>
                     </div>
                 </div>
                 
                 <div class="section">
                     <h2 class="section-header">4. Commands Executed</h2>
                     <div class="section-content">
-                        <h3 style="color: #333; margin-top: 0;">Step 1: Identify samples with Cyrillic homoglyphs</h3>
+                        <h3 style="color: #333; margin-top: 0;">Spring 2026 — Michigan Prefix Detection &amp; Stripping</h3>
+                        <div class="code-block-wrapper"><div class="code-block"># Check first sample ID in each chromosome for numeric prefix
+for chr in $(seq 1 22); do
+  first=$(bcftools query -l chr${chr}.dose.vcf.gz | head -1)
+  echo "chr${chr}: $first"
+done
+
+# Result: chr1-9 have prefix (1_sampleID, 2_sampleID, ...)
+#         chr10-22 have clean IDs (no prefix)</div></div>
+
+                        <div class="code-block-wrapper"><div class="code-block"># Create strip-prefix mapping from chr1's sample list
+$ bcftools query -l chr1.dose.vcf.gz > sample_list.txt
+$ awk -F'_' 'NF>1 && $1~/^[0-9]+$/ {
+  old=$0; sub(/^[0-9]+_/,""); print old"\t"$0
+}' sample_list.txt > strip_prefix.tsv
+
+# 1,093 prefix mappings created</div></div>
+
+                        <div class="code-block-wrapper"><div class="code-block"># Per-chromosome: strip prefix (chr1-9) or symlink (chr10-22)
+for chr in $(seq 1 22); do
+  first=$(bcftools query -l chr${chr}.dose.vcf.gz | head -1)
+  if echo "$first" | grep -qP '^\d+_'; then
+    # Has prefix — strip it
+    bcftools reheader -s strip_prefix.tsv \
+      -o post_imputation/chr${chr}.dose.vcf.gz \
+      imputation/chr${chr}.dose.vcf.gz
+  else
+    # No prefix — symlink
+    ln -sf imputation/chr${chr}.dose.vcf.gz \
+      post_imputation/chr${chr}.dose.vcf.gz
+  fi
+done
+
+# chr1-9: prefix stripped via bcftools reheader
+# chr10-22: symlinked (already clean)</div></div>
+
+                        <h3 style="color: #333; margin-top: 30px;">Winter 2025 — Cyrillic Homoglyph Fix</h3>
+                        <h3 style="color: #555; margin-top: 10px; font-size: 0.95em;">Identify samples with Cyrillic homoglyphs</h3>
                         <div class="code-block"># comm -3: output lines unique to either file (symmetric difference)
 #   Compares two SORTED inputs; -3 suppresses lines common to both
 # <(...): bash process substitution — feeds command output as a virtual file
@@ -180,7 +268,7 @@ Found 2 samples with Cyrillic homoglyphs:
   - 03-25м (Cyrillic м U+043C)
   - 08-176Х-00006 (Cyrillic Х U+0425)</div>
                         
-                        <h3 style="color: #333; margin-top: 20px;">Step 2: Create ID correction mapping</h3>
+                        <h3 style="color: #555; margin-top: 10px; font-size: 0.95em;">Create ID correction mapping</h3>
                         <div class="code-block"># gsub(regex, replacement, target): global substitution in awk
 #   Replace visually-identical Cyrillic characters with ASCII equivalents
 $ awk 'BEGIN{OFS="\t"}
@@ -196,7 +284,7 @@ Result:
   03-25м → 03-25m
   08-176Х-00006 → 08-176X-00006</div>
                         
-                        <h3 style="color: #333; margin-top: 20px;">Step 3: Apply ID normalization to PLINK and VCF</h3>
+                        <h3 style="color: #555; margin-top: 10px; font-size: 0.95em;">Apply ID normalization to PLINK and VCF</h3>
                         <div class="code-block"># --update-ids FILE: remap sample IDs using 4-column file
 #   Format: oldFID oldIID newFID newIID (tab-separated)
 $ plink --bfile ConvSK_mind20_dedup \
@@ -212,27 +300,23 @@ For VCF files:
 bcftools reheader -s id_mapping.txt \
   chr1.dose.vcf.gz -o chr1.dose.vcf.gz</div>
 
-                        <h3 style="color: #333; margin-top: 20px;">Execution Timeline</h3>
+                        <h3 style="color: #333; margin-top: 30px;">Execution Timeline</h3>
                         <div class="timeline">
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-22 09:00</div>
-                                <div class="timeline-description"><strong>ID mismatch discovered</strong><br>Detected 2 samples with Cyrillic homoglyphs (м→m, Х→X)</div>
+                                <div class="timeline-time">2026-04-11 05:08</div>
+                                <div class="timeline-description"><strong>Spring 2026: Prefix detection</strong><br>Discovered Michigan v2 quirk: chr1-9 have numeric prefix, chr10-22 clean</div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-22 10:15</div>
-                                <div class="timeline-description"><strong>Mapping table created</strong><br>Generated ID conversion rules for 2 problematic samples</div>
+                                <div class="timeline-time">2026-04-11 05:09</div>
+                                <div class="timeline-description"><strong>Spring 2026: Prefix stripping</strong><br>1,093 prefix mappings → bcftools reheader on chr1-9, symlink chr10-22</div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-22 11:30</div>
-                                <div class="timeline-description"><strong>PLINK IDs updated</strong><br>Applied --update-ids: 2 people updated</div>
+                                <div class="timeline-time">2026-04-11 05:10</div>
+                                <div class="timeline-description"><strong>Spring 2026: Verified</strong><br>All 22 chromosomes have clean ASCII IDs, ready for step 6 QC</div>
                             </div>
                             <div class="timeline-item">
-                                <div class="timeline-time">2025-12-22 12:45</div>
-                                <div class="timeline-description"><strong>VCF files normalized</strong><br>Applied bcftools reheader to all 22 chromosomes</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">2025-12-22 14:00</div>
-                                <div class="timeline-description"><strong>Step 5 completed</strong><br>All sample IDs now ASCII-only, ready for final QC</div>
+                                <div class="timeline-time">2025-12-22</div>
+                                <div class="timeline-description"><strong>Winter 2025: Cyrillic fix</strong><br>2 samples fixed (м→m, Х→X) via bcftools reheader</div>
                             </div>
                         </div>
                     </div>
@@ -241,7 +325,7 @@ bcftools reheader -s id_mapping.txt \
             
             <div class="footer">
                 <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> | 
-                Last updated: January 2, 2026 | Step 5 of 15
+                Last updated: April 11, 2026 | Step 5 of 15
             </div>
         </div>
     </div>

@@ -391,22 +391,54 @@ tabix -f -p vcf impute_in.autosomes.clean.nodup.vcf.gz
 # 458,954 variants</pre>
 
                         <h3 style="color: #333; margin-top: 20px;">Step 3e: Fix non-ASCII sample IDs</h3>
-                        <pre class="code-block"># Two sample IDs contain Cyrillic characters:
-#   808_03-25м       (Cyrillic м = U+043C, UTF-8 \xd0\xbc)
-#   1038_08-176Х-00006  (Cyrillic Х = U+0425, UTF-8 \xd0\xa5)
-# These must be replaced with Latin equivalents for downstream tools.
+                        <div class="info-box">
+                            <strong>Universal detection:</strong> Rather than hard-coding known Cyrillic IDs, this step
+                            auto-detects <em>all</em> non-ASCII sample names and maps Cyrillic homoglyphs to their
+                            Latin equivalents. If your dataset has no non-ASCII IDs, the rename file will be empty
+                            and the reheader is skipped. This also eliminates the need for a separate Cyrillic fix
+                            after imputation (the fix in Step 5 becomes unnecessary — Michigan receives clean ASCII IDs).
+                        </div>
+                        <pre class="code-block"># Auto-detect non-ASCII sample IDs and generate rename mapping
+# bcftools query -l: list all sample names from VCF header
+# python3 inline: map all Cyrillic homoglyphs → Latin equivalents
+bcftools query -l impute_in.autosomes.clean.nodup.vcf.gz | \
+  python3 -c "
+import sys
+# Cyrillic-to-Latin homoglyph map (visually identical characters)
+CYR2LAT = {
+    '\u0410':'A', '\u0412':'B', '\u0415':'E', '\u041a':'K', '\u041c':'M',
+    '\u041d':'H', '\u041e':'O', '\u0420':'P', '\u0421':'C', '\u0422':'T',
+    '\u0425':'X', '\u0430':'a', '\u0435':'e', '\u043e':'o', '\u0440':'p',
+    '\u0441':'c', '\u0445':'x', '\u043c':'m',
+}
+count = 0
+for line in sys.stdin:
+    old = line.rstrip('\n')
+    new = ''.join(CYR2LAT.get(c, c) for c in old)
+    if new != old:
+        remaining = [c for c in new if ord(c) > 127]
+        if remaining:
+            print(f'WARNING: {old} still has unmapped non-ASCII: {remaining}', file=sys.stderr)
+        print(f'{old}\t{new}')
+        count += 1
+print(f'{count} rename mapping(s) generated', file=sys.stderr)
+" > rename_samples.tsv
 
-# Create rename file (printf guarantees correct UTF-8 bytes and real tabs)
-printf '808_03-25\xd0\xbc\t808_03-25m\n' > rename_samples.tsv
-printf '1038_08-176\xd0\xa5-00006\t1038_08-176X-00006\n' >> rename_samples.tsv
+cat rename_samples.tsv
+# Spring 2026 dataset — expected 2 mappings:
+#   808_03-25м        808_03-25m
+#   1038_08-176Х-00006  1038_08-176X-00006
 
-# Verify tab separators
-cat -A rename_samples.tsv
-
-# bcftools reheader -s FILE: replace sample names using old→new tsv
-bcftools reheader -s rename_samples.tsv \
-  -o impute_in.final.vcf.gz \
-  impute_in.autosomes.clean.nodup.vcf.gz
+# Apply rename only if mappings were found
+if [ -s rename_samples.tsv ]; then
+  # bcftools reheader -s FILE: replace sample names using old→new tsv
+  bcftools reheader -s rename_samples.tsv \
+    -o impute_in.final.vcf.gz \
+    impute_in.autosomes.clean.nodup.vcf.gz
+else
+  # No non-ASCII IDs found — just rename the file
+  mv impute_in.autosomes.clean.nodup.vcf.gz impute_in.final.vcf.gz
+fi
 
 # Index and verify
 bcftools index impute_in.final.vcf.gz          # create CSI index for random access
@@ -414,7 +446,6 @@ bcftools index -n impute_in.final.vcf.gz       # -n: print variant count (quick 
 # 458954
 
 # Confirm no non-ASCII IDs remain
-# bcftools query -l: list all sample names from VCF header
 # grep -cP '[^\x00-\x7F]': count lines containing non-ASCII bytes
 bcftools query -l impute_in.final.vcf.gz | grep -cP '[^\x00-\x7F]'
 # 0</pre>
@@ -469,8 +500,11 @@ for chr in $(seq 1 22); do
     -e 'TYPE="snp" &amp;&amp; ((REF="A" &amp;&amp; ALT="T") || (REF="T" &amp;&amp; ALT="A") || (REF="C" &amp;&amp; ALT="G") || (REF="G" &amp;&amp; ALT="C"))' \
     -Oz -o michigan_ready/impute_chr${chr}.vcf.gz
 
-  bcftools index -t michigan_ready/impute_chr${chr}.vcf.gz
-done</pre>
+  bcftools index -ft michigan_ready/impute_chr${chr}.vcf.gz
+done
+
+# Clean up intermediates (tmp_chr = 3g rename intermediates)
+rm -f tmp_chr*.vcf.gz tmp_chr*.vcf.gz.csi</pre>
 
                         <div class="warning-box">
                             <strong>Critical: fixref stderr must NOT enter the pipe.</strong> When running fixref in a

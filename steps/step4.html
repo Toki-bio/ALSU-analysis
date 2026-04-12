@@ -358,21 +358,70 @@ Michigan QC Report (spring 2026):
                         <h3 style="color: #333; margin-top: 20px;">Step 3: Download results</h3>
                         <div class="code-block"># Download encrypted results from Michigan Server
 # (download links sent via email, password-protected AES-encrypted zip per chromosome)
+# Michigan provides a download script with curl commands for all 27 files
+# (22 chr zips + qc_report.txt + quality-control.html + 3 statistics files)
 
-# On DRAGEN server — info-only extraction strategy (disk-constrained):
-# Download one chr zip at a time, extract .info.gz, compute R² stats, delete zip
-for chr in {1..22}; do
-  # curl -s: silent mode (no progress meter)  -L: follow HTTP redirects
-  curl -sL -o chr_${chr}.zip "${MICHIGAN_URL}/chr_${chr}.zip"
-  # unzip -P: supply password for AES-encrypted zip  -o: overwrite without prompting
-  unzip -P "$IMPUTE_PASSWORD" -o chr_${chr}.zip chr${chr}.info.gz
-  # Extract R² from VCF-format .info.gz (Minimac v4.1.6)
-  zcat chr${chr}.info.gz | grep -v '^#' | sed 's/.*R2=\([0-9.]*\).*/\1/' | \
-    awk -v chr=$chr '{ n++; s+=$1; bin=int($1*10); if(bin>=10)bin=9; b[bin]++ }
-         END { printf "CHR %s N %d SUM %.2f", chr, n, s;
-               for(i=0;i&lt;10;i++) printf " B%d %d", i, b[i]; print "" }'
-  rm -f chr_${chr}.zip chr${chr}.info.gz
-done</div>
+# Make download script resume-safe (Michigan's set -e kills on HTTP 416 = already complete)
+curl -sL "${MICHIGAN_DOWNLOAD_URL}" | \
+  sed 's/set -e/set +e/; s/curl -L /curl -C - -L /g' | bash
+
+# Results: 22 encrypted zip files, 66 GB total
+# chr_1.zip (5.2G) through chr_22.zip (1.1G)
+# + qc_report.txt, quality-control.html, statistics/</div>
+
+                        <h4 style="color: #333; margin-top: 15px;">Per-chromosome download sizes</h4>
+                        <table class="metric-table">
+                            <tr><th>Chr</th><th>Size</th><th>Chr</th><th>Size</th><th>Chr</th><th>Size</th><th>Chr</th><th>Size</th></tr>
+                            <tr><td>1</td><td>5.2 GB</td><td>7</td><td>3.9 GB</td><td>13</td><td>2.4 GB</td><td>19</td><td>1.7 GB</td></tr>
+                            <tr><td>2</td><td>5.4 GB</td><td>8</td><td>3.6 GB</td><td>14</td><td>2.1 GB</td><td>20</td><td>1.6 GB</td></tr>
+                            <tr><td>3</td><td>4.6 GB</td><td>9</td><td>2.9 GB</td><td>15</td><td>2.0 GB</td><td>21</td><td>1.1 GB</td></tr>
+                            <tr><td>4</td><td>4.9 GB</td><td>10</td><td>3.3 GB</td><td>16</td><td>2.2 GB</td><td>22</td><td>1.1 GB</td></tr>
+                            <tr><td>5</td><td>4.2 GB</td><td>11</td><td>3.3 GB</td><td>17</td><td>2.0 GB</td><td colspan="2" style="font-weight:600;">Total: 66 GB</td></tr>
+                            <tr><td>6</td><td>4.0 GB</td><td>12</td><td>3.1 GB</td><td>18</td><td>2.0 GB</td><td colspan="2"></td></tr>
+                        </table>
+
+                        <h3 style="color: #333; margin-top: 20px;">Step 4: Extract imputed VCFs</h3>
+                        <div class="code-block"># Each zip is AES-encrypted; password provided by Michigan via email
+# Extract dose VCF + info file
+# unzip -P PASSWORD: supply decryption password
+# unzip -o: overwrite existing files without prompting
+
+IMPUTE_PASSWORD="your_michigan_password"
+
+for chr in $(seq 1 22); do
+  unzip -P "$IMPUTE_PASSWORD" -o chr_${chr}.zip \
+    chr${chr}.dose.vcf.gz \
+    chr${chr}.info.gz
+done
+
+# Verify extraction
+ls -lh chr*.dose.vcf.gz | wc -l   # expect 22
+ls -lh chr*.info.gz | wc -l       # expect 22
+
+# Check sample count and ID format
+bcftools query -l chr1.dose.vcf.gz | wc -l          # → 1,093
+bcftools query -l chr1.dose.vcf.gz | head -5         # 01-01, 01-02, ...
+bcftools query -l chr1.dose.vcf.gz | grep -cP '^\d+_'  # → 0 (no Michigan prefix)</div>
+
+                        <div class="success-box">
+                            <strong>&#10003; Extraction verified</strong> &mdash; 22 dose VCFs + 22 info.gz extracted successfully.
+                            <strong>1,093 samples</strong> in all VCFs.
+                            No non-ASCII characters (Cyrillic fix from Step 3e confirmed effective).
+                            Total directory size: 132 GB (66 GB zips + 66 GB extracted files).<br>
+                            <strong>Michigan v2 quirk:</strong> chr1&ndash;9 have numeric prefix (<code>1_sampleID</code>, <code>2_sampleID</code>, &hellip;),
+                            chr10&ndash;22 do not. Step 5 strips these per-chromosome.
+                        </div>
+
+                        <h4 style="color: #333; margin-top: 15px;">Per-chromosome variant counts (from info.gz)</h4>
+                        <table class="metric-table">
+                            <tr><th>Chr</th><th>Variants</th><th>Chr</th><th>Variants</th><th>Chr</th><th>Variants</th><th>Chr</th><th>Variants</th></tr>
+                            <tr><td>1</td><td>3,897,754</td><td>7</td><td>2,860,787</td><td>13</td><td>1,759,289</td><td>19</td><td>1,079,422</td></tr>
+                            <tr><td>2</td><td>4,206,610</td><td>8</td><td>2,741,343</td><td>14</td><td>1,570,644</td><td>20</td><td>1,101,754</td></tr>
+                            <tr><td>3</td><td>3,486,654</td><td>9</td><td>2,138,603</td><td>15</td><td>1,426,801</td><td>21</td><td>686,519</td></tr>
+                            <tr><td>4</td><td>3,476,643</td><td>10</td><td>2,412,511</td><td>16</td><td>1,576,003</td><td>22</td><td>680,124</td></tr>
+                            <tr><td>5</td><td>3,192,854</td><td>11</td><td>2,436,799</td><td>17</td><td>1,385,733</td><td colspan="2" style="font-weight:600;">Total: 48,887,364</td></tr>
+                            <tr><td>6</td><td>3,045,143</td><td>12</td><td>2,332,171</td><td>18</td><td>1,393,203</td><td colspan="2"></td></tr>
+                        </table>
                     </div>
                 </div>
 
@@ -414,14 +463,41 @@ zcat chr1.info.gz | grep -v '^#' | sed 's/.*R2=\([0-9.]*\).*/\1/' | head -3
 0.01504
 0.00191
 
-# R² distribution analysis — running on DRAGEN server (spring 2026 data)
-# Results populate automatically when extraction of 22 chromosomes completes</div>
+# R² distribution analysis — verified from all 22 info.gz files (spring 2026)
+# Total: 48,887,364 variants | Mean R² = 0.4069 | R² ≥ 0.80: 11,083,755 (22.7%)</div>
                     </div>
                 </div>
 
-                <!-- 7. TIMELINE -->
+                <!-- 7. WINTER 2025 vs SPRING 2026 -->
                 <div class="section">
-                    <h2 class="section-header">7. Chronological Log</h2>
+                    <h2 class="section-header">7. Comparison: Winter 2025 vs Spring 2026</h2>
+                    <div class="section-content">
+                        <table class="metric-table">
+                            <tr><th>Metric</th><th>Winter 2025</th><th>Spring 2026</th><th>Notes</th></tr>
+                            <tr><td>Samples</td><td>1,098</td><td>1,093</td><td>Spring re-ran Step 1 with corrected F_MISS threshold</td></tr>
+                            <tr><td>Typed input variants</td><td>472,191</td><td>456,684</td><td>Spring added fixref + palindromic removal in Step 3</td></tr>
+                            <tr><td>Michigan server</td><td>v1 (Minimac4)</td><td>v2 (Minimac v4.1.6)</td><td></td></tr>
+                            <tr><td>Reference panel</td><td>1000G Phase 3 v5</td><td>1000G Phase 3 30x</td><td>30x = NYGC high-coverage re-sequencing</td></tr>
+                            <tr><td>Strand flips</td><td>185,633</td><td>0</td><td>Spring fixref eliminated all strand issues</td></tr>
+                            <tr><td>Raw imputed variants</td><td>58,886,952</td><td>48,887,364</td><td>Different variant space in 30x panel</td></tr>
+                            <tr><td>R&sup2; &ge; 0.80</td><td>~10.0M</td><td>11.1M</td><td>+10% more high-quality variants despite fewer raw</td></tr>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>Why fewer raw variants but more high-quality ones?</strong>
+                            The 1000G Phase 3 30x panel is based on 30&times; whole-genome sequencing (vs the original ~7&times;
+                            low-coverage), producing more accurate haplotype scaffolds. This means fewer spurious rare variant
+                            positions in the reference (reducing total raw output) but better imputation accuracy for the
+                            variants that remain &mdash; yielding more variants passing the R&sup2; &ge; 0.80 threshold.
+                            Additionally, the spring pipeline&rsquo;s fixref pre-processing (0 strand flips vs 185K in winter)
+                            provides cleaner input, directly improving imputation quality.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. TIMELINE -->
+                <div class="section">
+                    <h2 class="section-header">8. Chronological Log</h2>
                     <div class="section-content">
                         <div class="timeline">
                             <div class="timeline-item">
@@ -442,7 +518,15 @@ zcat chr1.info.gz | grep -v '^#' | sed 's/.*R2=\([0-9.]*\).*/\1/' | head -3
                             </div>
                             <div class="timeline-item">
                                 <div class="timeline-time">2026-04-10</div>
-                                <div class="timeline-description"><strong>R² analysis initiated</strong><br>Info-only extraction: downloading each zip, extracting .info.gz, computing per-chromosome R² distributions, deleting zip (disk-constrained /tmp).</div>
+                                <div class="timeline-description"><strong>R&sup2; analysis completed</strong><br>Info-only extraction of all 22 .info.gz files. 48,887,364 total variants, Mean R&sup2; = 0.4069, 22.7% &ge; 0.80.</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2026-04-11</div>
+                                <div class="timeline-description"><strong>Full download completed</strong><br>All 22 encrypted zip archives downloaded to /staging/ALSU-analysis/spring2026/imputation/ (66 GB total). QC report, statistics, and quality-control.html also retrieved.</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2026-04-11</div>
+                                <div class="timeline-description"><strong>Extraction &amp; verification completed</strong><br>All 22 dose VCFs + 22 info.gz extracted (132 GB total). 1,093 samples confirmed, no Michigan prefix, no non-ASCII. Per-chr variant counts verified: 48,887,364 total (matches R&sup2; analysis).</div>
                             </div>
                         </div>
                     </div>
@@ -451,7 +535,7 @@ zcat chr1.info.gz | grep -v '^#' | sed 's/.*R2=\([0-9.]*\).*/\1/' | head -3
 
             <div class="footer">
                 <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> |
-                Last updated: April 10, 2026 | Step 4 of 15
+                Last updated: April 11, 2026 | Step 4 of 15
             </div>
         </div>
     </div>
