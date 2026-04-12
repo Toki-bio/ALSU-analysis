@@ -112,6 +112,7 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 11: Global ADMIXTURE with 1000 Genomes</h1>
             <p>Unsupervised ancestry decomposition of the Uzbek cohort with continental reference populations</p>
+            <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
             <span class="step-badge">Completed &mdash; March 2026</span>
         </div>
 
@@ -131,6 +132,32 @@
             <div class="info-box">
                 <strong>Goal:</strong> Determine the continental ancestry composition of the Uzbek cohort and establish whether
                 the geographic cline observed in the Uzbek-only run corresponds to a EUR&harr;EAS gradient.
+            </div>
+
+            <h3 style="margin-top: 20px; color: #333;">Spring 2026 ADMIXTURE Summary</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">3,595</div>
+                    <div class="stat-label">Global Samples</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">60,279</div>
+                    <div class="stat-label">LD-Pruned SNPs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0.28401</div>
+                    <div class="stat-label">Min CV (K=8)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">K=3</div>
+                    <div class="stat-label">Evanno |L″| Peak</div>
+                </div>
+            </div>
+            <div class="info-box">
+                <strong>Spring 2026 global ADMIXTURE:</strong> Merged 79,767 common SNPs &rarr; QC (HWE &minus;11,905, MAF &minus;7,377) &rarr;
+                60,485 &rarr; LD pruning (50 10 0.1, &minus;206) &rarr; 60,279 final variants.
+                CV monotonically decreasing K=2&rarr;8. Evanno |L″(K)| peaks at K=3 (1,682,893), consistent with winter.
+                <strong>UZB-only:</strong> 1,047 samples &times; 294,597 variants. K=2 CV=0.26309 (minimum), K=3 CV=0.26350 &mdash; ADMIXTURE K=4&ndash;8 still running.
             </div>
 
             <!-- 2. PIPELINE -->
@@ -184,8 +211,9 @@ for K in {2..8}; do
 done</div>
 
             <div class="stat-box">
-                <span class="stat-label">Final dataset:</span>
-                <span class="stat-value">3,595 samples &times; 77,111 LD-pruned SNPs</span>
+                <span class="stat-label">Final dataset (Spring 2026):</span>
+                <span class="stat-value">3,595 samples &times; 60,279 LD-pruned SNPs</span>
+                <span style="display:block;font-size:0.85em;color:#888;margin-top:4px;">Winter 2025: 3,595 &times; 77,111</span>
             </div>
 
             <!-- 3. CV ERROR -->
@@ -200,21 +228,21 @@ done</div>
             </div>
 
             <table>
-                <tr><th>K</th><th>CV Error</th><th>&Delta; from prev</th><th>Note</th></tr>
-                <tr><td>2</td><td>0.31043</td><td>&mdash;</td><td>AFR vs non-AFR split</td></tr>
-                <tr><td>3</td><td>0.29992</td><td>&minus;0.01051</td><td>EAS separates</td></tr>
-                <tr><td>4</td><td>0.29703</td><td>&minus;0.00289</td><td>SAS separates</td></tr>
-                <tr><td>5</td><td>0.29503</td><td>&minus;0.00200</td><td>AMR / Central Asian component</td></tr>
-                <tr><td>6</td><td>0.29458</td><td>&minus;0.00045</td><td>Plateau begins</td></tr>
-                <tr><td>7</td><td>0.29442</td><td>&minus;0.00016</td><td>Effectively tied with K=8</td></tr>
-                <tr class="cv-optimal"><td>8</td><td>0.29422</td><td>&minus;0.00020</td><td>&larr; Minimum CV (K=7&ndash;8 plateau)</td></tr>
+                <tr><th>K</th><th>CV Error<br><span style="font-weight:normal;font-size:0.85em;color:#888">Winter 2025<br>(77,111 SNPs)</span></th><th>CV Error<br><span style="font-weight:normal;font-size:0.85em;color:#2e7d32">Spring 2026<br>(60,279 SNPs)</span></th><th>&Delta; from prev<br><span style="font-weight:normal;font-size:0.85em;color:#2e7d32">(Spring)</span></th><th>Note</th></tr>
+                <tr><td>2</td><td>0.31043</td><td>0.30003</td><td>&mdash;</td><td>AFR vs non-AFR split</td></tr>
+                <tr><td>3</td><td>0.29992</td><td>0.28936</td><td>&minus;0.01067</td><td>EAS separates</td></tr>
+                <tr><td>4</td><td>0.29703</td><td>0.28658</td><td>&minus;0.00278</td><td>SAS separates</td></tr>
+                <tr><td>5</td><td>0.29503</td><td>0.28476</td><td>&minus;0.00182</td><td>AMR / Central Asian component</td></tr>
+                <tr><td>6</td><td>0.29458</td><td>0.28436</td><td>&minus;0.00040</td><td>Plateau begins</td></tr>
+                <tr><td>7</td><td>0.29442</td><td>0.28418</td><td>&minus;0.00018</td><td>Effectively tied with K=8</td></tr>
+                <tr class="cv-optimal"><td>8</td><td>0.29422</td><td>0.28401</td><td>&minus;0.00017</td><td>&larr; Minimum CV (K=7&ndash;8 plateau)</td></tr>
             </table>
 
             <div class="success">
-                <strong>K=8 is the nominal minimum</strong> (CV = 0.29422), but K=7 (0.29442) is only 0.07% higher &mdash; effectively a plateau.
-                The improvement from K=6&rarr;7&rarr;8 (&lt;0.02% per step) is negligible compared to K=2&rarr;3 (&minus;3.4%).
-                For practical purposes, <strong>K=5&ndash;8 form a plateau</strong> with no clear single optimum;
-                K=5 is the most parsimonious model capturing all major continental groups.
+                <strong>Spring 2026:</strong> K=8 remains the nominal minimum (CV = 0.28401), consistent with winter (0.29422).
+                All CV values are ~0.01 lower due to SNP reduction (77,111→60,279 after stricter QC), but
+                the <strong>shape is identical</strong>: steep drop K=2→3 (3.6%), gradual decline through K=5, then plateau K=5–8 (&lt;0.015% per step).
+                K=5 remains the most parsimonious model capturing all major continental groups.
             </div>
 
             <!-- 3.1 EVANNO METHOD -->
@@ -222,7 +250,7 @@ done</div>
 
             <div class="info-box">
                 <strong>Note:</strong> The log-likelihoods below are from <strong>one representative ADMIXTURE run per K</strong>
-                on the global dataset (3,595 samples &times; 77,111 SNPs).
+                on the global dataset (3,595 samples; winter: 77,111 SNPs, spring: 60,279 SNPs).
                 The table shows single-run values rather than mean &plusmn; SD across replicates. The |L&Prime;(K)| column is therefore
                 a raw second difference, not the full Evanno &Delta;K (which requires run-to-run variance in the denominator).
                 Since the Evanno method is statistically inappropriate for ADMIXTURE (see caveat below),
@@ -251,9 +279,10 @@ done</div>
                 (see caveat above).
             </p>
             <p>
-                Using the log-likelihood values L(K) from the global ADMIXTURE run (3,595 samples &times; 77,111 SNPs) at each K&nbsp;=&nbsp;2&ndash;8:
+                Using the log-likelihood values L(K) from the global ADMIXTURE run at each K&nbsp;=&nbsp;2&ndash;8:
             </p>
 
+            <h4>Winter 2025 (3,595 &times; 77,111 SNPs)</h4>
             <table>
                 <tr>
                     <th>K</th>
@@ -271,6 +300,32 @@ done</div>
                 <tr><td>7</td><td>&minus;142,824,765</td><td>126,599</td><td>26,085</td></tr>
                 <tr><td>8</td><td>&minus;142,672,081</td><td>152,684</td><td>&mdash;</td></tr>
             </table>
+
+            <h4 style="margin-top:24px;">Spring 2026 (3,595 &times; 60,279 SNPs)</h4>
+            <table>
+                <tr>
+                    <th>K</th>
+                    <th>L(K) <span style="font-weight:normal;color:#2e7d32;font-size:0.85em">(single run)</span></th>
+                    <th>L&prime;(K) = L(K) &minus; L(K&minus;1)</th>
+                    <th>|L&Prime;(K)| <span style="font-weight:normal;color:#2e7d32;font-size:0.85em">(not true &Delta;K)</span></th>
+                </tr>
+                <tr><td>2</td><td>&minus;110,554,044</td><td>&mdash;</td><td>&mdash;</td></tr>
+                <tr style="background:#d4edda; font-weight:600;">
+                    <td>3</td><td>&minus;108,197,827</td><td>2,356,217</td><td style="color:#28a745;">1,682,893 &larr; max</td>
+                </tr>
+                <tr><td>4</td><td>&minus;107,524,503</td><td>673,324</td><td>201,187</td></tr>
+                <tr><td>5</td><td>&minus;107,052,366</td><td>472,137</td><td>315,425</td></tr>
+                <tr><td>6</td><td>&minus;106,895,654</td><td>156,712</td><td>60,902</td></tr>
+                <tr><td>7</td><td>&minus;106,799,844</td><td>95,810</td><td>24,454</td></tr>
+                <tr><td>8</td><td>&minus;106,679,580</td><td>120,264</td><td>&mdash;</td></tr>
+            </table>
+
+            <div class="success">
+                <strong>Evanno peak at K=3 confirmed in both runs.</strong> Spring |L&Prime;(3)| = 1,682,893 (winter: 2,087,440) — both peak at K=3,
+                corresponding to the three continental super-groups (AFR / EUR+SAS / EAS). Secondary peak at K=5 in both
+                (spring: 315,425; winter: 437,625). The consistent K=3 peak across different SNP sets reinforces that the
+                deepest split is three-way continental, with finer K values adding within-group resolution.
+            </div>
 
             <div class="important">
                 <strong>|L&Prime;(K)| peaks at K&nbsp;=&nbsp;3</strong> (2,087,440). The most fundamental
@@ -399,18 +454,24 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
 
             <h4>Uzbek-Only: ADMIXTURE CV Error</h4>
             <table>
-                <tr><th>K</th><th>CV Error</th><th>Note</th></tr>
-                <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.30762</td><td>&larr; Minimum</td></tr>
-                <tr><td>3</td><td>0.30811</td><td></td></tr>
-                <tr><td>4</td><td>0.30958</td><td></td></tr>
-                <tr><td>5</td><td>0.31103</td><td></td></tr>
-                <tr><td>6</td><td>0.31266</td><td></td></tr>
-                <tr><td>7</td><td>0.31445</td><td></td></tr>
-                <tr><td>8</td><td>0.31627</td><td></td></tr>
+                <tr><th>K</th><th>CV Error<br><span style="font-weight:normal;font-size:0.85em;color:#888">Winter 2025</span></th><th>CV Error<br><span style="font-weight:normal;font-size:0.85em;color:#2e7d32">Spring 2026</span></th><th>Note</th></tr>
+                <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.30762</td><td>0.26309</td><td>&larr; Minimum (both)</td></tr>
+                <tr><td>3</td><td>0.30811</td><td>0.26350</td><td></td></tr>
+                <tr><td>4</td><td>0.30958</td><td colspan="1" style="color:#888; font-style:italic;">running&hellip;</td><td></td></tr>
+                <tr><td>5</td><td>0.31103</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
+                <tr><td>6</td><td>0.31266</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
+                <tr><td>7</td><td>0.31445</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
+                <tr><td>8</td><td>0.31627</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
             </table>
 
+            <div class="info-box">
+                <strong>Spring 2026 UZB-only:</strong> 1,047 samples &times; 294,597 LD-pruned variants.
+                K=2 again shows the minimum CV (0.26309), consistent with winter (0.30762). K=4&ndash;8 still running on server.
+            </div>
+
             <p>
-                CV error increases monotonically from K=2 through K=8, confirming <strong>no significant internal substructure</strong>
+                CV error increases monotonically from K=2 through K=8 (winter), and the same trend holds so far in spring (K=2 &lt; K=3),
+                confirming <strong>no significant internal substructure</strong>
                 beyond a two-way split. The monotonic pattern across all 7 K-values is definitive.
             </p>
 
@@ -628,7 +689,7 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
             <h2>8. Output Files</h2>
             <table>
                 <tr><th>File</th><th>Description</th></tr>
-                <tr><td><code>global_for_admixture.bed/bim/fam</code></td><td>LD-pruned merged dataset (3,595 &times; 77,111)</td></tr>
+                <tr><td><code>global_for_admixture.bed/bim/fam</code></td><td>LD-pruned merged dataset (3,595 &times; 60,279; winter: 77,111)</td></tr>
                 <tr><td><code>admix_results/K{2-8}.Q</code></td><td>ADMIXTURE Q-matrices for each K</td></tr>
                 <tr><td><code>global_pop_labels.txt</code></td><td>Population and superpopulation labels</td></tr>
                 <tr><td><code>validation/validation_results.json</code></td><td>Covariate test results (JSON)</td></tr>
@@ -650,6 +711,11 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
 <script>
 // ===== DATA =====
 const cvErrors = [
+    {k:2, cv:0.30003}, {k:3, cv:0.28936}, {k:4, cv:0.28658},
+    {k:5, cv:0.28476}, {k:6, cv:0.28436}, {k:7, cv:0.28418},
+    {k:8, cv:0.28401}
+];
+const cvErrorsWinter = [
     {k:2, cv:0.31043}, {k:3, cv:0.29992}, {k:4, cv:0.29703},
     {k:5, cv:0.29503}, {k:6, cv:0.29458}, {k:7, cv:0.29442},
     {k:8, cv:0.29422}
@@ -725,7 +791,7 @@ function drawCVChart() {
 
     ctx.clearRect(0, 0, W, H);
 
-    const minCV = 0.293, maxCV = 0.312;
+    const minCV = 0.283, maxCV = 0.312;
     const kMin = 2, kMax = 8;
 
     function xPos(k) { return pad.left + (k - kMin) / (kMax - kMin) * plotW; }
@@ -733,7 +799,7 @@ function drawCVChart() {
 
     // Grid
     ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
-    for (let cv = 0.295; cv <= 0.310; cv += 0.005) {
+    for (let cv = 0.285; cv <= 0.310; cv += 0.005) {
         ctx.beginPath(); ctx.moveTo(pad.left, yPos(cv)); ctx.lineTo(W-pad.right, yPos(cv)); ctx.stroke();
         ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
         ctx.fillText(cv.toFixed(3), pad.left - 8, yPos(cv) + 4);
@@ -752,8 +818,25 @@ function drawCVChart() {
     ctx.fillStyle = '#555'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
     ctx.fillText('CV Error', 0, 0); ctx.restore();
 
-    // Line
-    ctx.strokeStyle = '#333'; ctx.lineWidth = 2.5;
+    // Winter line (dashed, gray)
+    ctx.strokeStyle = '#999'; ctx.lineWidth = 1.5; ctx.setLineDash([6,4]);
+    ctx.beginPath();
+    cvErrorsWinter.forEach((d, i) => {
+        const x = xPos(d.k), y = yPos(d.cv);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Winter points (small, gray)
+    cvErrorsWinter.forEach(d => {
+        const x = xPos(d.k), y = yPos(d.cv);
+        ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#999'; ctx.fill();
+    });
+
+    // Spring line (solid, dark)
+    ctx.strokeStyle = '#2e7d32'; ctx.lineWidth = 2.5;
     ctx.beginPath();
     cvErrors.forEach((d, i) => {
         const x = xPos(d.k), y = yPos(d.cv);
@@ -761,22 +844,35 @@ function drawCVChart() {
     });
     ctx.stroke();
 
-    // Points
+    // Spring points
     cvErrors.forEach(d => {
         const x = xPos(d.k), y = yPos(d.cv);
         const isOpt = d.k === 8;
         ctx.beginPath(); ctx.arc(x, y, isOpt ? 8 : 5, 0, Math.PI * 2);
-        ctx.fillStyle = isOpt ? '#28a745' : '#333'; ctx.fill();
+        ctx.fillStyle = isOpt ? '#28a745' : '#2e7d32'; ctx.fill();
         ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
         // Value label
-        ctx.fillStyle = isOpt ? '#28a745' : '#555';
+        ctx.fillStyle = isOpt ? '#28a745' : '#2e7d32';
         ctx.font = isOpt ? 'bold 12px sans-serif' : '11px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(d.cv.toFixed(4), x, y - (isOpt ? 14 : 10));
     });
 
+    // Legend
+    const lx = W - pad.right - 160, ly = pad.top + 10;
+    ctx.setLineDash([6,4]); ctx.strokeStyle = '#999'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(lx, ly+6); ctx.lineTo(lx+30, ly+6); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('Winter 2025 (77,111 SNPs)', lx+35, ly+10);
+
+    ctx.strokeStyle = '#2e7d32'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(lx, ly+24); ctx.lineTo(lx+30, ly+24); ctx.stroke();
+    ctx.fillStyle = '#2e7d32';
+    ctx.fillText('Spring 2026 (60,279 SNPs)', lx+35, ly+28);
+
     // Optimal arrow
-    const ox = xPos(8), oy = yPos(0.29420);
+    const ox = xPos(8), oy = yPos(0.28401);
     ctx.fillStyle = '#28a745'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'left';
     ctx.fillText('← Optimal', ox + 12, oy + 5);
 }

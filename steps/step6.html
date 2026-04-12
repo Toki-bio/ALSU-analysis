@@ -94,7 +94,8 @@
                 <a href="../index.html" class="back-link">← Back to Roadmap</a>
                 <h1>Step 6: Final Quality Control</h1>
                 <p>Sample and variant QC checks on imputed dataset</p>
-                <span class="step-badge">✓ Completed — December 26, 2025</span>
+                <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
+                <span class="step-badge">✓ Winter 2025 — December 26, 2025</span>
             </div>
         
         <div class="content">
@@ -102,14 +103,39 @@
                 <h2 class="section-header">1. Overview</h2>
                 <div class="section-content">
                     <p>
-                        Final QC step performs comprehensive quality checks on the imputed dataset including sample-level 
-                        filtering (outlier detection), sex concordance validation, and ancestry verification to ensure data integrity.
+                        Final QC step filters on imputation quality (R²≥0.80) and minor allele frequency (MAF≥0.001),
+                        converts to PLINK binary format, and performs heterozygosity outlier detection.
                     </p>
+
+                    <h3 style="margin-top: 20px; color: #333;">Spring 2026</h3>
+                    <div class="info-box">
+                        <strong>Filter:</strong> <code>bcftools view -i 'INFO/R2>=0.80 && INFO/MAF>=0.001'</code> — streaming expression filter on dose VCF (no targets file needed).<br>
+                        <strong>Optimization:</strong> Previous -T targets approach was extremely slow (I/O-bound hash lookup per variant). Expression-based -i filter streams through VCF once.
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">1,093</div>
+                            <div class="stat-label">Starting Samples</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Het Outliers Removed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1,090</div>
+                            <div class="stat-label">Final Samples</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">9,981,814</div>
+                            <div class="stat-label">HQ Variants (R²≥0.80)</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 20px; color: #333;">Winter 2025</h3>
                     <div class="info-box">
                         <strong>Final Output:</strong> High-quality imputed genotype dataset ready for association studies.<br>
                         24 outlier samples removed, 1,074 samples passing all QC checks.
                     </div>
-                    <h3 style="margin-top: 20px; color: #333;">Key Metrics</h3>
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-value">1,098</div>
@@ -124,8 +150,8 @@
                             <div class="stat-label">Final Samples</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">97.8%</div>
-                            <div class="stat-label">Retention Rate</div>
+                            <div class="stat-value">10,846,569</div>
+                            <div class="stat-label">HQ Variants</div>
                         </div>
                     </div>
                 </div>
@@ -134,13 +160,21 @@
             <div class="section">
                 <h2 class="section-header">2. Input Data</h2>
                 <div class="section-content">
+                    <h3 style="color: #333; margin-top: 0;">Spring 2026</h3>
                     <table class="metric-table">
-
+                        <tr><th>Field</th><th>Value</th></tr>
+                        <tr><td><strong>Files</strong></td><td>chr1-chr22.dose.vcf.gz (prefix-stripped in step 5)</td></tr>
+                        <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/spring2026/post_imputation/</td></tr>
+                        <tr><td><strong>Samples</strong></td><td>1,093</td></tr>
+                        <tr><td><strong>Variants</strong></td><td>48,887,364 across 22 chromosomes</td></tr>
+                    </table>
+                    <h3 style="color: #333; margin-top: 20px;">Winter 2025</h3>
+                    <table class="metric-table">
+                        <tr><th>Field</th><th>Value</th></tr>
                         <tr><td><strong>Files</strong></td><td>chr1-chr22.dose_normalized.vcf.gz (22 VCF files)</td></tr>
-                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,098</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>10,846,569 SNPs</td></tr>
-                        <tr><td><strong>Description</strong></td><td>Imputed genotypes with normalized IDs</td></tr>
+                        <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
+                        <tr><td><strong>Samples</strong></td><td>1,098</td></tr>
+                        <tr><td><strong>Variants</strong></td><td>10,846,569 SNPs</td></tr>
                     </table>
                 </div>
             </div>
@@ -148,13 +182,28 @@
             <div class="section">
                 <h2 class="section-header">3. Output Data</h2>
                 <div class="section-content">
+                    <h3 style="color: #333; margin-top: 0;">Spring 2026</h3>
                     <table class="metric-table">
                         <tr><th>Field</th><th>Value</th></tr>
-                            <tr><td><strong>Files</strong></td><td>UZB_imputed_HQ_clean (PLINK binary + VCF)</td></tr>
-                            <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
-                            <tr><td><strong>Samples</strong></td><td>1,074 (24 het outliers removed)</td></tr>
-                            <tr><td><strong>Variants</strong></td><td>10,846,569 SNPs</td></tr>
-                        <tr><td><strong>Description</strong></td><td>QC-filtered final dataset for GWAS/analysis</td></tr>
+                        <tr><td><strong>Files</strong></td><td>UZB_imputed_HQ_clean.{bed,bim,fam} (PLINK binary)</td></tr>
+                        <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/spring2026/post_imputation/</td></tr>
+                        <tr><td><strong>Samples</strong></td><td>1,090 (3 het outliers removed from 1,093)</td></tr>
+                        <tr><td><strong>Variants</strong></td><td>9,981,814 (R²≥0.80 + MAF≥0.001)</td></tr>
+                    </table>
+                    <div class="success-box">
+                        <strong>✓ Completed:</strong> 9,981,814 of 48,887,364 variants (20.4%) pass R²≥0.80 + MAF≥0.001.
+                        3 het outliers removed (|F|&gt;0.2): 08-123, 20-05, 08-86.<br>
+                        <strong>Note:</strong> 2 samples had Cyrillic homoglyphs corrupted by imputation server in chr10–22
+                        (03-25м→03-25m, 08-176Х→08-176X). Fixed via <code>bcftools reheader</code> before concat.
+                    </div>
+
+                    <h3 style="color: #333; margin-top: 20px;">Winter 2025</h3>
+                    <table class="metric-table">
+                        <tr><th>Field</th><th>Value</th></tr>
+                        <tr><td><strong>Files</strong></td><td>UZB_imputed_HQ_clean (PLINK binary + VCF)</td></tr>
+                        <tr><td><strong>Location</strong></td><td>/staging/ALSU-analysis/winter2025/</td></tr>
+                        <tr><td><strong>Samples</strong></td><td>1,074 (24 het outliers removed)</td></tr>
+                        <tr><td><strong>Variants</strong></td><td>10,846,569 SNPs</td></tr>
                     </table>
                     <div class="success-box"><strong>✓ QC Status:</strong> All samples pass sex/ancestry validation, no sample missing >5% data</div>
                 </div>
@@ -163,7 +212,48 @@
             <div class="section">
                 <h2 class="section-header">4. Commands Executed</h2>
                 <div class="section-content">
-                    <h3 style="color: #333; margin-top: 0;">Step 1: Compute sample-level statistics</h3>
+                    <h3 style="color: #333; margin-top: 0;">Spring 2026 — Expression-Based Filtering</h3>
+                    <div class="code-block-wrapper"><div class="code-block"># bcftools view -i: filter with INFO field expression
+#   Streams through VCF once (no index needed, no targets file)
+#   R2 and MAF are embedded in Michigan dose VCF INFO field
+#   Much faster than old -T targets approach
+for chr in $(seq 1 22); do
+  bcftools view -i 'INFO/R2>=0.80 && INFO/MAF>=0.001' \
+    -Oz -o filtered/chr${chr}.clean.vcf.gz \
+    chr${chr}.dose.vcf.gz
+  bcftools index -f filtered/chr${chr}.clean.vcf.gz
+done</div></div>
+
+                    <div class="code-block-wrapper"><div class="code-block"># Concatenate all filtered chromosomes
+$ bcftools concat filtered/chr{1..22}.clean.vcf.gz -Oz \
+  -o UZB_imputed_HQ.vcf.gz
+$ bcftools index UZB_imputed_HQ.vcf.gz
+
+# Convert to PLINK binary with dosage
+# plink2 --vcf: read VCF file
+#   dosage=DS: use DS field for allele dosage (Michigan default)
+$ plink2 --vcf UZB_imputed_HQ.vcf.gz dosage=DS \
+  --make-bed \
+  --out UZB_imputed_HQ</div></div>
+
+                    <div class="code-block-wrapper"><div class="code-block"># Heterozygosity check
+# plink2 --het: compute per-sample F (inbreeding coefficient)
+#   Outlier threshold: |F| > 0.2
+$ plink2 --bfile UZB_imputed_HQ \
+  --het \
+  --out het_check
+
+# Remove outliers if any
+$ awk 'NR>1 && ($6 > 0.2 || $6 < -0.2) {print $1, $2}' \
+  het_check.het > het_outliers.txt
+
+$ plink2 --bfile UZB_imputed_HQ \
+  --remove het_outliers.txt \
+  --make-bed \
+  --out UZB_imputed_HQ_clean</div></div>
+
+                    <h3 style="color: #333; margin-top: 30px;">Winter 2025 — Targets-File Filtering</h3>
+                    <h3 style="color: #555; margin-top: 10px; font-size: 0.95em;">Compute sample-level statistics</h3>
                     <div class="code-block"># vcftools --missing-indv: compute per-sample missingness rate
 #   Outputs .imiss file with F_MISS column (fraction missing genotypes)
 $ vcftools --gzvcf chr1.dose_normalized.vcf.gz \
@@ -175,12 +265,12 @@ for chr in {1..22}; do
     --missing-indv --out chr${chr}_stats
 done</div>
                     
-                    <h3 style="color: #333; margin-top: 20px;">Step 2: Sex and ancestry validation</h3>
+                    <h3 style="color: #555; margin-top: 10px; font-size: 0.95em;">Sex and ancestry validation</h3>
                     <div class="code-block">$ plink2 --vcf chr{1..22}.dose_normalized.vcf.gz \
   --check-sex --maf 0.05 \
   --out final_qc</div>
                     
-                    <h3 style="color: #333; margin-top: 20px;">Step 3: Remove outlier samples</h3>
+                    <h3 style="color: #555; margin-top: 10px; font-size: 0.95em;">Remove outlier samples</h3>
 
                     <div class="info-box">
                         <strong>Imputation quality pre-filter (Step 6.3):</strong> Before per-chromosome VCF filtering,
@@ -201,7 +291,7 @@ Found 24 outlier samples:
   - 10 samples with sex discordance
   - 6 samples with ancestry outliers</div>
                     
-                    <h3 style="color: #333; margin-top: 20px;">Step 4: Final filtering and export</h3>
+                    <h3 style="color: #555; margin-top: 10px; font-size: 0.95em;">Final filtering and export</h3>
                     <div class="code-block"># bcftools view: filter samples and variants from VCF
 #   --samples-file ^FILE: EXCLUDE samples listed in FILE
 #     The ^ prefix means "exclude" (without ^ it means "include only")
@@ -227,8 +317,46 @@ done</div>
                 <div class="section-content">
                     <div class="timeline">
                         <div class="timeline-item">
+                            <div class="timeline-time">2026-04-11 05:20</div>
+                            <div class="timeline-description"><strong>Spring 2026: Filtering launched</strong><br>bcftools view -i expression filter on 22 dose VCFs (R²≥0.80 + MAF≥0.001)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2026-04-11 ~07:40</div>
+                            <div class="timeline-description"><strong>Spring 2026: Filtering progress — chr1–10 complete</strong><br>
+                                Per-chr variant counts (R²≥0.80 + MAF≥0.001):<br>
+                                chr1: 775,162 | chr2: 849,269 | chr3: 726,178 | chr4: 738,749 | chr5: 656,618<br>
+                                chr6: 701,839 | chr7: 589,320 | chr8: 555,446 | chr9: 426,652 | chr10: 514,643<br>
+                                chr11: 504,631 | chr12: 489,173 | chr13: 377,108 | chr14: 330,248 | chr15: 282,841<br>
+                                chr16: 290,892 | chr17: 243,455 | chr18: 279,360 | chr19: 194,360 | chr20: 210,995<br>
+                                chr21: 122,548 | chr22: 122,327<br>
+                                <strong>Total: 9,981,814 variants</strong>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2026-04-11 ~09:30</div>
+                            <div class="timeline-description"><strong>Spring 2026: Sample name fix — chr10–22 reheadered</strong><br>
+                                2 samples had Cyrillic homoglyphs (м/Х) corrupted to ?? by imputation server in chr10–22.
+                                Fixed via <code>bcftools reheader -s canonical_samples.txt</code> on 13 chromosomes.
+                                All 22 chromosomes verified matching.
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2026-04-11 ~11:00</div>
+                            <div class="timeline-description"><strong>Spring 2026: Concatenation complete</strong><br>
+                                bcftools concat → UZB_imputed_HQ.vcf.gz (41 GB, 22 chromosomes).
+                                Indexed with bcftools index.
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">2026-04-11 11:14–11:20</div>
+                            <div class="timeline-description"><strong>Spring 2026: PLINK conversion + het check</strong><br>
+                                plink2 --vcf → 9,981,814 variants × 1,093 samples.<br>
+                                Het check: 3 outliers (|F|&gt;0.2) → removed → 1,090 final samples.
+                            </div>
+                        </div>
+                        <div class="timeline-item">
                             <div class="timeline-time">2025-12-25 09:00</div>
-                            <div class="timeline-description"><strong>Per-chromosome filtering initiated</strong><br>Processing each VCF to remove het outliers and apply quality filters</div>
+                            <div class="timeline-description"><strong>Winter 2025: Per-chromosome filtering initiated</strong><br>Processing each VCF to remove het outliers and apply quality filters</div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-time">2025-12-25 14:00</div>
@@ -341,7 +469,7 @@ fi</div>
         
             <div class="footer">
                 <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">🏠 Back to Home</a> | 
-                Last updated: January 2, 2026 | Step 6 of 15
+                Last updated: April 11, 2026 | Step 6 of 15
             </div>
         </div>
     </div>

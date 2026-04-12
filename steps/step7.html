@@ -108,6 +108,7 @@
                 <a href="../index.html" class="back-link">← Back to Roadmap</a>
                 <h1>Step 7: Local PCA on Uzbek Cohort</h1>
                 <p>Population structure analysis and visualization through principal component analysis</p>
+                <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
                 <span class="step-badge">Completed — January 3-4, 2026</span>
             </div>
         
@@ -118,6 +119,31 @@
                     <p>
                         Perform standard post-imputation quality control, LD pruning, and Principal Component Analysis (PCA) on the Uzbek samples only to visualize internal population structure and validate data quality before downstream association studies.
                     </p>
+
+                    <h3 style="margin-top: 20px; color: #333;">Spring 2026</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">1,090</div>
+                            <div class="stat-label">Input Samples</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1,047</div>
+                            <div class="stat-label">After --mind 0.05</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">5,400,328</div>
+                            <div class="stat-label">QC Variants</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">88,810</div>
+                            <div class="stat-label">LD-Pruned SNPs</div>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <strong>Spring 2026 QC:</strong> 43 samples removed by --mind 0.05; 2,405,299 variants removed by --geno 0.05;
+                        2,176,187 by --maf 0.01. LD pruning (--indep-pairwise 1000kb 1 0.05) retained 88,810 of 5,400,328.
+                        <strong>Eigenvalues (PC1–10):</strong> 5.867, 3.265, 2.141, 1.693, 1.628, 1.594, 1.430, 1.396, 1.326, 1.323.
+                    </div>
                 </div>
             </div>
             

@@ -92,6 +92,7 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 10: Multi-Population PBS Analysis</h1>
             <p>Population Branch Statistic to identify Uzbek-specific allele frequency shifts</p>
+            <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
             <span class="step-badge">Completed &mdash; March 2026</span>
         </div>
 
@@ -103,6 +104,26 @@
                 population lineage relative to two outgroup populations. By computing PBS for the Uzbek branch
                 of a three-population tree (UZB&ndash;EUR&ndash;EAS), we identify SNPs where the Uzbek population
                 has experienced unusually large frequency shifts &mdash; potential signatures of local adaptation or
+                genetic drift.
+            </p>
+
+            <h3 style="margin-top: 20px; color: #333;">Spring 2026 PBS Results</h3>
+            <div class="info-box">
+                <strong>79,767 SNPs analyzed</strong> (vs 77,111 in winter). Pop sizes: UZB=1,047, EUR=522, EAS=515, SAS=492, AFR=671.
+            </div>
+            <table>
+                <tr><th>Metric</th><th>Spring 2026</th><th>Winter 2025</th></tr>
+                <tr><td>SNPs analyzed</td><td>79,767</td><td>77,111</td></tr>
+                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.01001</td><td>&minus;0.00979</td></tr>
+                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00604</td><td>&minus;0.00601</td></tr>
+                <tr><td>Stdev</td><td>0.02677</td><td>0.02648</td></tr>
+                <tr><td>Tier 1 (PBS&ge;0.3)</td><td>8</td><td>8</td></tr>
+                <tr><td>Tier 2 (significant)</td><td>4,995</td><td>1</td></tr>
+            </table>
+            <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;">
+                <strong>Spring vs Winter:</strong> Core PBS statistics are nearly identical. Same 8 Tier 1 SNPs detected.
+                Tier 2 difference reflects different tier criteria between runs (spring uses &Delta;AF&ge;0.3 threshold).
+            </div>
                 genetic drift.
             </p>
 
