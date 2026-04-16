@@ -1,0 +1,981 @@
+{
+  "summary": {
+    "total": 1815,
+    "age_18_45": 1766,
+    "classification": {
+      "CASE": 398,
+      "CASE_PROBABLE": 27,
+      "CONTROL": 861,
+      "CONTROL_PROBABLE": 6,
+      "GRAY": 313,
+      "REVIEW": 116,
+      "EXCLUDE_AGE": 49,
+      "EXCLUDE_ECTOPIC": 21,
+      "EXCLUDE_MEDICAL": 6,
+      "UNCLASSIFIED": 18
+    }
+  },
+  "outcome_codes": [
+    {
+      "code": "1",
+      "name": "Live birth",
+      "count": 3016
+    },
+    {
+      "code": "2",
+      "name": "Stillbirth",
+      "count": 136
+    },
+    {
+      "code": "3",
+      "name": "Miscarriage",
+      "count": 567
+    },
+    {
+      "code": "4",
+      "name": "Elective abortion",
+      "count": 304
+    },
+    {
+      "code": "5",
+      "name": "Ectopic",
+      "count": 71
+    },
+    {
+      "code": "6",
+      "name": "Non-developing",
+      "count": 1007
+    },
+    {
+      "code": "7",
+      "name": "Medical abort",
+      "count": 20
+    },
+    {
+      "code": "8",
+      "name": "Currently pregnant",
+      "count": 63
+    }
+  ],
+  "ga_distributions": {
+    "2": {
+      "name": "Stillbirth",
+      "bins": [
+        {
+          "week": 2,
+          "count": 2
+        },
+        {
+          "week": 5,
+          "count": 1
+        },
+        {
+          "week": 6,
+          "count": 1
+        },
+        {
+          "week": 19,
+          "count": 2
+        },
+        {
+          "week": 20,
+          "count": 7
+        },
+        {
+          "week": 21,
+          "count": 1
+        },
+        {
+          "week": 22,
+          "count": 1
+        },
+        {
+          "week": 23,
+          "count": 10
+        },
+        {
+          "week": 24,
+          "count": 17
+        },
+        {
+          "week": 25,
+          "count": 9
+        },
+        {
+          "week": 26,
+          "count": 6
+        },
+        {
+          "week": 27,
+          "count": 8
+        },
+        {
+          "week": 28,
+          "count": 11
+        },
+        {
+          "week": 29,
+          "count": 4
+        },
+        {
+          "week": 30,
+          "count": 4
+        },
+        {
+          "week": 32,
+          "count": 3
+        },
+        {
+          "week": 33,
+          "count": 3
+        },
+        {
+          "week": 35,
+          "count": 5
+        },
+        {
+          "week": 36,
+          "count": 6
+        },
+        {
+          "week": 37,
+          "count": 2
+        },
+        {
+          "week": 38,
+          "count": 6
+        },
+        {
+          "week": 39,
+          "count": 11
+        },
+        {
+          "week": 40,
+          "count": 5
+        }
+      ],
+      "n": 125,
+      "n_ge20": 119,
+      "n_lt20": 6
+    },
+    "3": {
+      "name": "Miscarriage",
+      "bins": [
+        {
+          "week": 1,
+          "count": 23
+        },
+        {
+          "week": 2,
+          "count": 8
+        },
+        {
+          "week": 3,
+          "count": 20
+        },
+        {
+          "week": 4,
+          "count": 53
+        },
+        {
+          "week": 5,
+          "count": 72
+        },
+        {
+          "week": 6,
+          "count": 68
+        },
+        {
+          "week": 7,
+          "count": 41
+        },
+        {
+          "week": 8,
+          "count": 37
+        },
+        {
+          "week": 9,
+          "count": 23
+        },
+        {
+          "week": 10,
+          "count": 21
+        },
+        {
+          "week": 11,
+          "count": 12
+        },
+        {
+          "week": 12,
+          "count": 37
+        },
+        {
+          "week": 13,
+          "count": 8
+        },
+        {
+          "week": 14,
+          "count": 6
+        },
+        {
+          "week": 15,
+          "count": 13
+        },
+        {
+          "week": 16,
+          "count": 21
+        },
+        {
+          "week": 17,
+          "count": 4
+        },
+        {
+          "week": 18,
+          "count": 8
+        },
+        {
+          "week": 19,
+          "count": 1
+        },
+        {
+          "week": 20,
+          "count": 12
+        },
+        {
+          "week": 21,
+          "count": 3
+        },
+        {
+          "week": 22,
+          "count": 4
+        },
+        {
+          "week": 23,
+          "count": 6
+        },
+        {
+          "week": 24,
+          "count": 5
+        },
+        {
+          "week": 41,
+          "count": 1
+        }
+      ],
+      "n": 507,
+      "n_ge20": 31,
+      "n_lt20": 476
+    },
+    "6": {
+      "name": "Non-developing",
+      "bins": [
+        {
+          "week": 1,
+          "count": 45
+        },
+        {
+          "week": 2,
+          "count": 9
+        },
+        {
+          "week": 3,
+          "count": 11
+        },
+        {
+          "week": 4,
+          "count": 40
+        },
+        {
+          "week": 5,
+          "count": 69
+        },
+        {
+          "week": 6,
+          "count": 156
+        },
+        {
+          "week": 7,
+          "count": 88
+        },
+        {
+          "week": 8,
+          "count": 154
+        },
+        {
+          "week": 9,
+          "count": 80
+        },
+        {
+          "week": 10,
+          "count": 62
+        },
+        {
+          "week": 11,
+          "count": 30
+        },
+        {
+          "week": 12,
+          "count": 72
+        },
+        {
+          "week": 13,
+          "count": 22
+        },
+        {
+          "week": 14,
+          "count": 15
+        },
+        {
+          "week": 15,
+          "count": 8
+        },
+        {
+          "week": 16,
+          "count": 18
+        },
+        {
+          "week": 17,
+          "count": 5
+        },
+        {
+          "week": 18,
+          "count": 10
+        },
+        {
+          "week": 19,
+          "count": 3
+        },
+        {
+          "week": 20,
+          "count": 9
+        },
+        {
+          "week": 21,
+          "count": 7
+        },
+        {
+          "week": 22,
+          "count": 5
+        },
+        {
+          "week": 23,
+          "count": 1
+        },
+        {
+          "week": 24,
+          "count": 4
+        },
+        {
+          "week": 25,
+          "count": 2
+        },
+        {
+          "week": 26,
+          "count": 1
+        },
+        {
+          "week": 28,
+          "count": 2
+        },
+        {
+          "week": 29,
+          "count": 1
+        },
+        {
+          "week": 30,
+          "count": 1
+        }
+      ],
+      "n": 930,
+      "n_ge20": 33,
+      "n_lt20": 897
+    }
+  },
+  "gradient_bins": [
+    {
+      "label": "5+ losses",
+      "n": 23,
+      "mean_age": 32.8,
+      "cls_dist": {
+        "CASE": 23
+      },
+      "orig_label_dist": {
+        "0": 23
+      },
+      "mean_loss": 6.91,
+      "mean_live": 0.52
+    },
+    {
+      "label": "4 losses",
+      "n": 27,
+      "mean_age": 31.3,
+      "cls_dist": {
+        "CASE": 26,
+        "EXCLUDE_AGE": 1
+      },
+      "orig_label_dist": {
+        "0": 27
+      },
+      "mean_loss": 4.63,
+      "mean_live": 1.11
+    },
+    {
+      "label": "3 losses",
+      "n": 95,
+      "mean_age": 29.0,
+      "cls_dist": {
+        "CASE": 94,
+        "EXCLUDE_AGE": 1
+      },
+      "orig_label_dist": {
+        "0": 95
+      },
+      "mean_loss": 3.25,
+      "mean_live": 1.16
+    },
+    {
+      "label": "2 losses, 0 live",
+      "n": 122,
+      "mean_age": 25.2,
+      "cls_dist": {
+        "CASE": 121,
+        "EXCLUDE_AGE": 1
+      },
+      "orig_label_dist": {
+        "0": 122
+      },
+      "mean_loss": 2.04,
+      "mean_live": 0.0
+    },
+    {
+      "label": "2 losses + live",
+      "n": 136,
+      "mean_age": 30.2,
+      "cls_dist": {
+        "CASE": 134,
+        "EXCLUDE_AGE": 2
+      },
+      "orig_label_dist": {
+        "0": 136
+      },
+      "mean_loss": 2.09,
+      "mean_live": 1.79
+    },
+    {
+      "label": "1 loss (GA≥20)",
+      "n": 50,
+      "mean_age": 29.4,
+      "cls_dist": {
+        "REVIEW": 49,
+        "EXCLUDE_AGE": 1
+      },
+      "orig_label_dist": {
+        "0": 45,
+        "1": 5
+      },
+      "mean_loss": 1.0,
+      "mean_live": 1.6
+    },
+    {
+      "label": "1 loss, 0 live",
+      "n": 59,
+      "mean_age": 25.4,
+      "cls_dist": {
+        "GRAY": 59
+      },
+      "orig_label_dist": {
+        "0": 59
+      },
+      "mean_loss": 1.0,
+      "mean_live": 0.0
+    },
+    {
+      "label": "1 loss + live",
+      "n": 260,
+      "mean_age": 30.4,
+      "cls_dist": {
+        "GRAY": 254,
+        "EXCLUDE_AGE": 6
+      },
+      "orig_label_dist": {
+        "0": 260
+      },
+      "mean_loss": 1.0,
+      "mean_live": 2.17
+    },
+    {
+      "label": "Ectopic/medical only",
+      "n": 2,
+      "mean_age": 35.5,
+      "cls_dist": {
+        "EXCLUDE_ECTOPIC": 2
+      },
+      "orig_label_dist": {
+        "0": 2
+      },
+      "mean_loss": 0.0,
+      "mean_live": 0.0
+    },
+    {
+      "label": "No pregnancies",
+      "n": 28,
+      "mean_age": 27.3,
+      "cls_dist": {
+        "UNCLASSIFIED": 18,
+        "EXCLUDE_AGE": 10
+      },
+      "orig_label_dist": {
+        "0": 27,
+        "1": 1
+      },
+      "mean_loss": 0.0,
+      "mean_live": 0.0
+    },
+    {
+      "label": "1 live birth only",
+      "n": 354,
+      "mean_age": 25.6,
+      "cls_dist": {
+        "CONTROL": 344,
+        "CONTROL_PROBABLE": 3,
+        "EXCLUDE_ECTOPIC": 3,
+        "EXCLUDE_MEDICAL": 1,
+        "EXCLUDE_AGE": 3
+      },
+      "orig_label_dist": {
+        "0": 32,
+        "1": 322
+      },
+      "mean_loss": 0.0,
+      "mean_live": 1.0
+    },
+    {
+      "label": "2 live births",
+      "n": 280,
+      "mean_age": 29.3,
+      "cls_dist": {
+        "CONTROL": 268,
+        "EXCLUDE_AGE": 7,
+        "EXCLUDE_ECTOPIC": 5
+      },
+      "orig_label_dist": {
+        "0": 52,
+        "1": 228
+      },
+      "mean_loss": 0.0,
+      "mean_live": 2.0
+    },
+    {
+      "label": "3+ live births",
+      "n": 285,
+      "mean_age": 33.2,
+      "cls_dist": {
+        "CONTROL": 249,
+        "EXCLUDE_MEDICAL": 5,
+        "EXCLUDE_ECTOPIC": 11,
+        "EXCLUDE_AGE": 17,
+        "CONTROL_PROBABLE": 3
+      },
+      "orig_label_dist": {
+        "0": 84,
+        "1": 201
+      },
+      "mean_loss": 0.0,
+      "mean_live": 3.31
+    },
+    {
+      "label": "Other",
+      "n": 94,
+      "mean_age": 29.6,
+      "cls_dist": {
+        "REVIEW": 67,
+        "CASE_PROBABLE": 27
+      },
+      "orig_label_dist": {
+        "0": 93,
+        "1": 1
+      },
+      "mean_loss": 2.29,
+      "mean_live": 1.29
+    }
+  ],
+  "loss_distribution": [
+    {
+      "losses": 0,
+      "count": 1088
+    },
+    {
+      "losses": 1,
+      "count": 324
+    },
+    {
+      "losses": 2,
+      "count": 258
+    },
+    {
+      "losses": 3,
+      "count": 95
+    },
+    {
+      "losses": 4,
+      "count": 27
+    },
+    {
+      "losses": 5,
+      "count": 10
+    },
+    {
+      "losses": 6,
+      "count": 7
+    },
+    {
+      "losses": 7,
+      "count": 2
+    },
+    {
+      "losses": 10,
+      "count": 4
+    }
+  ],
+  "label_crosstab": [
+    {
+      "orig": "case(0)",
+      "computed": "CASE",
+      "n": 425
+    },
+    {
+      "orig": "case(0)",
+      "computed": "CTRL",
+      "n": 127
+    },
+    {
+      "orig": "case(0)",
+      "computed": "OTHER",
+      "n": 505
+    },
+    {
+      "orig": "ctrl(1)",
+      "computed": "CTRL",
+      "n": 740
+    },
+    {
+      "orig": "ctrl(1)",
+      "computed": "OTHER",
+      "n": 18
+    }
+  ],
+  "top_patterns": [
+    {
+      "pattern": "1",
+      "readable": "Live birth",
+      "count": 331,
+      "n_loss": 0,
+      "n_live": 1,
+      "n_abort": 0
+    },
+    {
+      "pattern": "11",
+      "readable": "Live birth → Live birth",
+      "count": 234,
+      "n_loss": 0,
+      "n_live": 2,
+      "n_abort": 0
+    },
+    {
+      "pattern": "111",
+      "readable": "Live birth → Live birth → Live birth",
+      "count": 163,
+      "n_loss": 0,
+      "n_live": 3,
+      "n_abort": 0
+    },
+    {
+      "pattern": "66",
+      "readable": "Non-developing → Non-developing",
+      "count": 63,
+      "n_loss": 2,
+      "n_live": 0,
+      "n_abort": 0
+    },
+    {
+      "pattern": "1111",
+      "readable": "Live birth → Live birth → Live birth → Live birth",
+      "count": 41,
+      "n_loss": 0,
+      "n_live": 4,
+      "n_abort": 0
+    },
+    {
+      "pattern": "6",
+      "readable": "Non-developing",
+      "count": 33,
+      "n_loss": 1,
+      "n_live": 0,
+      "n_abort": 0
+    },
+    {
+      "pattern": "16",
+      "readable": "Live birth → Non-developing",
+      "count": 30,
+      "n_loss": 1,
+      "n_live": 1,
+      "n_abort": 0
+    },
+    {
+      "pattern": "33",
+      "readable": "Miscarriage → Miscarriage",
+      "count": 24,
+      "n_loss": 2,
+      "n_live": 0,
+      "n_abort": 0
+    },
+    {
+      "pattern": "116",
+      "readable": "Live birth → Live birth → Non-developing",
+      "count": 21,
+      "n_loss": 1,
+      "n_live": 2,
+      "n_abort": 0
+    },
+    {
+      "pattern": "61",
+      "readable": "Non-developing → Live birth",
+      "count": 20,
+      "n_loss": 1,
+      "n_live": 1,
+      "n_abort": 0
+    },
+    {
+      "pattern": "3",
+      "readable": "Miscarriage",
+      "count": 18,
+      "n_loss": 1,
+      "n_live": 0,
+      "n_abort": 0
+    },
+    {
+      "pattern": "36",
+      "readable": "Miscarriage → Non-developing",
+      "count": 18,
+      "n_loss": 2,
+      "n_live": 0,
+      "n_abort": 0
+    },
+    {
+      "pattern": "661",
+      "readable": "Non-developing → Non-developing → Live birth",
+      "count": 15,
+      "n_loss": 2,
+      "n_live": 1,
+      "n_abort": 0
+    },
+    {
+      "pattern": "1141",
+      "readable": "Live birth → Live birth → Elective abortion → Live birth",
+      "count": 15,
+      "n_loss": 0,
+      "n_live": 3,
+      "n_abort": 1
+    },
+    {
+      "pattern": "311",
+      "readable": "Miscarriage → Live birth → Live birth",
+      "count": 13,
+      "n_loss": 1,
+      "n_live": 2,
+      "n_abort": 0
+    },
+    {
+      "pattern": "13",
+      "readable": "Live birth → Miscarriage",
+      "count": 12,
+      "n_loss": 1,
+      "n_live": 1,
+      "n_abort": 0
+    },
+    {
+      "pattern": "141",
+      "readable": "Live birth → Elective abortion → Live birth",
+      "count": 12,
+      "n_loss": 0,
+      "n_live": 2,
+      "n_abort": 1
+    },
+    {
+      "pattern": "63",
+      "readable": "Non-developing → Miscarriage",
+      "count": 12,
+      "n_loss": 2,
+      "n_live": 0,
+      "n_abort": 0
+    },
+    {
+      "pattern": "611",
+      "readable": "Non-developing → Live birth → Live birth",
+      "count": 11,
+      "n_loss": 1,
+      "n_live": 2,
+      "n_abort": 0
+    },
+    {
+      "pattern": "1166",
+      "readable": "Live birth → Live birth → Non-developing → Non-developing",
+      "count": 11,
+      "n_loss": 2,
+      "n_live": 2,
+      "n_abort": 0
+    },
+    {
+      "pattern": "161",
+      "readable": "Live birth → Non-developing → Live birth",
+      "count": 10,
+      "n_loss": 1,
+      "n_live": 2,
+      "n_abort": 0
+    },
+    {
+      "pattern": "41",
+      "readable": "Elective abortion → Live birth",
+      "count": 9,
+      "n_loss": 0,
+      "n_live": 1,
+      "n_abort": 1
+    },
+    {
+      "pattern": "1116",
+      "readable": "Live birth → Live birth → Live birth → Non-developing",
+      "count": 9,
+      "n_loss": 1,
+      "n_live": 3,
+      "n_abort": 0
+    },
+    {
+      "pattern": "166",
+      "readable": "Live birth → Non-developing → Non-developing",
+      "count": 9,
+      "n_loss": 2,
+      "n_live": 1,
+      "n_abort": 0
+    },
+    {
+      "pattern": "114",
+      "readable": "Live birth → Live birth → Elective abortion",
+      "count": 9,
+      "n_loss": 0,
+      "n_live": 2,
+      "n_abort": 1
+    }
+  ],
+  "age_dist_case": [
+    {
+      "age_bin": "15-19",
+      "count": 13
+    },
+    {
+      "age_bin": "20-24",
+      "count": 100
+    },
+    {
+      "age_bin": "25-29",
+      "count": 128
+    },
+    {
+      "age_bin": "30-34",
+      "count": 89
+    },
+    {
+      "age_bin": "35-39",
+      "count": 52
+    },
+    {
+      "age_bin": "40-44",
+      "count": 16
+    }
+  ],
+  "age_dist_control": [
+    {
+      "age_bin": "15-19",
+      "count": 25
+    },
+    {
+      "age_bin": "20-24",
+      "count": 209
+    },
+    {
+      "age_bin": "25-29",
+      "count": 277
+    },
+    {
+      "age_bin": "30-34",
+      "count": 217
+    },
+    {
+      "age_bin": "35-39",
+      "count": 108
+    },
+    {
+      "age_bin": "40-44",
+      "count": 24
+    },
+    {
+      "age_bin": "45-49",
+      "count": 1
+    }
+  ],
+  "age_dist_gray": [
+    {
+      "age_bin": "15-19",
+      "count": 3
+    },
+    {
+      "age_bin": "20-24",
+      "count": 78
+    },
+    {
+      "age_bin": "25-29",
+      "count": 94
+    },
+    {
+      "age_bin": "30-34",
+      "count": 82
+    },
+    {
+      "age_bin": "35-39",
+      "count": 41
+    },
+    {
+      "age_bin": "40-44",
+      "count": 13
+    },
+    {
+      "age_bin": "45-49",
+      "count": 2
+    }
+  ],
+  "age_dist_review": [
+    {
+      "age_bin": "15-19",
+      "count": 5
+    },
+    {
+      "age_bin": "20-24",
+      "count": 30
+    },
+    {
+      "age_bin": "25-29",
+      "count": 33
+    },
+    {
+      "age_bin": "30-34",
+      "count": 25
+    },
+    {
+      "age_bin": "35-39",
+      "count": 21
+    },
+    {
+      "age_bin": "40-44",
+      "count": 2
+    }
+  ]
+}

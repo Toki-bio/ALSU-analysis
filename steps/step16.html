@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 16: RPL GWAS - ALSU Pipeline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page-wrapper { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .sidebar { width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px; }
+        .roadmap-mini { display: flex; flex-direction: column; gap: 8px; }
+        .roadmap-mini a { padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em; }
+        .roadmap-mini a:hover { background: #f0f0f0; border-left-color: #666; }
+        .roadmap-mini a.current { background: #555; color: white; border-left-color: #333; font-weight: 600; }
+        .main-content { flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .search-bar { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        .search-bar input { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em; }
+        .search-bar input:focus { outline: none; border-color: #667eea; }
+        .header { background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px; }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block; }
+        .back-link:hover { color: white; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        .content { padding: 30px; }
+        @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
+        h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
+        h3 { color: #555; margin-top: 25px; margin-bottom: 12px; font-size: 1.15em; }
+        h4 { color: #666; margin-top: 18px; margin-bottom: 8px; }
+        p, li { color: #666; line-height: 1.7; margin-bottom: 12px; }
+        ul, ol { margin-left: 25px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .command-output { background: #f5f5f5; border: 1px solid #ddd; padding: 12px 15px; border-radius: 5px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; color: #333; }
+        .stat-box { background: #f0f7ff; padding: 15px 20px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 20px 0; }
+        .stat-label { font-weight: 600; color: #1976d2; }
+        .stat-value { color: #333; margin-left: 10px; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; border-radius: 5px; margin: 20px 0; }
+        .success strong { color: #155724; }
+        .important { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0; }
+        .important strong { color: #856404; }
+        .info-box { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; border-radius: 5px; margin: 20px 0; }
+        .info-box strong { color: #0d47a1; }
+        .warn-box { background: #fce4ec; padding: 15px; border-left: 4px solid #e53935; border-radius: 5px; margin: 20px 0; }
+        .warn-box strong { color: #b71c1c; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; color: #333; }
+        tr:hover { background: #f9f9f9; }
+        .mono { font-family: Consolas, Menlo, monospace; font-size: 0.9em; }
+        .tier-card { background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .tier-card h4 { margin-top: 0; }
+        .status-done { background: #c8e6c9; color: #2e7d32; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+        .status-pending { background: #fff9c4; color: #f57f17; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+        .status-next { background: #ffccbc; color: #bf360c; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+        .formula { background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px 20px; border-radius: 6px; margin: 15px 0; font-family: 'Courier New', monospace; line-height: 1.8; font-size: 0.95em; }
+        .chart-container { background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; overflow-x: auto; }
+        .footer { background: #f5f5f5; padding: 20px 30px; text-align: center; color: #999; font-size: 0.85em; border-top: 1px solid #ddd; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+    <aside class="sidebar">
+        <h3>Pipeline Steps</h3>
+        <div class="roadmap-mini">
+            <a href="step0.html">Step 0: Investigation</a>
+            <a href="step1.html">Step 1: Missingness</a>
+            <a href="step2.html">Step 2: IBD Dedup</a>
+            <a href="step3.html">Step 3: SNP QC</a>
+            <a href="step4.html">Step 4: Imputation</a>
+            <a href="step5.html">Step 5: ID Normalize</a>
+            <a href="step6.html">Step 6: Final QC</a>
+            <a href="step7.html">Step 7: PCA Analysis</a>
+            <a href="step8.html">Step 8: Global PCA</a>
+            <a href="step9.html">Step 9: Fst Analysis</a>
+            <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+            <a href="step11.html">Step 11: ADMIXTURE</a>
+            <a href="step12.html">Step 12: Annotation</a>
+            <a href="step13.html">Step 13: LD Analysis</a>
+            <a href="step14.html">Step 14: Fst &amp; MDS</a>
+            <a href="step15.html">Step 15: ROH &amp; IBD</a>
+            <a href="step16.html" class="current">Step 16: GWAS</a>
+            <a href="next_steps.html">Next Steps</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search across all steps...">
+        </div>
+
+        <div class="header">
+            <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
+            <h1>Step 16: RPL GWAS</h1>
+            <p>Genome-wide association study for recurrent pregnancy loss in <span id="nCases">273</span> cases and <span id="nControls">509</span> controls</p>
+            <span class="step-badge" id="statusBadge">&#10003; Complete &mdash; April 2026</span>
+        </div>
+
+        <div class="content">
+
+<!-- ============================================================ -->
+<!-- 1. OVERVIEW -->
+<!-- ============================================================ -->
+<h2>1. Overview</h2>
+
+<p>
+    This step runs a logistic regression GWAS for <strong>recurrent pregnancy loss (RPL)</strong>
+    using the phenotype classification from <a href="../pre_gwas.html">Pre-GWAS analysis</a> and
+    covariates derived from Steps 7 (PCA), 11 (ADMIXTURE), and 15 (ROH).
+</p>
+
+<div class="grid-2">
+    <div class="stat-box">
+        <span class="stat-label">GWAS-ready samples</span><br>
+        <span class="stat-value" style="font-size: 1.5em; font-weight: 700;" id="nTotal">782</span>
+        <br><span style="color:#888; font-size:0.9em;">273 cases + 509 controls</span>
+    </div>
+    <div class="stat-box">
+        <span class="stat-label">SNPs tested</span><br>
+        <span class="stat-value" style="font-size: 1.5em; font-weight: 700;" id="nSnps">~9.9M</span>
+        <br><span style="color:#888; font-size:0.9em;">Post-imputation HQ clean (spring2026)</span>
+    </div>
+</div>
+
+<div class="info-box">
+    <strong>Three-tier testing strategy:</strong>
+    <ol style="margin-top:8px;">
+        <li><strong>Tier 1 &mdash; PBS candidates</strong> (8 SNPs): Bonferroni threshold p&nbsp;&lt;&nbsp;0.00625</li>
+        <li><strong>Tier 2 &mdash; Known RPL variants</strong> (4 SNPs: F5&nbsp;Leiden, F2&nbsp;G20210A, MTHFR&nbsp;C677T, PAI-1&nbsp;4G/5G)</li>
+        <li><strong>Tier 3 &mdash; Genome-wide scan</strong>: Standard threshold p&nbsp;&lt;&nbsp;5&times;10<sup>&minus;8</sup></li>
+    </ol>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- 2. INPUT PREPARATION -->
+<!-- ============================================================ -->
+<h2>2. Input Preparation</h2>
+
+<h3>2.1. Phenotype File</h3>
+<p>
+    Generated by <code>scripts/prepare_gwas_covariates.py</code>, which reads the clinical
+    spreadsheet (1,815 subjects), applies the same classification logic as
+    <a href="../pre_gwas.html">Pre-GWAS</a>, and matches to genotype IDs.
+</p>
+
+<div class="command-output" id="prepOutput">Loading clinical phenotype data...
+  1815 samples in CSV
+Loading PCA eigenvectors...
+  1047 genotyped samples
+Loading ADMIXTURE K=2 Q-values...
+  1047 Q-values
+Loading ROH F_ROH values...
+  1047 ROH records
+
+=== GWAS Preparation Summary ===
+Phenotype samples:  1815
+Genotyped samples:  1047
+Matched:            1011
+Unmatched genotype: 36
+  CASE:     270
+  CONTROL:  499
+  GRAY:     119  (excluded from GWAS)
+  REVIEW:   62   (excluded from GWAS)
+  Other:    61   (excluded from GWAS)
+  GWAS-ready: 270 cases + 499 controls = 769
+  Missing BMI: 27
+  Missing age: 3</div>
+
+<h4>ID Mapping</h4>
+<p>
+    Genotype IDs use a <code>FID_REGION-SAMPLE</code> format (e.g., <code>2_01-02</code>);
+    phenotype IDs are <code>REGION-SAMPLE</code> (e.g., <code>01-02</code>). Conversion
+    strips the numeric prefix before the first underscore.
+    96.5% match rate (1,011 of 1,047 genotyped samples matched to phenotype data).
+</p>
+
+<h4>Case/Control Definition</h4>
+<table>
+    <tr><th>Group</th><th>Criteria</th><th>Total</th><th>Genotyped</th></tr>
+    <tr style="background:#fce4ec;">
+        <td><strong>CASE</strong></td>
+        <td>&ge;2 intrauterine losses at GA&nbsp;&lt;&nbsp;20 weeks (codes 2, 3, 6)</td>
+        <td>398</td>
+        <td><strong>270</strong></td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td><strong>CONTROL</strong></td>
+        <td>0 losses, &ge;1 live birth, not currently pregnant</td>
+        <td>861</td>
+        <td><strong>499</strong></td>
+    </tr>
+    <tr>
+        <td>GRAY</td>
+        <td>Exactly 1 loss (sporadic)</td>
+        <td>313</td>
+        <td>119 (excluded)</td>
+    </tr>
+    <tr>
+        <td>REVIEW</td>
+        <td>Loss events at GA&ge;20 &mdash; likely miscoded stillbirths</td>
+        <td>116</td>
+        <td>62 (excluded)</td>
+    </tr>
+    <tr>
+        <td>Other</td>
+        <td>Age outside 18&ndash;45, ectopic-only, unclassified</td>
+        <td>&mdash;</td>
+        <td>61 (excluded)</td>
+    </tr>
+</table>
+
+
+<h3>2.2. Covariates</h3>
+<p>Seven covariates included in the logistic regression model:</p>
+
+<table>
+    <tr><th>Covariate</th><th>Source</th><th>Type</th><th>Rationale</th></tr>
+    <tr>
+        <td><strong>AGE</strong></td>
+        <td>Clinical CSV col&nbsp;7</td>
+        <td>Continuous</td>
+        <td>Maternal age at enrollment; aneuploidy risk increases exponentially after 35</td>
+    </tr>
+    <tr>
+        <td><strong>BMI</strong></td>
+        <td>Clinical CSV col&nbsp;12</td>
+        <td>Continuous</td>
+        <td>Obesity associated with miscarriage (OR~1.3&ndash;1.7)</td>
+    </tr>
+    <tr>
+        <td><strong>PC1, PC2, PC3</strong></td>
+        <td><a href="step7.html">Step 7</a> PCA</td>
+        <td>Continuous</td>
+        <td>Population structure correction (capture residual stratification beyond ADMIXTURE)</td>
+    </tr>
+    <tr>
+        <td><strong>Q1</strong></td>
+        <td><a href="step11.html">Step 11</a> ADMIXTURE K=2</td>
+        <td>Continuous (0&ndash;1)</td>
+        <td>Western ancestry proportion; birthplace explains 8.2% of variance &mdash; must control for admixture cline</td>
+    </tr>
+    <tr>
+        <td><strong>F_ROH</strong></td>
+        <td><a href="step15.html">Step 15</a> ROH</td>
+        <td>Continuous</td>
+        <td>Inbreeding coefficient F<sub>ROH</sub> = total ROH length / genome length; median 0.015</td>
+    </tr>
+</table>
+
+<div class="important">
+    <strong>Covariates NOT included:</strong>
+    <ul style="margin-top:8px;">
+        <li><strong>Birthplace</strong> &mdash; collinear with Q1 and PCs; would absorb the same variance. PCs + Q1 are preferred (continuous, genome-derived)</li>
+        <li><strong>Ethnicity</strong> &mdash; not significant at any K (p=0.345 at K=2; see <a href="next_steps.html">&sect;2.3</a>)</li>
+        <li><strong>Gravidity</strong> &mdash; ascertainment bias: cases by definition have more pregnancies. Including it as a covariate could mask the signal</li>
+    </ul>
+</div>
+
+<h3>2.3. GWAS Model</h3>
+<div class="formula">
+    logit(P[RPL=1]) = &beta;<sub>0</sub> + &beta;<sub>SNP</sub>&middot;dosage + &beta;<sub>AGE</sub>&middot;AGE + &beta;<sub>BMI</sub>&middot;BMI + &beta;<sub>PC1</sub>&middot;PC1 + &beta;<sub>PC2</sub>&middot;PC2 + &beta;<sub>PC3</sub>&middot;PC3 + &beta;<sub>Q1</sub>&middot;Q1 + &beta;<sub>F<sub>ROH</sub></sub>&middot;F_ROH
+</div>
+<p>
+    PLINK2 <code>--glm</code> uses Firth logistic regression (hybrid mode) by default when cell counts are small,
+    which prevents separation issues with rare variants in small sample sizes.
+</p>
+
+
+<!-- ============================================================ -->
+<!-- 3. TIER 1: PBS CANDIDATES -->
+<!-- ============================================================ -->
+<h2>3. Tier 1: PBS Candidate Association</h2>
+
+<p>
+    Eight Uzbek-specific variants identified by Population Branch Statistic (PBS &ge; 0.3,
+    <a href="step10.html">Step 10</a>) are tested for association with RPL. The hypothesis is that
+    population-specific selection signals may overlap with reproductive fitness traits.
+</p>
+
+<table>
+    <tr>
+        <th>SNP</th>
+        <th>rsID</th>
+        <th>Gene</th>
+        <th>PBS</th>
+        <th>Consequence</th>
+        <th>OR (95% CI)</th>
+        <th>P</th>
+    </tr>
+    <tr>
+        <td class="mono">12:22967890:G:T</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs116987492" target="_blank">rs116987492</a></td>
+        <td>LINC02955</td>
+        <td>2.99</td>
+        <td>intron_variant</td>
+        <td id="pbs1_or">&mdash;</td>
+        <td id="pbs1_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td class="mono">12:125520190:C:T</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs34013262" target="_blank">rs34013262</a></td>
+        <td>TMEM132B</td>
+        <td>2.69</td>
+        <td>intron_variant</td>
+        <td id="pbs2_or">&mdash;</td>
+        <td id="pbs2_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td class="mono">12:5664803:T:G</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs55643000" target="_blank">rs55643000</a></td>
+        <td>ANO2</td>
+        <td>2.67</td>
+        <td>intron_variant</td>
+        <td id="pbs3_or">&mdash;</td>
+        <td id="pbs3_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td class="mono">11:20665570:T:G</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs1555048813" target="_blank">rs1555048813</a></td>
+        <td>NELL1</td>
+        <td>1.14</td>
+        <td>upstream_gene_variant</td>
+        <td id="pbs4_or">&mdash;</td>
+        <td id="pbs4_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td class="mono">5:53879140:C:A</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs786934" target="_blank">rs786934</a></td>
+        <td>ARL15</td>
+        <td>0.53</td>
+        <td>downstream_gene_variant</td>
+        <td id="pbs5_or">&mdash;</td>
+        <td id="pbs5_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td class="mono">3:133749168:A:G</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs1212890352" target="_blank">rs1212890352</a></td>
+        <td>TF (Transferrin)</td>
+        <td>0.49</td>
+        <td>intron_variant</td>
+        <td id="pbs6_or">&mdash;</td>
+        <td id="pbs6_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td class="mono">11:207698:C:T</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs1855216054" target="_blank">rs1855216054</a></td>
+        <td>BET1L</td>
+        <td>0.38</td>
+        <td>upstream_gene_variant</td>
+        <td id="pbs7_or">&mdash;</td>
+        <td id="pbs7_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td class="mono">10:8512594:G:A</td>
+        <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs57082413" target="_blank">rs57082413</a></td>
+        <td>KRT8P37</td>
+        <td>0.32</td>
+        <td>downstream_gene_variant</td>
+        <td id="pbs8_or">&mdash;</td>
+        <td id="pbs8_p">&mdash;</td>
+    </tr>
+</table>
+
+<div class="info-box">
+    <strong>Bonferroni threshold:</strong> p &lt; 0.05 / 8 = <strong>0.00625</strong>.
+    This is the significance threshold for 8 independent tests.
+    <br>
+    <strong>Note:</strong> None of these 8 SNPs have GWAS Catalog or ClinVar hits (checked via Ensembl API,
+    <a href="step12.html">Step 12</a>). The BET1L variant (rs1855216054) has 13 GTEx eQTL associations,
+    suggesting functional regulatory activity.
+</div>
+
+
+<!-- ============================================================ -->
+<!-- 4. TIER 2: KNOWN RPL VARIANTS -->
+<!-- ============================================================ -->
+<h2>4. Tier 2: Known RPL Variant Screen</h2>
+
+<p>
+    Four well-established pregnancy loss risk variants screened in the Uzbek cohort.
+    Allele frequencies in Central Asian populations are <strong>poorly characterized</strong> &mdash;
+    even a simple frequency comparison vs. European populations is publication-worthy.
+</p>
+
+<table>
+    <tr>
+        <th>Gene</th>
+        <th>rsID</th>
+        <th>Variant</th>
+        <th>EUR freq</th>
+        <th>UZB freq</th>
+        <th>Published RPL OR</th>
+        <th>OR (this study)</th>
+        <th>P</th>
+    </tr>
+    <tr>
+        <td><strong>F5</strong> (Factor V)</td>
+        <td>rs6025</td>
+        <td>Leiden (R506Q)</td>
+        <td>3&ndash;5%</td>
+        <td id="f5_freq">&mdash;</td>
+        <td>2.0&ndash;3.5</td>
+        <td id="f5_or">&mdash;</td>
+        <td id="f5_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td><strong>F2</strong> (Prothrombin)</td>
+        <td>rs1799963</td>
+        <td>G20210A</td>
+        <td>1&ndash;3%</td>
+        <td id="f2_freq">&mdash;</td>
+        <td>2.0&ndash;2.5</td>
+        <td id="f2_or">&mdash;</td>
+        <td id="f2_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td><strong>MTHFR</strong></td>
+        <td>rs1801133</td>
+        <td>C677T (A222V)</td>
+        <td>25&ndash;35%</td>
+        <td id="mthfr_freq">&mdash;</td>
+        <td>1.2&ndash;1.5 (TT)</td>
+        <td id="mthfr_or">&mdash;</td>
+        <td id="mthfr_p">&mdash;</td>
+    </tr>
+    <tr>
+        <td><strong>SERPINE1</strong> (PAI-1)</td>
+        <td>rs1799889</td>
+        <td>4G/5G promoter</td>
+        <td>~50%</td>
+        <td id="pai1_freq">&mdash;</td>
+        <td>1.3&ndash;1.5</td>
+        <td id="pai1_or">&mdash;</td>
+        <td id="pai1_p">&mdash;</td>
+    </tr>
+</table>
+
+<div class="important">
+    <strong>Note on imputed data:</strong> These variants have rsID annotations. If the imputed
+    dataset (Step 4, BEAGLE) uses CHR:POS:REF:ALT format, we need to map rsIDs to positional
+    IDs. If variants were not imputed (not on the original DRAGEN array or failed imputation QC),
+    they will be absent from the results.
+</div>
+
+
+<!-- ============================================================ -->
+<!-- 5. TIER 3: GENOME-WIDE SCAN -->
+<!-- ============================================================ -->
+<h2>5. Tier 3: Genome-Wide Scan</h2>
+
+<h3>5.1. PLINK2 Command</h3>
+<div class="code-block">plink2 --bfile UZB_imputed_HQ_clean \
+    --pheno gwas_pheno.txt --pheno-name RPL --1 \
+    --covar gwas_covar.txt \
+    --covar-name AGE,BMI,PC1,PC2,PC3 \
+    --covar-variance-standardize \
+    --glm hide-covar cols=chrom,pos,ref,alt,a1freq,test,nobs,orbeta,se,ci,tz,p \
+    --ci 0.95 \
+    --out tier3_gwas \
+    --threads 16 --memory 200000</div>
+
+<h3>5.2. Power Analysis</h3>
+
+<div class="warn-box">
+    <strong>Sample size limitation:</strong>
+    With 273 cases and 509 controls, genome-wide power is limited:
+</div>
+
+<table>
+    <tr><th>MAF</th><th>OR</th><th>Power (GW, &alpha;=5&times;10<sup>&minus;8</sup>)</th><th>Power (suggestive, &alpha;=1&times;10<sup>&minus;5</sup>)</th></tr>
+    <tr><td>0.30</td><td>1.5</td><td>&lt;5%</td><td>~15%</td></tr>
+    <tr><td>0.30</td><td>2.0</td><td>~20%</td><td>~55%</td></tr>
+    <tr><td>0.10</td><td>2.0</td><td>~8%</td><td>~30%</td></tr>
+    <tr><td>0.10</td><td>3.0</td><td>~40%</td><td>~75%</td></tr>
+    <tr><td>0.05</td><td>3.0</td><td>~15%</td><td>~45%</td></tr>
+</table>
+
+<div class="info-box">
+    <strong>Interpretation:</strong> This study is powered to detect <strong>large effects</strong>
+    (OR &ge; 2.0) at common variants (MAF &ge; 0.10) at the suggestive level. Genome-wide
+    significance requires very large effects (OR &gt; 3.0). This is realistic for:
+    <ul style="margin-top:8px;">
+        <li>Known thrombophilia variants with large published ORs (e.g., Factor V Leiden OR&sim;3)</li>
+        <li>Population-specific variants that may have larger effects in the Uzbek genetic background</li>
+        <li>Generating suggestive signals (p&nbsp;&lt;&nbsp;1&times;10<sup>&minus;5</sup>) for replication in larger cohorts</li>
+    </ul>
+</div>
+
+
+<h3>5.3. Results</h3>
+
+<div class="success">
+    <strong>GWAS completed successfully</strong> &mdash; April 13, 2026 on DRAGEN (16 threads, 200 GB RAM).
+    Genome-wide scan of 9,920,024 valid SNPs in 94 seconds. Firth-corrected logistic regression.
+</div>
+
+<div class="grid-2">
+    <div class="stat-box">
+        <span class="stat-label">Valid SNPs tested</span><br>
+        <span class="stat-value" style="font-size:1.3em; font-weight:700;">9,920,024</span>
+    </div>
+    <div class="stat-box">
+        <span class="stat-label">Suggestive hits (p &lt; 10<sup>&minus;5</sup>)</span><br>
+        <span class="stat-value" style="font-size:1.3em; font-weight:700;">198</span>
+    </div>
+</div>
+
+<div class="important">
+    <strong>No genome-wide significant hits (p &lt; 5&times;10<sup>&minus;8</sup>).</strong>
+    This is expected given the limited sample size (273 cases). The strongest signal is a cluster of
+    correlated SNPs at <strong>chr18:70.47&ndash;70.49 Mb</strong> (NETO1 locus, OR&nbsp;&asymp;&nbsp;0.35,
+    p&nbsp;&asymp;&nbsp;3.2&times;10<sup>&minus;7</sup>) suggesting a protective effect.
+</div>
+
+<!-- Manhattan plot -->
+<h4>Manhattan Plot</h4>
+<div class="chart-container" style="position:relative;">
+    <canvas id="manhattanCanvas" width="1100" height="400" style="max-width:100%;"></canvas>
+    <div id="manhattanTooltip" style="display:none;position:absolute;background:rgba(0,0,0,0.85);color:#fff;padding:6px 10px;border-radius:4px;font-size:0.8em;pointer-events:none;z-index:10;"></div>
+</div>
+
+<!-- QQ plot -->
+<h4>QQ Plot</h4>
+<div class="grid-2">
+    <div class="chart-container" style="position:relative;">
+        <canvas id="qqCanvas" width="500" height="500" style="max-width:100%;"></canvas>
+    </div>
+    <div>
+        <h4>Genomic Inflation</h4>
+        <div class="stat-box">
+            <span class="stat-label">&lambda;<sub>GC</sub></span>
+            <span class="stat-value" id="lambdaGC" style="font-size:1.5em; font-weight:700;">0.978</span>
+            <br><span style="color:#888;font-size:0.9em;">Target: ~1.0 (values &gt;1.05 indicate residual stratification)</span>
+        </div>
+        <div class="success" style="margin-top:15px;">
+            <strong>&lambda;<sub>GC</sub> = 0.978</strong> &mdash; well-calibrated. Slight deflation typical
+            for small samples with Firth correction. No evidence of residual population stratification.
+        </div>
+        <p style="margin-top:12px;">
+            <strong>Model formula:</strong><br>
+            <code>logit(RPL) ~ SNP + AGE + BMI + PC1 + PC2 + PC3</code>
+        </p>
+        <p>
+            <strong>Note:</strong> Q1 (ADMIXTURE K=2) was dropped due to multicollinearity with PC1
+            (VIF too high). PCs alone adequately capture population structure.
+        </p>
+    </div>
+</div>
+
+<h4>Top 20 Genome-Wide Hits</h4>
+<table id="topHitsTable">
+    <tr>
+        <th>#</th>
+        <th>CHR</th>
+        <th>POS</th>
+        <th>rsID</th>
+        <th>OR</th>
+        <th>95% CI</th>
+        <th>P</th>
+        <th>&minus;log<sub>10</sub>P</th>
+    </tr>
+</table>
+<p style="color:#888;font-size:0.85em;">Table populated dynamically from <code>data/gwas_results.json</code></p>
+
+
+<!-- ============================================================ -->
+<!-- 6. EXECUTION PLAN -->
+<!-- ============================================================ -->
+<h2>6. Execution Plan</h2>
+
+<table>
+    <tr><th>#</th><th>Step</th><th>Status</th><th>Command / Script</th></tr>
+    <tr style="background:#e8f5e9;">
+        <td>1</td>
+        <td>Prepare phenotype + covariate files</td>
+        <td><span class="status-done">DONE</span></td>
+        <td><code>python scripts/prepare_gwas_covariates.py</code></td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td>2</td>
+        <td>Upload to DRAGEN</td>
+        <td><span class="status-done">DONE</span></td>
+        <td>Uploaded to <code>/staging/ALSU-analysis/spring2026/gwas/</code></td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td>3</td>
+        <td>Verify BFILE exists on DRAGEN</td>
+        <td><span class="status-done">DONE</span></td>
+        <td><code>UZB_imputed_HQ_clean</code> &mdash; 1090 samples, 9.98M SNPs</td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td>4</td>
+        <td>Run three-tier GWAS</td>
+        <td><span class="status-done">DONE</span></td>
+        <td>Completed April 13, 2026 (94s genome-wide scan)</td>
+    </tr>
+    <tr style="background:#e8f5e9;">
+        <td>5</td>
+        <td>Download results &amp; update this page</td>
+        <td><span class="status-done">DONE</span></td>
+        <td>Manhattan, QQ, tables populated</td>
+    </tr>
+</table>
+
+
+<!-- ============================================================ -->
+<!-- 7. METHODOLOGY NOTES -->
+<!-- ============================================================ -->
+<h2>7. Methodology Notes</h2>
+
+<h3>7.1. Why Logistic Regression (not Mixed Models)?</h3>
+<p>
+    For small sample sizes with modest relatedness, PLINK2 <code>--glm</code> with Firth regression
+    is appropriate. BOLT-LMM / SAIGE are recommended for:
+</p>
+<ul>
+    <li>N &gt; 5,000 (mixed models lose power below this)</li>
+    <li>Heavy cryptic relatedness (our PI_HAT &gt; 0.0884: only 428 of 547,581 pairs = 0.08%)</li>
+    <li>Unbalanced case:control ratios &gt; 1:10</li>
+</ul>
+<p>
+    Our ratio is 273:509 (1:1.86) &mdash; well balanced. <strong>PCs 1&ndash;3</strong> adequately
+    control for population structure in this dataset. Q1 (ADMIXTURE K=2) was dropped due to
+    collinearity with PC1 (VIF too high). &lambda;<sub>GC</sub> = 0.978 confirms no inflation.
+</p>
+
+<h3>7.2. Sensitivity Analyses (Planned)</h3>
+<ol>
+    <li><strong>Strict ESHRE definition</strong>: &ge;3 consecutive losses as CASE (reduces cases to ~118 genotyped). Test for enrichment of large-effect variants.</li>
+    <li><strong>Include REVIEW samples</strong>: Reclassify 62 REVIEW (loss at GA&ge;20) as CASE. Tests robustness to outcome ascertainment.</li>
+    <li><strong>Include GRAY as cases</strong>: Sporadic loss (&ge;1 loss) vs. controls. Broadest definition, maximizes power (270+119=389 cases).</li>
+    <li><strong>Exclude 27 missing-BMI samples</strong>: Test robustness to covariate missingness.</li>
+</ol>
+
+<h3>7.3. Files Reference</h3>
+<table>
+    <tr><th>File</th><th>Location</th><th>Description</th></tr>
+    <tr><td><code>gwas_pheno.txt</code></td><td><code>data/</code></td><td>Phenotype file: FID, IID, RPL (1/0/NA)</td></tr>
+    <tr><td><code>gwas_covar.txt</code></td><td><code>data/</code></td><td>Covariates: AGE, BMI, PC1-10, Q1</td></tr>
+    <tr><td><code>gwas_sample_map.txt</code></td><td><code>data/</code></td><td>Sample mapping: genotype ID &harr; phenotype ID &harr; classification</td></tr>
+    <tr><td><code>gwas_prep_stats.json</code></td><td><code>data/</code></td><td>Preparation statistics (JSON)</td></tr>
+    <tr><td><code>gwas_results.json</code></td><td><code>data/</code></td><td>Visualization data: Manhattan, QQ, top hits (2 MB)</td></tr>
+    <tr><td><code>tier3_plot.tsv.gz</code></td><td><code>data/</code></td><td>Full genome-wide results: CHR, POS, ID, OR, SE, P (154 MB)</td></tr>
+    <tr><td><code>tier1_pbs.tsv</code></td><td><code>data/</code></td><td>PBS candidate association results (8 SNPs)</td></tr>
+    <tr><td><code>tier2_rpl_known.tsv</code></td><td><code>data/</code></td><td>Known RPL variant results (3 of 4 found)</td></tr>
+    <tr><td><code>run_gwas.sh</code></td><td><code>scripts/</code></td><td>DRAGEN execution script (three-tier GWAS)</td></tr>
+    <tr><td><code>prepare_gwas_covariates.py</code></td><td><code>scripts/</code></td><td>Phenotype/covariate preparation from clinical CSV</td></tr>
+</table>
+
+
+        </div><!-- /content -->
+
+        <div class="footer">
+            ALSU Genotyping Pipeline &mdash; Step 16: RPL GWAS &mdash; Results April 14, 2026
+        </div>
+    </div><!-- /main-content -->
+</div><!-- /page-wrapper -->
+
+<script>
+// ── GWAS Result Rendering ──
+fetch('../data/gwas_results.json')
+    .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+    .then(data => {
+        console.log('GWAS results loaded:', data.meta);
+
+        // ── Populate Tier 1 PBS table ──
+        const pbsMap = {};
+        data.tier1_pbs.forEach(s => { pbsMap[s.id] = s; });
+        const pbsRows = [
+            {slot: 'pbs1', rs: 'rs116987492'},
+            {slot: 'pbs2', rs: 'rs34013262'},
+            {slot: 'pbs3', rs: 'rs55643000'},
+            {slot: 'pbs4', rs: 'rs75792159'},
+            {slot: 'pbs5', rs: 'rs786934'},
+            {slot: 'pbs6', rs: 'rs4075352'},
+            {slot: 'pbs7', rs: 'rs56186913'},
+            {slot: 'pbs8', rs: 'rs7094562'},
+        ];
+        pbsRows.forEach(r => {
+            const s = pbsMap[r.rs];
+            if (s) {
+                const el_or = document.getElementById(r.slot + '_or');
+                const el_p = document.getElementById(r.slot + '_p');
+                if (el_or) el_or.textContent = s.or.toFixed(2) + ' (' + s.ci_lo.toFixed(2) + '–' + s.ci_hi.toFixed(2) + ')';
+                if (el_p) el_p.textContent = s.p < 0.001 ? s.p.toExponential(2) : s.p.toFixed(4);
+            }
+        });
+
+        // ── Populate Tier 2 known RPL table ──
+        const knownMap = {};
+        data.tier2_known.forEach(s => { knownMap[s.id] = s; });
+        const t2 = [
+            {rs: 'rs6025', freq_id: 'f5_freq', or_id: 'f5_or', p_id: 'f5_p'},
+            {rs: 'rs1799963', freq_id: 'f2_freq', or_id: 'f2_or', p_id: 'f2_p'},
+            {rs: 'rs1801133', freq_id: 'mthfr_freq', or_id: 'mthfr_or', p_id: 'mthfr_p'},
+        ];
+        t2.forEach(v => {
+            const s = knownMap[v.rs];
+            if (s) {
+                const ef = document.getElementById(v.freq_id);
+                const eo = document.getElementById(v.or_id);
+                const ep = document.getElementById(v.p_id);
+                if (ef) ef.textContent = (s.a1_freq * 100).toFixed(1) + '%';
+                if (eo) eo.textContent = s.or.toFixed(2) + ' (' + s.ci_lo.toFixed(2) + '–' + s.ci_hi.toFixed(2) + ')';
+                if (ep) ep.textContent = s.p.toFixed(4);
+            }
+        });
+        // PAI-1 not found
+        const pai1_freq = document.getElementById('pai1_freq');
+        const pai1_or = document.getElementById('pai1_or');
+        const pai1_p = document.getElementById('pai1_p');
+        if (pai1_freq) pai1_freq.textContent = 'N/A';
+        if (pai1_or) pai1_or.textContent = 'not in dataset';
+        if (pai1_p) pai1_p.textContent = '—';
+
+        // ── Top hits table ──
+        const tbl = document.getElementById('topHitsTable');
+        const top20 = data.top_hits.slice(0, 20);
+        top20.forEach((h, i) => {
+            const tr = tbl.insertRow(-1);
+            tr.innerHTML = '<td>'+(i+1)+'</td><td>'+h.chr+'</td><td>'+h.pos.toLocaleString()+'</td>' +
+                '<td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v='+h.id+'" target="_blank">' +
+                h.id+'</a></td>' +
+                '<td>'+h.or.toFixed(3)+'</td><td>'+h.ci_lo+'–'+h.ci_hi+'</td>' +
+                '<td>'+(h.p < 1e-4 ? h.p.toExponential(2) : h.p.toFixed(4))+'</td>' +
+                '<td>'+h.neglog10p.toFixed(1)+'</td>';
+        });
+
+        // ── Manhattan Plot ──
+        renderManhattan(data);
+
+        // ── QQ Plot ──
+        renderQQ(data);
+    })
+    .catch(e => {
+        console.log('GWAS results not available:', e.message);
+    });
+
+function renderManhattan(data) {
+    const canvas = document.getElementById('manhattanCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = {l:60, r:20, t:20, b:50};
+    const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+
+    const pts = data.manhattan;
+    const genome = data.genome_length;
+    const maxY = Math.min(10, Math.max(8, ...pts.map(p => p[1])));
+
+    // Chromosome colors
+    const colors = ['#4393c3','#92c5de','#d6604d','#f4a582','#2166ac','#b2182b',
+                    '#4393c3','#92c5de','#d6604d','#f4a582','#2166ac','#b2182b',
+                    '#4393c3','#92c5de','#d6604d','#f4a582','#2166ac','#b2182b',
+                    '#4393c3','#92c5de','#d6604d','#f4a582'];
+
+    // Draw points
+    for (const [gpos, nlp, chr] of pts) {
+        const x = pad.l + (gpos / genome) * pw;
+        const y = pad.t + ph - (Math.min(nlp, maxY) / maxY) * ph;
+        ctx.fillStyle = colors[(chr - 1) % colors.length];
+        ctx.globalAlpha = nlp > 5 ? 0.9 : 0.4;
+        ctx.beginPath();
+        ctx.arc(x, y, nlp > 5 ? 2.5 : 1.2, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Significance lines
+    ctx.setLineDash([6, 4]);
+    // GW significance: 5e-8 → -log10 = 7.3
+    const gwY = pad.t + ph - (7.301 / maxY) * ph;
+    ctx.strokeStyle = '#e53935';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(pad.l, gwY); ctx.lineTo(pad.l + pw, gwY); ctx.stroke();
+    // Suggestive: 1e-5 → -log10 = 5
+    const sugY = pad.t + ph - (5 / maxY) * ph;
+    ctx.strokeStyle = '#1976d2';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, sugY); ctx.lineTo(pad.l + pw, sugY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Labels
+    ctx.fillStyle = '#e53935'; ctx.font = '11px sans-serif';
+    ctx.fillText('p = 5×10⁻⁸', pad.l + pw - 70, gwY - 4);
+    ctx.fillStyle = '#1976d2';
+    ctx.fillText('p = 10⁻⁵', pad.l + pw - 55, sugY - 4);
+
+    // Y axis
+    ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t + ph); ctx.stroke();
+    ctx.fillStyle = '#333'; ctx.font = '12px sans-serif'; ctx.textAlign = 'right';
+    for (let v = 0; v <= maxY; v += 2) {
+        const y = pad.t + ph - (v / maxY) * ph;
+        ctx.fillText(v, pad.l - 8, y + 4);
+        ctx.strokeStyle = '#eee'; ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + pw, y); ctx.stroke();
+    }
+    ctx.save(); ctx.translate(15, pad.t + ph / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.fillStyle = '#333'; ctx.font = '13px sans-serif';
+    ctx.fillText('-log₁₀(P)', 0, 0); ctx.restore();
+
+    // X axis: chromosome labels
+    ctx.beginPath(); ctx.strokeStyle = '#333'; ctx.moveTo(pad.l, pad.t + ph); ctx.lineTo(pad.l + pw, pad.t + ph); ctx.stroke();
+    ctx.textAlign = 'center'; ctx.font = '11px sans-serif'; ctx.fillStyle = '#666';
+    const offsets = data.chr_offsets;
+    for (let c = 1; c <= 22; c++) {
+        const chrLen = c < 22 ? offsets[c+1] - offsets[c] : genome - offsets[22];
+        const mid = offsets[c] + chrLen / 2;
+        const x = pad.l + (mid / genome) * pw;
+        ctx.fillText(c, x, pad.t + ph + 16);
+    }
+    ctx.font = '13px sans-serif'; ctx.fillStyle = '#333';
+    ctx.fillText('Chromosome', pad.l + pw / 2, pad.t + ph + 38);
+
+    // Tooltip on hover
+    canvas.onmousemove = function(e) {
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) * (W / rect.width);
+        const my = (e.clientY - rect.top) * (H / rect.height);
+        const tip = document.getElementById('manhattanTooltip');
+        // Find closest top hit
+        let best = null, bestD = 20;
+        for (const h of data.top_hits.slice(0, 50)) {
+            const gp = offsets[h.chr] + h.pos;
+            const hx = pad.l + (gp / genome) * pw;
+            const hy = pad.t + ph - (Math.min(h.neglog10p, maxY) / maxY) * ph;
+            const d = Math.sqrt((mx - hx) ** 2 + (my - hy) ** 2);
+            if (d < bestD) { bestD = d; best = h; }
+        }
+        if (best) {
+            tip.style.display = 'block';
+            tip.style.left = (e.clientX - rect.left + 12) + 'px';
+            tip.style.top = (e.clientY - rect.top - 30) + 'px';
+            tip.innerHTML = best.id + '<br>chr' + best.chr + ':' + best.pos.toLocaleString() +
+                '<br>OR=' + best.or.toFixed(2) + ', P=' + best.p.toExponential(2);
+        } else {
+            tip.style.display = 'none';
+        }
+    };
+    canvas.onmouseleave = () => { document.getElementById('manhattanTooltip').style.display = 'none'; };
+}
+
+function renderQQ(data) {
+    const canvas = document.getElementById('qqCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = {l:60, r:20, t:20, b:55};
+    const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+
+    const qq = data.qq;
+    const maxVal = Math.max(8, qq[qq.length - 1][1]);
+
+    // Diagonal (expectation)
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = '#e53935'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(pad.l, pad.t + ph); ctx.lineTo(pad.l + pw, pad.t); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 95% CI band
+    ctx.fillStyle = 'rgba(200,200,200,0.3)';
+    ctx.beginPath();
+    const n = data.meta.n_snps_tested;
+    for (let i = 0; i <= 100; i++) {
+        const frac = i / 100;
+        const exp = frac * maxVal;
+        const p_exp = Math.pow(10, -exp);
+        const rank = Math.max(1, Math.round(p_exp * n));
+        // Beta distribution 95% CI approximation
+        const lo = -Math.log10(Math.min(1, p_exp * 1.5 + 1.96 * Math.sqrt(p_exp * (1 - p_exp) / n)));
+        const x = pad.l + (exp / maxVal) * pw;
+        const y = pad.t + ph - (Math.min(lo, maxVal) / maxVal) * ph;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    for (let i = 100; i >= 0; i--) {
+        const frac = i / 100;
+        const exp = frac * maxVal;
+        const p_exp = Math.pow(10, -exp);
+        const hi = -Math.log10(Math.max(1e-10, p_exp * 0.5 - 1.96 * Math.sqrt(p_exp * (1 - p_exp) / n)));
+        const x = pad.l + (exp / maxVal) * pw;
+        const y = pad.t + ph - (Math.min(hi, maxVal) / maxVal) * ph;
+        ctx.lineTo(x, y);
+    }
+    ctx.fill();
+
+    // Points
+    ctx.fillStyle = '#1565c0';
+    for (const [exp, obs] of qq) {
+        const x = pad.l + (exp / maxVal) * pw;
+        const y = pad.t + ph - (Math.min(obs, maxVal) / maxVal) * ph;
+        ctx.beginPath();
+        ctx.arc(x, y, obs > 4 ? 2.5 : 1.8, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+
+    // Axes
+    ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t + ph); ctx.lineTo(pad.l + pw, pad.t + ph); ctx.stroke();
+
+    ctx.fillStyle = '#333'; ctx.font = '12px sans-serif';
+    ctx.textAlign = 'right';
+    for (let v = 0; v <= maxVal; v += 2) {
+        const y = pad.t + ph - (v / maxVal) * ph;
+        ctx.fillText(v, pad.l - 8, y + 4);
+    }
+    ctx.textAlign = 'center';
+    for (let v = 0; v <= maxVal; v += 2) {
+        const x = pad.l + (v / maxVal) * pw;
+        ctx.fillText(v, x, pad.t + ph + 18);
+    }
+
+    ctx.font = '13px sans-serif';
+    ctx.fillText('Expected -log₁₀(P)', pad.l + pw / 2, pad.t + ph + 42);
+    ctx.save(); ctx.translate(15, pad.t + ph / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Observed -log₁₀(P)', 0, 0); ctx.restore();
+
+    // Lambda label
+    ctx.fillStyle = '#333'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('λGC = ' + data.meta.lambda_gc, pad.l + pw - 110, pad.t + 20);
+}
+</script>
+</body>
+</html>

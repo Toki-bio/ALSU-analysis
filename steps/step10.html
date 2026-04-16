@@ -29,6 +29,7 @@
         .header h1 { font-size: 2em; margin-bottom: 10px; }
         .header p { opacity: 0.9; }
         .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        .step-badge-old { background: rgba(255,255,255,0.08); font-size: 0.75em; padding: 3px 10px; opacity: 0.6; margin-left: 6px; }
         .content { padding: 30px; }
         @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
         h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
@@ -79,6 +80,7 @@
             <a href="step13.html">Step 13: LD Analysis</a>
             <a href="step14.html">Step 14: Fst &amp; MDS</a>
             <a href="step15.html">Step 15: ROH &amp; IBD</a>
+            <a href="step16.html">Step 16: GWAS</a>
             <a href="next_steps.html">Next Steps</a>
         </div>
     </aside>
@@ -93,7 +95,7 @@
             <h1>Step 10: Multi-Population PBS Analysis</h1>
             <p>Population Branch Statistic to identify Uzbek-specific allele frequency shifts</p>
             <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
-            <span class="step-badge">Completed &mdash; March 2026</span>
+            <span class="step-badge step-badge-old">Prev. run — Apr 2026</span>
         </div>
 
         <div class="content">
@@ -139,7 +141,7 @@
                 <tr>
                     <td>Merged Dataset</td>
                     <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>
-                    <td>3,595 samples &times; 77,111 LD-pruned SNPs (from <a href="step8.html">Step 8</a>)</td>
+                    <td>3,595 samples &times; 79,767 LD-pruned SNPs (from <a href="step8.html">Step 8</a>)</td>
                 </tr>
                 <tr>
                     <td>Population Mapping</td>
@@ -265,24 +267,24 @@ tier3 = (maf_uzb >= 0.05 and              # Near-private: common in UZB,
 python3 02_calculate_pbs.py --outdir ./pbs_results
 
 Loading Fst data...
-  UZB-EUR: 77,111 SNPs
-  UZB-EAS: 77,111 SNPs
-  EUR-EAS: 77,111 SNPs
+  UZB-EUR: 79,767 SNPs
+  UZB-EAS: 79,767 SNPs
+  EUR-EAS: 79,767 SNPs
 Computing PBS...
-  Total SNPs analyzed: 77,111
+  Total SNPs analyzed: 79,767
 
 === PBS SUMMARY ===
-  n_snps: 77111
-  mean: -0.009794
-  median: -0.006012
-  stdev: 0.026484
-  min: -0.362111
-  max: 2.988450
+  n_snps: 79767
+  mean: -0.010010
+  median: -0.006040
+  stdev: 0.026770
+  min: -0.419959
+  max: 3.014140
   n_pbs_ge_03: 8
   n_pbs_ge_01: 13
-  n_negative: 63414
+  n_negative: 65539
   n_tier1: 8
-  n_tier2: 1
+  n_tier2: 4995
   n_tier3: 0
   n_candidates: 8</div>
 
@@ -291,11 +293,11 @@ Computing PBS...
             <h3>4.1 Pairwise F<sub>ST</sub> (Weighted)</h3>
             <table>
                 <tr><th>Comparison</th><th>Weighted F<sub>ST</sub></th><th>Mean F<sub>ST</sub></th></tr>
-                <tr><td>UZB vs EUR</td><td>0.01448</td><td>0.00997</td></tr>
-                <tr><td>UZB vs EAS</td><td>0.03929</td><td>0.02357</td></tr>
-                <tr><td>EUR vs EAS</td><td>0.08448</td><td>0.05023</td></tr>
-                <tr><td>UZB vs SAS</td><td>0.01441</td><td>0.00980</td></tr>
-                <tr><td>UZB vs AFR</td><td>0.12930</td><td>0.06096</td></tr>
+                <tr><td>UZB vs EUR</td><td>0.01468</td><td>0.01002</td></tr>
+                <tr><td>UZB vs EAS</td><td>0.04010</td><td>0.02393</td></tr>
+                <tr><td>EUR vs EAS</td><td>0.08631</td><td>0.05090</td></tr>
+                <tr><td>UZB vs SAS</td><td>0.01445</td><td>0.00988</td></tr>
+                <tr><td>UZB vs AFR</td><td>0.12907</td><td>0.06153</td></tr>
             </table>
 
             <div class="info-box">
@@ -307,15 +309,15 @@ Computing PBS...
             <h3>4.2 PBS Summary Statistics</h3>
             <table>
                 <tr><th>Metric</th><th>Value</th></tr>
-                <tr><td>SNPs analyzed</td><td>77,111</td></tr>
-                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.00979</td></tr>
-                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00601</td></tr>
-                <tr><td>Standard deviation</td><td>0.02648</td></tr>
-                <tr><td>Min</td><td>&minus;0.36211</td></tr>
-                <tr><td>Max</td><td>2.98845</td></tr>
+                <tr><td>SNPs analyzed</td><td>79,767</td></tr>
+                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.01001</td></tr>
+                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00604</td></tr>
+                <tr><td>Standard deviation</td><td>0.02677</td></tr>
+                <tr><td>Min</td><td>&minus;0.41996</td></tr>
+                <tr><td>Max</td><td>3.01414</td></tr>
                 <tr><td>PBS &ge; 0.3 (Tier 1)</td><td>8 SNPs</td></tr>
                 <tr><td>PBS &ge; 0.1</td><td>13 SNPs</td></tr>
-                <tr><td>Negative PBS</td><td>63,414 (82.2%)</td></tr>
+                <tr><td>Negative PBS</td><td>65,539 (82.2%)</td></tr>
             </table>
 
             <h3>4.3 Top PBS Candidates</h3>
@@ -334,6 +336,7 @@ Computing PBS...
                 (&gt;2.5) with very low UZB MAF (~2&ndash;3%) compared to high AFR MAF (~49%). These likely reflect
                 ancestral allele retention rather than positive selection. The more biologically interesting candidates
                 are SNPs 5&ndash;8 (PBS 0.32&ndash;0.53), where UZB shows high MAF (~48%) diverging from other populations.
+                Two additional SNPs (#9&ndash;10) with PBS 0.14&ndash;0.26 provide further candidates for follow-up.
             </div>
 
             <h2>5. Output Files</h2>
@@ -342,7 +345,7 @@ Computing PBS...
                 <tr><td><code>clusters.txt</code></td><td>Population cluster file (FID IID POP)</td></tr>
                 <tr><td><code>freq_{UZB,EUR,EAS,SAS,AFR}.frq</code></td><td>Per-population allele frequencies</td></tr>
                 <tr><td><code>fst_{POP1}_{POP2}.fst</code></td><td>Per-SNP pairwise F<sub>ST</sub> (5 pairs)</td></tr>
-                <tr><td><code>pbs_all.tsv</code></td><td>PBS scores for all 77,111 SNPs</td></tr>
+                <tr><td><code>pbs_all.tsv</code></td><td>PBS scores for all 79,767 SNPs</td></tr>
                 <tr><td><code>pbs_candidates.json</code></td><td>Filtered candidate SNPs (Tier 1/2/3)</td></tr>
                 <tr><td><code>pbs_stats.json</code></td><td>Summary statistics</td></tr>
                 <tr><td><code>pbs_histogram.json</code></td><td>PBS distribution for plotting</td></tr>
@@ -361,14 +364,16 @@ Computing PBS...
 
 <script>
 const TOP = [
-    { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, uzb: 0.0196, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888 },
-    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, uzb: 0.03206, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896 },
-    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, uzb: 0.0332, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881 },
-    { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, uzb: 0.01472, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654 },
-    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, uzb: 0.4880, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338 },
-    { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, uzb: 0.4785, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610 },
-    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, uzb: 0.4801, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639 },
-    { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, uzb: 0.4829, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219 }
+    { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 3.01414, uzb: 0.01868, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888 },
+    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.686098, uzb: 0.03209, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896 },
+    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6559, uzb: 0.03386, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881 },
+    { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.143402, uzb: 0.01471, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654 },
+    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.53147, uzb: 0.4875, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338 },
+    { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.488537, uzb: 0.4790, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610 },
+    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.377781, uzb: 0.4787, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639 },
+    { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.323517, uzb: 0.4834, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219 },
+    { snp: "1:38462003:A:C", chr: "1", bp: 38462003, pbs: 0.25804, uzb: 0.4320, eur: 0.1178, eas: 0.06796, sas: 0.09553, afr: 0.2943 },
+    { snp: "5:9480094:A:G", chr: "5", bp: 9480094, pbs: 0.143427, uzb: 0.4481, eur: 0.1772, eas: 0.3515, sas: 0.1890, afr: 0.3517 }
 ];
 
 document.getElementById('top').innerHTML = TOP.map((r, i) => `

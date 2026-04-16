@@ -1,0 +1,648 @@
+ID	CHROM	POS	REF	ALT	INFO
+rs61759178	chr1	3181925	T	C	Allele mismatch. Reference Panel: T/T
+rs111555716	chr1	4336779	T	C	Allele mismatch. Reference Panel: T/T
+GSA-rs74051979	chr1	9764106	A	G	Allele mismatch. Reference Panel: A/A
+GSA-rs6701731	chr1	14451931	C	T	Allele mismatch. Reference Panel: C/C
+rs3215560	chr1	19338963	A	C	Allele mismatch. Reference Panel: A/A
+rs56818965	chr1	25293078	G	A	Allele mismatch. Reference Panel: G/T
+GSA-rs58933442	chr1	35194921	C	T	Allele mismatch. Reference Panel: C/A
+rs12722871	chr1	40019948	A	G	Allele mismatch. Reference Panel: A/A
+rs56707923	chr1	66922333	T	C	Allele mismatch. Reference Panel: T/G
+rs59649399	chr1	79202931	A	C	Allele mismatch. Reference Panel: A/A
+1:80281830	chr1	79816145	G	A	Allele mismatch. Reference Panel: G/T
+rs263467	chr1	86716258	T	G	Allele mismatch. Reference Panel: T/T
+rs815322	chr1	90516444	A	G	Allele mismatch. Reference Panel: A/A
+rs111894480	chr1	111368504	C	A	Allele mismatch. Reference Panel: C/C
+rs2884871	chr1	112875259	A	G	Allele mismatch. Reference Panel: A/A
+GSA-rs7527420	chr1	153673066	G	T	Allele mismatch. Reference Panel: G/G
+rs57714945	chr1	158848404	A	C	Allele mismatch. Reference Panel: A/G
+rs3856334	chr1	160809192	C	T	Allele mismatch. Reference Panel: C/C
+rs157884	chr1	165434272	A	G	Allele mismatch. Reference Panel: A/A
+GSA-rs12239670	chr1	178408626	G	T	Allele mismatch. Reference Panel: G/G
+rs1418101	chr1	180363686	A	G	Allele mismatch. Reference Panel: A/A
+GSA-rs28450127	chr1	183191194	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs115896819	chr1	183907393	G	A	Allele mismatch. Reference Panel: G/T
+rs55705075	chr1	201233564	G	A	Allele mismatch. Reference Panel: G/G
+rs74315379	chr1	201364336	G	A	Allele mismatch. Reference Panel: G/T
+1:210507519	chr1	210334175	G	T	Allele mismatch. Reference Panel: G/A
+rs11119775	chr1	211607252	G	A	Allele mismatch. Reference Panel: G/G
+rs77283390	chr1	212351114	C	A	Allele mismatch. Reference Panel: C/C
+rs766158	chr1	216814119	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs5744118	chr1	223140274	T	C	Allele mismatch. Reference Panel: T/A
+rs34111384	chr1	233468675	A	G	Allele mismatch. Reference Panel: A/C
+rs78164542	chr1	241284859	G	T	Allele mismatch. Reference Panel: G/G
+rs3819978	chr1	241626455	T	C	Allele mismatch. Reference Panel: T/A
+rs72638736	chr10	7120659	G	T	Allele mismatch. Reference Panel: G/G
+rs67958007	chr10	9046151	I	D	Invalid Alleles
+rs77880613	chr10	9769989	T	C	Allele mismatch. Reference Panel: T/T
+rs2400066	chr10	14318329	C	T	Allele mismatch. Reference Panel: C/C
+rs2942356	chr10	16991631	G	T	Allele mismatch. Reference Panel: G/G
+rs200872708	chr10	27398831	I	D	Invalid Alleles
+rs1623223	chr10	31146765	G	A	Allele mismatch. Reference Panel: G/G
+rs201996836	chr10	34090909	C	A	Allele mismatch. Reference Panel: C/G
+rs377767434	chr10	43112160	D	I	Invalid Alleles
+rs9308224	chr10	48473541	A	G	Allele mismatch. Reference Panel: A/A
+GSA-rs200460729	chr10	59169689	C	T	Allele mismatch. Reference Panel: C/C
+rs3099367	chr10	59872787	T	G	Allele mismatch. Reference Panel: T/T
+rs772920191	chr10	60196628	D	I	Invalid Alleles
+rs397517367	chr10	71812886	I	D	Invalid Alleles
+GSA-rs72816396	chr10	74213536	A	G	Allele mismatch. Reference Panel: A/A
+rs10824209	chr10	74598441	C	T	Allele mismatch. Reference Panel: C/C
+rs751901610	chr10	77637488	I	D	Invalid Alleles
+GSA-rs59293495	chr10	85322995	C	T	Allele mismatch. Reference Panel: C/A
+rs111455665	chr10	85818351	T	C	Allele mismatch. Reference Panel: T/T
+rs786204187	chr10	86892139	I	D	Invalid Alleles
+rs587781340	chr10	87863273	I	D	Invalid Alleles
+10:87957903	chr10	87957902	D	I	Invalid Alleles
+rs201162069	chr10	93671911	A	G	Allele mismatch. Reference Panel: A/T
+rs146705863	chr10	94936018	I	D	Invalid Alleles
+GSA-rs61887988	chr10	95105002	T	C	Allele mismatch. Reference Panel: T/A
+rs58294379	chr10	95364440	T	G	Allele mismatch. Reference Panel: T/C
+rs281865084	chr10	98425687	I	D	Invalid Alleles
+rs71485777_MNV	chr10	99523571	C	A	Allele mismatch. Reference Panel: C/G
+rs555444131	chr10	101018271	I	D	Invalid Alleles
+GSA-rs150420896	chr10	101482330	C	A	Allele mismatch. Reference Panel: C/C
+rs72323784	chr10	104263072	I	D	Invalid Alleles
+rs794728981	chr10	119676821	I	D	Invalid Alleles
+rs11593888	chr10	127270999	A	G	Allele mismatch. Reference Panel: A/A
+JHU_11.837661	chr11	837662	T	G	Allele mismatch. Reference Panel: T/T
+rs201057210	chr11	1082885	I	D	Invalid Alleles
+rs72655304	chr11	1082887	I	D	Invalid Alleles
+GSA-rs200675933	chr11	1244762	C	A	Allele mismatch. Reference Panel: C/T
+rs794728580	chr11	2570753	I	D	Invalid Alleles
+11:2572062	chr11	2572061	I	D	Invalid Alleles
+rs397508124	chr11	2572089	I	D	Invalid Alleles
+rs397508104	chr11	2847859	I	D	Invalid Alleles
+rs120074118	chr11	6394539	I	D	Invalid Alleles
+rs74235449	chr11	7594277	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs55774312	chr11	8104930	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs117275292	chr11	14380601	C	A	Allele mismatch. Reference Panel: C/C
+rs2665684	chr11	22418469	A	C	Allele mismatch. Reference Panel: A/A
+GSA-rs79743731	chr11	23459863	A	C	Allele mismatch. Reference Panel: A/G
+rs4027571	chr11	29660705	C	A	Allele mismatch. Reference Panel: C/C
+rs34230701	chr11	45549379	G	T	Allele mismatch. Reference Panel: G/A
+11:47353711	chr11	47332160	I	D	Invalid Alleles
+rs397516029	chr11	47332568	D	I	Invalid Alleles
+11:47332676	chr11	47332675	D	I	Invalid Alleles
+11:47354230	chr11	47332675	D	I	Invalid Alleles
+11:47354751	chr11	47333199	I	D	Invalid Alleles
+11:47333295	chr11	47333295	D	I	Invalid Alleles
+rs730880667	chr11	47333554	I	D	Invalid Alleles
+rs730880657	chr11	47335895	I	D	Invalid Alleles
+11:47357465	chr11	47335910	D	I	Invalid Alleles
+rs730880656	chr11	47336004	I	D	Invalid Alleles
+11:47337425	chr11	47337425	I	D	Invalid Alleles
+rs727503203	chr11	47342929	I	D	Invalid Alleles
+11:47350007	chr11	47350007	I	D	Invalid Alleles
+rs863225109	chr11	47350602	I	D	Invalid Alleles
+rs864622224	chr11	47351369	I	D	Invalid Alleles
+rs786205885	chr11	47438813	D	I	Invalid Alleles
+rs7128614	chr11	57001792	G	A	Allele mismatch. Reference Panel: G/G
+rs117965615	chr11	59632562	G	T	Allele mismatch. Reference Panel: G/C
+rs1114167514	chr11	64804593	I	D	Invalid Alleles
+rs886039420	chr11	64804703	I	D	Invalid Alleles
+rs1114167531	chr11	64804777	D	I	Invalid Alleles
+rs1114167520	chr11	64805054	I	D	Invalid Alleles
+rs730882136	chr11	64809903	D	I	Invalid Alleles
+rs751604696	chr11	71435466	C	T	Allele mismatch. Reference Panel: C/C
+rs11290954	chr11	76549500	I	D	Invalid Alleles
+rs111033448	chr11	77156684	I	D	Invalid Alleles
+GSA-rs10830472	chr11	90285269	C	T	Allele mismatch. Reference Panel: C/C
+GSA-11:91295068	chr11	91561902	T	C	Allele mismatch. Reference Panel: T/T
+rs77045461	chr11	96189069	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs28721881	chr11	105657043	A	C	Allele mismatch. Reference Panel: A/G
+rs587782572	chr11	108250698	I	D	Invalid Alleles
+rs1057516980	chr11	108258985	D	I	Invalid Alleles
+rs876660741	chr11	108272785	D	I	Invalid Alleles
+rs730881293	chr11	108332808	D	I	Invalid Alleles
+rs11374964	chr11	108474788	I	D	Invalid Alleles
+rs121912718	chr11	116836134	C	T	Allele mismatch. Reference Panel: C/G
+rs397507494	chr11	119278646	D	I	Invalid Alleles
+rs55905145	chr11	122725563	C	A	Allele mismatch. Reference Panel: C/T
+GSA-rs61904420	chr11	123100582	G	A	Allele mismatch. Reference Panel: G/C
+rs596850	chr11	128808728	T	C	Allele mismatch. Reference Panel: T/T
+rs57710978	chr11	129223372	C	T	Allele mismatch. Reference Panel: C/C
+rs199634252	chr12	224060	G	A	Allele mismatch. Reference Panel: G/C
+rs575583988	chr12	2593224	I	D	Invalid Alleles
+rs111657221	chr12	6712110	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs61928613	chr12	11167413	C	A	Allele mismatch. Reference Panel: C/T
+rs2710278	chr12	11892251	T	C	Allele mismatch. Reference Panel: T/T
+rs3834939	chr12	21334835	D	I	Invalid Alleles
+rs730880469	chr12	25227335	I	D	Invalid Alleles
+rs2351224	chr12	30199884	T	C	Allele mismatch. Reference Panel: T/T
+rs149968852	chr12	32796095	D	I	Invalid Alleles
+rs769220833	chr12	32878346	D	I	Invalid Alleles
+rs57351005	chr12	47110390	G	A	Allele mismatch. Reference Panel: G/T
+rs794727611	chr12	49032224	I	D	Invalid Alleles
+rs375159	chr12	51747089	A	G	Allele mismatch. Reference Panel: A/A
+rs58858754	chr12	52998201	G	T	Allele mismatch. Reference Panel: G/C
+rs62638191	chr12	55724028	G	A	Allele mismatch. Reference Panel: G/T
+rs36207871	chr12	56290713	D	I	Invalid Alleles
+rs11173404	chr12	60327328	G	T	Allele mismatch. Reference Panel: G/G
+rs116816799	chr12	61248566	A	G	Allele mismatch. Reference Panel: A/A
+rs12370723	chr12	63954688	A	G	Allele mismatch. Reference Panel: A/A
+rs1158432	chr12	70800268	C	T	Allele mismatch. Reference Panel: C/C
+rs74498298	chr12	71822267	A	G	Allele mismatch. Reference Panel: A/T
+rs60048151	chr12	72827076	C	T	Allele mismatch. Reference Panel: C/A
+rs745522483	chr12	88107101	D	I	Invalid Alleles
+rs747835249	chr12	88114418	I	D	Invalid Alleles
+rs59114088	chr12	88443536	C	A	Allele mismatch. Reference Panel: C/T
+rs12296543	chr12	103607389	G	T	Allele mismatch. Reference Panel: G/G
+rs201427769	chr12	103947410	I	D	Invalid Alleles
+rs5800607	chr12	103947410	I	D	Invalid Alleles
+rs202080221.1	chr12	111418767	G	T	Allele mismatch. Reference Panel: G/C
+rs28669763	chr12	120655830	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs376037903	chr12	131017411	A	C	Allele mismatch. Reference Panel: A/A
+rs76638281	chr13	22178120	T	C	Allele mismatch. Reference Panel: T/T
+rs746136069	chr13	24892872	D	I	Invalid Alleles
+rs3831217	chr13	29505463	G	T	Allele mismatch. Reference Panel: G/G
+rs668301	chr13	30329945	T	G	Allele mismatch. Reference Panel: T/T
+13:32326103	chr13	32326102	I	D	Invalid Alleles
+rs876660385	chr13	32332334	D	I	Invalid Alleles
+rs886040815	chr13	32332383	D	I	Invalid Alleles
+rs1135401891	chr13	32332796	D	I	Invalid Alleles
+rs397507586	chr13	32332879	I	D	Invalid Alleles
+rs886040365	chr13	32332911	I	D	Invalid Alleles
+rs886040369	chr13	32332962	I	D	Invalid Alleles
+rs397507610	chr13	32333328	D	I	Invalid Alleles
+13:32333383	chr13	32333383	I	D	Invalid Alleles
+rs80359332	chr13	32336880	D	I	Invalid Alleles
+rs80359349	chr13	32337153	I	D	Invalid Alleles
+rs886040456	chr13	32337326	I	D	Invalid Alleles
+13:32337356	chr13	32337353	D	I	Invalid Alleles
+rs886038084	chr13	32337530	I	D	Invalid Alleles
+13:32337560	chr13	32337560	D	I	Invalid Alleles
+13:32911698	chr13	32337560	D	I	Invalid Alleles
+rs1064795381	chr13	32337584	I	D	Invalid Alleles
+rs80359415	chr13	32338266	I	D	Invalid Alleles
+rs397507700	chr13	32338291	I	D	Invalid Alleles
+rs886040517	chr13	32338619	I	D	Invalid Alleles
+13:32338625	chr13	32338623	D	I	Invalid Alleles
+rs80359451	chr13	32338826	I	D	Invalid Alleles
+rs886040538	chr13	32338895	D	I	Invalid Alleles
+rs483353115	chr13	32338918	D	I	Invalid Alleles
+rs886040539	chr13	32338931	I	D	Invalid Alleles
+rs397507731	chr13	32338943	I	D	Invalid Alleles
+rs869320783	chr13	32338969	I	D	Invalid Alleles
+rs886040589	chr13	32339693	I	D	Invalid Alleles
+rs587781849	chr13	32339712	D	I	Invalid Alleles
+rs1135401906	chr13	32339771	D	I	Invalid Alleles
+rs397507357	chr13	32339986	I	D	Invalid Alleles
+rs397507809	chr13	32340189	D	I	Invalid Alleles
+13:32340267	chr13	32340267	I	D	Invalid Alleles
+13:32340444	chr13	32340440	D	I	Invalid Alleles
+13:32340504	chr13	32340503	D	I	Invalid Alleles
+rs80359567	chr13	32340570	I	D	Invalid Alleles
+13:32914712	chr13	32340575	I	D	Invalid Alleles
+rs397507835	chr13	32340590	I	D	Invalid Alleles
+13:32340763	chr13	32340762	D	I	Invalid Alleles
+rs886040656	chr13	32340773	I	D	Invalid Alleles
+rs397507886	chr13	32341171	I	D	Invalid Alleles
+rs398122571	chr13	32346835	I	D	Invalid Alleles
+rs886040680	chr13	32346888	D	I	Invalid Alleles
+rs398122576	chr13	32354994	I	D	Invalid Alleles
+rs886040695	chr13	32355130	I	D	Invalid Alleles
+rs80359656	chr13	32356516	D	I	Invalid Alleles
+rs886040717	chr13	32356552	I	D	Invalid Alleles
+rs730881613	chr13	32356579	I	D	Invalid Alleles
+rs80359669	chr13	32357779	I	D	Invalid Alleles
+rs80359682	chr13	32357916	I	D	Invalid Alleles
+rs80359683	chr13	32362523	D	I	Invalid Alleles
+rs886040754	chr13	32363482	D	I	Invalid Alleles
+rs80359710	chr13	32370505	D	I	Invalid Alleles
+rs397508017	chr13	32379450	D	I	Invalid Alleles
+rs730881617	chr13	32379515	I	D	Invalid Alleles
+rs80359741	chr13	32379822	I	D	Invalid Alleles
+rs397508051	chr13	32394863	I	D	Invalid Alleles
+rs80359259	chr13	32398766	I	D	Invalid Alleles
+GSA-rs78480475	chr13	33215125	G	T	Allele mismatch. Reference Panel: G/G
+rs1131690913	chr13	48304017	I	D	Invalid Alleles
+rs55723781	chr13	48834704	C	A	Allele mismatch. Reference Panel: C/C
+rs201682877	chr13	51146193	A	G	Allele mismatch. Reference Panel: A/T
+13:51944195	chr13	51944194	D	I	Invalid Alleles
+13:51944205	chr13	51944205	I	D	Invalid Alleles
+13:51970643	chr13	51970642	D	I	Invalid Alleles
+rs1057517444	chr13	51970692	I	D	Invalid Alleles
+rs115508314	chr13	52008883	C	T	Allele mismatch. Reference Panel: C/C
+rs202244991	chr13	61138197	G	A	Allele mismatch. Reference Panel: G/G
+rs58227161	chr13	66169255	A	C	Allele mismatch. Reference Panel: A/G
+rs2181672	chr13	75563127	T	G	Allele mismatch. Reference Panel: T/T
+rs4100069	chr13	79957369	A	G	Allele mismatch. Reference Panel: A/A
+GSA-rs6563246	chr13	81658352	A	G	Allele mismatch. Reference Panel: A/A
+rs4991300	chr13	91013934	G	A	Allele mismatch. Reference Panel: G/T
+GSA-rs59625704	chr13	91983345	C	T	Allele mismatch. Reference Panel: C/C
+rs34345778	chr13	95871974	C	A	Allele mismatch. Reference Panel: C/T
+rs72646788	chr13	96866596	T	C	Allele mismatch. Reference Panel: T/T
+13:102063568	chr13	101411217	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs139941868	chr13	103735346	C	T	Allele mismatch. Reference Panel: C/C
+rs3093240	chr13	113114332	G	T	Allele mismatch. Reference Panel: G/G
+rs71124775	chr14	36668368	D	I	Invalid Alleles
+rs55763733	chr14	51201419	G	A	Allele mismatch. Reference Panel: G/T
+rs10140589	chr14	61774652	T	C	Allele mismatch. Reference Panel: T/G
+rs75605219	chr14	62910941	A	C	Allele mismatch. Reference Panel: A/A
+rs878855011	chr14	67785209	I	D	Invalid Alleles
+rs7975.3	chr14	77326864	G	T	Allele mismatch. Reference Panel: G/A
+rs202226993	chr14	78962339	G	A	Allele mismatch. Reference Panel: G/T
+rs2372529	chr14	83753595	C	A	Allele mismatch. Reference Panel: C/G
+GSA-rs181700481	chr14	101005828	C	T	Allele mismatch. Reference Panel: C/C
+rs145487328	chr14	102016909	C	T	Allele mismatch. Reference Panel: C/G
+rs10623258	chr14	104745924	I	D	Invalid Alleles
+rs150426191	chr14	104886548	I	D	Invalid Alleles
+15:23901340	chr15	23656193	C	A	Allele mismatch. Reference Panel: C/C
+rs3217346	chr15	33844879	I	D	Invalid Alleles
+rs8028015	chr15	37216191	C	T	Allele mismatch. Reference Panel: C/C
+rs75188319	chr15	39210187	C	T	Allele mismatch. Reference Panel: C/C
+rs56121902	chr15	45712587	T	C	Allele mismatch. Reference Panel: T/G
+15:48737667	chr15	48445469	I	D	Invalid Alleles
+rs1060501089	chr15	48445469	I	D	Invalid Alleles
+rs193922212	chr15	48452579	I	D	Invalid Alleles
+15:48452587	chr15	48452587	I	D	Invalid Alleles
+rs3833018	chr15	48463253	D	I	Invalid Alleles
+15:48474294	chr15	48474294	I	D	Invalid Alleles
+15:48766494	chr15	48474294	I	D	Invalid Alleles
+rs886038970	chr15	48474324	I	D	Invalid Alleles
+rs72158035	chr15	48487035	I	D	Invalid Alleles
+15:48495135	chr15	48495135	I	D	Invalid Alleles
+15:48495214	chr15	48495213	D	I	Invalid Alleles
+15:48495534	chr15	48495534	I	D	Invalid Alleles
+15:48495540	chr15	48495540	D	I	Invalid Alleles
+rs72041020	chr15	48534225	I	D	Invalid Alleles
+rs727505269	chr15	48537687	I	D	Invalid Alleles
+rs368764302.2	chr15	48738304	G	T	Allele mismatch. Reference Panel: G/A
+rs28718331	chr15	53898195	A	C	Allele mismatch. Reference Panel: A/A
+rs11855156	chr15	55803748	C	T	Allele mismatch. Reference Panel: C/C
+rs184155942	chr15	61878395	C	A	Allele mismatch. Reference Panel: C/C
+rs869312811	chr15	61947292	I	D	Invalid Alleles
+rs397516488	chr15	63061800	I	D	Invalid Alleles
+15:67181433	chr15	67181433	I	D	Invalid Alleles
+GSA-rs72755445	chr15	70557156	C	T	Allele mismatch. Reference Panel: C/C
+rs10552820	chr15	74244060	I	D	Invalid Alleles
+rs376896906	chr15	80464325	T	G	Allele mismatch. Reference Panel: T/T
+rs62025764	chr15	83766076	T	C	Allele mismatch. Reference Panel: T/G
+rs3923940	chr15	88756333	C	T	Allele mismatch. Reference Panel: C/G
+rs28610583	chr15	89956297	T	G	Allele mismatch. Reference Panel: T/T
+rs4328416	chr15	91120827	G	A	Allele mismatch. Reference Panel: G/G
+rs12903242	chr15	92074781	T	G	Allele mismatch. Reference Panel: T/T
+rs864309546	chr15	93002204	I	D	Invalid Alleles
+rs371663600	chr16	958909	C	A	Allele mismatch. Reference Panel: C/C
+rs796053503	chr16	2064363	I	D	Invalid Alleles
+16:2070488	chr16	2070482	D	I	Invalid Alleles
+rs1060500934	chr16	2071845	I	D	Invalid Alleles
+rs1064793573	chr16	2084321	D	I	Invalid Alleles
+rs886041905	chr16	2084952	I	D	Invalid Alleles
+rs36032671	chr16	2088670	I	D	Invalid Alleles
+rs796053403	chr16	2496622	I	D	Invalid Alleles
+rs587783477	chr16	3850796	I	D	Invalid Alleles
+GSA-rs153096	chr16	13167065	C	T	Allele mismatch. Reference Panel: C/C
+rs56409711	chr16	13173155	A	G	Allele mismatch. Reference Panel: A/A
+rs9930886.1	chr16	16198126	A	C	Allele mismatch. Reference Panel: A/G
+rs587780211	chr16	23629758	I	D	Invalid Alleles
+rs180177090	chr16	23635849	I	D	Invalid Alleles
+rs796052940	chr16	29813224	I	D	Invalid Alleles
+GSA-rs117299069	chr16	32955345	G	A	Allele mismatch. Reference Panel: G/C
+rs113628706	chr16	50598262	T	C	Allele mismatch. Reference Panel: T/T
+rs2066845.1	chr16	50722629	G	T	Allele mismatch. Reference Panel: G/C
+rs2066847	chr16	50729867	D	I	Invalid Alleles
+rs72803259	chr16	51772776	G	A	Allele mismatch. Reference Panel: G/G
+rs797045918	chr16	53664954	D	I	Invalid Alleles
+rs3217164	chr16	55821239	I	D	Invalid Alleles
+rs11643209	chr16	75297146	T	G	Allele mismatch. Reference Panel: T/T
+rs34522318	chr16	82439761	A	G	Allele mismatch. Reference Panel: A/C
+rs12948217	chr17	3494408	C	A	Allele mismatch. Reference Panel: C/T
+rs12948217.1	chr17	3494408	C	A	Allele mismatch. Reference Panel: C/T
+rs3215407	chr17	3690983	D	I	Invalid Alleles
+rs58827459	chr17	6714677	G	T	Allele mismatch. Reference Panel: G/C
+17:7670626	chr17	7670626	I	D	Invalid Alleles
+rs587782393	chr17	7675153	I	D	Invalid Alleles
+rs730882019	chr17	7675156	D	I	Invalid Alleles
+rs587783062	chr17	7676102	I	D	Invalid Alleles
+rs9900410	chr17	13595846	G	T	Allele mismatch. Reference Panel: G/G
+rs767671406	chr17	17216506	I	D	Invalid Alleles
+rs66765962	chr17	17741083	I	D	Invalid Alleles
+rs398124419	chr17	17793357	I	D	Invalid Alleles
+rs66513428	chr17	18717184	G	A	Allele mismatch. Reference Panel: G/G
+rs149577639	chr17	20204737	I	D	Invalid Alleles
+rs373999174	chr17	31181800	D	I	Invalid Alleles
+GSA-rs7210733	chr17	32240320	A	G	Allele mismatch. Reference Panel: A/A
+rs201644365	chr17	39043794	A	G	Allele mismatch. Reference Panel: A/A
+rs397507254	chr17	43045691	D	I	Invalid Alleles
+rs876659483	chr17	43057093	I	D	Invalid Alleles
+rs80357833	chr17	43070980	D	I	Invalid Alleles
+rs886040254	chr17	43071028	D	I	Invalid Alleles
+rs80357907	chr17	43071169	I	D	Invalid Alleles
+BRCA1-chr17-41223221	chr17	43071204	D	I	Invalid Alleles
+rs864622132	chr17	43071204	D	I	Invalid Alleles
+rs397509176	chr17	43076537	I	D	Invalid Alleles
+rs587781611	chr17	43076571	I	D	Invalid Alleles
+17:43076573	chr17	43076573	D	I	Invalid Alleles
+rs886040223	chr17	43082452	I	D	Invalid Alleles
+rs273900725	chr17	43090921	D	I	Invalid Alleles
+rs886040178	chr17	43091576	I	D	Invalid Alleles
+rs886040170	chr17	43091681	I	D	Invalid Alleles
+rs80357767	chr17	43091737	I	D	Invalid Alleles
+rs80357512	chr17	43091906	D	I	Invalid Alleles
+rs80357562	chr17	43091937	D	I	Invalid Alleles
+17:43091962	chr17	43091962	I	D	Invalid Alleles
+rs397509070	chr17	43092063	I	D	Invalid Alleles
+rs397509064	chr17	43092115	I	D	Invalid Alleles
+rs397509057	chr17	43092195	I	D	Invalid Alleles
+rs886038010	chr17	43092251	I	D	Invalid Alleles
+rs80357840	chr17	43092732	I	D	Invalid Alleles
+17:43092752	chr17	43092752	D	I	Invalid Alleles
+rs398122669	chr17	43092757	I	D	Invalid Alleles
+rs397509008	chr17	43092785	D	I	Invalid Alleles
+rs397508992	chr17	43092865	D	I	Invalid Alleles
+17:43092870	chr17	43092870	D	I	Invalid Alleles
+rs799917.3	chr17	43092919	G	T	Allele mismatch. Reference Panel: G/A
+rs886039992	chr17	43093452	D	I	Invalid Alleles
+rs80357595	chr17	43093453	D	I	Invalid Alleles
+rs878854935	chr17	43093607	D	I	Invalid Alleles
+rs752474843	chr17	43093691	I	D	Invalid Alleles
+rs397507192	chr17	43093802	D	I	Invalid Alleles
+rs397508834	chr17	43094440	I	D	Invalid Alleles
+17:41246550	chr17	43094521	I	D	Invalid Alleles
+rs397509337	chr17	43094604	I	D	Invalid Alleles
+rs5820483	chr17	43095105	D	I	Invalid Alleles
+rs147856441	chr17	43104084	I	D	Invalid Alleles
+rs398122651	chr17	43106464	I	D	Invalid Alleles
+rs7216041	chr17	45149111	C	T	Allele mismatch. Reference Panel: C/C
+rs71371308	chr17	49441676	A	G	Allele mismatch. Reference Panel: A/A
+rs137852623	chr17	50170245	C	T	Allele mismatch. Reference Panel: C/G
+rs730881942	chr17	58692733	I	D	Invalid Alleles
+rs587781416	chr17	61849241	D	I	Invalid Alleles
+rs112415383	chr17	81055570	T	G	Allele mismatch. Reference Panel: T/T
+rs74002484	chr17	81646844	G	T	Allele mismatch. Reference Panel: G/G
+rs151264360	chr18	673444	I	D	Invalid Alleles
+rs16430	chr18	673444	I	D	Invalid Alleles
+rs7228872	chr18	8225391	A	G	Allele mismatch. Reference Panel: A/A
+rs4798625	chr18	8299596	C	A	Allele mismatch. Reference Panel: C/C
+rs587777711	chr18	22172215	I	D	Invalid Alleles
+rs797045180	chr18	22172215	I	D	Invalid Alleles
+rs2307561	chr18	26923543	I	D	Invalid Alleles
+rs377272752	chr18	31069032	I	D	Invalid Alleles
+18:31520893	chr18	31520893	I	D	Invalid Alleles
+rs794728091	chr18	31521184	D	I	Invalid Alleles
+18:36407588	chr18	38827624	T	C	Allele mismatch. Reference Panel: T/G
+rs75949023	chr18	46524734	G	A	Allele mismatch. Reference Panel: G/T
+rs142960762	chr18	46560317	I	D	Invalid Alleles
+rs79587540	chr18	49009595	A	G	Allele mismatch. Reference Panel: A/A
+rs192369781	chr18	49372744	G	A	Allele mismatch. Reference Panel: G/C
+rs3841750	chr18	49879055	D	I	Invalid Alleles
+18:51076678	chr18	51076678	I	D	Invalid Alleles
+rs377767380	chr18	51078403	I	D	Invalid Alleles
+GSA-rs73962611	chr18	54567603	C	A	Allele mismatch. Reference Panel: C/C
+rs66549526	chr18	73559689	A	G	Allele mismatch. Reference Panel: A/A
+rs4892115	chr18	73573506	A	G	Allele mismatch. Reference Panel: A/A
+rs62096372	chr18	76059474	C	T	Allele mismatch. Reference Panel: C/A
+rs28379312	chr18	76531465	G	A	Allele mismatch. Reference Panel: G/G
+rs4991242	chr18	77377769	A	C	Allele mismatch. Reference Panel: A/A
+rs9964405	chr18	77644130	G	T	Allele mismatch. Reference Panel: G/G
+rs397518442	chr19	1220630	I	D	Invalid Alleles
+rs121913322.1	chr19	1221320	C	A	Allele mismatch. Reference Panel: C/T
+rs587776661	chr19	1221976	I	D	Invalid Alleles
+rs587776660	chr19	1221994	I	D	Invalid Alleles
+rs17882933	chr19	4943503	T	C	Allele mismatch. Reference Panel: T/T
+rs606231167	chr19	7555727	D	I	Invalid Alleles
+rs875989898	chr19	11105220	I	D	Invalid Alleles
+rs879254531	chr19	11105357	I	D	Invalid Alleles
+rs879254812	chr19	11111625	I	D	Invalid Alleles
+19:11224039	chr19	11113360	I	D	Invalid Alleles
+rs879254881	chr19	11113537	I	D	Invalid Alleles
+rs879254892	chr19	11113590	D	I	Invalid Alleles
+rs879254902	chr19	11113615	I	D	Invalid Alleles
+19:11120523	chr19	11120523	I	D	Invalid Alleles
+19:11123284	chr19	11123282	I	D	Invalid Alleles
+19:11233965	chr19	11123285	D	I	Invalid Alleles
+rs879255168	chr19	11123297	I	D	Invalid Alleles
+rs572289342	chr19	12649904	D	I	Invalid Alleles
+rs200702652	chr19	16316205	G	T	Allele mismatch. Reference Panel: G/C
+rs61420814	chr19	16534057	C	T	Allele mismatch. Reference Panel: C/C
+rs312262898	chr19	18786034	D	I	Invalid Alleles
+rs5827519	chr19	22097730	T	G	Allele mismatch. Reference Panel: T/T
+rs28733028	chr19	32567224	A	G	Allele mismatch. Reference Panel: A/A
+rs559371263	chr19	38489294	I	D	Invalid Alleles
+rs118192165	chr19	38564974	I	D	Invalid Alleles
+rs10420988	chr19	40504138	G	T	Allele mismatch. Reference Panel: G/G
+rs3833221	chr19	41116202	D	I	Invalid Alleles
+rs3213239	chr19	43576907	I	D	Invalid Alleles
+rs55652650	chr19	50378563	I	D	Invalid Alleles
+rs7508606	chr19	55234645	C	T	Allele mismatch. Reference Panel: C/C
+rs201608741	chr2	318841	A	G	Allele mismatch. Reference Panel: A/A
+rs35943409	chr2	3465085	A	C	Allele mismatch. Reference Panel: A/A
+rs34305730	chr2	3585696	A	G	Allele mismatch. Reference Panel: A/C
+rs57575859	chr2	16332258	G	T	Allele mismatch. Reference Panel: G/G
+rs62141149	chr2	30236943	C	T	Allele mismatch. Reference Panel: C/G
+GSA-rs35653179	chr2	35342923	T	C	Allele mismatch. Reference Panel: T/A
+rs62142297	chr2	58638093	C	A	Allele mismatch. Reference Panel: C/G
+GSA-rs62142644	chr2	60495974	C	A	Allele mismatch. Reference Panel: C/C
+rs111759045	chr2	64757892	C	A	Allele mismatch. Reference Panel: C/C
+rs2694698	chr2	73920163	G	T	Allele mismatch. Reference Panel: G/G
+rs2577766	chr2	86071228	A	G	Allele mismatch. Reference Panel: A/A
+rs71418593	chr2	116475757	G	T	Allele mismatch. Reference Panel: G/A
+rs200207987	chr2	139301630	C	T	Allele mismatch. Reference Panel: C/A
+rs78697451	chr2	141187433	G	T	Allele mismatch. Reference Panel: G/A
+rs4664887	chr2	157514753	C	T	Allele mismatch. Reference Panel: C/C
+rs13384591	chr2	158643729	G	A	Allele mismatch. Reference Panel: G/G
+rs374356154	chr2	164767531	T	C	Allele mismatch. Reference Panel: T/G
+rs62174874	chr2	165078811	T	C	Allele mismatch. Reference Panel: T/A
+rs10930406	chr2	170162268	G	A	Allele mismatch. Reference Panel: G/G
+rs112971823	chr2	177695119	T	G	Allele mismatch. Reference Panel: T/T
+rs10189692	chr2	194332316	G	T	Allele mismatch. Reference Panel: G/C
+rs56054544	chr2	210277785	G	A	Allele mismatch. Reference Panel: G/T
+GSA-rs3770190	chr2	221444460	C	T	Allele mismatch. Reference Panel: C/G
+rs16828074.1	chr2	231454043	C	T	Allele mismatch. Reference Panel: C/G
+rs376299829	chr2	232336609	C	T	Allele mismatch. Reference Panel: C/G
+rs79253018	chr2	233004970	C	A	Allele mismatch. Reference Panel: C/C
+rs67364811	chr2	235895750	A	G	Allele mismatch. Reference Panel: A/A
+rs56320676	chr2	236895478	C	T	Allele mismatch. Reference Panel: C/A
+rs3755538	chr2	240800117	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs372478488	chr20	3515269	C	A	Allele mismatch. Reference Panel: C/G
+rs62203934	chr20	5817714	A	C	Allele mismatch. Reference Panel: A/G
+rs73091421	chr20	8088983	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs58538360	chr20	8233241	T	C	Allele mismatch. Reference Panel: T/G
+GSA-rs2067717	chr20	15767381	A	C	Allele mismatch. Reference Panel: A/G
+rs6111194	chr20	16583455	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs5025838	chr20	20385161	G	A	Allele mismatch. Reference Panel: G/G
+rs113235533	chr20	41723797	G	T	Allele mismatch. Reference Panel: G/G
+rs786205670	chr20	45892874	I	D	Invalid Alleles
+rs56113756	chr20	62661835	G	A	Allele mismatch. Reference Panel: G/T
+rs933145	chr21	22201261	C	T	Allele mismatch. Reference Panel: C/C
+rs62221621	chr21	27172392	G	A	Allele mismatch. Reference Panel: G/T
+rs797045539	chr21	37505341	D	I	Invalid Alleles
+rs2409949	chr21	38029975	T	C	Allele mismatch. Reference Panel: T/G
+rs967234	chr21	39494251	C	T	Allele mismatch. Reference Panel: C/C
+rs7279225	chr21	40175780	T	C	Allele mismatch. Reference Panel: T/T
+21:42572140	chr21	41200213	C	A	Allele mismatch. Reference Panel: C/C
+rs397517376	chr21	42384006	D	I	Invalid Alleles
+rs13051867	chr21	42740583	G	A	Allele mismatch. Reference Panel: G/G
+rs1788471	chr21	42988066	G	T	Allele mismatch. Reference Panel: G/G
+rs794727083	chr21	43059231	I	D	Invalid Alleles
+rs779250698	chr21	43072166	I	D	Invalid Alleles
+rs386833675	chr21	44291182	I	D	Invalid Alleles
+rs786204567	chr21	44293142	I	D	Invalid Alleles
+rs201180574	chr21	45504503	D	I	Invalid Alleles
+rs34234135	chr21	45645239	D	I	Invalid Alleles
+rs200681538	chr22	21052641	G	A	Allele mismatch. Reference Panel: G/C
+rs738788	chr22	23748182	G	A	Allele mismatch. Reference Panel: G/G
+rs35320474	chr22	24441941	I	D	Invalid Alleles
+rs56055061	chr22	25085783	A	G	Allele mismatch. Reference Panel: A/A
+rs6004840	chr22	25937584	T	C	Allele mismatch. Reference Panel: T/A
+rs10719007	chr22	27794814	G	T	Allele mismatch. Reference Panel: G/G
+22:29655660	chr22	29655660	I	D	Invalid Alleles
+rs9607023	chr22	33198676	C	T	Allele mismatch. Reference Panel: C/C
+rs587783731	chr22	33604427	G	A	Allele mismatch. Reference Panel: G/G
+rs205251	chr22	34479799	G	A	Allele mismatch. Reference Panel: G/G
+rs66987842	chr22	40508704	I	D	Invalid Alleles
+rs142475644	chr22	42119842	I	D	Invalid Alleles
+rs142475644_CYP2D6	chr22	42119842	I	D	Invalid Alleles
+rs863224242	chr22	46355521	D	I	Invalid Alleles
+rs13093820	chr3	2522149	T	G	Allele mismatch. Reference Panel: T/T
+rs200407963	chr3	2812572	G	T	Allele mismatch. Reference Panel: G/G
+rs2370957	chr3	27345972	C	A	Allele mismatch. Reference Panel: C/G
+rs115553338	chr3	29911983	C	A	Allele mismatch. Reference Panel: C/C
+rs9840135	chr3	38043956	G	A	Allele mismatch. Reference Panel: G/G
+rs4447758	chr3	61595185	G	T	Allele mismatch. Reference Panel: G/G
+rs34769035	chr3	66477860	C	T	Allele mismatch. Reference Panel: C/A
+rs61664213	chr3	72252115	C	A	Allele mismatch. Reference Panel: C/C
+rs77561779	chr3	80759405	C	A	Allele mismatch. Reference Panel: C/C
+rs2220828	chr3	86429474	T	C	Allele mismatch. Reference Panel: T/A
+rs16843879	chr3	136284352	A	C	Allele mismatch. Reference Panel: A/T
+rs34228084	chr3	139377252	G	A	Allele mismatch. Reference Panel: G/T
+rs2194979	chr3	152269914	A	C	Allele mismatch. Reference Panel: A/A
+GSA-rs62393479	chr3	162731110	G	T	Allele mismatch. Reference Panel: G/C
+rs187158412	chr3	170837694	G	A	Allele mismatch. Reference Panel: G/T
+rs73180240	chr3	171969568	C	A	Allele mismatch. Reference Panel: C/C
+rs100607	chr3	178406582	C	A	Allele mismatch. Reference Panel: C/C
+rs73175592	chr3	185897200	T	G	Allele mismatch. Reference Panel: T/T
+rs73892332	chr3	194362138	A	G	Allele mismatch. Reference Panel: A/A
+rs77338688	chr4	3810732	T	G	Allele mismatch. Reference Panel: T/C
+rs6843078	chr4	22777495	C	T	Allele mismatch. Reference Panel: C/C
+rs2239585	chr4	24792697	G	A	Allele mismatch. Reference Panel: G/C
+rs997094	chr4	28691789	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs56306168	chr4	37041299	T	G	Allele mismatch. Reference Panel: T/C
+GSA-rs34819279	chr4	37563464	G	T	Allele mismatch. Reference Panel: G/C
+rs10002038	chr4	43856513	C	T	Allele mismatch. Reference Panel: C/C
+rs13123057.1	chr4	69195685	G	A	Allele mismatch. Reference Panel: G/T
+rs59279314	chr4	71694775	T	C	Allele mismatch. Reference Panel: T/A
+GSA-rs62318558	chr4	75809310	C	T	Allele mismatch. Reference Panel: C/A
+rs5000358	chr4	93502714	C	A	Allele mismatch. Reference Panel: C/C
+GSA-rs200331424	chr4	93913980	A	G	Allele mismatch. Reference Panel: A/T
+rs201231654	chr4	107829841	G	T	Allele mismatch. Reference Panel: G/C
+rs35505599	chr4	117705242	C	A	Allele mismatch. Reference Panel: C/T
+rs113279623	chr4	122691806	A	C	Allele mismatch. Reference Panel: A/A
+rs66565110	chr4	130901660	A	G	Allele mismatch. Reference Panel: A/A
+rs10027983	chr4	141777710	A	C	Allele mismatch. Reference Panel: A/A
+rs11935761	chr4	143615718	C	A	Allele mismatch. Reference Panel: C/C
+rs2884190	chr4	147241953	G	T	Allele mismatch. Reference Panel: G/A
+rs4742.1	chr4	182894535	A	C	Allele mismatch. Reference Panel: A/G
+GSA-rs2310356	chr4	185769111	A	G	Allele mismatch. Reference Panel: A/C
+rs7441586	chr4	188137924	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs139981167	chr4	189171999	A	G	Allele mismatch. Reference Panel: A/T
+rs67004003	chr4	189361923	G	A	Allele mismatch. Reference Panel: G/G
+rs57940064	chr5	3694034	C	A	Allele mismatch. Reference Panel: C/G
+GSA-rs63449562	chr5	14182873	T	C	Allele mismatch. Reference Panel: T/T
+rs201496503	chr5	18060869	G	T	Allele mismatch. Reference Panel: G/G
+5:23364687	chr5	23364578	T	G	Allele mismatch. Reference Panel: T/A
+rs201908191	chr5	36327074	G	A	Allele mismatch. Reference Panel: G/G
+rs2910646	chr5	41260448	A	C	Allele mismatch. Reference Panel: A/A
+rs111451841	chr5	42179196	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs2591953	chr5	56952908	C	A	Allele mismatch. Reference Panel: C/C
+rs62368876	chr5	65727015	C	A	Allele mismatch. Reference Panel: C/G
+GSA-rs114374356	chr5	75362351	G	T	Allele mismatch. Reference Panel: G/A
+rs4235703	chr5	77598656	G	T	Allele mismatch. Reference Panel: G/G
+rs5026526	chr5	95997963	G	T	Allele mismatch. Reference Panel: G/G
+rs6881933	chr5	97442434	G	A	Allele mismatch. Reference Panel: G/G
+rs190534946	chr5	100294310	T	C	Allele mismatch. Reference Panel: T/T
+rs1835940	chr5	109908144	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs55901834	chr5	138844094	G	A	Allele mismatch. Reference Panel: G/T
+rs370115218	chr5	149012634	G	T	Allele mismatch. Reference Panel: G/A
+rs28575973	chr5	156977576	C	A	Allele mismatch. Reference Panel: C/C
+GSA-rs62385268	chr5	164984726	C	A	Allele mismatch. Reference Panel: C/T
+GSA-rs10475808	chr5	166808383	C	A	Allele mismatch. Reference Panel: C/C
+rs72645737	chr5	167296552	G	A	Allele mismatch. Reference Panel: G/G
+rs78909479	chr5	168238304	A	G	Allele mismatch. Reference Panel: A/A
+rs28619056	chr5	170261484	C	T	Allele mismatch. Reference Panel: C/C
+rs200640372	chr6	4212432	A	G	Allele mismatch. Reference Panel: A/A
+rs9689448	chr6	4217561	T	G	Allele mismatch. Reference Panel: T/T
+rs60354968	chr6	4962007	T	G	Allele mismatch. Reference Panel: T/A
+rs400215	chr6	9016980	T	C	Allele mismatch. Reference Panel: T/T
+rs57121361	chr6	18423767	C	A	Allele mismatch. Reference Panel: C/T
+6:22545166	chr6	22544937	T	C	Allele mismatch. Reference Panel: T/G
+rs200581608	chr6	22621379	C	A	Allele mismatch. Reference Panel: C/T
+rs73741624	chr6	27777829	C	A	Allele mismatch. Reference Panel: C/C
+GSA-rs116747901	chr6	28814986	A	C	Allele mismatch. Reference Panel: A/G
+rs9470299	chr6	36503450	T	G	Allele mismatch. Reference Panel: T/T
+rs62436021	chr6	44737638	C	A	Allele mismatch. Reference Panel: C/T
+rs12174274	chr6	50910118	A	G	Allele mismatch. Reference Panel: A/A
+rs57177762	chr6	53261978	C	T	Allele mismatch. Reference Panel: C/G
+rs9445469	chr6	65118878	G	A	Allele mismatch. Reference Panel: G/G
+rs5004147	chr6	66466765	A	C	Allele mismatch. Reference Panel: A/G
+rs9346043	chr6	67591354	T	C	Allele mismatch. Reference Panel: T/T
+rs1297451	chr6	69173020	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs7751606	chr6	87323270	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs79771081	chr6	105713381	C	A	Allele mismatch. Reference Panel: C/C
+GSA-rs66506413	chr6	106650525	A	C	Allele mismatch. Reference Panel: A/A
+rs112041077	chr6	112202440	A	G	Allele mismatch. Reference Panel: A/A
+rs55805978	chr6	133529531	C	A	Allele mismatch. Reference Panel: C/C
+rs73776906	chr6	138343457	G	T	Allele mismatch. Reference Panel: G/G
+rs28521805	chr6	139662691	G	A	Allele mismatch. Reference Panel: G/G
+rs200298281	chr6	149017799	T	C	Allele mismatch. Reference Panel: T/T
+rs9485351	chr6	149058345	A	G	Allele mismatch. Reference Panel: A/T
+GSA-rs76985194	chr6	154017882	T	C	Allele mismatch. Reference Panel: T/G
+rs1554817	chr6	154245287	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs8191734	chr6	160009986	C	A	Allele mismatch. Reference Panel: C/T
+GSA-rs57028290	chr6	163799325	T	G	Allele mismatch. Reference Panel: T/C
+rs6455979	chr6	164964828	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs55662744	chr7	2162872	C	T	Allele mismatch. Reference Panel: C/C
+rs76644293	chr7	13849701	A	G	Allele mismatch. Reference Panel: A/A
+rs7459346	chr7	27994472	C	A	Allele mismatch. Reference Panel: C/C
+rs10275601	chr7	39200861	G	A	Allele mismatch. Reference Panel: G/G
+rs334497	chr7	47506949	G	A	Allele mismatch. Reference Panel: G/G
+rs71542336	chr7	51947776	G	T	Allele mismatch. Reference Panel: G/G
+rs4236234	chr7	69427323	A	G	Allele mismatch. Reference Panel: A/A
+rs200010205	chr7	70553760	C	T	Allele mismatch. Reference Panel: C/C
+rs201191925	chr7	77502613	G	T	Allele mismatch. Reference Panel: G/G
+rs12672648	chr7	84824036	G	A	Allele mismatch. Reference Panel: G/G
+rs112489224	chr7	100525888	G	T	Allele mismatch. Reference Panel: G/G
+rs66481397	chr7	100700917	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs5004797	chr7	117243320	T	C	Allele mismatch. Reference Panel: T/G
+rs77652983	chr7	117773707	A	C	Allele mismatch. Reference Panel: A/A
+rs7804904	chr7	123952892	T	C	Allele mismatch. Reference Panel: T/T
+7:135366577	chr7	135681829	T	C	Allele mismatch. Reference Panel: T/A
+rs79695130	chr7	138606971	C	A	Allele mismatch. Reference Panel: C/C
+rs2366496	chr7	141695423	C	A	Allele mismatch. Reference Panel: C/G
+GSA-rs5014195	chr8	3735323	A	C	Allele mismatch. Reference Panel: A/A
+rs3058421	chr8	9229488	C	A	Allele mismatch. Reference Panel: C/C
+rs12547653	chr8	11002082	C	A	Allele mismatch. Reference Panel: C/C
+GSA-rs56043631	chr8	27488092	G	A	Allele mismatch. Reference Panel: G/T
+rs71523407	chr8	31334166	C	T	Allele mismatch. Reference Panel: C/C
+rs6989422	chr8	32307589	T	G	Allele mismatch. Reference Panel: T/T
+rs3015699	chr8	37077429	G	A	Allele mismatch. Reference Panel: G/G
+rs62518555	chr8	78319494	C	A	Allele mismatch. Reference Panel: C/T
+rs34569035	chr8	89998876	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs201449239	chr8	98432138	C	A	Allele mismatch. Reference Panel: C/T
+rs75279991	chr8	101647406	C	T	Allele mismatch. Reference Panel: C/C
+rs59402632	chr8	124695867	G	T	Allele mismatch. Reference Panel: G/G
+rs13272908	chr8	134727134	G	A	Allele mismatch. Reference Panel: G/G
+rs13260466	chr8	137374377	C	T	Allele mismatch. Reference Panel: C/C
+rs35504539	chr8	140203874	C	A	Allele mismatch. Reference Panel: C/T
+GSA-rs1885777	chr9	906031	C	A	Allele mismatch. Reference Panel: C/C
+rs104894114	chr9	2718655	G	T	Allele mismatch. Reference Panel: G/A
+GSA-rs568656	chr9	4133874	A	C	Allele mismatch. Reference Panel: A/A
+GSA-9:7300021	chr9	7300021	T	G	Allele mismatch. Reference Panel: T/T
+GSA-rs56244254	chr9	11178751	T	C	Allele mismatch. Reference Panel: T/T
+GSA-rs28366464	chr9	26596539	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs62560882	chr9	76126170	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs1590853	chr9	80229359	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs7470167	chr9	87457320	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs7852518	chr9	88049323	G	T	Allele mismatch. Reference Panel: G/G
+GSA-rs201511140	chr9	91372909	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs4323527	chr9	105996353	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs2986670	chr9	110428429	C	A	Allele mismatch. Reference Panel: C/C
+GSA-rs13297374	chr9	126012398	A	G	Allele mismatch. Reference Panel: A/T
+GSA-rs57779186	chr9	126494868	A	C	Allele mismatch. Reference Panel: A/A
+GSA-rs28739541	chr9	131012062	T	C	Allele mismatch. Reference Panel: T/T
+rs119462985	chr9	131518945	C	T	Allele mismatch. Reference Panel: C/G
+GSA-rs113776467	chr9	133589628	G	A	Allele mismatch. Reference Panel: G/G
+GSA-rs2770820	chr9	135482987	C	T	Allele mismatch. Reference Panel: C/C
+GSA-rs56709399	chr9	137249018	G	T	Allele mismatch. Reference Panel: G/G

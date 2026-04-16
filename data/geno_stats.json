@@ -1,0 +1,25 @@
+{
+  "case": {
+    "total": 398,
+    "genotyped": 270
+  },
+  "control": {
+    "total": 861,
+    "genotyped": 499
+  },
+  "gray": {
+    "total": 313,
+    "genotyped": 119,
+    "not_geno": 194
+  },
+  "review": {
+    "total": 116,
+    "genotyped": 62,
+    "not_geno": 54
+  },
+  "excluded": {
+    "total": 94,
+    "genotyped": 40,
+    "not_geno": 54
+  }
+}

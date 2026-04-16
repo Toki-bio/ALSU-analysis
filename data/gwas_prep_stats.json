@@ -1,0 +1,13 @@
+{
+  "pheno_total": 1815,
+  "geno_total": 1047,
+  "matched": 1026,
+  "case": 273,
+  "control": 509,
+  "gray": 119,
+  "review": 64,
+  "excluded": 61,
+  "missing_bmi": 27,
+  "missing_age": 3,
+  "unmatched": 21
+}

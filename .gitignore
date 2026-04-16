@@ -7,6 +7,17 @@ test_layout.html
 data/michigan_upload/*.vcf.gz
 data/michigan_upload/*.vcf.gz.tbi
 
+# Large files — exceed GitHub 100MB limit
+data/tier3_plot.tsv.gz
+data/michigan_results/*.zip
+
+# Raw/intermediate downloads (DRAGEN banner, unprocessed)
+data/spring2026_*_raw.*
+data/test_extract.txt
+
+# Old drafts
+pre_gwas_old.html
+
 # Scratch/debug files — never commit
 tmp_*
 *_out.txt

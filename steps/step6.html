@@ -14,6 +14,7 @@
         .header h1 {font-size: 2em; margin-bottom: 10px;}
         .header p {opacity: 0.9;}
         .step-badge {display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px;}
+        .step-badge-old {background: rgba(255,255,255,0.08); font-size: 0.75em; padding: 3px 10px; opacity: 0.6; margin-left: 6px;}
         .nav-tabs {display: none;}
         .tab-content {display: none;}
         .tab-content.active {display: none;}
@@ -79,7 +80,8 @@
                 <a href="step13.html">Step 13: LD Analysis</a>
                 <a href="step14.html">Step 14: Fst &amp; MDS</a>
                 <a href="step15.html">Step 15: ROH &amp; IBD</a>
-                <a href="next_steps.html">Next Steps</a>
+                <a href="step16.html">Step 16: GWAS</a>
+            <a href="next_steps.html">Next Steps</a>
             </div>
         </aside>
         
@@ -95,7 +97,7 @@
                 <h1>Step 6: Final Quality Control</h1>
                 <p>Sample and variant QC checks on imputed dataset</p>
                 <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
-                <span class="step-badge">✓ Winter 2025 — December 26, 2025</span>
+                <span class="step-badge step-badge-old">Winter 2025 — Dec 26, 2025</span>
             </div>
         
         <div class="content">
@@ -193,8 +195,8 @@
                     <div class="success-box">
                         <strong>✓ Completed:</strong> 9,981,814 of 48,887,364 variants (20.4%) pass R²≥0.80 + MAF≥0.001.
                         3 het outliers removed (|F|&gt;0.2): 08-123, 20-05, 08-86.<br>
-                        <strong>Note:</strong> 2 samples had Cyrillic homoglyphs corrupted by imputation server in chr10–22
-                        (03-25м→03-25m, 08-176Х→08-176X). Fixed via <code>bcftools reheader</code> before concat.
+                        <strong>Note:</strong> Michigan v2 added numeric prefixes to chr1–9 sample IDs (e.g. 1_01-01).
+                        Stripped via <code>bcftools reheader</code> in Step 5 before concat. Cyrillic homoglyphs were already fixed in Step 3e.
                     </div>
 
                     <h3 style="color: #333; margin-top: 20px;">Winter 2025</h3>
@@ -334,10 +336,10 @@ done</div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-time">2026-04-11 ~09:30</div>
-                            <div class="timeline-description"><strong>Spring 2026: Sample name fix — chr10–22 reheadered</strong><br>
-                                2 samples had Cyrillic homoglyphs (м/Х) corrupted to ?? by imputation server in chr10–22.
-                                Fixed via <code>bcftools reheader -s canonical_samples.txt</code> on 13 chromosomes.
-                                All 22 chromosomes verified matching.
+                            <div class="timeline-description"><strong>Spring 2026: Prefix strip (Step 5)</strong><br>
+                                Michigan v2 added numeric prefixes to chr1–9 sample IDs (e.g. 1_01-01, 2_01-02).
+                                chr10–22 were clean. Fixed via <code>bcftools reheader</code> on 9 chromosomes.
+                                All 22 chromosomes verified matching after strip.
                             </div>
                         </div>
                         <div class="timeline-item">

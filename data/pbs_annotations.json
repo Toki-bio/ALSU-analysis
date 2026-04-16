@@ -1,0 +1,241 @@
+[
+  {
+    "id": "12:22967890:G:T",
+    "chr": "12",
+    "pos": 22967890,
+    "ref": "G",
+    "alt": "T",
+    "pbs": 2.9885,
+    "rsid": "rs116987492",
+    "gene": "LINC02955",
+    "consequence": "intron_variant, non_coding_transcript_variant",
+    "biotype": "lncRNA",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 0,
+    "gtex_eqtls": []
+  },
+  {
+    "id": "12:125520190:C:T",
+    "chr": "12",
+    "pos": 125520190,
+    "ref": "C",
+    "alt": "T",
+    "pbs": 2.6867,
+    "rsid": "rs34013262",
+    "gene": "TMEM132B",
+    "consequence": "intron_variant",
+    "biotype": "protein_coding",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 0,
+    "gtex_eqtls": []
+  },
+  {
+    "id": "12:5664803:T:G",
+    "chr": "12",
+    "pos": 5664803,
+    "ref": "T",
+    "alt": "G",
+    "pbs": 2.6689,
+    "rsid": "rs55643000",
+    "gene": "ANO2",
+    "consequence": "intron_variant",
+    "biotype": "protein_coding",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 0,
+    "gtex_eqtls": []
+  },
+  {
+    "id": "11:20665570:T:G",
+    "chr": "11",
+    "pos": 20665570,
+    "ref": "T",
+    "alt": "G",
+    "pbs": 1.1429,
+    "rsid": "rs1555048813",
+    "gene": "NELL1",
+    "consequence": "upstream_gene_variant",
+    "biotype": "protein_coding",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 0,
+    "gtex_eqtls": []
+  },
+  {
+    "id": "5:53879140:C:A",
+    "chr": "5",
+    "pos": 53879140,
+    "ref": "C",
+    "alt": "A",
+    "pbs": 0.5306,
+    "rsid": "rs786934",
+    "gene": "ARL15",
+    "consequence": "downstream_gene_variant",
+    "biotype": "protein_coding",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 0,
+    "gtex_eqtls": []
+  },
+  {
+    "id": "3:133749168:A:G",
+    "chr": "3",
+    "pos": 133749168,
+    "ref": "A",
+    "alt": "G",
+    "pbs": 0.4878,
+    "rsid": "rs1212890352",
+    "gene": "TF",
+    "consequence": "intron_variant",
+    "biotype": "protein_coding",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 0,
+    "gtex_eqtls": []
+  },
+  {
+    "id": "11:207698:C:T",
+    "chr": "11",
+    "pos": 207698,
+    "ref": "C",
+    "alt": "T",
+    "pbs": 0.3799,
+    "rsid": "rs1855216054",
+    "gene": "BET1L",
+    "consequence": "upstream_gene_variant",
+    "biotype": "protein_coding",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 13,
+    "gtex_eqtls": [
+      {
+        "tissue": "Whole_Blood",
+        "gene": "BET1L",
+        "pvalue": 1.25068e-14,
+        "nes": 0.221149
+      },
+      {
+        "tissue": "Whole_Blood",
+        "gene": "RIC8A",
+        "pvalue": 1.16798e-15,
+        "nes": -0.137581
+      },
+      {
+        "tissue": "Whole_Blood",
+        "gene": "PSMD13",
+        "pvalue": 4.64789e-13,
+        "nes": -0.111241
+      },
+      {
+        "tissue": "Liver",
+        "gene": "RP11-326C3.16",
+        "pvalue": 7.33096e-08,
+        "nes": -0.412305
+      },
+      {
+        "tissue": "Artery_Aorta",
+        "gene": "RIC8A",
+        "pvalue": 7.50476e-28,
+        "nes": -0.298361
+      },
+      {
+        "tissue": "Artery_Aorta",
+        "gene": "SIRT3",
+        "pvalue": 1.90436e-06,
+        "nes": 0.184211
+      },
+      {
+        "tissue": "Artery_Aorta",
+        "gene": "PSMD13",
+        "pvalue": 1.34026e-12,
+        "nes": -0.17413
+      },
+      {
+        "tissue": "Brain_Frontal_Cortex_BA9",
+        "gene": "RIC8A",
+        "pvalue": 1.07651e-07,
+        "nes": -0.287516
+      },
+      {
+        "tissue": "Brain_Frontal_Cortex_BA9",
+        "gene": "SIRT3",
+        "pvalue": 2.24817e-05,
+        "nes": -0.218235
+      },
+      {
+        "tissue": "Brain_Frontal_Cortex_BA9",
+        "gene": "PSMD13",
+        "pvalue": 2.24472e-06,
+        "nes": -0.24836
+      },
+      {
+        "tissue": "Adipose_Subcutaneous",
+        "gene": "RIC8A",
+        "pvalue": 8.79566e-19,
+        "nes": -0.217645
+      },
+      {
+        "tissue": "Adipose_Subcutaneous",
+        "gene": "SIRT3",
+        "pvalue": 4.01625e-12,
+        "nes": 0.201978
+      },
+      {
+        "tissue": "Adipose_Subcutaneous",
+        "gene": "PSMD13",
+        "pvalue": 3.47753e-08,
+        "nes": -0.143847
+      }
+    ]
+  },
+  {
+    "id": "10:8512594:G:A",
+    "chr": "10",
+    "pos": 8512594,
+    "ref": "G",
+    "alt": "A",
+    "pbs": 0.3229,
+    "rsid": "rs57082413",
+    "gene": "KRT8P37",
+    "consequence": "downstream_gene_variant",
+    "biotype": "transcribed_processed_pseudogene",
+    "sift": "",
+    "polyphen": "",
+    "gwas_hits": 0,
+    "gwas_associations": [],
+    "clinvar_significance": "",
+    "clinvar_conditions": [],
+    "gtex_hits": 0,
+    "gtex_eqtls": []
+  }
+]

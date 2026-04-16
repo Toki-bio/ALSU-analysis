@@ -29,6 +29,7 @@
         .header h1 { font-size: 2em; margin-bottom: 10px; }
         .header p { opacity: 0.9; }
         .step-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
+        .step-badge-old { background: rgba(255,255,255,0.08); font-size: 0.75em; padding: 3px 10px; opacity: 0.6; margin-left: 6px; }
         .content { padding: 30px; }
         @media (max-width: 1024px) { .page-wrapper { flex-direction: column; } .sidebar { width: 100%; position: relative; top: 0; } }
         h2 { color: #333; font-size: 1.5em; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #999; }
@@ -98,6 +99,7 @@
             <a href="step13.html">Step 13: LD Analysis</a>
             <a href="step14.html">Step 14: Fst &amp; MDS</a>
             <a href="step15.html">Step 15: ROH &amp; IBD</a>
+            <a href="step16.html">Step 16: GWAS</a>
             <a href="next_steps.html">Next Steps</a>
         </div>
     </aside>
@@ -113,7 +115,7 @@
             <h1>Step 11: Global ADMIXTURE with 1000 Genomes</h1>
             <p>Unsupervised ancestry decomposition of the Uzbek cohort with continental reference populations</p>
             <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
-            <span class="step-badge">Completed &mdash; March 2026</span>
+            <span class="step-badge step-badge-old">Prev. run — Mar 2026</span>
         </div>
 
         <div class="content">
@@ -157,7 +159,7 @@
                 <strong>Spring 2026 global ADMIXTURE:</strong> Merged 79,767 common SNPs &rarr; QC (HWE &minus;11,905, MAF &minus;7,377) &rarr;
                 60,485 &rarr; LD pruning (50 10 0.1, &minus;206) &rarr; 60,279 final variants.
                 CV monotonically decreasing K=2&rarr;8. Evanno |L″(K)| peaks at K=3 (1,682,893), consistent with winter.
-                <strong>UZB-only:</strong> 1,047 samples &times; 294,597 variants. K=2 CV=0.26309 (minimum), K=3 CV=0.26350 &mdash; ADMIXTURE K=4&ndash;8 still running.
+                <strong>UZB-only:</strong> 1,047 samples &times; 294,597 variants. K=2 CV=0.26309 (minimum), monotonically increasing through K=7 (0.26904). K=8 running.
             </div>
 
             <!-- 2. PIPELINE -->
@@ -457,16 +459,17 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
                 <tr><th>K</th><th>CV Error<br><span style="font-weight:normal;font-size:0.85em;color:#888">Winter 2025</span></th><th>CV Error<br><span style="font-weight:normal;font-size:0.85em;color:#2e7d32">Spring 2026</span></th><th>Note</th></tr>
                 <tr style="background:#d4edda; font-weight:600;"><td>2</td><td>0.30762</td><td>0.26309</td><td>&larr; Minimum (both)</td></tr>
                 <tr><td>3</td><td>0.30811</td><td>0.26350</td><td></td></tr>
-                <tr><td>4</td><td>0.30958</td><td colspan="1" style="color:#888; font-style:italic;">running&hellip;</td><td></td></tr>
-                <tr><td>5</td><td>0.31103</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
-                <tr><td>6</td><td>0.31266</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
-                <tr><td>7</td><td>0.31445</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
-                <tr><td>8</td><td>0.31627</td><td style="color:#888; font-style:italic;">pending</td><td></td></tr>
+                <tr><td>4</td><td>0.30958</td><td>0.26466</td><td></td></tr>
+                <tr><td>5</td><td>0.31103</td><td>0.26587</td><td></td></tr>
+                <tr><td>6</td><td>0.31266</td><td>0.26710</td><td></td></tr>
+                <tr><td>7</td><td>0.31445</td><td>0.26904</td><td></td></tr>
+                <tr><td>8</td><td>0.31627</td><td style="color:#888; font-style:italic;">running&hellip;</td><td></td></tr>
             </table>
 
             <div class="info-box">
                 <strong>Spring 2026 UZB-only:</strong> 1,047 samples &times; 294,597 LD-pruned variants.
-                K=2 again shows the minimum CV (0.26309), consistent with winter (0.30762). K=4&ndash;8 still running on server.
+                K=2 shows the minimum CV (0.26309), consistent with winter (0.30762). K=2&ndash;7 complete; K=8 running.
+                CV monotonically increases K=2 through K=7, confirming no significant internal substructure.
             </div>
 
             <p>
@@ -701,7 +704,8 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
             <p style="text-align:center; margin-top: 30px;">
                 <a href="step10.html" style="color:#555; text-decoration:none;">&larr; Step 10: Multi-Pop PBS</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="next_steps.html" style="color:#555; text-decoration:none;">Next Steps &rarr;</a>
+                <a href="step16.html">Step 16: GWAS</a>
+            <a href="next_steps.html" style="color:#555; text-decoration:none;">Next Steps &rarr;</a>
             </p>
 
         </div><!-- /content -->

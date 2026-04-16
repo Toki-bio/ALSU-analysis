@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-GWAS: Pregnancy Outcome Analysis — ALSU Pipeline</title>
+    <style>
+        * {margin:0;padding:0;box-sizing:border-box;}
+        body {font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:20px;}
+        .page-wrapper {display:flex;gap:20px;max-width:1400px;margin:0 auto;}
+        .sidebar {width:250px;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.2);padding:20px;height:fit-content;position:sticky;top:20px;}
+        .sidebar h3 {font-size:1em;color:#333;margin-bottom:15px;border-bottom:2px solid #999;padding-bottom:10px;}
+        .roadmap-mini {display:flex;flex-direction:column;gap:8px;}
+        .roadmap-mini a {padding:10px 12px;background:#f5f5f5;color:#333;text-decoration:none;border-radius:5px;border-left:4px solid transparent;transition:all 0.3s;font-size:0.9em;}
+        .roadmap-mini a:hover {background:#f5f5f5;border-left-color:#666;}
+        .roadmap-mini a.current {background:#333;color:white;border-left-color:#555;font-weight:600;}
+        .main-content {flex:1;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.2);overflow:hidden;}
+        .header {background:linear-gradient(135deg,#5c3d2e 0%,#3a2518 100%);color:white;padding:30px;}
+        .back-link {color:rgba(255,255,255,0.8);text-decoration:none;margin-bottom:15px;display:inline-block;}
+        .back-link:hover {color:white;}
+        .header h1 {font-size:2em;margin-bottom:10px;}
+        .header p {opacity:0.9;}
+        .step-badge {display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;font-size:0.9em;margin-top:10px;}
+        .content {padding:30px;}
+        h2 {color:#333;font-size:1.5em;margin:30px 0 15px;padding-bottom:10px;border-bottom:2px solid #999;}
+        h3 {color:#444;margin:20px 0 10px;}
+        p {line-height:1.7;color:#555;margin-bottom:12px;}
+        .stats-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0;}
+        .stat-card {background:linear-gradient(135deg,#5a5a5a,#3a3a3a);color:white;padding:14px;border-radius:8px;text-align:center;}
+        .stat-value {font-size:1.4em;font-weight:bold;}
+        .stat-label {font-size:0.75em;opacity:0.9;margin-top:4px;}
+        .info-box {background:#e3f2fd;border-left:4px solid #1976d2;padding:15px;margin:15px 0;border-radius:3px;}
+        .warn-box {background:#fff3e0;border-left:4px solid #ff9800;padding:15px;margin:15px 0;border-radius:3px;font-size:0.95em;}
+        .error-box {background:#fce4ec;border-left:4px solid #e53935;padding:15px;margin:15px 0;border-radius:3px;}
+        table {width:100%;border-collapse:collapse;margin:15px 0;font-size:0.92em;}
+        th {background:#f5f5f5;padding:10px 8px;text-align:left;font-weight:600;color:#333;border-bottom:2px solid #ddd;}
+        td {padding:8px;border-bottom:1px solid #eee;}
+        tr:hover {background:#f9f9f9;}
+        .chart-container {margin:20px 0;text-align:center;}
+        canvas {max-width:100%;}
+        .gradient-bar {display:flex;border-radius:8px;overflow:hidden;margin:20px 0;height:50px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+        .gradient-segment {display:flex;align-items:center;justify-content:center;color:white;font-size:0.7em;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,0.3);cursor:pointer;transition:opacity 0.2s;position:relative;min-width:2px;}
+        .gradient-segment:hover {opacity:0.85;}
+        .gradient-segment .tooltip {display:none;position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:#333;color:white;padding:6px 10px;border-radius:4px;white-space:nowrap;font-size:11px;z-index:10;font-weight:normal;text-shadow:none;}
+        .gradient-segment:hover .tooltip {display:block;}
+        .bin-row {display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0;transition:background 0.2s;}
+        .bin-row:hover {background:#f8f8f8;}
+        .bin-label {width:180px;font-weight:600;font-size:0.9em;color:#333;flex-shrink:0;}
+        .bin-bar-wrap {flex:1;position:relative;height:28px;}
+        .bin-bar {height:100%;border-radius:4px;position:relative;display:flex;align-items:center;transition:width 0.6s ease;}
+        .bin-bar span {position:absolute;right:8px;font-size:0.8em;font-weight:600;color:white;text-shadow:0 1px 2px rgba(0,0,0,0.3);}
+        .bin-meta {width:260px;font-size:0.8em;color:#666;text-align:right;flex-shrink:0;}
+        .cls-tag {display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.75em;font-weight:600;margin:1px;}
+        .cls-CASE {background:#e53935;color:white;}
+        .cls-CASE_PROBABLE {background:#ef9a9a;color:#b71c1c;}
+        .cls-CONTROL {background:#43a047;color:white;}
+        .cls-CONTROL_PROBABLE {background:#a5d6a7;color:#1b5e20;}
+        .cls-GRAY {background:#ffa726;color:white;}
+        .cls-REVIEW {background:#7e57c2;color:white;}
+        .cls-EXCLUDE {background:#90a4ae;color:white;}
+        .cls-UNCLASSIFIED {background:#bdbdbd;color:#333;}
+        .legend-item {display:inline-flex;align-items:center;gap:6px;margin:4px 10px 4px 0;}
+        .legend-dot {width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+        .pattern-code {display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:3px;margin:0 1px;font-weight:bold;font-size:0.8em;color:white;}
+        .pc-1 {background:#43a047;}
+        .pc-2 {background:#e53935;}
+        .pc-3 {background:#ff9800;}
+        .pc-4 {background:#78909c;}
+        .pc-5 {background:#8e24aa;}
+        .pc-6 {background:#d32f2f;}
+        .pc-7 {background:#5c6bc0;}
+        .pc-8 {background:#26a69a;}
+        .expand-panel {border-radius:8px;padding:15px;cursor:pointer;transition:all 0.2s;}
+        .expand-panel:hover {filter:brightness(0.97);}
+        .expand-header {display:flex;justify-content:space-between;align-items:center;}
+        .expand-header .arrow {font-size:1.2em;transition:transform 0.3s;}
+        .expand-header .arrow.open {transform:rotate(90deg);}
+        .expand-body {max-height:0;overflow:hidden;transition:max-height 0.4s ease;}
+        .expand-body.open {max-height:none;}
+        .detail-table {width:100%;border-collapse:collapse;margin-top:12px;font-size:0.82em;cursor:default;}
+        .detail-table th {background:rgba(0,0,0,0.06);padding:6px 8px;text-align:left;font-weight:600;border-bottom:2px solid rgba(0,0,0,0.1);position:sticky;top:0;}
+        .detail-table td {padding:5px 8px;border-bottom:1px solid rgba(0,0,0,0.05);vertical-align:top;}
+        .detail-table tr:hover {background:rgba(0,0,0,0.03);}
+        .detail-scroll {max-height:400px;overflow-y:auto;border:1px solid rgba(0,0,0,0.1);border-radius:4px;margin-top:8px;}
+        .detail-search {width:100%;padding:6px 10px;border:1px solid rgba(0,0,0,0.15);border-radius:4px;font-size:0.85em;margin-top:10px;}
+        .evt-live {color:#2e7d32;font-weight:600;}
+        .evt-loss {color:#c62828;font-weight:600;}
+        .evt-abort {color:#78909c;}
+        .evt-other {color:#5c6bc0;}
+        .sub-tag {display:inline-block;padding:1px 6px;border-radius:8px;font-size:0.75em;background:rgba(0,0,0,0.08);margin-left:4px;}
+
+        .geno-yes { color:#2e7d32; font-weight:600; }
+        .geno-no { color:#bdbdbd; }
+        .geno-badge { display:inline-block; font-size:0.78em; padding:2px 7px; border-radius:10px;
+                       margin-left:6px; font-weight:600; }
+        .geno-badge-green { background:#e8f5e9; color:#2e7d32; }
+        .geno-badge-amber { background:#fff3e0; color:#e65100; }
+        .footer {background:#f5f5f5;padding:20px 30px;text-align:center;color:#666;font-size:0.9em;border-top:1px solid #ddd;}
+        @media (max-width:1024px) {.page-wrapper{flex-direction:column;}.sidebar{width:100%;position:relative;top:0;}}
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+    <aside class="sidebar">
+        <h3>Pipeline Steps</h3>
+        <div class="roadmap-mini">
+            <a href="steps/step0.html">Step 0: Investigation</a>
+            <a href="steps/step1.html">Step 1: Missingness</a>
+            <a href="steps/step2.html">Step 2: IBD Dedup</a>
+            <a href="steps/step3.html">Step 3: SNP QC</a>
+            <a href="steps/step4.html">Step 4: Imputation</a>
+            <a href="steps/step5.html">Step 5: ID Normalize</a>
+            <a href="steps/step6.html">Step 6: Final QC</a>
+            <a href="steps/step7.html">Step 7: PCA Analysis</a>
+            <a href="steps/step8.html">Step 8: Global PCA</a>
+            <a href="steps/step9.html">Step 9: Fst Analysis</a>
+            <a href="steps/step10.html">Step 10: Multi-Pop PBS</a>
+            <a href="steps/step11.html">Step 11: ADMIXTURE</a>
+            <a href="steps/step12.html">Step 12: Annotation</a>
+            <a href="steps/step13.html">Step 13: LD Analysis</a>
+            <a href="steps/step14.html">Step 14: Fst &amp; MDS</a>
+            <a href="steps/step15.html">Step 15: ROH &amp; IBD</a>
+            <a href="pre_gwas.html" class="current">Pre-GWAS Phenotype</a>
+            <a href="steps/step16.html">Step 16: GWAS</a>
+            <a href="steps/next_steps.html">Next Steps</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="header">
+            <a href="index.html" class="back-link">&larr; Back to Roadmap</a>
+            <h1>Pre-GWAS: Pregnancy Outcome Analysis</h1>
+            <p>Case/control phenotype definition for RPL GWAS &mdash; 1,815 subjects</p>
+            <span class="step-badge">&#9888; Draft &mdash; April 11, 2026</span>
+        </div>
+
+        <div class="content">
+
+<!-- ============================================================ -->
+<!-- 1. OVERVIEW -->
+<!-- ============================================================ -->
+<h2>1. Overview</h2>
+<p>
+    This page defines the phenotype classification for the RPL (Recurrent Pregnancy Loss) GWAS.
+    Each of the 1,815 genotyped subjects has up to 20 pregnancy slots with outcome codes,
+    gestational ages, and other metadata. Classification is derived <strong>entirely from
+    pregnancy outcome data</strong> &mdash; original spreadsheet labels are not used.
+</p>
+
+<div class="stats-grid" id="summaryCards"></div>
+
+<!-- ============================================================ -->
+<!-- 2. OUTCOME CODE DISTRIBUTION -->
+<!-- ============================================================ -->
+<h2>2. Pregnancy Outcome Codes</h2>
+<p>Distribution of all recorded pregnancy events across 1,815 subjects (up to 20 slots each):</p>
+
+<div class="chart-container">
+    <canvas id="outcomeChart" width="750" height="300"></canvas>
+</div>
+
+<table id="outcomeTable">
+    <tr><th>Code</th><th>Outcome</th><th>Count</th><th>% of Events</th><th>Role in Classification</th></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- 3. GESTATIONAL AGE vs OUTCOME -->
+<!-- ============================================================ -->
+<h2>3. Gestational Age Distributions for Loss Events</h2>
+<p>
+    The boundary between miscarriage (&lt;20 weeks) and stillbirth (&ge;20 weeks) is critical
+    for case definition. The data reveals <strong>significant miscoding</strong>: 31 "miscarriage" events
+    and 33 "non-developing" events recorded at GA&ge;20 weeks.
+</p>
+
+<div class="chart-container">
+    <canvas id="gaChart" width="750" height="320"></canvas>
+</div>
+
+<table id="gaTable">
+    <tr><th>Code</th><th>Outcome</th><th>Total</th><th>GA&lt;20</th><th>GA&ge;20</th><th>No GA</th><th>Issue</th></tr>
+</table>
+
+<div class="warn-box">
+    <strong>Action needed:</strong> 64 loss events coded as miscarriage (3) or non-developing (6) with GA&ge;20
+    are likely miscoded stillbirths. These affect 116 samples' classification. Clinical review recommended before GWAS.
+</div>
+
+<!-- ============================================================ -->
+<!-- 4. CASE→CONTROL GRADIENT -->
+<!-- ============================================================ -->
+<h2>4. Case &rarr; Control Gradient</h2>
+<p>
+    Samples grouped into bins by pregnancy outcome profile, arranged from most severe RPL (left)
+    to clearest controls (right). Bar width proportional to sample count.
+</p>
+
+<div class="gradient-bar" id="gradientBar"></div>
+
+<div style="margin: 15px 0;">
+    <span class="legend-item"><span class="legend-dot" style="background:#b71c1c;"></span>5+ losses</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#d32f2f;"></span>4 losses</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#e53935;"></span>3 losses</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ef5350;"></span>2 losses</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#7e57c2;"></span>GA&ge;20 review</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ffa726;"></span>1 loss (gray)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#90a4ae;"></span>Excluded</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#66bb6a;"></span>1 live</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#43a047;"></span>2 live</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#2e7d32;"></span>3+ live</span>
+</div>
+
+<h3>Detailed Bins</h3>
+<div id="binRows"></div>
+
+<!-- ============================================================ -->
+<!-- 5. LOSS COUNT DISTRIBUTION -->
+<!-- ============================================================ -->
+<h2>5. Loss Count Distribution</h2>
+<p>Strict loss count: codes 2 (stillbirth), 3 (miscarriage), 6 (non-developing) with GA&lt;20 weeks.</p>
+
+<div class="chart-container">
+    <canvas id="lossChart" width="700" height="280"></canvas>
+</div>
+
+<!-- ============================================================ -->
+<!-- 6. AGE DISTRIBUTIONS BY GROUP -->
+<!-- ============================================================ -->
+<h2>6. Age at Enrollment by Group</h2>
+<p>Age distributions for CASE, CONTROL, GRAY, and REVIEW groups, in 5-year bins:</p>
+
+<div class="chart-container">
+    <canvas id="ageChart" width="750" height="320"></canvas>
+</div>
+
+<!-- ============================================================ -->
+<!-- 7. TOP PREGNANCY SEQUENCE PATTERNS -->
+<!-- ============================================================ -->
+<h2>7. Most Common Pregnancy Sequences</h2>
+<p>
+    Each digit represents one pregnancy event in chronological order.
+    Color-coded: <span class="pattern-code pc-1">1</span>=live
+    <span class="pattern-code pc-2">2</span>=stillbirth
+    <span class="pattern-code pc-3">3</span>=miscarriage
+    <span class="pattern-code pc-4">4</span>=abortion
+    <span class="pattern-code pc-5">5</span>=ectopic
+    <span class="pattern-code pc-6">6</span>=non-dev
+    <span class="pattern-code pc-7">7</span>=med-abort
+    <span class="pattern-code pc-8">8</span>=pregnant
+</p>
+<table id="patternTable">
+    <tr><th>#</th><th>Sequence</th><th>N</th><th>Losses</th><th>Live</th><th>Classification</th></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- 8. PROPOSED CRITERIA -->
+<!-- ============================================================ -->
+<h2>8. Proposed Case/Control Criteria</h2>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0;">
+    <div style="background:#fce4ec;border-radius:8px;padding:20px;">
+        <h3 style="color:#c62828;margin-top:0;">CASE (RPL)</h3>
+        <ul style="line-height:2;color:#555;">
+            <li>clean_loss_count &ge; 2</li>
+            <li>Loss = outcome &isin; {2, 3, 6} AND GA &lt; 20 weeks</li>
+            <li>Age 18&ndash;45 at enrollment</li>
+            <li>No code 8 in current slot <em>OR</em> threshold already met from prior pregnancies</li>
+        </ul>
+        <div style="margin-top:10px;padding:8px;background:rgba(198,40,40,0.1);border-radius:4px;font-size:0.9em;">
+            <strong>Result: 398 definite + 27 probable = 425 cases</strong>
+        </div>
+    </div>
+    <div style="background:#e8f5e9;border-radius:8px;padding:20px;">
+        <h3 style="color:#2e7d32;margin-top:0;">CONTROL</h3>
+        <ul style="line-height:2;color:#555;">
+            <li>clean_loss_count = 0</li>
+            <li>Live births (code 1) &ge; 1</li>
+            <li>Age 18&ndash;45 at enrollment</li>
+            <li>No code 8 pregnancy <em>or</em> confirmed delivered since</li>
+        </ul>
+        <div style="margin-top:10px;padding:8px;background:rgba(46,125,50,0.1);border-radius:4px;font-size:0.9em;">
+            <strong>Result: 861 definite + 6 probable = 867 controls</strong>
+        </div>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin:15px 0;">
+    <div class="expand-panel" style="background:#fff3e0;" onclick="togglePanel('gray')">
+        <div class="expand-header">
+            <div>
+                <h3 style="color:#e65100;margin-top:0;font-size:1em;">GRAY ZONE</h3>
+                <p style="font-size:0.9em;">Exactly 1 intrauterine loss. Exclude from both case and control in primary analysis.
+                Optional: secondary "sporadic loss" sub-analysis.</p>
+                <strong>313 samples</strong><span class="geno-badge geno-badge-amber">119 genotyped (38%)</span>
+            </div>
+            <span class="arrow" id="arrow-gray">&#9654;</span>
+        </div>
+    </div>
+    <div class="expand-panel" style="background:#ede7f6;" onclick="togglePanel('review')">
+        <div class="expand-header">
+            <div>
+                <h3 style="color:#4527a0;margin-top:0;font-size:1em;">REVIEW NEEDED</h3>
+                <p style="font-size:0.9em;">Loss events at GA&ge;20. Likely miscoded stillbirths. Clinical adjudication needed &mdash;
+                may reclassify into CASE.</p>
+                <strong>116 samples</strong><span class="geno-badge geno-badge-amber">62 genotyped (53%)</span>
+            </div>
+            <span class="arrow" id="arrow-review">&#9654;</span>
+        </div>
+    </div>
+    <div class="expand-panel" style="background:#eceff1;" onclick="togglePanel('excluded')">
+        <div class="expand-header">
+            <div>
+                <h3 style="color:#546e7a;margin-top:0;font-size:1em;">EXCLUDED</h3>
+                <p style="font-size:0.9em;">Age outside 18&ndash;45, ectopic-only losses, medical-abort-only, or no pregnancy record.</p>
+                <strong>94 samples</strong><span class="geno-badge geno-badge-amber">40 genotyped (43%)</span>
+            </div>
+            <span class="arrow" id="arrow-excluded">&#9654;</span>
+        </div>
+    </div>
+</div>
+
+<!-- Expandable detail panels (full-width, below the cards) -->
+<div class="expand-body" id="panel-gray">
+    <input class="detail-search" type="text" placeholder="Filter by sample ID or event..." oninput="filterDetail('gray', this.value)">
+    <div class="detail-scroll">
+        <table class="detail-table" id="dtable-gray">
+            <thead><tr><th>ID</th><th>Geno</th><th>Age</th><th>Preg</th><th>Live</th><th>Loss</th><th>Pregnancy History</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div class="expand-body" id="panel-review">
+    <input class="detail-search" type="text" placeholder="Filter by sample ID or event..." oninput="filterDetail('review', this.value)">
+    <div class="detail-scroll">
+        <table class="detail-table" id="dtable-review">
+            <thead><tr><th>ID</th><th>Geno</th><th>Age</th><th>Preg</th><th>Live</th><th>Loss</th><th>GA&ge;20</th><th>Pregnancy History</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div class="expand-body" id="panel-excluded">
+    <input class="detail-search" type="text" placeholder="Filter by sample ID, reason, or event..." oninput="filterDetail('excluded', this.value)">
+    <div class="detail-scroll">
+        <table class="detail-table" id="dtable-excluded">
+            <thead><tr><th>ID</th><th>Geno</th><th>Age</th><th>Reason</th><th>Preg</th><th>Live</th><th>Loss</th><th>Pregnancy History</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="info-box">
+    <strong>GWAS-ready summary:</strong> With strict criteria, we have <strong>398 cases &times; 861 controls</strong>
+    (1,259 samples), excluding 556 subjects (313 gray + 116 review + 94 excluded + 18 unclassified + 15 probable).
+    After GA review, cases could increase to ~450&ndash;500.
+    <br><br>
+    <strong>Genotyped subset:</strong> <span class="geno-badge geno-badge-green">270 cases &times; 499 controls = 769 GWAS-ready samples</span>
+    <br><span style="font-size:0.9em;color:#666;">Of 1,047 genotyped ALSU samples: 270 cases (68%), 499 controls (58%), 119 gray, 62 review, 40 excluded, remainder unclassified/probable.</span>
+</div>
+
+<!-- ============================================================ -->
+<!-- 9. DATA QUALITY FLAGS -->
+<!-- ============================================================ -->
+<h2>9. Data Quality Issues</h2>
+<table>
+    <tr><th>Issue</th><th>Count</th><th>Impact</th><th>Action</th></tr>
+    <tr><td>Code 3 (miscarriage) at GA&ge;20</td><td>31 events</td><td>Likely miscoded stillbirths</td><td>Clinical review &rarr; recode to 2</td></tr>
+    <tr><td>Code 6 (non-dev) at GA&ge;20</td><td>33 events</td><td>Clinically implausible</td><td>Clinical review &rarr; recode to 2</td></tr>
+    <tr><td>Loss events with no GA</td><td>148 events (95 samples)</td><td>Can&rsquo;t apply &lt;20wk filter</td><td>Recover GA or apply default policy</td></tr>
+    <tr><td>Compound codes (1/2, 1/6)</td><td>5 events</td><td>Ambiguous data entry</td><td>Manual review</td></tr>
+    <tr><td>Empty records (no pregnancy events)</td><td>28 samples</td><td>No phenotype data</td><td>Exclude or recover from source</td></tr>
+</table>
+
+        </div><!-- /content -->
+
+        <div class="footer">
+            ALSU Genotyping Pipeline &mdash; Pre-GWAS Phenotype Analysis &mdash; Generated April 11, 2026
+        </div>
+    </div><!-- /main-content -->
+</div><!-- /page-wrapper -->
+
+<script>
+// ===== INLINE DATA (from build_pregnancy_viz.py output) =====
+const DATA = {"geno_stats":{"case":{"total":398,"genotyped":270},"control":{"total":861,"genotyped":499},"gray":{"total":313,"genotyped":119,"not_geno":194},"review":{"total":116,"genotyped":62,"not_geno":54},"excluded":{"total":94,"genotyped":40,"not_geno":54}},"summary":{"total":1815,"age_18_45":1766,"classification":{"CASE":398,"CASE_PROBABLE":27,"CONTROL":861,"CONTROL_PROBABLE":6,"GRAY":313,"REVIEW":116,"EXCLUDE_AGE":49,"EXCLUDE_ECTOPIC":21,"EXCLUDE_MEDICAL":6,"UNCLASSIFIED":18}},"outcome_codes":[{"code":"1","name":"Live birth","count":3016},{"code":"2","name":"Stillbirth","count":136},{"code":"3","name":"Miscarriage","count":567},{"code":"4","name":"Elective abortion","count":304},{"code":"5","name":"Ectopic","count":71},{"code":"6","name":"Non-developing","count":1007},{"code":"7","name":"Medical abort","count":20},{"code":"8","name":"Currently pregnant","count":63}],"ga_distributions":{"2":{"name":"Stillbirth","bins":[{"week":2,"count":2},{"week":5,"count":1},{"week":6,"count":1},{"week":19,"count":2},{"week":20,"count":7},{"week":21,"count":1},{"week":22,"count":1},{"week":23,"count":10},{"week":24,"count":17},{"week":25,"count":9},{"week":26,"count":6},{"week":27,"count":8},{"week":28,"count":11},{"week":29,"count":4},{"week":30,"count":4},{"week":32,"count":3},{"week":33,"count":3},{"week":35,"count":5},{"week":36,"count":6},{"week":37,"count":2},{"week":38,"count":6},{"week":39,"count":11},{"week":40,"count":5}],"n":125,"n_ge20":119,"n_lt20":6},"3":{"name":"Miscarriage","bins":[{"week":1,"count":23},{"week":2,"count":8},{"week":3,"count":20},{"week":4,"count":53},{"week":5,"count":72},{"week":6,"count":68},{"week":7,"count":41},{"week":8,"count":37},{"week":9,"count":23},{"week":10,"count":21},{"week":11,"count":12},{"week":12,"count":37},{"week":13,"count":8},{"week":14,"count":6},{"week":15,"count":13},{"week":16,"count":21},{"week":17,"count":4},{"week":18,"count":8},{"week":19,"count":1},{"week":20,"count":12},{"week":21,"count":3},{"week":22,"count":4},{"week":23,"count":6},{"week":24,"count":5},{"week":41,"count":1}],"n":507,"n_ge20":31,"n_lt20":476},"6":{"name":"Non-developing","bins":[{"week":1,"count":45},{"week":2,"count":9},{"week":3,"count":11},{"week":4,"count":40},{"week":5,"count":69},{"week":6,"count":156},{"week":7,"count":88},{"week":8,"count":154},{"week":9,"count":80},{"week":10,"count":62},{"week":11,"count":30},{"week":12,"count":72},{"week":13,"count":22},{"week":14,"count":15},{"week":15,"count":8},{"week":16,"count":18},{"week":17,"count":5},{"week":18,"count":10},{"week":19,"count":3},{"week":20,"count":9},{"week":21,"count":7},{"week":22,"count":5},{"week":23,"count":1},{"week":24,"count":4},{"week":25,"count":2},{"week":26,"count":1},{"week":28,"count":2},{"week":29,"count":1},{"week":30,"count":1}],"n":930,"n_ge20":33,"n_lt20":897}},"gradient_bins":[{"label":"5+ losses","n":23,"mean_age":32.8,"cls_dist":{"CASE":23},"mean_loss":6.91,"mean_live":0.52},{"label":"4 losses","n":27,"mean_age":31.3,"cls_dist":{"CASE":26,"EXCLUDE_AGE":1},"mean_loss":4.63,"mean_live":1.11},{"label":"3 losses","n":95,"mean_age":29.0,"cls_dist":{"CASE":94,"EXCLUDE_AGE":1},"mean_loss":3.25,"mean_live":1.16},{"label":"2 losses, 0 live","n":122,"mean_age":25.2,"cls_dist":{"CASE":121,"EXCLUDE_AGE":1},"mean_loss":2.04,"mean_live":0.0},{"label":"2 losses + live","n":136,"mean_age":30.2,"cls_dist":{"CASE":134,"EXCLUDE_AGE":2},"mean_loss":2.09,"mean_live":1.79},{"label":"1 loss (GA\u226520)","n":50,"mean_age":29.4,"cls_dist":{"REVIEW":49,"EXCLUDE_AGE":1},"mean_loss":1.0,"mean_live":1.6},{"label":"1 loss, 0 live","n":59,"mean_age":25.4,"cls_dist":{"GRAY":59},"mean_loss":1.0,"mean_live":0.0},{"label":"1 loss + live","n":260,"mean_age":30.4,"cls_dist":{"GRAY":254,"EXCLUDE_AGE":6},"mean_loss":1.0,"mean_live":2.17},{"label":"Ectopic/medical only","n":2,"mean_age":35.5,"cls_dist":{"EXCLUDE_ECTOPIC":2},"mean_loss":0.0,"mean_live":0.0},{"label":"No pregnancies","n":28,"mean_age":27.3,"cls_dist":{"UNCLASSIFIED":18,"EXCLUDE_AGE":10},"mean_loss":0.0,"mean_live":0.0},{"label":"1 live birth only","n":354,"mean_age":25.6,"cls_dist":{"CONTROL":344,"CONTROL_PROBABLE":3,"EXCLUDE_ECTOPIC":3,"EXCLUDE_MEDICAL":1,"EXCLUDE_AGE":3},"mean_loss":0.0,"mean_live":1.0},{"label":"2 live births","n":280,"mean_age":29.3,"cls_dist":{"CONTROL":268,"EXCLUDE_AGE":7,"EXCLUDE_ECTOPIC":5},"mean_loss":0.0,"mean_live":2.0},{"label":"3+ live births","n":285,"mean_age":33.2,"cls_dist":{"CONTROL":249,"EXCLUDE_MEDICAL":5,"EXCLUDE_ECTOPIC":11,"EXCLUDE_AGE":17,"CONTROL_PROBABLE":3},"mean_loss":0.0,"mean_live":3.31},{"label":"Other","n":94,"mean_age":29.6,"cls_dist":{"REVIEW":67,"CASE_PROBABLE":27},"mean_loss":2.29,"mean_live":1.29}],"loss_distribution":[{"losses":0,"count":1088},{"losses":1,"count":324},{"losses":2,"count":258},{"losses":3,"count":95},{"losses":4,"count":27},{"losses":5,"count":10},{"losses":6,"count":7},{"losses":7,"count":2},{"losses":10,"count":4}],"top_patterns":[{"pattern":"1","readable":"Live birth","count":331,"n_loss":0,"n_live":1,"n_abort":0},{"pattern":"11","readable":"Live birth \u2192 Live birth","count":234,"n_loss":0,"n_live":2,"n_abort":0},{"pattern":"111","readable":"Live birth \u00d7 3","count":163,"n_loss":0,"n_live":3,"n_abort":0},{"pattern":"66","readable":"Non-developing \u00d7 2","count":63,"n_loss":2,"n_live":0,"n_abort":0},{"pattern":"1111","readable":"Live birth \u00d7 4","count":41,"n_loss":0,"n_live":4,"n_abort":0},{"pattern":"6","readable":"Non-developing","count":33,"n_loss":1,"n_live":0,"n_abort":0},{"pattern":"16","readable":"Live \u2192 Non-dev","count":30,"n_loss":1,"n_live":1,"n_abort":0},{"pattern":"33","readable":"Miscarriage \u00d7 2","count":24,"n_loss":2,"n_live":0,"n_abort":0},{"pattern":"116","readable":"Live \u00d7 2 \u2192 Non-dev","count":21,"n_loss":1,"n_live":2,"n_abort":0},{"pattern":"61","readable":"Non-dev \u2192 Live","count":20,"n_loss":1,"n_live":1,"n_abort":0},{"pattern":"3","readable":"Miscarriage","count":18,"n_loss":1,"n_live":0,"n_abort":0},{"pattern":"36","readable":"Miscarriage \u2192 Non-dev","count":18,"n_loss":2,"n_live":0,"n_abort":0},{"pattern":"661","readable":"Non-dev \u00d7 2 \u2192 Live","count":15,"n_loss":2,"n_live":1,"n_abort":0},{"pattern":"1141","readable":"Live \u00d7 2 \u2192 Abort \u2192 Live","count":15,"n_loss":0,"n_live":3,"n_abort":1},{"pattern":"311","readable":"Miscarriage \u2192 Live \u00d7 2","count":13,"n_loss":1,"n_live":2,"n_abort":0},{"pattern":"13","readable":"Live \u2192 Miscarriage","count":12,"n_loss":1,"n_live":1,"n_abort":0},{"pattern":"141","readable":"Live \u2192 Abort \u2192 Live","count":12,"n_loss":0,"n_live":2,"n_abort":1},{"pattern":"63","readable":"Non-dev \u2192 Miscarriage","count":12,"n_loss":2,"n_live":0,"n_abort":0},{"pattern":"611","readable":"Non-dev \u2192 Live \u00d7 2","count":11,"n_loss":1,"n_live":2,"n_abort":0},{"pattern":"1166","readable":"Live \u00d7 2 \u2192 Non-dev \u00d7 2","count":11,"n_loss":2,"n_live":2,"n_abort":0},{"pattern":"161","readable":"Live \u2192 Non-dev \u2192 Live","count":10,"n_loss":1,"n_live":2,"n_abort":0},{"pattern":"41","readable":"Abort \u2192 Live","count":9,"n_loss":0,"n_live":1,"n_abort":1},{"pattern":"1116","readable":"Live \u00d7 3 \u2192 Non-dev","count":9,"n_loss":1,"n_live":3,"n_abort":0},{"pattern":"166","readable":"Live \u2192 Non-dev \u00d7 2","count":9,"n_loss":2,"n_live":1,"n_abort":0},{"pattern":"114","readable":"Live \u00d7 2 \u2192 Abort","count":9,"n_loss":0,"n_live":2,"n_abort":1}],"age_dist_case":[{"age_bin":"15-19","count":13},{"age_bin":"20-24","count":100},{"age_bin":"25-29","count":128},{"age_bin":"30-34","count":89},{"age_bin":"35-39","count":52},{"age_bin":"40-44","count":16}],"age_dist_control":[{"age_bin":"15-19","count":25},{"age_bin":"20-24","count":209},{"age_bin":"25-29","count":277},{"age_bin":"30-34","count":217},{"age_bin":"35-39","count":108},{"age_bin":"40-44","count":24},{"age_bin":"45-49","count":1}],"age_dist_gray":[{"age_bin":"15-19","count":3},{"age_bin":"20-24","count":78},{"age_bin":"25-29","count":94},{"age_bin":"30-34","count":82},{"age_bin":"35-39","count":41},{"age_bin":"40-44","count":13},{"age_bin":"45-49","count":2}],"age_dist_review":[{"age_bin":"15-19","count":5},{"age_bin":"20-24","count":30},{"age_bin":"25-29","count":33},{"age_bin":"30-34","count":25},{"age_bin":"35-39","count":21},{"age_bin":"40-44","count":2}]};
+
+renderAll();
+
+function renderAll() {
+    renderSummaryCards();
+    renderOutcomeChart();
+    renderOutcomeTable();
+    renderGAChart();
+    renderGATable();
+    renderGradientBar();
+    renderBinRows();
+    renderLossChart();
+    renderAgeChart();
+    renderPatternTable();
+}
+
+// ===== 1. Summary Cards =====
+function renderSummaryCards() {
+    const c = DATA.summary.classification;
+    const G = DATA.geno_stats;
+    const cards = [
+        {v: DATA.summary.total, l: 'Total Subjects', g: G.case.genotyped + G.control.genotyped + G.gray.genotyped + G.review.genotyped + G.excluded.genotyped, gt: DATA.summary.total},
+        {v: c.CASE, l: 'Definite Cases', g: G.case.genotyped, gt: G.case.total},
+        {v: c.CONTROL, l: 'Definite Controls', g: G.control.genotyped, gt: G.control.total},
+        {v: c.GRAY, l: 'Gray Zone (1 loss)', g: G.gray.genotyped, gt: G.gray.total},
+        {v: c.REVIEW, l: 'Review Needed', g: G.review.genotyped, gt: G.review.total},
+        {v: c.EXCLUDE_AGE + c.EXCLUDE_ECTOPIC + c.EXCLUDE_MEDICAL + c.UNCLASSIFIED, l: 'Excluded', g: G.excluded.genotyped, gt: G.excluded.total},
+    ];
+    document.getElementById('summaryCards').innerHTML = cards.map(c =>
+        `<div class="stat-card"><div class="stat-value">${c.v.toLocaleString()}</div><div class="stat-label">${c.l}</div>` +
+        `<div style="font-size:0.75em;color:#666;margin-top:4px;">${c.g} genotyped (${Math.round(c.g/c.gt*100)}%)</div></div>`
+    ).join('');
+}
+
+// ===== 2. Outcome Chart =====
+function renderOutcomeChart() {
+    const canvas = document.getElementById('outcomeChart');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 750 * dpr; canvas.height = 300 * dpr;
+    canvas.style.width = '750px'; canvas.style.height = '300px';
+    ctx.scale(dpr, dpr);
+    const W = 750, H = 300;
+    const pad = {top:30, right:30, bottom:60, left:70};
+    const codes = DATA.outcome_codes;
+    const maxVal = Math.max(...codes.map(c => c.count));
+
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+    const barW = plotW / codes.length * 0.7;
+    const gap = plotW / codes.length;
+
+    const codeColors = {'1':'#43a047','2':'#e53935','3':'#ff9800','4':'#78909c','5':'#8e24aa','6':'#d32f2f','7':'#5c6bc0','8':'#26a69a'};
+
+    // Grid
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const v = maxVal / 4 * i;
+        const y = pad.top + plotH - (v / maxVal) * plotH;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W-pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(Math.round(v).toLocaleString(), pad.left - 8, y + 4);
+    }
+
+    // Bars
+    codes.forEach((c, i) => {
+        const x = pad.left + i * gap + (gap - barW) / 2;
+        const h = (c.count / maxVal) * plotH;
+        const y = pad.top + plotH - h;
+        ctx.fillStyle = codeColors[c.code] || '#666';
+        ctx.beginPath(); ctx.roundRect(x, y, barW, h, [4,4,0,0]); ctx.fill();
+        ctx.fillStyle = '#333'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(c.count.toLocaleString(), x + barW/2, y - 6);
+        ctx.fillStyle = '#555'; ctx.font = '10px sans-serif';
+        ctx.fillText(c.code + ': ' + c.name, x + barW/2, pad.top + plotH + 16);
+    });
+
+    ctx.fillStyle = '#555'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Pregnancy Events by Outcome Code', W/2, H - 5);
+}
+
+function renderOutcomeTable() {
+    const total = DATA.outcome_codes.reduce((s,c) => s + c.count, 0);
+    const roles = {
+        '1':'Control indicator','2':'Loss (strict)','3':'Loss (strict)','4':'Excluded from loss count',
+        '5':'Separate analysis','6':'Loss (strict)','7':'Excluded from loss count','8':'Currently pregnant — exclude or defer'
+    };
+    const tbody = DATA.outcome_codes.map(c =>
+        `<tr><td><strong>${c.code}</strong></td><td>${c.name}</td><td>${c.count.toLocaleString()}</td>
+         <td>${(c.count/total*100).toFixed(1)}%</td><td>${roles[c.code]||''}</td></tr>`
+    ).join('');
+    document.getElementById('outcomeTable').innerHTML += tbody;
+}
+
+// ===== 3. GA Chart =====
+function renderGAChart() {
+    const canvas = document.getElementById('gaChart');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 750 * dpr; canvas.height = 320 * dpr;
+    canvas.style.width = '750px'; canvas.style.height = '320px';
+    ctx.scale(dpr, dpr);
+    const W = 750, H = 320;
+    const pad = {top:30, right:30, bottom:50, left:60};
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    const colors = {'2':'#e53935','3':'#ff9800','6':'#d32f2f'};
+    const labels = {'2':'Stillbirth (2)','3':'Miscarriage (3)','6':'Non-developing (6)'};
+
+    let allWeeks = new Set();
+    for (const code of ['2','3','6']) {
+        if (DATA.ga_distributions[code]) {
+            DATA.ga_distributions[code].bins.forEach(b => allWeeks.add(b.week));
+        }
+    }
+    allWeeks = [...allWeeks].sort((a,b) => a-b);
+    const minW = Math.min(...allWeeks), maxW = Math.max(...allWeeks);
+    const weekRange = maxW - minW || 1;
+
+    function xPos(w) { return pad.left + (w - minW) / weekRange * plotW; }
+
+    let maxCount = 0;
+    for (const code of ['2','3','6']) {
+        if (DATA.ga_distributions[code]) {
+            DATA.ga_distributions[code].bins.forEach(b => { if (b.count > maxCount) maxCount = b.count; });
+        }
+    }
+    function yPos(v) { return pad.top + plotH - (v / maxCount) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const v = maxCount / 4 * i;
+        const y = yPos(v);
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W-pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(Math.round(v), pad.left - 8, y + 4);
+    }
+
+    // 20-week boundary
+    const x20 = xPos(20);
+    ctx.strokeStyle = '#e53935'; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(x20, pad.top); ctx.lineTo(x20, pad.top + plotH); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#c62828'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('20 weeks', x20, pad.top - 8);
+    ctx.font = '10px sans-serif'; ctx.fillStyle = '#888';
+    ctx.textAlign = 'right'; ctx.fillText('\u2190 Miscarriage', x20 - 8, pad.top + 14);
+    ctx.textAlign = 'left'; ctx.fillText('Stillbirth \u2192', x20 + 8, pad.top + 14);
+
+    // Lines per code
+    for (const code of ['2','3','6']) {
+        const dist = DATA.ga_distributions[code];
+        if (!dist) continue;
+        const pts = dist.bins.sort((a,b) => a.week - b.week);
+
+        ctx.strokeStyle = colors[code]; ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((p, i) => {
+            const x = xPos(p.week), y = yPos(p.count);
+            i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        });
+        ctx.stroke();
+
+        pts.forEach(p => {
+            const x = xPos(p.week), y = yPos(p.count);
+            ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI*2);
+            ctx.fillStyle = colors[code]; ctx.fill();
+        });
+    }
+
+    // Legend
+    let ly = pad.top + 30;
+    for (const code of ['2','3','6']) {
+        ctx.fillStyle = colors[code];
+        ctx.fillRect(W - pad.right - 160, ly - 6, 12, 12);
+        ctx.fillStyle = '#333'; ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText(labels[code], W - pad.right - 144, ly + 4);
+        ly += 18;
+    }
+
+    // X axis
+    ctx.fillStyle = '#555'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+    for (let w = 0; w <= 42; w += 5) {
+        if (w >= minW && w <= maxW) ctx.fillText(w + 'w', xPos(w), pad.top + plotH + 20);
+    }
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('Gestational Age (weeks)', W/2, H - 5);
+}
+
+function renderGATable() {
+    const tbody = ['2','3','6'].map(code => {
+        const d = DATA.ga_distributions[code];
+        if (!d) return '';
+        const totalOutcome = DATA.outcome_codes.find(c => c.code === code)?.count || 0;
+        const noGA = totalOutcome - d.n;
+        const issue = code === '2' ? 'Expected (true late losses)'
+            : code === '3' ? `<strong>${d.n_ge20} events likely miscoded</strong> (miscarriage at 20+ wk?)`
+            : `<strong>${d.n_ge20} events likely miscoded</strong> (non-dev at 20+ wk?)`;
+        return `<tr><td><strong>${code}</strong></td><td>${d.name}</td><td>${totalOutcome}</td>
+                <td>${d.n_lt20}</td><td style="color:#c62828;font-weight:600;">${d.n_ge20}</td>
+                <td>${noGA}</td><td>${issue}</td></tr>`;
+    }).join('');
+    document.getElementById('gaTable').innerHTML += tbody;
+}
+
+// ===== 4. Gradient Bar =====
+function renderGradientBar() {
+    const bins = DATA.gradient_bins;
+    const total = bins.reduce((s,b) => s + b.n, 0);
+    const barColors = {
+        '5+ losses':'#b71c1c', '4 losses':'#c62828', '3 losses':'#d32f2f',
+        '2 losses, 0 live':'#e53935', '2 losses + live':'#ef5350',
+        '1 loss (GA\u226520)':'#7e57c2', '1 loss, 0 live':'#ffa726', '1 loss + live':'#ffb74d',
+        'Ectopic/medical only':'#90a4ae', 'No pregnancies':'#b0bec5',
+        '1 live birth only':'#66bb6a', '2 live births':'#43a047', '3+ live births':'#2e7d32',
+        'Other':'#bdbdbd'
+    };
+    const bar = document.getElementById('gradientBar');
+    bar.innerHTML = bins.map(b => {
+        const pct = (b.n / total * 100);
+        const color = barColors[b.label] || '#999';
+        return `<div class="gradient-segment" style="width:${pct}%;background:${color};">
+            ${pct > 3 ? b.n : ''}
+            <div class="tooltip">${b.label}: ${b.n} (${pct.toFixed(1)}%)</div>
+        </div>`;
+    }).join('');
+}
+
+function renderBinRows() {
+    const bins = DATA.gradient_bins;
+    const maxN = Math.max(...bins.map(b => b.n));
+    const barColors = {
+        '5+ losses':'#b71c1c', '4 losses':'#c62828', '3 losses':'#d32f2f',
+        '2 losses, 0 live':'#e53935', '2 losses + live':'#ef5350',
+        '1 loss (GA\u226520)':'#7e57c2', '1 loss, 0 live':'#ffa726', '1 loss + live':'#ffb74d',
+        'Ectopic/medical only':'#90a4ae', 'No pregnancies':'#b0bec5',
+        '1 live birth only':'#66bb6a', '2 live births':'#43a047', '3+ live births':'#2e7d32',
+        'Other':'#bdbdbd'
+    };
+    const container = document.getElementById('binRows');
+    container.innerHTML = bins.map(b => {
+        const pct = b.n / maxN * 100;
+        const color = barColors[b.label] || '#999';
+        const tags = Object.entries(b.cls_dist)
+            .sort((a,b) => b[1]-a[1])
+            .map(([cls, n]) => {
+                let tag = cls.startsWith('EXCLUDE') ? 'EXCLUDE' : cls;
+                return `<span class="cls-tag cls-${tag}">${n}</span>`;
+            }).join('');
+        const lossInfo = b.mean_loss > 0 ? `avg loss: ${b.mean_loss.toFixed(1)}` : '';
+        const liveInfo = b.mean_live > 0 ? `avg live: ${b.mean_live.toFixed(1)}` : '';
+        const extra = [lossInfo, liveInfo].filter(Boolean).join(' · ');
+        return `<div class="bin-row">
+            <div class="bin-label">${b.label}</div>
+            <div class="bin-bar-wrap">
+                <div class="bin-bar" style="width:${pct}%;background:${color};">
+                    <span>${b.n}</span>
+                </div>
+            </div>
+            <div class="bin-meta">
+                age ${b.mean_age || '?'} · ${extra} &nbsp; ${tags}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ===== 5. Loss Chart =====
+function renderLossChart() {
+    const canvas = document.getElementById('lossChart');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 700 * dpr; canvas.height = 280 * dpr;
+    canvas.style.width = '700px'; canvas.style.height = '280px';
+    ctx.scale(dpr, dpr);
+    const W = 700, H = 280;
+    const pad = {top:30, right:30, bottom:50, left:70};
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+    const dist = DATA.loss_distribution;
+    const maxVal = Math.max(...dist.map(d => d.count));
+
+    // Grid
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const v = maxVal / 4 * i;
+        const y = pad.top + plotH - (v / maxVal) * plotH;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W-pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(Math.round(v).toLocaleString(), pad.left - 8, y + 4);
+    }
+
+    const barW = Math.min(50, plotW / dist.length * 0.7);
+    const gap = plotW / dist.length;
+
+    dist.forEach((d, i) => {
+        const x = pad.left + i * gap + (gap - barW) / 2;
+        const h = (d.count / maxVal) * plotH;
+        const y = pad.top + plotH - h;
+
+        let color;
+        if (d.losses === 0) color = '#43a047';
+        else if (d.losses === 1) color = '#ffa726';
+        else color = `hsl(${Math.max(0, 10 - d.losses * 2)}, 80%, ${Math.max(30, 50 - d.losses * 3)}%)`;
+
+        ctx.fillStyle = color;
+        ctx.beginPath(); ctx.roundRect(x, y, barW, h, [4,4,0,0]); ctx.fill();
+
+        ctx.fillStyle = '#333'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(d.count, x + barW/2, y - 6);
+
+        ctx.fillStyle = '#555'; ctx.font = '12px sans-serif';
+        ctx.fillText(d.losses, x + barW/2, pad.top + plotH + 18);
+    });
+
+    // Threshold line at x=2
+    if (dist.length > 2) {
+        const x2 = pad.left + 1.5 * gap;
+        ctx.strokeStyle = '#c62828'; ctx.lineWidth = 2; ctx.setLineDash([5,3]);
+        ctx.beginPath(); ctx.moveTo(x2, pad.top); ctx.lineTo(x2, pad.top + plotH); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#c62828'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText('\u22652 = CASE threshold', x2 + 6, pad.top + 14);
+    }
+
+    ctx.fillStyle = '#555'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Strict Loss Count (codes 2/3/6, GA<20)', W/2, H - 5);
+}
+
+// ===== 6. Age Chart =====
+function renderAgeChart() {
+    const canvas = document.getElementById('ageChart');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 750 * dpr; canvas.height = 320 * dpr;
+    canvas.style.width = '750px'; canvas.style.height = '320px';
+    ctx.scale(dpr, dpr);
+    const W = 750, H = 320;
+    const pad = {top:30, right:30, bottom:55, left:60};
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    const groups = [
+        {key: 'age_dist_case', label: 'CASE', color: '#e53935'},
+        {key: 'age_dist_control', label: 'CONTROL', color: '#43a047'},
+        {key: 'age_dist_gray', label: 'GRAY', color: '#ffa726'},
+        {key: 'age_dist_review', label: 'REVIEW', color: '#7e57c2'}
+    ];
+
+    // Collect all age bins
+    const allBins = new Set();
+    groups.forEach(g => DATA[g.key].forEach(d => allBins.add(d.age_bin)));
+    const bins = [...allBins].sort();
+    const nBins = bins.length;
+    const nGroups = groups.length;
+    const groupW = plotW / nBins;
+    const barW = (groupW * 0.75) / nGroups;
+
+    // Max
+    let maxVal = 0;
+    groups.forEach(g => DATA[g.key].forEach(d => { if (d.count > maxVal) maxVal = d.count; }));
+
+    // Grid
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const v = maxVal / 4 * i;
+        const y = pad.top + plotH - (v / maxVal) * plotH;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W-pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#999'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(Math.round(v), pad.left - 8, y + 4);
+    }
+
+    // Bars
+    bins.forEach((bin, bi) => {
+        const baseX = pad.left + bi * groupW + groupW * 0.125;
+        groups.forEach((g, gi) => {
+            const entry = DATA[g.key].find(d => d.age_bin === bin);
+            const count = entry ? entry.count : 0;
+            const x = baseX + gi * barW;
+            const h = maxVal > 0 ? (count / maxVal) * plotH : 0;
+            const y = pad.top + plotH - h;
+            ctx.fillStyle = g.color;
+            if (h > 0) {
+                ctx.beginPath(); ctx.roundRect(x, y, barW - 1, h, [3,3,0,0]); ctx.fill();
+            }
+            if (count > 10) {
+                ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+                ctx.fillText(count, x + barW/2 - 0.5, y + 12);
+            }
+        });
+        // X label
+        ctx.fillStyle = '#555'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(bin, pad.left + bi * groupW + groupW / 2, pad.top + plotH + 18);
+    });
+
+    // Legend
+    let lx = pad.left + 10;
+    groups.forEach(g => {
+        ctx.fillStyle = g.color;
+        ctx.fillRect(lx, pad.top + 4, 12, 12);
+        ctx.fillStyle = '#333'; ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText(g.label, lx + 16, pad.top + 14);
+        lx += ctx.measureText(g.label).width + 30;
+    });
+
+    ctx.fillStyle = '#555'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Age at Enrollment (years)', W/2, H - 5);
+}
+
+// ===== 7. Pattern Table =====
+function renderPatternTable() {
+    const codeColorClass = {'1':'pc-1','2':'pc-2','3':'pc-3','4':'pc-4','5':'pc-5','6':'pc-6','7':'pc-7','8':'pc-8'};
+    const tbl = document.getElementById('patternTable');
+    DATA.top_patterns.forEach((p, i) => {
+        const seqHtml = p.pattern.split('').map(c =>
+            `<span class="pattern-code ${codeColorClass[c]||''}">${c}</span>`
+        ).join('');
+        const cls = p.n_loss >= 2 ? 'CASE' : p.n_loss === 1 ? 'GRAY' : (p.n_live >= 1 ? 'CONTROL' : 'UNCLASSIFIED');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${seqHtml}</td><td><strong>${p.count}</strong></td>
+            <td>${p.n_loss}</td><td>${p.n_live}</td><td><span class="cls-tag cls-${cls}">${cls}</span></td>`;
+        tbl.appendChild(tr);
+    });
+}
+
+// ===== SAMPLE DETAIL DATA =====
+const DETAILS = {"gray":[{"id":"14-137","age":37,"n_preg":9,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @39w → Live @39w → Abortion → Abortion → Abortion → Abortion → Live @39w → Abortion → Non-dev","seq":"114444146","reason":"GRAY","genotyped":false},{"id":"14-89","age":36,"n_preg":9,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @10w → Abortion @20w → Live @40w → Abortion @4w → Live @38w → Abortion @5w → Abortion @7w → Med-abort @12w","seq":"164141447","reason":"GRAY","genotyped":false},{"id":"08-264","age":39,"n_preg":8,"live":6,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @38w → Ectopic → Live @38w → Live @38w → Miscarriage @16w → Live @38w → Live @38w → Live @38w","seq":"15113111","reason":"GRAY","genotyped":true},{"id":"08-327","age":38,"n_preg":8,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Abortion → Abortion → Live @40w → Live @40w → Abortion → Non-dev @5w → Live @29w","seq":"14411461","reason":"GRAY","genotyped":false},{"id":"08-591","age":35,"n_preg":7,"live":6,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Live @39w → Non-dev @13w → Live @40w → Live @40w","seq":"1111611","reason":"GRAY","genotyped":false},{"id":"20-05","age":42,"n_preg":7,"live":5,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Live @40w → Non-dev @8w → Abortion @11w → Live @40w → Live @40w","seq":"1116411","reason":"GRAY","genotyped":false},{"id":"07-44","age":39,"n_preg":6,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Non-dev → Live @40w → Abortion → Live @40w → Abortion","seq":"161414","reason":"GRAY","genotyped":true},{"id":"08-05","age":33,"n_preg":6,"live":5,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @29w → Stillbirth → Live → Live → Live → Live","seq":"121111","reason":"GRAY","genotyped":true},{"id":"08-117","age":31,"n_preg":6,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Abortion → Live → Live → Stillbirth → Live → Live","seq":"411211","reason":"GRAY","genotyped":true},{"id":"08-357","age":37,"n_preg":6,"live":5,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev → Live @38w → Live @38w → Live @38w → Live @37w → Live @38w","seq":"611111","reason":"GRAY","genotyped":false},{"id":"08-465","age":40,"n_preg":6,"live":5,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @32w → Live @40w → Live @36w → Live @36w → Non-dev @8w → Live @41w","seq":"111161","reason":"GRAY","genotyped":false},{"id":"08-471","age":41,"n_preg":6,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Abortion @7w → Abortion @7w → Live @40w → Miscarriage @6w → Live @40w","seq":"144131","reason":"GRAY","genotyped":true},{"id":"08-578","age":31,"n_preg":6,"live":5,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w → Live @39w → Live @37w → Live @37w → Live @37w → Live @37w","seq":"611111","reason":"GRAY","genotyped":false},{"id":"14-94","age":40,"n_preg":6,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Live @39w → Abortion @8w → Non-dev @17w","seq":"111146","reason":"GRAY","genotyped":false},{"id":"14-98","age":33,"n_preg":6,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Abortion @5w → Abortion @39w → Abortion @5w → Live @39w → Non-dev @9w","seq":"144416","reason":"GRAY","genotyped":false},{"id":"20-04","age":42,"n_preg":6,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Live @38w → Non-dev @5w → Abortion @12w → Live @38w","seq":"111641","reason":"GRAY","genotyped":false},{"id":"03-93-09","age":30,"n_preg":5,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Live @38w → Abortion → Live @39w → Non-dev","seq":"11416","reason":"GRAY","genotyped":true},{"id":"04-42-09","age":38,"n_preg":5,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Live @30w → Non-dev → Live @38w → Live @38w","seq":"11611","reason":"GRAY","genotyped":false},{"id":"07-74","age":35,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Live @38w → Live @38w → Non-dev @7w","seq":"11116","reason":"GRAY","genotyped":false},{"id":"07-77","age":39,"n_preg":5,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @38w → Live @38w → Live @40w → Miscarriage → Live @41w","seq":"11131","reason":"GRAY","genotyped":false},{"id":"08-154","age":35,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Live @37w → Live @39w → Non-dev @12w → Live @40w","seq":"11161","reason":"GRAY","genotyped":false},{"id":"08-178","age":34,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Miscarriage @13w → Live @38w → Live @27w","seq":"11311","reason":"GRAY","genotyped":false},{"id":"08-182","age":39,"n_preg":5,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @39w → Live @40w → Abortion → Abortion → Miscarriage","seq":"11443","reason":"GRAY","genotyped":true},{"id":"08-204","age":35,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Live @40w → Non-dev @11w → Live @37w","seq":"11161","reason":"GRAY","genotyped":true},{"id":"08-220","age":32,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @12w → Live @39w → Live @39w","seq":"11611","reason":"GRAY","genotyped":true},{"id":"08-43","age":36,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Non-dev @12w → Live → Live","seq":"11611","reason":"GRAY","genotyped":true},{"id":"08-48","age":28,"n_preg":5,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live → Live → Live → Live","seq":"31111","reason":"GRAY","genotyped":false},{"id":"08-515","age":31,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Live @38w → Non-dev @11w → Live @39w","seq":"11161","reason":"GRAY","genotyped":false},{"id":"08-525","age":34,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @10w → Live @40w → Live @41w → Live @40w → Live @34w","seq":"61111","reason":"GRAY","genotyped":false},{"id":"08-649","age":30,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Non-dev @8w → Live → Live","seq":"11611","reason":"GRAY","genotyped":false},{"id":"08-672","age":33,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Miscarriage @5w → Live @40w → Live @38w → Live @41w","seq":"13111","reason":"GRAY","genotyped":false},{"id":"08-785","age":36,"n_preg":5,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @41w → Miscarriage → Live @40w → Live @41w → Live @38w","seq":"13111","reason":"GRAY","genotyped":false},{"id":"08-826","age":34,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @38w → Live @39w → Live @37w → Live @36w","seq":"61111","reason":"GRAY","genotyped":false},{"id":"08-845","age":31,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @11w → Live @38w → Live @38w → Live @38w","seq":"16111","reason":"GRAY","genotyped":false},{"id":"09-24","age":34,"n_preg":5,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @12w → Non-dev @5w → Live @39w → Live @39w → Live @36w","seq":"46111","reason":"GRAY","genotyped":true},{"id":"09-26","age":32,"n_preg":5,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Ectopic @13w → Non-dev @13w → Live @39w → Live @40w → Live @41w","seq":"56111","reason":"GRAY","genotyped":true},{"id":"09-50","age":37,"n_preg":5,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Live @40w → Live @40w → Non-dev → Live @38w","seq":"11161","reason":"GRAY","genotyped":false},{"id":"09-56","age":31,"n_preg":5,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @35w → Non-dev @4w → Live @37w → Live @37w → Ectopic @4w","seq":"16115","reason":"GRAY","genotyped":true},{"id":"09-71","age":29,"n_preg":5,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @10w → Live @39w → Miscarriage @12w → Abortion @12w → Pregnant","seq":"41348","reason":"GRAY","genotyped":false},{"id":"09-87","age":30,"n_preg":5,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Abortion @15w → Abortion @5w → Miscarriage @4w","seq":"11443","reason":"GRAY","genotyped":false},{"id":"12-05","age":27,"n_preg":5,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Miscarriage @8w → Pregnant @20w","seq":"11138","reason":"GRAY","genotyped":true},{"id":"14-141","age":31,"n_preg":5,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @6w → Abortion @16w → Abortion @11w → Live @28w","seq":"16441","reason":"GRAY","genotyped":false},{"id":"14-19","age":32,"n_preg":5,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Abortion @5w → Non-dev @8w","seq":"11146","reason":"GRAY","genotyped":true},{"id":"14-59","age":33,"n_preg":5,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Non-dev @18w → Live @31w","seq":"11161","reason":"GRAY","genotyped":false},{"id":"14-86","age":37,"n_preg":5,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @6w → Live @39w → Live @39w → Live @39w → Pregnant @7w","seq":"31118","reason":"GRAY","genotyped":false},{"id":"04-51","age":29,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @6w → Live @40w → Live @40w → Live @40w","seq":"3111","reason":"GRAY","genotyped":false},{"id":"06-18","age":35,"n_preg":4,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @39w → Live @38w → Miscarriage → Abortion","seq":"1134","reason":"GRAY","genotyped":true},{"id":"06-68","age":29,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Abortion @5w → Live @39w → Non-dev @10w","seq":"1416","reason":"GRAY","genotyped":false},{"id":"07-35","age":42,"n_preg":4,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":1,"events":"Live → Live → Miscarriage → Ectopic","seq":"1135","reason":"GRAY","genotyped":true},{"id":"07-55","age":38,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Live → Miscarriage → Live","seq":"1131","reason":"GRAY","genotyped":true},{"id":"08-118","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Live → Non-dev → Live","seq":"1161","reason":"GRAY","genotyped":true},{"id":"08-147","age":39,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @38w → Miscarriage @12w → Live @39w","seq":"1131","reason":"GRAY","genotyped":true},{"id":"08-148","age":30,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @19w → Live @39w → Live @40w → Live @38w","seq":"6111","reason":"GRAY","genotyped":true},{"id":"08-157","age":42,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @12w → Live @39w → Live @39w","seq":"1611","reason":"GRAY","genotyped":true},{"id":"08-162","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @9w → Live @40w → Live @39w","seq":"1311","reason":"GRAY","genotyped":true},{"id":"08-167","age":28,"n_preg":4,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @39w → Miscarriage → Abortion → Live @38w","seq":"1341","reason":"GRAY","genotyped":true},{"id":"08-173","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @40w → Non-dev @4w → Live @38w","seq":"1161","reason":"GRAY","genotyped":true},{"id":"08-236","age":26,"n_preg":4,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live @41w → Med-abort @6w → Live @41w","seq":"3171","reason":"GRAY","genotyped":true},{"id":"08-237","age":25,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev → Live @34w → Live @36w → Live @37w","seq":"6111","reason":"GRAY","genotyped":true},{"id":"08-249","age":39,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Miscarriage @13w → Live @38w → Live @37w","seq":"1311","reason":"GRAY","genotyped":true},{"id":"08-288","age":26,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Miscarriage @8w → Live @37w","seq":"1131","reason":"GRAY","genotyped":false},{"id":"08-300","age":29,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Non-dev @8w → Live @40w","seq":"1161","reason":"GRAY","genotyped":false},{"id":"08-301","age":26,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Live @36w → Non-dev → Live @38w","seq":"1161","reason":"GRAY","genotyped":false},{"id":"08-324","age":33,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @41w → Abortion @4w → Miscarriage @5w → Live @39w","seq":"1431","reason":"GRAY","genotyped":false},{"id":"08-33","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Non-dev @8w → Live","seq":"1161","reason":"GRAY","genotyped":true},{"id":"08-338","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Miscarriage @5w → Live @37w → Live @34w","seq":"1311","reason":"GRAY","genotyped":false},{"id":"08-388","age":34,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @34w → Live @37w → Miscarriage @9w → Live @35w","seq":"1131","reason":"GRAY","genotyped":false},{"id":"08-502","age":38,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w → Live @40w → Live @40w → Live @37w","seq":"6111","reason":"GRAY","genotyped":false},{"id":"08-51","age":32,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Live → Live → Stillbirth","seq":"1112","reason":"GRAY","genotyped":false},{"id":"08-583","age":36,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Miscarriage @6w → Live @38w","seq":"1131","reason":"GRAY","genotyped":false},{"id":"08-589","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w → Live @39w → Live @38w → Live @39w","seq":"6111","reason":"GRAY","genotyped":true},{"id":"08-597","age":27,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Non-dev @12w → Live @40w → Live @37w","seq":"1611","reason":"GRAY","genotyped":false},{"id":"08-609","age":28,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Miscarriage @5w → Live @40w → Live @40w","seq":"1311","reason":"GRAY","genotyped":false},{"id":"08-61","age":40,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @38w → Live @38w → Miscarriage → Live @32w","seq":"1131","reason":"GRAY","genotyped":true},{"id":"08-679","age":25,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Miscarriage @4w → Live @39w → Live @39w","seq":"1311","reason":"GRAY","genotyped":false},{"id":"08-70","age":30,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Live → Miscarriage → Live","seq":"1131","reason":"GRAY","genotyped":true},{"id":"08-709","age":30,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @3w → Live → Live → Live","seq":"3111","reason":"GRAY","genotyped":true},{"id":"08-725","age":34,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live @41w → Live @41w → Live @39w","seq":"3111","reason":"GRAY","genotyped":true},{"id":"08-750","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @41w → Live @40w → Non-dev → Live @39w","seq":"1161","reason":"GRAY","genotyped":false},{"id":"08-811","age":29,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @40w → Live @39w → Non-dev @9w","seq":"1116","reason":"GRAY","genotyped":true},{"id":"08-840","age":29,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Miscarriage @9w → Live → Live @38w","seq":"1311","reason":"GRAY","genotyped":false},{"id":"08-856","age":32,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @42w → Live @40w → Miscarriage @8w → Live @39w","seq":"1131","reason":"GRAY","genotyped":false},{"id":"08-98","age":32,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Live → Non-dev → Live","seq":"1161","reason":"GRAY","genotyped":false},{"id":"09-08","age":31,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Miscarriage @7w → Ectopic @4w → Live @38w → Live @32w","seq":"3511","reason":"GRAY","genotyped":true},{"id":"09-113","age":45,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @40w → Ectopic @3w → Miscarriage @6w → Live @27w","seq":"1531","reason":"GRAY","genotyped":true},{"id":"09-114","age":25,"n_preg":4,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion → Live @31w → Abortion → Miscarriage @12w","seq":"4143","reason":"GRAY","genotyped":true},{"id":"09-36","age":28,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @37w → Abortion @18w → Live @37w","seq":"6141","reason":"GRAY","genotyped":false},{"id":"09-37","age":37,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @10w → Live @39w","seq":"1161","reason":"GRAY","genotyped":false},{"id":"09-44","age":25,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Miscarriage @5w → Abortion @12w","seq":"1134","reason":"GRAY","genotyped":true},{"id":"09-51","age":32,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @40w → Non-dev @12w → Live @40w","seq":"1161","reason":"GRAY","genotyped":false},{"id":"09-58","age":27,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @11w → Live @40w → Live @37w → Pregnant @6w","seq":"6118","reason":"GRAY","genotyped":false},{"id":"09-67","age":35,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @11w → Live @38w → Live @32w → Pregnant @9w","seq":"6118","reason":"GRAY","genotyped":false},{"id":"09-68","age":29,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Abortion @5w → Live @39w → Non-dev @10w","seq":"1416","reason":"GRAY","genotyped":true},{"id":"09-75","age":33,"n_preg":4,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @8w → Miscarriage @6w → Live @38w → Pregnant @19w","seq":"4318","reason":"GRAY","genotyped":false},{"id":"12-13","age":33,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Non-dev @7w → Pregnant @6w","seq":"1168","reason":"GRAY","genotyped":true},{"id":"14-03","age":36,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Non-dev @16w","seq":"1116","reason":"GRAY","genotyped":false},{"id":"14-11","age":32,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Non-dev @9w","seq":"1116","reason":"GRAY","genotyped":true},{"id":"14-112","age":39,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Live @39w → Non-dev @14w","seq":"1116","reason":"GRAY","genotyped":false},{"id":"14-113","age":30,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @36w → Live @28w → Live @35w → Non-dev @18w","seq":"1116","reason":"GRAY","genotyped":false},{"id":"14-119","age":29,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Miscarriage @5w","seq":"1113","reason":"GRAY","genotyped":false},{"id":"14-139","age":35,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Live @37w → Live @39w → Non-dev @8w","seq":"1116","reason":"GRAY","genotyped":false},{"id":"14-39","age":33,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Non-dev @7w → Pregnant @8w","seq":"1168","reason":"GRAY","genotyped":false},{"id":"14-42","age":24,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @36w → Non-dev @7w → Pregnant @7w","seq":"1168","reason":"GRAY","genotyped":false},{"id":"14-44","age":31,"n_preg":4,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":2,"events":"Ectopic @5w → Live @39w → Miscarriage @5w → Ectopic @5w","seq":"5135","reason":"GRAY","genotyped":false},{"id":"14-58","age":27,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Non-dev @6w","seq":"1116","reason":"GRAY","genotyped":false},{"id":"14-64","age":31,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Non-dev @16w","seq":"1116","reason":"GRAY","genotyped":false},{"id":"14-68","age":28,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @32w → Live @42w → Miscarriage @4w → Pregnant @5w","seq":"1138","reason":"GRAY","genotyped":false},{"id":"14-78","age":26,"n_preg":4,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @35w → Miscarriage @18w → Live @40w → Pregnant","seq":"1318","reason":"GRAY","genotyped":false},{"id":"14-84","age":38,"n_preg":4,"live":3,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Non-dev @4w","seq":"1116","reason":"GRAY","genotyped":false},{"id":"01-08","age":26,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Med-abort @19w → Non-dev @8w → Live @38w","seq":"761","reason":"GRAY","genotyped":false},{"id":"01-16","age":23,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Non-dev @3w → Ectopic @6w → Live @38w","seq":"651","reason":"GRAY","genotyped":true},{"id":"02-44","age":33,"n_preg":3,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":2,"events":"Ectopic @2w → Ectopic @2w → Miscarriage @5w","seq":"553","reason":"GRAY","genotyped":true},{"id":"02-52","age":28,"n_preg":3,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Non-dev @9w → Ectopic @2w → Pregnant @6w","seq":"658","reason":"GRAY","genotyped":true},{"id":"03-23","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @38w → Live @38w → Non-dev","seq":"116","reason":"GRAY","genotyped":true},{"id":"03-83","age":38,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @39w → Non-dev @10w","seq":"116","reason":"GRAY","genotyped":false},{"id":"04-53","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @4w → Live @39w → Live @40w","seq":"311","reason":"GRAY","genotyped":false},{"id":"04-57","age":38,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @6w → Live @39w","seq":"161","reason":"GRAY","genotyped":false},{"id":"06-19","age":24,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev → Live → Live","seq":"611","reason":"GRAY","genotyped":false},{"id":"06-21","age":36,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Non-dev @7w","seq":"116","reason":"GRAY","genotyped":false},{"id":"07-09","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @40w → Non-dev @16w","seq":"116","reason":"GRAY","genotyped":false},{"id":"07-37","age":32,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @38w → Live @39w → Miscarriage","seq":"113","reason":"GRAY","genotyped":false},{"id":"07-62","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev → Live → Live","seq":"611","reason":"GRAY","genotyped":true},{"id":"07-64","age":31,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @39w → Live @35w","seq":"611","reason":"GRAY","genotyped":true},{"id":"07-68","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @37w → Non-dev → Live @38w","seq":"161","reason":"GRAY","genotyped":false},{"id":"07-81","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Live @40w → Miscarriage","seq":"113","reason":"GRAY","genotyped":false},{"id":"08-120","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Miscarriage → Live","seq":"131","reason":"GRAY","genotyped":true},{"id":"08-165","age":38,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @7w → Miscarriage @12w → Live @38w","seq":"431","reason":"GRAY","genotyped":true},{"id":"08-171","age":33,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @10w → Live @36w → Live @39w","seq":"311","reason":"GRAY","genotyped":true},{"id":"08-184","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Miscarriage → Live @35w","seq":"131","reason":"GRAY","genotyped":true},{"id":"08-203","age":32,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @12w → Live @39w → Live @39w","seq":"311","reason":"GRAY","genotyped":true},{"id":"08-210","age":41,"n_preg":3,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Abortion → Miscarriage","seq":"143","reason":"GRAY","genotyped":true},{"id":"08-23","age":23,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Live → Miscarriage","seq":"113","reason":"GRAY","genotyped":true},{"id":"08-234","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @4w → Live @38w → Live @37w","seq":"311","reason":"GRAY","genotyped":true},{"id":"08-243","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @11w → Live @40w → Live @39w","seq":"311","reason":"GRAY","genotyped":true},{"id":"08-286","age":22,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Miscarriage → Live @39w","seq":"131","reason":"GRAY","genotyped":false},{"id":"08-320","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @40w → Live @38w","seq":"611","reason":"GRAY","genotyped":false},{"id":"08-333","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Non-dev @7w → Live @41w","seq":"161","reason":"GRAY","genotyped":false},{"id":"08-378","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @42w → Non-dev @9w → Live @40w","seq":"161","reason":"GRAY","genotyped":false},{"id":"08-379","age":34,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @39w → Live @39w","seq":"611","reason":"GRAY","genotyped":false},{"id":"08-432","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @39w → Non-dev → Live @38w","seq":"161","reason":"GRAY","genotyped":false},{"id":"08-447","age":24,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @16w → Live @40w → Live @38w","seq":"311","reason":"GRAY","genotyped":false},{"id":"08-448","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @10w → Live @30w → Live @41w","seq":"611","reason":"GRAY","genotyped":true},{"id":"08-468","age":27,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Miscarriage @6w → Live @38w","seq":"131","reason":"GRAY","genotyped":true},{"id":"08-484","age":41,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @9w → Live @41w → Live @40w","seq":"311","reason":"GRAY","genotyped":false},{"id":"08-50","age":32,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live → Live","seq":"311","reason":"GRAY","genotyped":false},{"id":"08-556","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Non-dev @9w → Live @37w","seq":"161","reason":"GRAY","genotyped":true},{"id":"08-559","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @6w → Live @39w","seq":"131","reason":"GRAY","genotyped":true},{"id":"08-574","age":32,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w → Live @38w → Live @32w","seq":"611","reason":"GRAY","genotyped":false},{"id":"08-60","age":24,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live → Live","seq":"311","reason":"GRAY","genotyped":false},{"id":"08-617","age":30,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @7w → Live @39w → Live @39w","seq":"311","reason":"GRAY","genotyped":true},{"id":"08-651","age":33,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @11w → Live @38w","seq":"161","reason":"GRAY","genotyped":false},{"id":"08-764","age":34,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Miscarriage @5w","seq":"113","reason":"GRAY","genotyped":false},{"id":"08-808","age":28,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @9w → Live @42w → Live @38w","seq":"611","reason":"GRAY","genotyped":true},{"id":"08-810","age":34,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @6w","seq":"116","reason":"GRAY","genotyped":true},{"id":"08-95","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @15w → Live → Live","seq":"311","reason":"GRAY","genotyped":false},{"id":"09-09","age":42,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @10w → Non-dev @10w → Live @37w","seq":"461","reason":"GRAY","genotyped":true},{"id":"09-107","age":24,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @40w → Non-dev @5w → Ectopic @3w","seq":"165","reason":"GRAY","genotyped":true},{"id":"09-115","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @12w → Live @37w","seq":"161","reason":"GRAY","genotyped":false},{"id":"09-129","age":31,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @38w → Non-dev @5w","seq":"116","reason":"GRAY","genotyped":true},{"id":"09-148","age":23,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Abortion @8w → Non-dev @10w","seq":"146","reason":"GRAY","genotyped":false},{"id":"09-34","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @8w → Live @39w → Live @38w","seq":"311","reason":"GRAY","genotyped":false},{"id":"09-38","age":24,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @14w → Live @38w → Live @40w","seq":"611","reason":"GRAY","genotyped":false},{"id":"09-41","age":27,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Non-dev @18w","seq":"116","reason":"GRAY","genotyped":false},{"id":"09-49","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @9w → Live @38w → Live @39w","seq":"611","reason":"GRAY","genotyped":false},{"id":"09-53","age":31,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @8w → Live @40w","seq":"131","reason":"GRAY","genotyped":false},{"id":"09-86","age":28,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @5w → Live @38w → Abortion @19w","seq":"314","reason":"GRAY","genotyped":true},{"id":"11-01","age":30,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @4w → Live @40w → Live @38w","seq":"311","reason":"GRAY","genotyped":false},{"id":"11-03","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @41w → Miscarriage @6w → Live @39w","seq":"131","reason":"GRAY","genotyped":false},{"id":"11-06","age":30,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @37w → Live @36w","seq":"611","reason":"GRAY","genotyped":false},{"id":"12-07","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @4w","seq":"116","reason":"GRAY","genotyped":false},{"id":"12-08","age":23,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Miscarriage @12w → Pregnant @10w","seq":"138","reason":"GRAY","genotyped":false},{"id":"13-132","age":31,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Non-dev @4w","seq":"116","reason":"GRAY","genotyped":true},{"id":"13-34","age":23,"n_preg":3,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @7w → Med-abort @12w → Pregnant @19w","seq":"378","reason":"GRAY","genotyped":true},{"id":"14-101","age":30,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @12w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-104","age":34,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @11w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-105","age":30,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @9w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-108","age":27,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @42w → Live @38w → Non-dev @10w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-12","age":28,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @41w → Non-dev @13w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-125","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @13w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-129","age":28,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Miscarriage @8w","seq":"113","reason":"GRAY","genotyped":false},{"id":"14-133","age":25,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @8w → Live @39w","seq":"161","reason":"GRAY","genotyped":false},{"id":"14-143","age":27,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @13w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-146","age":25,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @8w → Med-abort @16w","seq":"167","reason":"GRAY","genotyped":false},{"id":"14-150","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Live → Non-dev","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-24","age":24,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @5w → Abortion @20w","seq":"134","reason":"GRAY","genotyped":false},{"id":"14-41","age":25,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @6w → Pregnant @7w","seq":"138","reason":"GRAY","genotyped":false},{"id":"14-56","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @39w → Non-dev @10w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-61","age":26,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @19w → Pregnant @8w","seq":"168","reason":"GRAY","genotyped":false},{"id":"14-75","age":30,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Non-dev @8w","seq":"116","reason":"GRAY","genotyped":false},{"id":"14-76","age":37,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Miscarriage @5w","seq":"113","reason":"GRAY","genotyped":false},{"id":"14-83","age":23,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @38w → Pregnant @11w","seq":"618","reason":"GRAY","genotyped":false},{"id":"14-87","age":31,"n_preg":3,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @6w → Pregnant @10w","seq":"168","reason":"GRAY","genotyped":false},{"id":"14-90","age":31,"n_preg":3,"live":2,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @26w → Non-dev @12w","seq":"116","reason":"GRAY","genotyped":false},{"id":"01-03","age":33,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Non-dev @8w","seq":"16","reason":"GRAY","genotyped":true},{"id":"01-45","age":20,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @1w → Pregnant","seq":"68","reason":"GRAY","genotyped":true},{"id":"01-68","age":36,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @5w → Miscarriage @6w","seq":"43","reason":"GRAY","genotyped":true},{"id":"02-62","age":38,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Non-dev @12w","seq":"16","reason":"GRAY","genotyped":false},{"id":"02-74","age":33,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Non-dev @12w","seq":"16","reason":"GRAY","genotyped":false},{"id":"02-75","age":34,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Miscarriage @8w","seq":"13","reason":"GRAY","genotyped":false},{"id":"03-34","age":45,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Non-dev @3w → Ectopic @6w","seq":"65","reason":"GRAY","genotyped":true},{"id":"03-45","age":24,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @8w → Non-dev @4w","seq":"46","reason":"GRAY","genotyped":true},{"id":"03-78","age":20,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Non-dev @3w → Ectopic @3w","seq":"65","reason":"GRAY","genotyped":false},{"id":"07-25","age":24,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @2w → Live @39w","seq":"31","reason":"GRAY","genotyped":false},{"id":"07-34","age":39,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Miscarriage","seq":"13","reason":"GRAY","genotyped":false},{"id":"08-105","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live","seq":"31","reason":"GRAY","genotyped":true},{"id":"08-17","age":36,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @4w → Live","seq":"31","reason":"GRAY","genotyped":true},{"id":"08-187","age":29,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev → Live @39w","seq":"61","reason":"GRAY","genotyped":true},{"id":"08-377","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @39w","seq":"61","reason":"GRAY","genotyped":false},{"id":"08-382","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @5w → Live @38w","seq":"31","reason":"GRAY","genotyped":false},{"id":"08-423","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live @39w","seq":"31","reason":"GRAY","genotyped":false},{"id":"08-424","age":24,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @41w","seq":"61","reason":"GRAY","genotyped":false},{"id":"08-450","age":33,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w → Live @38w","seq":"61","reason":"GRAY","genotyped":false},{"id":"08-455","age":27,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @35w","seq":"61","reason":"GRAY","genotyped":true},{"id":"08-504","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @36w","seq":"61","reason":"GRAY","genotyped":false},{"id":"08-564","age":37,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @4w → Live @38w","seq":"61","reason":"GRAY","genotyped":true},{"id":"08-765","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Miscarriage @8w","seq":"13","reason":"GRAY","genotyped":false},{"id":"08-77","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @4w → Live @35w","seq":"61","reason":"GRAY","genotyped":false},{"id":"08-89","age":21,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev → Live","seq":"61","reason":"GRAY","genotyped":true},{"id":"09-103","age":24,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @1w","seq":"16","reason":"GRAY","genotyped":true},{"id":"09-104","age":24,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @1w","seq":"16","reason":"GRAY","genotyped":true},{"id":"09-105","age":30,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @39w","seq":"61","reason":"GRAY","genotyped":true},{"id":"09-108","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Non-dev @15w","seq":"16","reason":"GRAY","genotyped":true},{"id":"09-110","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @41w","seq":"61","reason":"GRAY","genotyped":true},{"id":"09-118","age":31,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @39w → Miscarriage","seq":"13","reason":"GRAY","genotyped":true},{"id":"09-123","age":29,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @7w","seq":"16","reason":"GRAY","genotyped":true},{"id":"09-135","age":25,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @7w → Live @39w","seq":"31","reason":"GRAY","genotyped":true},{"id":"09-136","age":34,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @36w → Miscarriage @8w","seq":"13","reason":"GRAY","genotyped":false},{"id":"09-138","age":20,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @5w → Live @38w","seq":"31","reason":"GRAY","genotyped":false},{"id":"09-143","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @9w → Live @40w","seq":"61","reason":"GRAY","genotyped":false},{"id":"09-31","age":25,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w → Live @41w","seq":"61","reason":"GRAY","genotyped":false},{"id":"09-39","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @34w → Non-dev @9w","seq":"16","reason":"GRAY","genotyped":false},{"id":"09-43","age":26,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @36w → Non-dev @9w","seq":"16","reason":"GRAY","genotyped":false},{"id":"09-77","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @34w → Miscarriage @14w","seq":"13","reason":"GRAY","genotyped":false},{"id":"09-82","age":20,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @36w → Miscarriage @1w","seq":"13","reason":"GRAY","genotyped":false},{"id":"09-83","age":24,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Miscarriage @1w","seq":"13","reason":"GRAY","genotyped":false},{"id":"09-84","age":32,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @13w → Live @40w","seq":"61","reason":"GRAY","genotyped":false},{"id":"09-93","age":29,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev → Live","seq":"61","reason":"GRAY","genotyped":false},{"id":"12-10","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Non-dev @3w","seq":"16","reason":"GRAY","genotyped":false},{"id":"13-07","age":21,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @14w → Abortion @21w","seq":"64","reason":"GRAY","genotyped":true},{"id":"13-105","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Miscarriage @13w","seq":"13","reason":"GRAY","genotyped":true},{"id":"13-110","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @32w","seq":"61","reason":"GRAY","genotyped":true},{"id":"13-39","age":33,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w → Pregnant @15w","seq":"68","reason":"GRAY","genotyped":false},{"id":"13-48","age":23,"n_preg":2,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @8w → Pregnant @6w","seq":"38","reason":"GRAY","genotyped":true},{"id":"14-07","age":24,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @8w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-08","age":24,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @6w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-09","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @9w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-10","age":34,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Non-dev @13w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-106","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @6w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-107","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @9w → Live @34w","seq":"61","reason":"GRAY","genotyped":false},{"id":"14-114","age":21,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @28w → Non-dev @12w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-116","age":25,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @5w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-118","age":20,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @8w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-120","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @7w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-124","age":25,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @4w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-132","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @10w → Live @39w","seq":"61","reason":"GRAY","genotyped":false},{"id":"14-136","age":27,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @4w","seq":"13","reason":"GRAY","genotyped":false},{"id":"14-138","age":25,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Non-dev @11w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-149","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @17w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-52","age":20,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Non-dev @6w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-65","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @34w → Miscarriage @7w","seq":"13","reason":"GRAY","genotyped":false},{"id":"14-74","age":29,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @5w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-77","age":25,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @10w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-81","age":22,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @9w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-93","age":29,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @9w","seq":"16","reason":"GRAY","genotyped":false},{"id":"14-99","age":27,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @12w","seq":"16","reason":"GRAY","genotyped":false},{"id":"01-07","age":29,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @9w","seq":"3","reason":"GRAY","genotyped":true},{"id":"01-22","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w","seq":"6","reason":"GRAY","genotyped":false},{"id":"01-30","age":27,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @14w","seq":"6","reason":"GRAY","genotyped":false},{"id":"01-31","age":28,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @1w","seq":"6","reason":"GRAY","genotyped":true},{"id":"01-32","age":24,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @1w","seq":"3","reason":"GRAY","genotyped":false},{"id":"01-47","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @1w","seq":"3","reason":"GRAY","genotyped":true},{"id":"01-48","age":29,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @1w","seq":"6","reason":"GRAY","genotyped":true},{"id":"01-51","age":24,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @1w","seq":"6","reason":"GRAY","genotyped":true},{"id":"01-53","age":36,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @10w","seq":"6","reason":"GRAY","genotyped":false},{"id":"01-58","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w","seq":"6","reason":"GRAY","genotyped":false},{"id":"01-61","age":21,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @6w","seq":"3","reason":"GRAY","genotyped":true},{"id":"02-100","age":30,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @15w","seq":"6","reason":"GRAY","genotyped":false},{"id":"02-101","age":23,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @10w","seq":"6","reason":"GRAY","genotyped":true},{"id":"02-105","age":33,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage","seq":"3","reason":"GRAY","genotyped":false},{"id":"02-40","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @6w","seq":"3","reason":"GRAY","genotyped":false},{"id":"02-47","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @16w","seq":"6","reason":"GRAY","genotyped":true},{"id":"02-61","age":21,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @4w","seq":"6","reason":"GRAY","genotyped":true},{"id":"02-65","age":23,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @10w","seq":"6","reason":"GRAY","genotyped":false},{"id":"02-93","age":42,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @3w","seq":"3","reason":"GRAY","genotyped":false},{"id":"02-96","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @12w","seq":"6","reason":"GRAY","genotyped":false},{"id":"02-98","age":18,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w","seq":"6","reason":"GRAY","genotyped":true},{"id":"02-99","age":21,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w","seq":"6","reason":"GRAY","genotyped":false},{"id":"03-153","age":19,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @6w","seq":"3","reason":"GRAY","genotyped":true},{"id":"03-18","age":28,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @5w","seq":"3","reason":"GRAY","genotyped":true},{"id":"03-19","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @10w","seq":"3","reason":"GRAY","genotyped":true},{"id":"03-22","age":27,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w","seq":"6","reason":"GRAY","genotyped":true},{"id":"03-29","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @11w","seq":"3","reason":"GRAY","genotyped":true},{"id":"03-32","age":43,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @11w","seq":"6","reason":"GRAY","genotyped":true},{"id":"03-33","age":23,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @15w","seq":"6","reason":"GRAY","genotyped":true},{"id":"03-36","age":24,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev","seq":"6","reason":"GRAY","genotyped":true},{"id":"03-38","age":21,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage","seq":"3","reason":"GRAY","genotyped":false},{"id":"03-41","age":33,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @5w","seq":"2","reason":"GRAY","genotyped":true},{"id":"03-44","age":21,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @7w","seq":"3","reason":"GRAY","genotyped":true},{"id":"03-47","age":35,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @12w","seq":"6","reason":"GRAY","genotyped":true},{"id":"03-48","age":21,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w","seq":"6","reason":"GRAY","genotyped":true},{"id":"03-84","age":29,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w","seq":"6","reason":"GRAY","genotyped":true},{"id":"03-92","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @13w","seq":"6","reason":"GRAY","genotyped":true},{"id":"08-387","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Non-dev","seq":"6","reason":"GRAY","genotyped":false},{"id":"13-51","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w","seq":"6","reason":"GRAY","genotyped":false},{"id":"13-53","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w","seq":"6","reason":"GRAY","genotyped":false},{"id":"13-54","age":23,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w","seq":"6","reason":"GRAY","genotyped":false},{"id":"13-55","age":19,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @5w","seq":"3","reason":"GRAY","genotyped":false},{"id":"13-58","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w","seq":"6","reason":"GRAY","genotyped":false},{"id":"13-64","age":23,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @7w","seq":"6","reason":"GRAY","genotyped":true},{"id":"13-72","age":22,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @4w","seq":"3","reason":"GRAY","genotyped":true},{"id":"13-77","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w","seq":"6","reason":"GRAY","genotyped":false},{"id":"13-78","age":23,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @11w","seq":"6","reason":"GRAY","genotyped":false},{"id":"13-80","age":33,"n_preg":1,"live":0,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @7w","seq":"3","reason":"GRAY","genotyped":false}],"review":[{"id":"01-21","age":31,"n_preg":5,"live":1,"loss":4,"loss_lt20":1,"loss_ge20":3,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @16w → Stillbirth @36w → Stillbirth @24w → Non-dev @24w → Live @36w","seq":"32261","reason":"REVIEW","genotyped":true},{"id":"02-35","age":25,"n_preg":4,"live":0,"loss":4,"loss_lt20":1,"loss_ge20":3,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @23w → Miscarriage @6w → Miscarriage @21w → Stillbirth @23w","seq":"2332","reason":"REVIEW","genotyped":true},{"id":"15-09","age":27,"n_preg":4,"live":0,"loss":4,"loss_lt20":1,"loss_ge20":3,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @36w → Stillbirth @40w → Non-dev @14w → Stillbirth @27w","seq":"2262","reason":"REVIEW","genotyped":false},{"id":"02-89","age":25,"n_preg":5,"live":1,"loss":3,"loss_lt20":1,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Miscarriage @22w → Live @39w → Miscarriage @23w → Pregnant @15w","seq":"63138","reason":"REVIEW","genotyped":true},{"id":"02-94","age":20,"n_preg":3,"live":0,"loss":3,"loss_lt20":1,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w → Non-dev @20w → Non-dev @21w","seq":"666","reason":"REVIEW","genotyped":true},{"id":"03-160","age":28,"n_preg":4,"live":1,"loss":3,"loss_lt20":1,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Live @36w → Miscarriage @23w → Miscarriage @23w → Non-dev @18w","seq":"1336","reason":"REVIEW","genotyped":true},{"id":"09-63","age":23,"n_preg":5,"live":1,"loss":3,"loss_lt20":1,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @10w → Abortion @18w → Stillbirth @29w → Miscarriage @22w","seq":"16423","reason":"REVIEW","genotyped":true},{"id":"13-27","age":39,"n_preg":3,"live":0,"loss":3,"loss_lt20":1,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Non-dev @15w → Non-dev @20w → Non-dev @20w","seq":"666","reason":"REVIEW","genotyped":false},{"id":"14-71m","age":23,"n_preg":3,"live":0,"loss":3,"loss_lt20":1,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @20w → Stillbirth @28w → Non-dev @5w","seq":"326","reason":"REVIEW","genotyped":true},{"id":"09-94","age":24,"n_preg":3,"live":1,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Non-dev @29w → Non-dev @30w → Live @39w","seq":"661","reason":"REVIEW","genotyped":true},{"id":"13-120","age":24,"n_preg":2,"live":0,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @23w → Stillbirth @23w","seq":"22","reason":"REVIEW","genotyped":true},{"id":"13-123","age":35,"n_preg":2,"live":0,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @28w → Stillbirth @21w","seq":"22","reason":"REVIEW","genotyped":true},{"id":"13-125","age":39,"n_preg":4,"live":2,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @38w → Live @28w → Live @39w → Stillbirth @38w","seq":"2112","reason":"REVIEW","genotyped":true},{"id":"13-130","age":27,"n_preg":4,"live":1,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Abortion @12w → Stillbirth @40w → Stillbirth @25w","seq":"1422","reason":"REVIEW","genotyped":true},{"id":"13-15m","age":35,"n_preg":2,"live":0,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @28w → Stillbirth @27w","seq":"22","reason":"REVIEW","genotyped":false},{"id":"15-14","age":25,"n_preg":3,"live":0,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @23w → Miscarriage @23w → Pregnant","seq":"338","reason":"REVIEW","genotyped":false},{"id":"15-21m","age":24,"n_preg":2,"live":0,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w → Stillbirth @22w","seq":"22","reason":"REVIEW","genotyped":false},{"id":"20-03m","age":26,"n_preg":2,"live":0,"loss":2,"loss_lt20":0,"loss_ge20":2,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @30w → Stillbirth @32w","seq":"22","reason":"REVIEW","genotyped":false},{"id":"03-56","age":31,"n_preg":5,"live":1,"loss":3,"loss_lt20":1,"loss_ge20":1,"loss_noGA":1,"ectopic":1,"events":"Non-dev @12w → Live @41w → Stillbirth @35w → Miscarriage → Ectopic @7w","seq":"61235","reason":"REVIEW","genotyped":true},{"id":"06-13","age":22,"n_preg":4,"live":1,"loss":3,"loss_lt20":0,"loss_ge20":1,"loss_noGA":2,"ectopic":0,"events":"Miscarriage → Miscarriage → Stillbirth @32w → Live @37w","seq":"3321","reason":"REVIEW","genotyped":true},{"id":"01-11","age":21,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @4w → Stillbirth @25w","seq":"62","reason":"REVIEW","genotyped":true},{"id":"01-14","age":23,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @6w → Stillbirth @33w → Live @38w","seq":"621","reason":"REVIEW","genotyped":true},{"id":"01-42","age":25,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @1w → Miscarriage @20w","seq":"63","reason":"REVIEW","genotyped":true},{"id":"02-23m","age":32,"n_preg":5,"live":3,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @20w → Live @28w → Live @34w → Live @38w → Non-dev @16w","seq":"31116","reason":"REVIEW","genotyped":true},{"id":"02-25m","age":18,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @27w → Miscarriage @5w → Miscarriage @20w","seq":"133","reason":"REVIEW","genotyped":true},{"id":"02-26","age":23,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @39w → Miscarriage @10w","seq":"23","reason":"REVIEW","genotyped":true},{"id":"02-33","age":28,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @10w → Non-dev @20w","seq":"66","reason":"REVIEW","genotyped":true},{"id":"02-43","age":37,"n_preg":16,"live":3,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @24w → Non-dev @4w → Live @38w → Abortion @6w → Abortion @5w → Live @39w → Abortion @8w → Abortion @4w → Abortion @6w → Live @39w → Abortion @7w → Abortion @4w → Abortion @9w → Abortion @7w → Abortion @5w → Abortion @8w","seq":"6614414441444444","reason":"REVIEW","genotyped":true},{"id":"02-54","age":38,"n_preg":3,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @22w → Med-abort @24w → Miscarriage @12w","seq":"373","reason":"REVIEW","genotyped":true},{"id":"02-83","age":19,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @7w → Non-dev @21w","seq":"36","reason":"REVIEW","genotyped":true},{"id":"03-154","age":24,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @3w → Stillbirth @24w","seq":"32","reason":"REVIEW","genotyped":false},{"id":"09-100","age":25,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @10w → Live @35w → Stillbirth @25w","seq":"312","reason":"REVIEW","genotyped":false},{"id":"09-127","age":34,"n_preg":8,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @10w → Live @38w → Live @38w → Abortion @7w → Abortion @7w → Abortion @8w → Abortion @8w → Stillbirth @35w","seq":"31144442","reason":"REVIEW","genotyped":true},{"id":"09-13","age":34,"n_preg":7,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Abortion @8w → Abortion @8w → Abortion @8w → Miscarriage @24w → Miscarriage @13w","seq":"1144433","reason":"REVIEW","genotyped":false},{"id":"09-145","age":37,"n_preg":4,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @34w → Stillbirth @24w → Non-dev @10w","seq":"1126","reason":"REVIEW","genotyped":false},{"id":"09-42","age":40,"n_preg":5,"live":3,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @20w → Live @38w → Live @39w → Live @38w → Non-dev @8w","seq":"31116","reason":"REVIEW","genotyped":true},{"id":"09-95","age":30,"n_preg":5,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":1,"events":"Ectopic @7w → Miscarriage @14w → ? → Miscarriage @24w → Live @38w","seq":"531/631","reason":"REVIEW","genotyped":true},{"id":"13-06","age":37,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Miscarriage @20w","seq":"63","reason":"REVIEW","genotyped":true},{"id":"13-10","age":24,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @17w → Non-dev @21w","seq":"66","reason":"REVIEW","genotyped":false},{"id":"13-106","age":29,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Stillbirth @25w → Non-dev @17w","seq":"126","reason":"REVIEW","genotyped":true},{"id":"13-26","age":25,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @9w → Miscarriage @20w","seq":"33","reason":"REVIEW","genotyped":true},{"id":"13-67","age":23,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @5w → Stillbirth @27w","seq":"62","reason":"REVIEW","genotyped":true},{"id":"14-115","age":34,"n_preg":5,"live":3,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Non-dev @8w → Non-dev @22w","seq":"11166","reason":"REVIEW","genotyped":false},{"id":"14-117m","age":34,"n_preg":5,"live":3,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Non-dev @9w → Stillbirth @38w → Live @38w","seq":"11621","reason":"REVIEW","genotyped":true},{"id":"14-126","age":23,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Stillbirth @36w → Non-dev @9w","seq":"126","reason":"REVIEW","genotyped":false},{"id":"14-31m","age":33,"n_preg":6,"live":4,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Stillbirth @39w → Live @39w → Miscarriage @6w → Live @39w → Live @39w","seq":"121311","reason":"REVIEW","genotyped":true},{"id":"14-63","age":35,"n_preg":6,"live":3,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Live @38w → Non-dev @11w → Non-dev @20w → Pregnant @5w","seq":"111668","reason":"REVIEW","genotyped":false},{"id":"14-66","age":26,"n_preg":4,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @8w → Live @38w → Live @38w → Stillbirth @23w","seq":"3112","reason":"REVIEW","genotyped":true},{"id":"14-66m","age":26,"n_preg":4,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @8w → Live @38w → Live @38w → Stillbirth @23w","seq":"3112","reason":"REVIEW","genotyped":false},{"id":"14-79m","age":31,"n_preg":4,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @25w → Live @39w → Non-dev @11w","seq":"1216","reason":"REVIEW","genotyped":true},{"id":"15-03m","age":32,"n_preg":4,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Miscarriage @5w → Stillbirth @28w","seq":"1132","reason":"REVIEW","genotyped":true},{"id":"15-04m","age":29,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @5w → Stillbirth @24w","seq":"32","reason":"REVIEW","genotyped":false},{"id":"15-05m","age":27,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @39w → Non-dev @5w","seq":"26","reason":"REVIEW","genotyped":false},{"id":"15-06m","age":30,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @28w → Non-dev @6w → Non-dev @22w","seq":"166","reason":"REVIEW","genotyped":true},{"id":"15-08m","age":28,"n_preg":4,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @40w → Stillbirth @26w → Miscarriage @17w","seq":"1123","reason":"REVIEW","genotyped":false},{"id":"15-12m","age":33,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w → Miscarriage @10w","seq":"23","reason":"REVIEW","genotyped":false},{"id":"15-13m","age":31,"n_preg":5,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @32w → Live @37w → Live @40w → Abortion @13w → Non-dev @15w","seq":"21146","reason":"REVIEW","genotyped":true},{"id":"15-15m","age":25,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @37w → Non-dev @12w","seq":"126","reason":"REVIEW","genotyped":true},{"id":"15-17m","age":24,"n_preg":4,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w → Non-dev @18w → Live @29w → Pregnant","seq":"2618","reason":"REVIEW","genotyped":true},{"id":"15-18m","age":34,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @33w → Non-dev @15w","seq":"26","reason":"REVIEW","genotyped":false},{"id":"15-19m","age":22,"n_preg":3,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w → Non-dev @8w → Pregnant","seq":"268","reason":"REVIEW","genotyped":true},{"id":"15-1m","age":26,"n_preg":3,"live":1,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @39w → Non-dev @16w → Live @39w","seq":"261","reason":"REVIEW","genotyped":false},{"id":"15-20m","age":23,"n_preg":2,"live":0,"loss":2,"loss_lt20":0,"loss_ge20":1,"loss_noGA":1,"ectopic":0,"events":"Stillbirth @30w → Miscarriage","seq":"23","reason":"REVIEW","genotyped":false},{"id":"15-22m","age":22,"n_preg":3,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w → Non-dev @12w → Pregnant","seq":"268","reason":"REVIEW","genotyped":false},{"id":"15-23m","age":28,"n_preg":4,"live":2,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Non-dev @7w → Live @39w → Non-dev @23w","seq":"1616","reason":"REVIEW","genotyped":false},{"id":"15-24m","age":26,"n_preg":2,"live":0,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @14w → Stillbirth @39w","seq":"62","reason":"REVIEW","genotyped":true},{"id":"20-01m","age":37,"n_preg":5,"live":3,"loss":2,"loss_lt20":1,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @39w → Stillbirth @39w → Live @39w → Live @40w","seq":"61211","reason":"REVIEW","genotyped":false},{"id":"01-04","age":33,"n_preg":5,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":1,"events":"Live @38w → Ectopic @5w → Stillbirth @24w → Live @38w → Live @39w","seq":"15211","reason":"REVIEW","genotyped":false},{"id":"01-17","age":23,"n_preg":2,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Abortion @10w → Miscarriage @20w","seq":"43","reason":"REVIEW","genotyped":true},{"id":"01-24","age":28,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @28w → Live @26w","seq":"21","reason":"REVIEW","genotyped":true},{"id":"02-53","age":25,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @22w","seq":"3","reason":"REVIEW","genotyped":true},{"id":"02-55","age":30,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @24w","seq":"3","reason":"REVIEW","genotyped":false},{"id":"02-56","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @24w","seq":"6","reason":"REVIEW","genotyped":true},{"id":"02-68","age":24,"n_preg":2,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @24w → Abortion @6w","seq":"64","reason":"REVIEW","genotyped":false},{"id":"02-70","age":25,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @28w","seq":"6","reason":"REVIEW","genotyped":true},{"id":"03-155","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @28w","seq":"12","reason":"REVIEW","genotyped":false},{"id":"03-156","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @38w → Live @37w","seq":"21","reason":"REVIEW","genotyped":false},{"id":"03-157","age":19,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @29w","seq":"2","reason":"REVIEW","genotyped":true},{"id":"03-158","age":35,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @28w","seq":"12","reason":"REVIEW","genotyped":true},{"id":"03-25м","age":30,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w","seq":"2","reason":"REVIEW","genotyped":false},{"id":"03-95","age":26,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Stillbirth @29w","seq":"12","reason":"REVIEW","genotyped":true},{"id":"07-33m","age":39,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @25w","seq":"12","reason":"REVIEW","genotyped":false},{"id":"07-75m","age":20,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @25w","seq":"2","reason":"REVIEW","genotyped":false},{"id":"08-102","age":27,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @28w → Non-dev @26w → Live @39w","seq":"161","reason":"REVIEW","genotyped":true},{"id":"08-177","age":36,"n_preg":5,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @40w → Live @40w → Live @39w → Live @40w","seq":"12111","reason":"REVIEW","genotyped":true},{"id":"08-276","age":38,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w → Live @39w → Live @41w","seq":"211","reason":"REVIEW","genotyped":true},{"id":"08-325","age":24,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @28w → Live @32w → Live @39w","seq":"211","reason":"REVIEW","genotyped":false},{"id":"08-371","age":27,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @40w → Live @38w → Live @39w","seq":"211","reason":"REVIEW","genotyped":false},{"id":"08-404","age":26,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @40w → Stillbirth @33w","seq":"112","reason":"REVIEW","genotyped":false},{"id":"08-414","age":23,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @40w → Live @36w","seq":"21","reason":"REVIEW","genotyped":false},{"id":"08-438","age":28,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @41w → Stillbirth @35w → Live @36w","seq":"121","reason":"REVIEW","genotyped":false},{"id":"08-451","age":33,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @26w → Live @37w","seq":"21","reason":"REVIEW","genotyped":false},{"id":"08-467","age":33,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @20w → Live @40w","seq":"31","reason":"REVIEW","genotyped":true},{"id":"08-517","age":37,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Stillbirth @39w → Live @36w","seq":"121","reason":"REVIEW","genotyped":true},{"id":"08-546","age":38,"n_preg":6,"live":5,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @38w → Live @39w → Live @39w → Stillbirth @25w → Live @39w","seq":"111121","reason":"REVIEW","genotyped":false},{"id":"08-720","age":38,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Stillbirth @30w → Live @39w → Live @37w","seq":"1211","reason":"REVIEW","genotyped":true},{"id":"08-736","age":37,"n_preg":5,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @39w → Live @39w → Live @28w → Live @39w","seq":"12111","reason":"REVIEW","genotyped":true},{"id":"09-106","age":30,"n_preg":5,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":1,"events":"Live @36w → Live @40w → Ectopic → Stillbirth @26w → Live @36w","seq":"11521","reason":"REVIEW","genotyped":false},{"id":"09-74","age":34,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @21w","seq":"13","reason":"REVIEW","genotyped":false},{"id":"09-90","age":25,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Non-dev @20w","seq":"16","reason":"REVIEW","genotyped":true},{"id":"09-99","age":39,"n_preg":4,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @37w → Live @34w → Abortion @1w","seq":"1214","reason":"REVIEW","genotyped":false},{"id":"12-06","age":20,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @34w → Stillbirth @24w","seq":"12","reason":"REVIEW","genotyped":false},{"id":"13-112","age":29,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @39w → Live @38w","seq":"121","reason":"REVIEW","genotyped":true},{"id":"13-29","age":19,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Non-dev @22w → Live @39w","seq":"61","reason":"REVIEW","genotyped":false},{"id":"13-47","age":24,"n_preg":2,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @24w → Pregnant @8w","seq":"28","reason":"REVIEW","genotyped":false},{"id":"13-76","age":19,"n_preg":1,"live":0,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @23w","seq":"2","reason":"REVIEW","genotyped":false},{"id":"14-122","age":30,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @26w → Live @34w","seq":"21","reason":"REVIEW","genotyped":false},{"id":"14-123m","age":32,"n_preg":5,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Stillbirth @26w → Live @39w → Live @39w → Abortion @22w","seq":"12114","reason":"REVIEW","genotyped":true},{"id":"14-14","age":35,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Non-dev @28w","seq":"16","reason":"REVIEW","genotyped":true},{"id":"14-15","age":24,"n_preg":3,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Non-dev @20w","seq":"116","reason":"REVIEW","genotyped":true},{"id":"14-55m","age":28,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @23w → Live @37w → Live @39w → Live @40w","seq":"2111","reason":"REVIEW","genotyped":false},{"id":"14-62m","age":32,"n_preg":2,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Stillbirth @35w","seq":"12","reason":"REVIEW","genotyped":false},{"id":"14-70m","age":39,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @39w → Stillbirth @29w","seq":"1112","reason":"REVIEW","genotyped":false},{"id":"15-10","age":24,"n_preg":3,"live":1,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @27w → Live @31w → Pregnant @18w","seq":"218","reason":"REVIEW","genotyped":false},{"id":"15-2m","age":26,"n_preg":6,"live":4,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Stillbirth @20w → Live @29w → Abortion @14w → Live @39w → Live @36w → Live @39w","seq":"214111","reason":"REVIEW","genotyped":false},{"id":"20-06m","age":40,"n_preg":6,"live":5,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @37w → Stillbirth @36w → Live @39w → Live @38w → Live @39w → Live @36w","seq":"121111","reason":"REVIEW","genotyped":false}],"excluded":[{"id":"03-26","age":51,"n_preg":4,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":1,"loss_noGA":0,"ectopic":0,"events":"Live @41w → Live @38w → Live @38w → Stillbirth @38w","seq":"1112","reason":"EXCLUDE_AGE","sub":"Age 51","genotyped":true},{"id":"04-01","age":53,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Abortion @8w → Live @38w","seq":"1141","reason":"EXCLUDE_AGE","sub":"Age 53","genotyped":true},{"id":"04-09","age":50,"n_preg":4,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Live @39w → Live @40w","seq":"1111","reason":"EXCLUDE_AGE","sub":"Age 50","genotyped":true},{"id":"04-12","age":49,"n_preg":2,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live","seq":"11","reason":"EXCLUDE_AGE","sub":"Age 49","genotyped":true},{"id":"04-13","age":58,"n_preg":4,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Live @38w → Live @39w","seq":"1111","reason":"EXCLUDE_AGE","sub":"Age 58","genotyped":false},{"id":"04-18","age":48,"n_preg":3,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Live @41w","seq":"111","reason":"EXCLUDE_AGE","sub":"Age 48","genotyped":true},{"id":"04-22","age":47,"n_preg":1,"live":1,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w","seq":"1","reason":"EXCLUDE_AGE","sub":"Age 47","genotyped":true},{"id":"04-29","age":63,"n_preg":7,"live":5,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live @40w → Live @40w → Abortion @7w → Live @40w → Live @40w → Miscarriage → Live @40w","seq":"1141131","reason":"EXCLUDE_AGE","sub":"Age 63","genotyped":true},{"id":"04-33","age":null,"n_preg":3,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Abortion","seq":"114","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":true},{"id":"04-34","age":49,"n_preg":3,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Live @40w","seq":"111","reason":"EXCLUDE_AGE","sub":"Age 49","genotyped":true},{"id":"04-35","age":null,"n_preg":3,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Abortion → Live","seq":"141","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":true},{"id":"04-37","age":49,"n_preg":4,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Live → Live","seq":"1111","reason":"EXCLUDE_AGE","sub":"Age 49","genotyped":true},{"id":"04-41","age":null,"n_preg":4,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Abortion → Abortion → Live","seq":"1441","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"04-44","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"04-47","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"04-60","age":58,"n_preg":6,"live":4,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Miscarriage @6w → Live @39w → Ectopic @3w → Live @40w → Live @40w → Live @40w","seq":"315111","reason":"EXCLUDE_AGE","sub":"Age 58","genotyped":true},{"id":"05-207","age":68,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Abortion → Live @40w","seq":"1141","reason":"EXCLUDE_AGE","sub":"Age 68","genotyped":true},{"id":"06-01","age":57,"n_preg":3,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @39w → Live @39w","seq":"111","reason":"EXCLUDE_AGE","sub":"Age 57","genotyped":true},{"id":"06-03","age":46,"n_preg":5,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Live @40w → Abortion → Live @40w","seq":"11141","reason":"EXCLUDE_AGE","sub":"Age 46","genotyped":true},{"id":"06-24","age":57,"n_preg":5,"live":5,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Live → Live → Live","seq":"11111","reason":"EXCLUDE_AGE","sub":"Age 57","genotyped":true},{"id":"06-25","age":47,"n_preg":7,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w → Live @40w → Abortion → Live @40w → Abortion → Live @40w → Abortion","seq":"1141414","reason":"EXCLUDE_AGE","sub":"Age 47","genotyped":false},{"id":"06-26","age":51,"n_preg":4,"live":2,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Stillbirth → Live @39w → Abortion → Live @39w","seq":"2141","reason":"EXCLUDE_AGE","sub":"Age 51","genotyped":true},{"id":"06-27","age":50,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Abortion → Live","seq":"1141","reason":"EXCLUDE_AGE","sub":"Age 50","genotyped":false},{"id":"07-21","age":53,"n_preg":3,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @40w → Live @40w","seq":"111","reason":"EXCLUDE_AGE","sub":"Age 53","genotyped":true},{"id":"07-22","age":49,"n_preg":7,"live":3,"loss":2,"loss_lt20":2,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Miscarriage @7w → Miscarriage @7w → Live @38w → Live @38w → Abortion → Abortion","seq":"1331144","reason":"EXCLUDE_AGE","sub":"Age 49","genotyped":false},{"id":"07-33","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"07-46","age":62,"n_preg":6,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Abortion → Live @39w → Abortion → Live @40w → Abortion","seq":"141414","reason":"EXCLUDE_AGE","sub":"Age 62","genotyped":true},{"id":"07-49","age":47,"n_preg":5,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Live → Abortion → Live → Miscarriage → Live","seq":"14131","reason":"EXCLUDE_AGE","sub":"Age 47","genotyped":true},{"id":"07-58","age":50,"n_preg":5,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Abortion → Abortion → Abortion","seq":"11444","reason":"EXCLUDE_AGE","sub":"Age 50","genotyped":true},{"id":"07-65","age":60,"n_preg":5,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @37w → Abortion → Abortion → Abortion","seq":"11444","reason":"EXCLUDE_AGE","sub":"Age 60","genotyped":true},{"id":"07-66","age":46,"n_preg":3,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Live","seq":"111","reason":"EXCLUDE_AGE","sub":"Age 46","genotyped":true},{"id":"07-67","age":46,"n_preg":5,"live":3,"loss":1,"loss_lt20":0,"loss_ge20":0,"loss_noGA":1,"ectopic":0,"events":"Miscarriage → Live → Live → Abortion → Live","seq":"31141","reason":"EXCLUDE_AGE","sub":"Age 46","genotyped":false},{"id":"07-75","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":true},{"id":"07-82","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"07-83","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"07-85","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"07-86","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"07-87","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"07-88","age":null,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"08-188","age":58,"n_preg":5,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Live → Abortion → Live","seq":"11141","reason":"EXCLUDE_AGE","sub":"Age 58","genotyped":false},{"id":"08-27","age":51,"n_preg":3,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @38w → Live @38w","seq":"111","reason":"EXCLUDE_AGE","sub":"Age 51","genotyped":true},{"id":"08-62","age":47,"n_preg":1,"live":1,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live","seq":"1","reason":"EXCLUDE_AGE","sub":"Age 47","genotyped":true},{"id":"08-766","age":null,"n_preg":1,"live":1,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @40w","seq":"1","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"09-11","age":48,"n_preg":4,"live":1,"loss":3,"loss_lt20":3,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @17w → Non-dev @8w → Non-dev @10w → Live @28w","seq":"3661","reason":"EXCLUDE_AGE","sub":"Age 48","genotyped":true},{"id":"09-23","age":54,"n_preg":10,"live":4,"loss":4,"loss_lt20":4,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @23w → Non-dev @9w → Non-dev @6w → Live @39w → Non-dev @6w → Non-dev @5w → Live @39w → Abortion @6w → Abortion @6w → Live @40w","seq":"1661661441","reason":"EXCLUDE_AGE","sub":"Age 54","genotyped":false},{"id":"09-59","age":null,"n_preg":2,"live":1,"loss":1,"loss_lt20":1,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Non-dev @8w → Live @37w","seq":"61","reason":"EXCLUDE_AGE","sub":"Age unknown","genotyped":false},{"id":"13-104","age":50,"n_preg":2,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w","seq":"11","reason":"EXCLUDE_AGE","sub":"Age 50","genotyped":true},{"id":"13-42","age":17,"n_preg":2,"live":0,"loss":2,"loss_lt20":2,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Miscarriage @5w → Miscarriage @6w","seq":"33","reason":"EXCLUDE_AGE","sub":"Age 17","genotyped":false},{"id":"14-121","age":46,"n_preg":6,"live":3,"loss":2,"loss_lt20":2,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Miscarriage @16w → Live @39w → Abortion @16w → Live @39w → Non-dev @9w","seq":"131416","reason":"EXCLUDE_AGE","sub":"Age 46","genotyped":false},{"id":"01-05","age":38,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @42w → Live @41w → Ectopic @8w → Live @40w","seq":"1151","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"03-149","age":45,"n_preg":2,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":2,"events":"Ectopic → Ectopic","seq":"55","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"03-54","age":26,"n_preg":6,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":2,"events":"Abortion @12w → Abortion @8w → Abortion @8w → Ectopic @4w → Abortion @8w → Ectopic @9w","seq":"444545","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"04-61","age":24,"n_preg":3,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @40w → Ectopic @3w → Live @38w","seq":"151","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"06-10","age":40,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @40w → Ectopic → Live @39w → Live @40w","seq":"1511","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"07-70","age":39,"n_preg":6,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":4,"events":"Live @38w → Ectopic @5w → Live @41w → Ectopic @6w → Ectopic @6w → Ectopic @5w","seq":"151555","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"07-71","age":27,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @38w → Live @38w → Ectopic @6w → Live @38w","seq":"1151","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"07-73","age":38,"n_preg":9,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":6,"events":"Live @38w → Live @38w → Ectopic → Ectopic → Ectopic → Ectopic → Live @38w → Ectopic → Ectopic","seq":"115555155","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"08-101","age":36,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @39w → Live @40w → Ectopic → Live","seq":"1151","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"08-133","age":22,"n_preg":2,"live":1,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Ectopic → Live","seq":"51","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"08-176/ Х-00006","age":38,"n_preg":3,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @37w → Ectopic @9w → Live @39w","seq":"151","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"08-340","age":34,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @40w → Live @41w → Ectopic @2w → Live @38w","seq":"1151","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"08-353","age":32,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Ectopic @8w → Live @38w → Live @41w → Live @38w","seq":"5111","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"08-384","age":32,"n_preg":7,"live":5,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live → Live → Live → Live → Abortion → Ectopic → Live @33w","seq":"1111451","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"08-470","age":28,"n_preg":2,"live":1,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Ectopic @4w → Live @39w","seq":"51","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"08-581","age":40,"n_preg":5,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":2,"events":"Live @40w → Live @40w → Ectopic @6w → Live @40w → Ectopic @8w","seq":"11515","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"08-654","age":32,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @39w → Ectopic @8w → Live @40w → Live @39w","seq":"1511","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"08-66","age":31,"n_preg":2,"live":1,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Ectopic → Live","seq":"51","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"08-744","age":32,"n_preg":5,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":2,"events":"Live @40w → Live @39w → Ectopic @8w → Ectopic @4w → Live @39w","seq":"11551","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"09-06","age":34,"n_preg":5,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":2,"events":"Live @40w → Live @40w → Ectopic @3w → Abortion @12w → Ectopic @4w","seq":"11545","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":true},{"id":"14-97","age":25,"n_preg":3,"live":2,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":1,"events":"Live @38w → Live @41w → Ectopic @5w","seq":"115","reason":"EXCLUDE_ECTOPIC","sub":"Ectopic only","genotyped":false},{"id":"07-110","age":33,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @39w → Med-abort @16w → Live @39w","seq":"1171","reason":"EXCLUDE_MEDICAL","sub":"Med-abort only","genotyped":false},{"id":"08-152","age":34,"n_preg":5,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @39w → Live @38w → Med-abort @9w → Live @38w → Live @38w","seq":"11711","reason":"EXCLUDE_MEDICAL","sub":"Med-abort only","genotyped":true},{"id":"08-172","age":27,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @38w → Live @39w → Med-abort → Live @39w","seq":"1171","reason":"EXCLUDE_MEDICAL","sub":"Med-abort only","genotyped":false},{"id":"08-248","age":32,"n_preg":5,"live":4,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Med-abort @26w → Live @38w → Live @39w → Live @38w → Live @37w","seq":"71111","reason":"EXCLUDE_MEDICAL","sub":"Med-abort only","genotyped":false},{"id":"08-704","age":29,"n_preg":4,"live":3,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live → Live → Med-abort → Live","seq":"1171","reason":"EXCLUDE_MEDICAL","sub":"Med-abort only","genotyped":false},{"id":"09-80","age":22,"n_preg":2,"live":1,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Live @36w → Med-abort @15w","seq":"17","reason":"EXCLUDE_MEDICAL","sub":"Med-abort only","genotyped":false},{"id":"06-601","age":34,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"07-104","age":18,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"07-109","age":32,"n_preg":1,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Pregnant","seq":"8","reason":"UNCLASSIFIED","sub":"Unclassified","genotyped":false},{"id":"08-662","age":21,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":true},{"id":"13-49","age":26,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"13-62","age":24,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"13-66","age":23,"n_preg":1,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"Abortion @20w","seq":"4","reason":"UNCLASSIFIED","sub":"Unclassified","genotyped":true},{"id":"14-25","age":28,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-26","age":21,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-28","age":24,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-29","age":27,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-30","age":29,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-32","age":38,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-33","age":25,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-34","age":35,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-35","age":29,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-36","age":27,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false},{"id":"14-37","age":30,"n_preg":0,"live":0,"loss":0,"loss_lt20":0,"loss_ge20":0,"loss_noGA":0,"ectopic":0,"events":"(none)","seq":"","reason":"UNCLASSIFIED","sub":"No pregnancies","genotyped":false}]};
+
+// ===== Expandable panels =====
+function togglePanel(key) {
+    const panel = document.getElementById('panel-' + key);
+    const arrow = document.getElementById('arrow-' + key);
+    const isOpen = panel.classList.contains('open');
+    // Close all first
+    ['gray','review','excluded'].forEach(k => {
+        document.getElementById('panel-' + k).classList.remove('open');
+        document.getElementById('arrow-' + k).classList.remove('open');
+    });
+    if (!isOpen) {
+        panel.classList.add('open');
+        arrow.classList.add('open');
+        renderDetailTable(key);
+    }
+}
+
+function colorizeEvents(evtStr) {
+    return evtStr.replace(/(Live[^→]*)/g, '<span class="evt-live">$1</span>')
+        .replace(/(Stillbirth[^→]*|Miscarriage[^→]*|Non-dev[^→]*)/g, '<span class="evt-loss">$1</span>')
+        .replace(/(Abortion[^→]*|Med-abort[^→]*)/g, '<span class="evt-abort">$1</span>')
+        .replace(/(Ectopic[^→]*|Pregnant[^→]*)/g, '<span class="evt-other">$1</span>');
+}
+
+function renderDetailTable(key) {
+    const data = DETAILS[key];
+    if (!data) return;
+    const tbody = document.querySelector('#dtable-' + key + ' tbody');
+    if (tbody.children.length > 0) return; // already rendered
+    const frag = document.createDocumentFragment();
+    const genoCell = s => s.genotyped ? '<td class="geno-yes" title="In genotype array">&#10003;</td>' : '<td class="geno-no" title="Not genotyped">&#10007;</td>';
+    data.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.dataset.searchable = (s.id + ' ' + s.events + ' ' + (s.sub || '') + (s.genotyped ? ' genotyped' : ' not-genotyped')).toLowerCase();
+        if (key === 'gray') {
+            tr.innerHTML = `<td><strong>${s.id}</strong></td>${genoCell(s)}<td>${s.age ?? '?'}</td><td>${s.n_preg}</td><td>${s.live}</td><td>${s.loss}</td><td>${colorizeEvents(s.events)}</td>`;
+        } else if (key === 'review') {
+            tr.innerHTML = `<td><strong>${s.id}</strong></td>${genoCell(s)}<td>${s.age ?? '?'}</td><td>${s.n_preg}</td><td>${s.live}</td><td>${s.loss}</td><td style="color:#c62828;font-weight:600;">${s.loss_ge20}</td><td>${colorizeEvents(s.events)}</td>`;
+        } else {
+            tr.innerHTML = `<td><strong>${s.id}</strong></td>${genoCell(s)}<td>${s.age ?? '?'}</td><td><span class="sub-tag">${s.sub || s.reason}</span></td><td>${s.n_preg}</td><td>${s.live}</td><td>${s.loss}</td><td>${colorizeEvents(s.events)}</td>`;
+        }
+        frag.appendChild(tr);
+    });
+    tbody.appendChild(frag);
+}
+
+function filterDetail(key, query) {
+    const q = query.toLowerCase().trim();
+    const rows = document.querySelectorAll('#dtable-' + key + ' tbody tr');
+    rows.forEach(tr => {
+        tr.style.display = (!q || tr.dataset.searchable.includes(q)) ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>
