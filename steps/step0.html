@@ -250,10 +250,10 @@
                         <p>4 chips in the <code>208993030xxx</code> series failed entirely. All 24 positions on each chip are affected — the failure is chip-wide.</p>
                         <table class="metric-table">
                             <tr><th>Chip Barcode</th><th>Samples</th><th>Mean F_MISS</th><th>Max F_MISS</th></tr>
-                            <tr class="bad"><td><code>208993030034</code></td><td>25</td><td>0.290</td><td>0.409</td></tr>
-                            <tr class="bad"><td><code>208993030039</code></td><td>25</td><td>0.273</td><td>0.372</td></tr>
-                            <tr class="bad"><td><code>208993030044</code></td><td>25</td><td>0.236</td><td>0.380</td></tr>
-                            <tr class="bad"><td><code>208993030046</code></td><td>24</td><td>0.281</td><td>0.420</td></tr>
+                            <tr class="bad"><td><code>208993030034</code></td><td>24</td><td>0.292</td><td>0.314</td></tr>
+                            <tr class="bad"><td><code>208993030080</code></td><td>24</td><td>0.275</td><td>0.335</td></tr>
+                            <tr class="bad"><td><code>208993030112</code></td><td>25</td><td>0.258</td><td>0.360</td></tr>
+                            <tr class="bad"><td><code>208993030109</code></td><td>26</td><td>0.237</td><td>0.416</td></tr>
                         </table>
                         <div class="info-box">
                             <strong>Step 1 cross-check:</strong> The bulk of Step 1 removals (F_MISS &gt; 0.20) come from these 4 chips.
@@ -261,9 +261,9 @@
                         </div>
 
                         <details id="list-chip-208993030034"><summary>208993030034 — samples</summary><div class="detail-content" id="list-chip-208993030034-body">Loading…</div></details>
-                        <details id="list-chip-208993030039"><summary>208993030039 — samples</summary><div class="detail-content" id="list-chip-208993030039-body">Loading…</div></details>
-                        <details id="list-chip-208993030044"><summary>208993030044 — samples</summary><div class="detail-content" id="list-chip-208993030044-body">Loading…</div></details>
-                        <details id="list-chip-208993030046"><summary>208993030046 — samples</summary><div class="detail-content" id="list-chip-208993030046-body">Loading…</div></details>
+                        <details id="list-chip-208993030080"><summary>208993030080 — samples</summary><div class="detail-content" id="list-chip-208993030080-body">Loading…</div></details>
+                        <details id="list-chip-208993030112"><summary>208993030112 — samples</summary><div class="detail-content" id="list-chip-208993030112-body">Loading…</div></details>
+                        <details id="list-chip-208993030109"><summary>208993030109 — samples</summary><div class="detail-content" id="list-chip-208993030109-body">Loading…</div></details>
 
                         <!-- TODO: chip numbers above are from the investigation dashboard. If exact values differ, update from server data. -->
                     </div>
@@ -620,7 +620,7 @@
         renderList('list-unverified-body', unverified, ['Sample ID', 'Chip', 'Identity Note']);
 
         // === Section 3: Per-chip sample lists ===
-        const badChips = ['208993030034', '208993030039', '208993030044', '208993030046'];
+        const badChips = ['208993030034', '208993030080', '208993030112', '208993030109'];
         badChips.forEach(bc => {
           const samples = ES.filter(s => s.barcode === bc)
             .sort((a,b) => a.iid.localeCompare(b.iid))
