@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Build: 20260421-v-final-scale-connectors-green -->
+<!-- Build: 20260421-native-scale-13-genotyped -->
 <title>chr18 locus — ALSU RPL GWAS</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
@@ -193,16 +193,33 @@ const firthTrace = {
   text: hoverFirth, hovertemplate: '%{text}<extra></extra>',
   xaxis: 'x', yaxis: 'y1', customdata: snps.map(s => s.id),
 };
-// Green dots for genotyped SNPs on ruler (mark only lead SNP as array-genotyped)
-const genotypedSNPs = snps.filter(s => s.id === leadId);
+// Green dots for array-genotyped SNPs on ruler (from PLINK .bim, 13 in window)
+const arrayGenotyped = [
+  {pos:70462475, id:'rs1986841'},
+  {pos:70467093, id:'GSA-rs12373479'},
+  {pos:70468040, id:'rs78666201'},
+  {pos:70468453, id:'GSA-rs7228596'},
+  {pos:70470035, id:'rs7238649'},
+  {pos:70471965, id:'GSA-rs78890685'},
+  {pos:70472408, id:'GSA-rs75626344'},
+  {pos:70474314, id:'rs55958727'},
+  {pos:70475478, id:'rs8093705'},
+  {pos:70486384, id:'rs11663206'},
+  {pos:70496705, id:'rs12607439'},
+  {pos:70497538, id:'rs17819738'},
+  {pos:70500037, id:'rs17241630'},
+];
 const genotypedTrace = {
-  x: genotypedSNPs.map(s => s.pos),
-  y: genotypedSNPs.map(s => 0), // on ruler at y=0 in yaxis0
-  mode: 'markers', type: 'scatter', name: 'Array Genotyped',
-  marker: { size: 8, color: '#1b5e20', symbol: 'circle', 
-            opacity: 0.9, line:{width:1.5, color:'#0d3d0d'} },
-  text: genotypedSNPs.map(s => `<b>${s.id}</b><br><b>Array Genotyped</b><br>chr18:${s.pos.toLocaleString()}`),
-  hovertemplate: '%{text}<extra></extra>',
+  x: arrayGenotyped.map(s => s.pos),
+  y: arrayGenotyped.map(() => -0.55), // below ruler band
+  mode: 'markers+text', type: 'scatter', name: 'Array Genotyped',
+  marker: { size: 9, color: '#2e7d32', symbol: 'circle', 
+            opacity: 0.95, line:{width:1.5, color:'#0d3d0d'} },
+  text: arrayGenotyped.map(s => s.id.replace(/^GSA-/, '')),
+  textposition: 'bottom center',
+  textfont: { size: 8, color:'#1b5e20', family:'Consolas,monospace' },
+  hovertext: arrayGenotyped.map(s => `<b>${s.id}</b><br>Array Genotyped<br>chr18:${s.pos.toLocaleString()}`),
+  hovertemplate: '%{hovertext}<extra></extra>',
   xaxis: 'x', yaxis: 'y0', showlegend: true,
 };
 
@@ -231,36 +248,9 @@ const dnaBar = {
   fillcolor:'rgba(200,200,200,0.2)', line:{color:'#999', width:1}
 };
 
-// Major genomic coordinate ticks and scale labels
-const majorTickSpacing = 10000;
-const firstMajorTick = Math.ceil(x0 / majorTickSpacing) * majorTickSpacing;
-const majorTicks = [];
-for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
-  // Red tick marks
-  majorTicks.push({
-    type:'line', xref:'x', yref:'y0',
-    x0:pos, x1:pos, y0:-0.6, y1:0.4,
-    line:{ color:'#d32f2f', width:2.5 }
-  });
-  // Scale label as text shape (more reliable than annotations)
-  majorTicks.push({
-    type:'rect', xref:'x', yref:'paper',
-    x0: pos-2500, x1: pos+2500, y0: 0.465, y1: 0.51,
-    fillcolor:'rgba(255,255,255,0.98)', 
-    line:{ color:'#d32f2f', width:2 }
-  });
-}
-
-// Add scale numbers as annotations (positioned absolutely)
+// Scale rendered via native Plotly xaxis ticks (see layout.xaxis below)
+const majorTicks = []; // no custom shapes — use axis tick marks
 const scaleLabels = [];
-for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
-  scaleLabels.push({
-    x:pos, y:0.488, xref:'x', yref:'paper',
-    text: pos.toLocaleString(), showarrow:false,
-    font:{size:11, color:'#111', family:'Consolas,monospace', weight:'bold'}, 
-    xanchor:'center', yanchor:'middle'
-  });
-}
 
 // Connector lines from heatmap rsID labels (categorical, evenly-spaced) to ruler ticks (genomic position)
 // We draw these AFTER computing the heatmap order (defined later); placeholder built below ldOrder definition
@@ -275,8 +265,8 @@ const connectorLines = ldOrderForConn.map((o, i) => {
   if (!snp) return null;
   return {
     type:'line', xref:'x', yref:'paper',
-    x0: labelGenomicX, y0: 0.42, // top of rotated rsid labels (just above heatmap at 0.32)
-    x1: snp.pos,       y1: 0.51, // bottom edge of ruler ticks (ruler band 0.485-0.535)
+    x0: labelGenomicX, y0: 0.40, // top of rotated rsid labels (above heatmap)
+    x1: snp.pos,       y1: 0.48, // bottom of ruler band
     line:{ color: r2Color(snp.r2_lead), width: 1, dash:'dot' },
     layer:'above'
   };
@@ -405,12 +395,14 @@ const layout = {
   legend: { orientation:'h', x:0, y:1.04, bgcolor:'rgba(0,0,0,0)', font:{size:11} },
   xaxis:  { domain:[0,1], range:[x0, x1],
             showgrid:true, gridcolor:'#eaeef2', zeroline:false,
-            showticklabels:false, ticks:'',
-            anchor:'y2' },
+            showticklabels:true, ticks:'outside', ticklen:6,
+            tickformat:',d', tickfont:{size:11, family:'Consolas,monospace', color:'#111'},
+            nticks:8, tickcolor:'#444',
+            anchor:'y', side:'bottom' },
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
             tickangle:45, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             ticks:'outside', anchor:'y3', side:'top', ticklen:3 },
-  yaxis0: { domain:[0.485, 0.535], range:[-1.2, 0.6],
+  yaxis0: { domain:[0.44, 0.53], range:[-2.0, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
   yaxis:  { domain:[0.58, 0.84], title:'−log₁₀ P', zeroline:false,
             range:[4.0, 8.0], gridcolor:'#eaeef2', ticks:'outside' },
