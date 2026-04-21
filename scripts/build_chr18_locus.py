@@ -271,10 +271,10 @@ const firthTrace = {
   x: snps.map(s => s.pos), y: snps.map(s => s.logp),
   mode: 'markers', type: 'scatter', name: 'Firth',
   marker: {
-    size: snps.map(s => s.id === leadId ? 18 : 11),
+    size: snps.map(s => s.id === leadId ? 9 : 5),
     color: snps.map(s => r2Color(s.r2_lead)),
     symbol: snps.map(s => s.id === leadId ? 'diamond' : 'circle'),
-    line: { width: snps.map(s => s.id === leadId ? 2 : 1),
+    line: { width: snps.map(s => s.id === leadId ? 1.5 : 0.5),
             color: snps.map(s => s.id === leadId ? '#111' : '#ffffff') },
   },
   text: hoverFirth, hovertemplate: '%{text}<extra></extra>',
@@ -285,7 +285,7 @@ const saigeTrace = {
   x: saigeSnps.map(s => s.pos),
   y: saigeSnps.map(s => -Math.log10(s.saige_p)),
   mode: 'markers', type: 'scatter', name: 'SAIGE',
-  marker: { size: 7, color: '#666', symbol: 'triangle-down-open',
+  marker: { size: 4, color: '#666', symbol: 'triangle-down-open',
             opacity: 0.55, line:{width:1, color:'#666'} },
   text: saigeSnps.map(s => `${s.id}<br>SAIGE P = ${fmtP(s.saige_p)}`),
   hovertemplate: '%{text}<extra></extra>',
@@ -333,8 +333,8 @@ const connectorLines = ldOrderForConn.map((o, i) => {
   if (!snp) return null;
   return {
     type:'line', xref:'x', yref:'paper',
-    x0: labelGenomicX, y0: 0.36,
-    x1: snp.pos,       y1: 0.49,
+    x0: labelGenomicX, y0: 0.45,
+    x1: snp.pos,       y1: 0.50,
     line:{ color: r2Color(snp.r2_lead), width: 1, dash:'dot' },
     layer:'above'
   };
@@ -474,7 +474,7 @@ const layout = {
   yaxis0: { domain:[0.46, 0.50], range:[-0.6, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
   yaxis:  { domain:[0.55, 0.82], title:'−log₁₀ P', zeroline:false,
-            gridcolor:'#eaeef2', ticks:'outside' },
+            range:[4.0, 8.0], gridcolor:'#eaeef2', ticks:'outside' },
   yaxis2: { domain:[0.86, 1.00], range:[-0.4, nLanes-0.2],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
   yaxis3: { domain:[0.00, 0.36], autorange:'reversed',
