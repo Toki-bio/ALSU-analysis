@@ -314,14 +314,15 @@ for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
   majorTicks.push({
     type:'line', xref:'x', yref:'y0',
     x0:pos, x1:pos, y0:-0.35, y1:0.15,
-    line:{ color:'#d32f2f', width:2.5 }
+    line:{ color:'#d32f2f', width:3 }
   });
+  // Scale labels using paper coords to avoid domain clipping
   majorTickLabels.push({
-    x:pos, y:-0.50, xref:'x', yref:'y0',
-    text: pos.toLocaleString(), showarrow:false,
-    font:{size:12, color:'#111', family:'Consolas,monospace', weight:'bold'}, 
-    xanchor:'center', yanchor:'middle',
-    bgcolor:'rgba(255,255,255,0.9)', borderpad:4
+    x:pos, y:0.47, xref:'x', yref:'paper',
+    text: '<b>'+pos.toLocaleString()+'</b>', showarrow:false,
+    font:{size:13, color:'#111', family:'Consolas,monospace'}, 
+    xanchor:'center', yanchor:'top',
+    bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#d32f2f', borderwidth:1, borderpad:6
   });
 }
 
