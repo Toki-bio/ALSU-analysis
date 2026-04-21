@@ -333,8 +333,8 @@ const connectorLines = ldOrderForConn.map((o, i) => {
   if (!snp) return null;
   return {
     type:'line', xref:'x', yref:'paper',
-    x0: labelGenomicX, y0: 0.45,
-    x1: snp.pos,       y1: 0.50,
+    x0: labelGenomicX, y0: 0.42,
+    x1: snp.pos,       y1: 0.51,
     line:{ color: r2Color(snp.r2_lead), width: 1, dash:'dot' },
     layer:'above'
   };
@@ -466,13 +466,13 @@ const layout = {
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
             tickangle:45, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             ticks:'outside', anchor:'y3', side:'top', ticklen:3 },
-  yaxis0: { domain:[0.46, 0.50], range:[-0.6, 0.6],
+  yaxis0: { domain:[0.485, 0.535], range:[-1.2, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis:  { domain:[0.55, 0.82], title:'−log₁₀ P', zeroline:false,
+  yaxis:  { domain:[0.58, 0.84], title:'−log₁₀ P', zeroline:false,
             range:[4.0, 8.0], gridcolor:'#eaeef2', ticks:'outside' },
-  yaxis2: { domain:[0.86, 1.00], range:[-0.4, nLanes-0.2],
+  yaxis2: { domain:[0.88, 1.00], range:[-0.4, nLanes-0.2],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis3: { domain:[0.00, 0.36], autorange:'reversed',
+  yaxis3: { domain:[0.00, 0.32], autorange:'reversed',
             showticklabels:true, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             zeroline:false, showgrid:false, ticks:'outside' },
   shapes: shapes,
