@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Build: 20260421-fix-invalid-yaxis0-to-yaxis4 -->
+<!-- Build: 20260421-z-connectors-staggered-labels -->
 <title>chr18 locus — ALSU RPL GWAS</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
@@ -211,17 +211,26 @@ const arrayGenotyped = [
 ];
 const genotypedTrace = {
   x: arrayGenotyped.map(s => s.pos),
-  y: arrayGenotyped.map(() => -0.55), // below ruler band
-  mode: 'markers+text', type: 'scatter', name: 'Array Genotyped',
+  y: arrayGenotyped.map(() => -0.15), // dots on ruler line
+  mode: 'markers', type: 'scatter', name: 'Array Genotyped',
   marker: { size: 9, color: '#2e7d32', symbol: 'circle', 
             opacity: 0.95, line:{width:1.5, color:'#0d3d0d'} },
-  text: arrayGenotyped.map(s => s.id.replace(/^GSA-/, '')),
-  textposition: 'bottom center',
-  textfont: { size: 8, color:'#1b5e20', family:'Consolas,monospace' },
   hovertext: arrayGenotyped.map(s => `<b>${s.id}</b><br>Array Genotyped<br>chr18:${s.pos.toLocaleString()}`),
   hovertemplate: '%{hovertext}<extra></extra>',
   xaxis: 'x', yaxis: 'y4', showlegend: true,
 };
+// Stagger rsID labels across 3 rows (zigzag) to prevent overlap for clustered SNPs
+const genotypedLabels = arrayGenotyped.map((s, i) => ({
+  x: s.pos,
+  y: -0.55 - (i % 3) * 0.45, // rows at y = -0.55, -1.00, -1.45
+  xref: 'x', yref: 'y4',
+  text: s.id.replace(/^GSA-/, ''),
+  showarrow: true, arrowhead: 0, arrowwidth: 0.8, arrowcolor: '#2e7d32',
+  ax: 0, ay: 0, standoff: 0,
+  font: { size: 9, color: '#1b5e20', family: 'Consolas,monospace', weight:'bold' },
+  xanchor: 'center', yanchor: 'top',
+  bgcolor: 'rgba(255,255,255,0.85)', borderpad: 1,
+}));
 
 const saigeSnps = snps.filter(s => typeof s.saige_p === 'number');
 const saigeTrace = {
@@ -263,14 +272,26 @@ const connectorLines = ldOrderForConn.map((o, i) => {
   const labelGenomicX = x0 + ((i + 0.5) / nldConn) * (x1 - x0);
   const snp = snps.find(s => s.id === o.v);
   if (!snp) return null;
-  return {
-    type:'line', xref:'x', yref:'paper',
-    x0: labelGenomicX, y0: 0.40, // top of rotated rsid labels (above heatmap)
-    x1: snp.pos,       y1: 0.48, // bottom of ruler band
-    line:{ color: r2Color(snp.r2_lead), width: 1, dash:'dot' },
-    layer:'above'
-  };
-}).filter(Boolean);
+  // Z-shaped connector: vertical stub from label up, horizontal across, vertical stub up to SNP
+  const yLabelTop = 0.33;    // right at top of heatmap rsID labels (no gap)
+  const yMid      = 0.40;    // horizontal connector row
+  const ySnpBottom = 0.48;   // just below ruler band
+  const color = r2Color(snp.r2_lead);
+  return [
+    // stub 1: from label position straight up
+    { type:'line', xref:'x', yref:'paper',
+      x0: labelGenomicX, y0: yLabelTop, x1: labelGenomicX, y1: yMid,
+      line:{ color: color, width: 1, dash:'dot' }, layer:'above' },
+    // horizontal connector
+    { type:'line', xref:'x', yref:'paper',
+      x0: labelGenomicX, y0: yMid, x1: snp.pos, y1: yMid,
+      line:{ color: color, width: 1, dash:'dot' }, layer:'above' },
+    // stub 2: from horizontal up to SNP position on ruler
+    { type:'line', xref:'x', yref:'paper',
+      x0: snp.pos, y0: yMid, x1: snp.pos, y1: ySnpBottom,
+      line:{ color: color, width: 1, dash:'dot' }, layer:'above' },
+  ];
+}).filter(Boolean).flat();
 
 const shapes = [
   { type:'line', xref:'x', yref:'y1', x0:x0, x1:x1,
@@ -402,7 +423,7 @@ const layout = {
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
             tickangle:45, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             ticks:'outside', anchor:'y3', side:'top', ticklen:3 },
-  yaxis4: { domain:[0.44, 0.55], range:[-2.0, 0.6],
+  yaxis4: { domain:[0.38, 0.56], range:[-2.5, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
   yaxis:  { domain:[0.58, 0.84], title:'−log₁₀ P', zeroline:false,
             range:[4.0, 8.0], gridcolor:'#eaeef2', ticks:'outside' },
@@ -414,6 +435,7 @@ const layout = {
   shapes: shapes,
   annotations: [
     ...scaleLabels,
+    ...genotypedLabels,
     ...geneAnnots, leadLabel,
     { x: x0, y: nLanes-0.5, xref:'x', yref:'y2', text:'genes',
       showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
