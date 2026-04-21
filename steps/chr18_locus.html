@@ -38,7 +38,7 @@ tr.selected td { background:#ddf4ff !important; }
 .r2-low { color: #656d76; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
-#figure { width: 100%; height: 720px; }
+#figure { width: 100%; height: 950px; }
 .note { color: var(--muted); font-size: 12px; }
 .legend-row { display: flex; gap: 14px; align-items: center; margin-top:6px;
               font-size:12px; color: var(--muted); flex-wrap: wrap; }
@@ -258,34 +258,37 @@ genes.forEach(g => {
   });
 });
 
-// Panel 3: rotated LD triangle (LocusZoom-style)
+// Panel 3: LD heatmap matrix (upper triangle), rsIDs as tick labels
 const ldOrder = ldVars.map((v,i)=>({v,i,pos:(snps.find(s=>s.id===v)||{}).pos||0}))
                       .sort((a,b)=>a.pos-b.pos);
 const nld = ldOrder.length;
-const ldX = [], ldY = [], ldZ = [], ldTxt = [];
+const ldLabels = ldOrder.map(o => o.v);
+// Build upper-triangle z-matrix; lower half = null (transparent)
+const Z = [];
+const T = [];
 for (let i=0;i<nld;i++){
-  for (let j=i+1;j<nld;j++){
-    const a = ldOrder[i], b = ldOrder[j];
-    const r2 = ldMat[a.i][b.i];
-    ldX.push((a.pos + b.pos)/2);
-    ldY.push(-(j-i));
-    ldZ.push(r2);
-    ldTxt.push(`${a.v} ↔ ${b.v}<br>r² = ${r2.toFixed(3)}`);
+  const row = [], trow = [];
+  for (let j=0;j<nld;j++){
+    if (j >= i) {
+      const r2 = ldMat[ldOrder[i].i][ldOrder[j].i];
+      row.push(r2);
+      trow.push(`${ldLabels[i]} ↔ ${ldLabels[j]}<br>r² = ${r2.toFixed(3)}`);
+    } else {
+      row.push(null); trow.push('');
+    }
   }
+  Z.push(row); T.push(trow);
 }
 const ldTrace = {
-  x: ldX, y: ldY, mode: 'markers', type: 'scatter',
-  marker: {
-    symbol: 'square', size: 9,
-    color: ldZ,
-    colorscale: [[0,'#f7fbff'],[0.2,'#c6dbef'],[0.4,'#6baed6'],[0.6,'#fdae61'],[0.8,'#f46d43'],[1,'#a50026']],
-    cmin: 0, cmax: 1,
-    colorbar: { title:'r²', len: 0.35, y: 0.17, x:1.02, thickness:10,
-                tickfont:{size:10}, outlinewidth:0 },
-    line: { width: 0 },
-  },
-  text: ldTxt, hovertemplate: '%{text}<extra></extra>',
-  xaxis: 'x', yaxis: 'y3', showlegend: false, name:'LD',
+  z: Z, x: ldLabels, y: ldLabels, type: 'heatmap',
+  colorscale: [[0,'#f7fbff'],[0.2,'#c6dbef'],[0.4,'#6baed6'],[0.6,'#fdae61'],[0.8,'#f46d43'],[1,'#a50026']],
+  zmin: 0, zmax: 1,
+  colorbar: { title:'r²', len: 0.35, y: 0.17, x:1.02, thickness:10,
+              tickfont:{size:10}, outlinewidth:0 },
+  text: T, hovertemplate: '%{text}<extra></extra>',
+  hoverongaps: false,
+  xgap: 0.5, ygap: 0.5,
+  xaxis: 'x2', yaxis: 'y3', showlegend: false, name:'LD',
 };
 
 const layout = {
@@ -296,13 +299,18 @@ const layout = {
   legend: { orientation:'h', x:0, y:1.04, bgcolor:'rgba(0,0,0,0)', font:{size:11} },
   xaxis:  { domain:[0,1], range:[x0, x1],
             showgrid:true, gridcolor:'#eaeef2', zeroline:false,
-            tickformat:',', title:'chr18 position (GRCh38)', ticks:'outside' },
-  yaxis:  { domain:[0.58, 1.0], title:'−log₁₀ P', zeroline:false,
+            tickformat:',', title:'chr18 position (GRCh38)', ticks:'outside',
+            anchor:'y2' },
+  xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
+            tickangle:-60, tickfont:{size:9, family:'Consolas, Menlo, monospace'},
+            ticks:'outside', anchor:'y3' },
+  yaxis:  { domain:[0.62, 1.0], title:'−log₁₀ P', zeroline:false,
             gridcolor:'#eaeef2', ticks:'outside' },
-  yaxis2: { domain:[0.42, 0.55], range:[-0.6, nLanes-0.2],
+  yaxis2: { domain:[0.50, 0.60], range:[-0.6, nLanes-0.2],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis3: { domain:[0.00, 0.40], range:[-(nld-0.5), 0.5],
-            showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
+  yaxis3: { domain:[0.00, 0.46], autorange:'reversed',
+            showticklabels:true, tickfont:{size:9, family:'Consolas, Menlo, monospace'},
+            zeroline:false, showgrid:false, ticks:'outside' },
   shapes: shapes,
   annotations: [
     ...geneAnnots, leadLabel,
@@ -311,8 +319,6 @@ const layout = {
     { x: x1, y: -Math.log10(1e-5), xref:'x', yref:'y1', text:'suggestive 10⁻⁵',
       showarrow:false, font:{size:10, color:'#f57c00'}, xanchor:'right', yanchor:'bottom' },
     { x: x0 + winSpan*0.01, y: nLanes-0.5, xref:'x', yref:'y2', text:'genes',
-      showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
-    { x: x0 + winSpan*0.01, y: -0.5, xref:'x', yref:'y3', text:'pairwise r² (our cohort)',
       showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
   ],
   hovermode: 'closest',
