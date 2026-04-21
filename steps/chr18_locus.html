@@ -217,8 +217,8 @@ const dnaBar = {
   fillcolor:'rgba(200,200,200,0.2)', line:{color:'#999', width:1}
 };
 
-// Major genomic coordinate ticks (every 5 kb)
-const majorTickSpacing = 5000;
+// Major genomic coordinate ticks (every 10 kb to avoid label collisions)
+const majorTickSpacing = 10000;
 const firstMajorTick = Math.ceil(x0 / majorTickSpacing) * majorTickSpacing;
 const majorTicks = [];
 const majorTickLabels = [];
@@ -230,8 +230,8 @@ for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
   });
   majorTickLabels.push({
     x:pos, y:-0.50, xref:'x', yref:'y0',
-    text: (pos/1e6).toFixed(2), showarrow:false,
-    font:{size:9, color:'#666'}, xanchor:'center'
+    text: pos.toLocaleString(), showarrow:false,
+    font:{size:10, color:'#444'}, xanchor:'center'
   });
 }
 
@@ -293,18 +293,12 @@ const geneTraces = [];
 const geneAnnots = [];
 genes.forEach(g => {
   const lane = laneByGene[g.id];
-  // Build informative display name. For unnamed genes, use ENSG ID + biotype hint
+  // Display name: real external name if any, otherwise full Ensembl ID with biotype
   let displayName;
   if (g.external_name) {
     displayName = g.external_name;
   } else {
-    // Unnamed genes — show ENSG with biotype suffix for clarity
-    const ensg = g.id.replace('ENSG00000', 'ENSG.');
-    const typeAbbr = g.biotype === 'lncRNA' ? 'lncRNA'
-                   : g.biotype === 'TEC' ? 'TEC'
-                   : g.biotype === 'processed_pseudogene' ? 'pseudo'
-                   : g.biotype;
-    displayName = `${ensg} (${typeAbbr})`;
+    displayName = `${g.id} (${g.biotype})`;
   }
   const btype = g.biotype;
   const isPC = btype === 'protein_coding';
