@@ -292,18 +292,43 @@ const saigeTrace = {
   xaxis: 'x', yaxis: 'y1',
 };
 
-// Add vertical tick marks at SNP positions (ruler)
+// Add vertical tick marks at SNP positions (ruler) positioned on DNA bar
 const rulerTicks = snps.map(s => ({
   type:'line', xref:'x', yref:'y0', x0:s.pos, x1:s.pos,
-  y0:-0.4, y1:0.4, line:{ color: r2Color(s.r2_lead), width: s.id === leadId ? 2.5 : 1.5 }
+  y0:-0.15, y1:0.15, line:{ color: r2Color(s.r2_lead), width: s.id === leadId ? 2 : 1.2 }
 }));
 
-// Connecting lines from ruler to heatmap rsID labels at top
+// DNA bar visualization
+const dnaBar = {
+  type:'rect', xref:'x', yref:'y0',
+  x0:x0, x1:x1, y0:-0.05, y1:0.05,
+  fillcolor:'rgba(200,200,200,0.2)', line:{color:'#999', width:1}
+};
+
+// Major genomic coordinate ticks (every 5 kb)
+const majorTickSpacing = 5000;
+const firstMajorTick = Math.ceil(x0 / majorTickSpacing) * majorTickSpacing;
+const majorTicks = [];
+const majorTickLabels = [];
+for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
+  majorTicks.push({
+    type:'line', xref:'x', yref:'y0',
+    x0:pos, x1:pos, y0:-0.35, y1:-0.15,
+    line:{ color:'#666', width:1.5 }
+  });
+  majorTickLabels.push({
+    x:pos, y:-0.50, xref:'x', yref:'y0',
+    text: (pos/1e6).toFixed(2), showarrow:false,
+    font:{size:9, color:'#666'}, xanchor:'center'
+  });
+}
+
+// Connector lines from heatmap rsID labels to ruler SNP ticks
 const connectorLines = snps.map(s => ({
   type:'line', xref:'x', yref:'paper',
   x0:s.pos, x1:s.pos,
-  y0:0.64, y1:0.46, // From bottom of ruler to top of heatmap
-  line:{ color:'rgba(100,100,100,0.15)', width:0.8, dash:'solid' },
+  y0:0.44, y1:0.40, // From top of heatmap to ruler
+  line:{ color:'rgba(150,150,150,0.1)', width:0.5 },
   layer:'below'
 }));
 
@@ -314,6 +339,8 @@ const shapes = [
   { type:'line', xref:'x', yref:'y1', x0:x0, x1:x1,
     y0:-Math.log10(1e-5), y1:-Math.log10(1e-5),
     line:{ color:'#f57c00', width:1, dash:'dot' } },
+  dnaBar,
+  ...majorTicks,
   ...rulerTicks,
   ...connectorLines,
 ];
@@ -417,26 +444,29 @@ const layout = {
             tickformat:',', title:'chr18 position (GRCh38)', ticks:'outside',
             anchor:'y2' },
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
-            tickangle:0, tickfont:{size:8, family:'Consolas, Menlo, monospace'},
-            ticks:'outside', anchor:'y3', side:'top' },
-  yaxis0: { domain:[0.62, 0.66], range:[-1, 1],
+            tickangle:45, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
+            ticks:'outside', anchor:'y3', side:'top', ticklen:3 },
+  yaxis0: { domain:[0.40, 0.50], range:[-0.6, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis:  { domain:[0.70, 1.0], title:'−log₁₀ P', zeroline:false,
+  yaxis:  { domain:[0.62, 1.0], title:'−log₁₀ P', zeroline:false,
             gridcolor:'#eaeef2', ticks:'outside' },
-  yaxis2: { domain:[0.50, 0.60], range:[-0.6, nLanes-0.2],
+  yaxis2: { domain:[0.51, 0.61], range:[-0.6, nLanes-0.2],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis3: { domain:[0.00, 0.44], autorange:'reversed',
+  yaxis3: { domain:[0.00, 0.38], autorange:'reversed',
             showticklabels:true, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             zeroline:false, showgrid:false, ticks:'outside' },
   shapes: shapes,
   annotations: [
+    ...majorTickLabels,
     ...geneAnnots, leadLabel,
+    { x: x0, y: nLanes-0.5, xref:'x', yref:'y2', text:'genes',
+      showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
+    { x: x0 + (x1-x0)*0.01, y: -0.50, xref:'x', yref:'y0', text:'Mb',
+      showarrow:false, font:{size:9, color:'#999'}, xanchor:'left' },
     { x: x1, y: -Math.log10(5e-8), xref:'x', yref:'y1', text:'GWS 5×10⁻⁸',
       showarrow:false, font:{size:10, color:'#d32f2f'}, xanchor:'right', yanchor:'bottom' },
     { x: x1, y: -Math.log10(1e-5), xref:'x', yref:'y1', text:'suggestive 10⁻⁵',
       showarrow:false, font:{size:10, color:'#f57c00'}, xanchor:'right', yanchor:'bottom' },
-    { x: x0 + winSpan*0.01, y: nLanes-0.5, xref:'x', yref:'y2', text:'genes',
-      showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
   ],
   hovermode: 'closest',
 };
