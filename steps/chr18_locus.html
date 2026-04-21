@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Build: 20260421-cache-v99-force-reload -->
+<!-- Build: 20260421-ruler-visible -->
 <title>chr18 locus — ALSU RPL GWAS</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
@@ -226,13 +226,15 @@ const majorTickLabels = [];
 for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
   majorTicks.push({
     type:'line', xref:'x', yref:'y0',
-    x0:pos, x1:pos, y0:-0.35, y1:-0.15,
-    line:{ color:'#666', width:1.5 }
+    x0:pos, x1:pos, y0:-0.35, y1:0.15,
+    line:{ color:'#d32f2f', width:2.5 }
   });
   majorTickLabels.push({
     x:pos, y:-0.50, xref:'x', yref:'y0',
     text: pos.toLocaleString(), showarrow:false,
-    font:{size:10, color:'#444'}, xanchor:'center'
+    font:{size:12, color:'#111', family:'Consolas,monospace', weight:'bold'}, 
+    xanchor:'center', yanchor:'middle',
+    bgcolor:'rgba(255,255,255,0.9)', borderpad:4
   });
 }
 
