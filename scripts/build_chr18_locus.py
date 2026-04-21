@@ -266,18 +266,7 @@ const hoverFirth = snps.map(s =>
   `SAIGE P = ${fmtP(s.saige_p)}<br>` +
   `r² to lead = ${s.r2_lead==null ? '—' : fmtF(s.r2_lead,3)}`
 );
-// Panel 0: Genomic coordinate ruler with rsID markers
-const coordRuler = {
-  x: snps.map(s => s.pos), y: snps.map(() => 0), mode:'markers',
-  marker: { size: 8, color: snps.map(s => r2Color(s.r2_lead)), 
-            line: { width: snps.map(s => s.id === leadId ? 2 : 1), 
-                    color: snps.map(s => s.id === leadId ? '#111' : '#fff') } },
-  text: snps.map(s => `<b>${s.id}</b><br>chr18:${s.pos.toLocaleString()}`),
-  hovertemplate: '%{text}<extra></extra>',
-  xaxis: 'x', yaxis: 'y0',
-  customdata: snps.map(s => s.id),
-  name: 'SNPs', showlegend: false,
-};
+// No separate coordRuler trace — using shapes for vertical ticks instead
 const firthTrace = {
   x: snps.map(s => s.pos), y: snps.map(s => s.logp),
   mode: 'markers', type: 'scatter', name: 'Firth',
@@ -303,6 +292,21 @@ const saigeTrace = {
   xaxis: 'x', yaxis: 'y1',
 };
 
+// Add vertical tick marks at SNP positions (ruler)
+const rulerTicks = snps.map(s => ({
+  type:'line', xref:'x', yref:'y0', x0:s.pos, x1:s.pos,
+  y0:-0.4, y1:0.4, line:{ color: r2Color(s.r2_lead), width: s.id === leadId ? 2.5 : 1.5 }
+}));
+
+// Connecting lines from ruler to heatmap rsID labels at top
+const connectorLines = snps.map(s => ({
+  type:'line', xref:'x', yref:'paper',
+  x0:s.pos, x1:s.pos,
+  y0:0.64, y1:0.46, // From bottom of ruler to top of heatmap
+  line:{ color:'rgba(100,100,100,0.15)', width:0.8, dash:'solid' },
+  layer:'below'
+}));
+
 const shapes = [
   { type:'line', xref:'x', yref:'y1', x0:x0, x1:x1,
     y0:-Math.log10(5e-8), y1:-Math.log10(5e-8),
@@ -310,6 +314,8 @@ const shapes = [
   { type:'line', xref:'x', yref:'y1', x0:x0, x1:x1,
     y0:-Math.log10(1e-5), y1:-Math.log10(1e-5),
     line:{ color:'#f57c00', width:1, dash:'dot' } },
+  ...rulerTicks,
+  ...connectorLines,
 ];
 
 const leadLabel = {
@@ -411,29 +417,20 @@ const layout = {
             tickformat:',', title:'chr18 position (GRCh38)', ticks:'outside',
             anchor:'y2' },
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
-            tickangle:-60, tickfont:{size:9, family:'Consolas, Menlo, monospace'},
-            ticks:'outside', anchor:'y3' },
-  yaxis0: { domain:[0.62, 0.68], range:[-1, 1],
+            tickangle:0, tickfont:{size:8, family:'Consolas, Menlo, monospace'},
+            ticks:'outside', anchor:'y3', side:'top' },
+  yaxis0: { domain:[0.62, 0.66], range:[-1, 1],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
   yaxis:  { domain:[0.70, 1.0], title:'−log₁₀ P', zeroline:false,
             gridcolor:'#eaeef2', ticks:'outside' },
   yaxis2: { domain:[0.50, 0.60], range:[-0.6, nLanes-0.2],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis3: { domain:[0.00, 0.46], autorange:'reversed',
-            showticklabels:true, tickfont:{size:9, family:'Consolas, Menlo, monospace'},
+  yaxis3: { domain:[0.00, 0.44], autorange:'reversed',
+            showticklabels:true, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             zeroline:false, showgrid:false, ticks:'outside' },
   shapes: shapes,
   annotations: [
     ...geneAnnots, leadLabel,
-    // SNP coordinate labels
-    ...snps.map(s => ({
-      x: s.pos, y: 0.75, xref:'x', yref:'y0',
-      text: s.id, showarrow: false,
-      font: { size: 8, color: r2Color(s.r2_lead), family: 'Consolas, Menlo, monospace' },
-      xanchor: 'center', yanchor: 'bottom',
-    })),
-    { x: x0, y: 0, xref:'x', yref:'y0', text:'SNP map:', showarrow:false, 
-      font:{size:9, color:'#999'}, xanchor:'right' },
     { x: x1, y: -Math.log10(5e-8), xref:'x', yref:'y1', text:'GWS 5×10⁻⁸',
       showarrow:false, font:{size:10, color:'#d32f2f'}, xanchor:'right', yanchor:'bottom' },
     { x: x1, y: -Math.log10(1e-5), xref:'x', yref:'y1', text:'suggestive 10⁻⁵',
@@ -450,7 +447,7 @@ const config = {
   toImageButtonOptions: { format:'png', filename:'chr18_locus', scale:2 },
 };
 
-Plotly.newPlot('figure', [coordRuler, firthTrace, saigeTrace, ...geneTraces, ldTrace], layout, config);
+Plotly.newPlot('figure', [firthTrace, saigeTrace, ...geneTraces, ldTrace], layout, config);
 
 // Table
 const tbody = document.querySelector('#snptable tbody');
