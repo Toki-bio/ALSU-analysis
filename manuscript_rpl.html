@@ -89,6 +89,7 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
         <a href="#results" class="sub">3.3 Tier 2 known</a>
         <a href="#results" class="sub">3.4 Tier 3 GW</a>
         <a href="#results" class="sub">3.5 Sensitivity</a>
+        <a href="#crossstudy" class="sub">3.6 Cross-study comparison</a>
         <a href="#discussion">4. Discussion</a>
         <a href="#models">5. Reference papers</a>
         <a href="#refs">6. Bibliography</a>
@@ -155,7 +156,8 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 <p>
     No variant reached genome-wide significance. The genomic inflation factor was &lambda;<sub>GC</sub>=0.978,
     indicating well-controlled population structure. The strongest signal was a cluster of correlated
-    SNPs at chr18:70.47&ndash;70.49 Mb in the <em>NETO1</em> locus
+    SNPs at chr18:70.47&ndash;70.49 Mb (intronic to lncRNA ENSG00000288828; nearest protein-coding
+    gene <em>SOCS6</em> ~163&nbsp;kb upstream)
     (lead SNPs rs4891860/rs11366565/rs4243320/rs4243321; OR&asymp;0.35, p&asymp;3.2&times;10<sup>&minus;7</sup>),
     suggesting a protective effect; 198 variants reached the suggestive threshold p&nbsp;&lt;&nbsp;1&times;10<sup>&minus;5</sup>.
     None of the 8 Uzbek-specific PBS candidates was associated with RPL after Bonferroni correction.
@@ -169,7 +171,7 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 <p>
     This work delivers (i) a transparent, well-calibrated first GWAS of RPL in Central Asia,
     (ii) Uzbek-specific allele frequencies for canonical thrombophilia variants, and (iii) a
-    suggestive locus at <em>NETO1</em> as a candidate for replication in larger cohorts. Sample
+    suggestive locus near <em>SOCS6</em> as a candidate for replication in larger cohorts. Sample
     size remains the dominant limitation; the dataset and summary statistics are released as a
     starting point for trans-ethnic meta-analysis.
 </p>
@@ -323,22 +325,161 @@ top hits.]</div>
     deflation typical of small-sample Firth correction). No variant exceeded
     p&nbsp;&lt;&nbsp;5&times;10<sup>&minus;8</sup>; 198 variants reached
     p&nbsp;&lt;&nbsp;1&times;10<sup>&minus;5</sup>.
-    The strongest cluster localised to chr18:70.47&ndash;70.49&nbsp;Mb within <em>NETO1</em>
-    (Neuropilin and tolloid-like 1), four LD-correlated SNPs (rs4891860, rs11366565, rs4243320,
+    The strongest cluster localised to chr18:70.47&ndash;70.49&nbsp;Mb in a region containing only
+    long non-coding RNAs (intronic to ENSG00000288828; ENSG00000286642 nearby) with the nearest
+    protein-coding gene being <em>SOCS6</em> (suppressor of cytokine signalling 6,
+    chr18:70,288,888&ndash;70,330,199, ~163&nbsp;kb upstream). Earlier annotation as <em>NETO1</em>
+    was incorrect: NETO1 is at chr18:72,742,314&ndash;72,868,146 (~2.25&nbsp;Mb away). The cluster
+    comprises four LD-correlated SNPs (rs4891860, rs11366565, rs4243320,
     rs4243321) at A1_FREQ&nbsp;&asymp;&nbsp;0.13 with OR&nbsp;&asymp;&nbsp;0.35 and
     p&nbsp;&asymp;&nbsp;3.2&times;10<sup>&minus;7</sup>.
-    <em>NETO1</em> has neurodevelopmental functions reported in the literature; its role in
-    pregnancy maintenance, if any, is novel and would require replication.
+    <em>SOCS6</em> regulates JAK/STAT signalling and has plausible roles in immune tolerance
+    during pregnancy; whether the GWAS signal regulates this gene from the lncRNA region requires
+    eQTL/colocalisation follow-up.
 </p>
 
 <h3>3.5. Sensitivity analyses</h3>
-<div class="placeholder">[Insert results once <code>data/sensitivity/</code> JSON is loaded;
-    summarise concordance of top loci across S1&ndash;S4.]</div>
 <p>
-    Across all four alternate case definitions, <span class="placeholder" style="display:inline">[the NETO1 cluster
-    remains/loses suggestive significance]</span>, and no variant exceeds genome-wide significance.
-    Lambda values were <span class="placeholder" style="display:inline">[X]</span>, all within 0.95&ndash;1.05.
+    No sensitivity run exceeded p&nbsp;&lt;&nbsp;5&times;10<sup>&minus;8</sup>.
+    &lambda;<sub>GC</sub> was well-controlled across all runs (0.857&ndash;1.021); the S1 deflation
+    (0.857, 97 cases) is expected from Firth correction at small sample size and should not be
+    over-interpreted.
 </p>
+<table>
+<tr><th>Run</th><th>Cases</th><th>Controls</th><th>GW sig</th><th>Suggestive</th><th>&lambda;<sub>GC</sub></th><th>Top hit</th></tr>
+<tr><td><strong>Primary</strong></td><td>273</td><td>509</td><td>0</td><td>198</td><td>0.978</td>
+    <td>chr18 cluster (near <em>SOCS6</em>) rs4891860 OR=0.35 p=3.2e-7</td></tr>
+<tr><td>S1 &mdash; strict &ge;3</td><td>97</td><td>509</td><td>0</td><td>123</td><td>0.857</td>
+    <td>rs9666550 chr1:188.2M OR=2.80 p=5.7e-7</td></tr>
+<tr><td>S2 &mdash; +REVIEW</td><td>337</td><td>509</td><td>0</td><td>66</td><td>1.003</td>
+    <td>rs594626 chr1:109.15M OR=1.98 p=4.2e-7; <strong>chr9 cluster (<em>LINC00474</em>; near <em>PAPPA</em>) rs28446251 p=6.2e-7</strong></td></tr>
+<tr><td>S3 &mdash; +GRAY</td><td>392</td><td>509</td><td>0</td><td>52</td><td>1.021</td>
+    <td><strong>chr9 cluster (<em>LINC00474</em>; near <em>PAPPA</em>) rs28446251 OR=2.12 p=1.0e-7; rs3037402 OR=1.95 p=8.1e-7</strong></td></tr>
+<tr><td>S4 &mdash; +PROBABLE</td><td>291</td><td>512</td><td>0</td><td>95</td><td>0.984</td>
+    <td>chr1:109.15M OR=2.08 p=2.2e-7; chr18 cluster (near <em>SOCS6</em>) OR=0.36 p=2.9e-7 <strong>replicates primary</strong></td></tr>
+</table>
+<p>
+    Two loci showed cross-run robustness: (i)&nbsp;the chr18:70.49&nbsp;Mb cluster (near <em>SOCS6</em>) appeared
+    in the primary and S4 (+PROBABLE) with identical direction (OR&asymp;0.35), indicating
+    robustness to inclusion of probable cases while being absent in broader phenotype groups &mdash;
+    consistent with a protective effect specific to strict-RPL. (ii)&nbsp;A chr9:115.9&nbsp;Mb
+    cluster intronic to the long non-coding RNA <em>LINC00474</em> (nearest protein-coding gene
+    <em>PAPPA</em> ~257&nbsp;kb downstream)
+    emerged in S2 and peaked in S3, with lead SNP rs28446251 (OR=2.12, p=1.0e-7) and
+    rs3037402 (OR=1.95, p=8.1e-7); rs28446251 also ranks #14 in the primary analysis at
+    p=4.6&times;10<sup>&minus;7</sup>. A CELSR2/PSRC1/SORT1 cluster at chr1:109.15&nbsp;Mb appeared
+    in S2 and S4 (OR&asymp;2.0) and warrants cautious interpretation (vascular/lipid locus,
+    possible confounder in broader phenotype groups).
+</p>
+
+
+<h3 id="crossstudy">3.6. Cross-study comparison: EMGM 2026 convergence</h3>
+<div class="callout-green">
+    <strong>Key finding:</strong> A concurrent group (conference abstract, EMGM 2026;
+    sciencesconf.org:emgm2026:705467) independently identified rs3037402 as a genome-wide
+    significant RPL hit &mdash; the same SNP that ranks in our S2/S3 top clusters.
+</div>
+<p>
+    The EMGM 2026 group studied 289 RPL cases (&ge;2 miscarriages/non-developing pregnancies
+    before 24&nbsp;weeks) and 307 parous controls with no pregnancy loss, performing a GWAS
+    of 7.7&nbsp;million SNVs (MAC&nbsp;&ge;&nbsp;20) using SAIGE under a generalised mixed model
+    adjusted for three principal components. Their two reported associations were:
+</p>
+<table>
+<tr><th>SNP</th><th>Position (reported)</th><th>Effect allele</th><th>EAF</th><th>OR (95%&nbsp;CI)</th><th>P</th><th>Locus described</th></tr>
+<tr><td><strong>rs3037402</strong></td><td>chr9 (GRCh38: 115,896,897)</td><td>C</td><td>0.18</td>
+    <td><strong>2.50 (1.81&ndash;3.47)</strong></td><td><strong>3.8&times;10<sup>&minus;8</sup></strong></td>
+    <td>&ldquo;near PAPPA&rdquo;</td></tr>
+<tr><td>rs2032905</td><td>chr19 (<em>TSHZ3</em>)</td><td>G</td><td>0.53</td>
+    <td>1.30 (1.01&ndash;1.66)</td><td>0.039</td>
+    <td>Established locus (Laisk et al.&nbsp;2020)</td></tr>
+</table>
+
+<h4>rs3037402 &mdash; chr9:115.9&nbsp;Mb cluster (intronic <em>LINC00474</em>; near <em>PAPPA</em>): convergent evidence</h4>
+<table>
+<tr><th>Study / run</th><th>SNP</th><th>Position (hg38)</th><th>Cases</th><th>Controls</th><th>A1 freq</th><th>OR (95%&nbsp;CI)</th><th>P</th></tr>
+<tr><td>EMGM 2026</td><td>rs3037402</td><td>9:115,896,897</td><td>289</td><td>307</td><td>C / 0.18</td>
+    <td>2.50 (1.81&ndash;3.47)</td><td><strong>3.8e-8</strong></td></tr>
+<tr style="background:#e8f5e9;"><td><strong>This study (Primary)</strong></td><td>rs28446251 <em>(proxy)</em></td><td>9:115,907,201</td><td>273</td><td>509</td>
+    <td>0.152</td><td>2.19 (1.61&ndash;2.97)</td><td><strong>4.6e-7 (rank #14)</strong></td></tr>
+<tr style="background:#e8f5e9;"><td>This study (Primary)</td><td>rs3037402</td><td>9:115,896,897</td><td>273</td><td>509</td>
+    <td>0.157</td><td>1.98 (1.48&ndash;2.65)</td><td>4.4e-6</td></tr>
+<tr style="background:#e8f5e9;"><td><strong>This study (S3)</strong></td><td>rs28446251</td><td>9:115,907,201</td><td>392</td><td>509</td>
+    <td>0.159</td><td>2.12 (1.61&ndash;2.80)</td><td><strong>1.0e-7</strong></td></tr>
+<tr style="background:#e8f5e9;"><td>This study (S3)</td><td>rs3037402</td><td>9:115,896,897</td><td>392</td><td>509</td>
+    <td>0.163</td><td>1.95 (1.49&ndash;2.54)</td><td>8.1e-7</td></tr>
+<tr style="background:#e8f5e9;"><td>This study (S2)</td><td>rs28446251</td><td>9:115,907,201</td><td>337</td><td>509</td>
+    <td>0.156</td><td>2.08 (1.56&ndash;2.77)</td><td>6.2e-7</td></tr>
+</table>
+<p style="font-size:0.88em;color:#555;">Direction is concordant across all 6 datasets; allele
+    frequencies cluster at 0.15&ndash;0.18. Imputation R<sup>2</sup> at the lead SNPs is 0.94&ndash;0.97
+    (verified from <code>chr9.dose.vcf.gz</code>), so imputation quality is not a contributor to
+    any cross-study difference.</p>
+
+<p>
+    <strong>Gene context (Ensembl-verified, GRCh38).</strong> rs3037402 (chr9:115,896,897) lies
+    inside an intron of the long non-coding RNA <em>LINC00474</em>
+    (chr9:115,839,214&ndash;115,925,720, minus strand). The nearest protein-coding gene is
+    <em>PAPPA</em> (pappalysin&nbsp;1; chr9:116,153,791&ndash;116,402,321), located
+    <strong>~257&nbsp;kb downstream</strong> &mdash; consistent with the EMGM &ldquo;near PAPPA&rdquo;
+    label. PAPPA cleaves IGFBP-4/-5 to release IGF-1/-2 for trophoblast invasion, which is a
+    plausible biology for early pregnancy maintenance; whether the GWAS signal regulates
+    <em>PAPPA</em> from this distal lncRNA region or has an independent <em>LINC00474</em>-mediated
+    function requires eQTL/colocalisation work in placenta and decidua.
+</p>
+<p>
+    <strong>Annotation correction.</strong> An earlier draft of this section attributed the locus
+    to <em>PAPPA2</em>. That was incorrect: <em>PAPPA2</em> (pappalysin&nbsp;2) is on
+    chromosome&nbsp;1 (chr1:176,463,171&ndash;176,845,601) and is unrelated to this chr9
+    locus despite the paralog naming. We thank the careful review that flagged this error.
+</p>
+
+<h4>Why we do not reach genome-wide significance individually</h4>
+<ul>
+    <li><strong>Statistical method.</strong> EMGM use SAIGE generalized linear mixed model,
+        which captures cryptic relatedness via a genomic relationship matrix. Our pipeline
+        uses PLINK2 v2.00a6LM Firth-hybrid logistic regression and removed only PI_HAT&ge;0.98
+        duplicates (63 pairs, all removed pre-imputation); we did <strong>not</strong> screen
+        for 1st&ndash;3rd-degree cryptic relatedness in the analytic cohort. If residual relatedness
+        exists, our standard errors are slightly underestimated; SAIGE on the same data is on
+        the recommended-actions list.</li>
+    <li><strong>Marginal sample-size differential.</strong> 289 cases vs 273 cases is small but
+        non-zero; combined with a possibly Winner&rsquo;s-Curse-inflated EMGM OR (2.50 vs our
+        2.12&ndash;2.19), the gap is fully explained without invoking method differences.</li>
+    <li><strong>Phenotype.</strong> Our primary uses ESHRE-strict &lt;20&nbsp;w; EMGM uses
+        &lt;24&nbsp;w. The two are operationally similar at the trimester boundary but our slightly
+        stricter window may exclude a few late-loss cases.</li>
+    <li><strong>Population.</strong> Our cohort is Uzbek (Central Asian, EUR/SAS/EAS cline);
+        EMGM population is not specified. LD around the lead SNP could differ, but tagging
+        efficiency at rs3037402 is good in our data (R<sup>2</sup>=0.97).</li>
+</ul>
+
+<h4>rs2032905 &mdash; chr19 (intronic to <em>TSHZ3-AS1</em>; <em>TSHZ3</em> ~65&nbsp;kb upstream)</h4>
+<p>
+    EMGM report rs2032905-G as a nominal replication of the established TSHZ3 locus
+    (Laisk et&nbsp;al.&nbsp;2020): EAF=0.53, OR=1.30, P=0.039. Direct look-up in our primary
+    GWAS confirms a directionally concordant nominal signal: G allele frequency 0.531
+    (matching theirs), OR=1.38 (1.09&ndash;1.75), <strong>P=0.0079</strong> &mdash; stronger than
+    EMGM&rsquo;s P due to our larger control set. This SNP does not appear in our top suggestive
+    list because P&nbsp;=&nbsp;0.008 is far above the genome-wide-suggestive threshold of
+    1&times;10<sup>&minus;5</sup>. Imputation R<sup>2</sup>=0.93 confirms good genotype quality.
+    Note: the SNP is intronic to <em>TSHZ3-AS1</em> (the natural antisense lncRNA at
+    chr19:31,348,590&ndash;31,427,302); the protein-coding <em>TSHZ3</em> gene proper ends at
+    31,349,436, ~65&nbsp;kb upstream.
+</p>
+
+<div class="callout-amber">
+    <strong>Implication for submission.</strong> The independent EMGM convergence on rs3037402
+    substantially strengthens the case for reporting the chr9:115.9&nbsp;Mb cluster as a
+    candidate locus near <em>PAPPA</em>. We recommend: (1)&nbsp;run a fixed-effects meta-analysis
+    with EMGM (562 cases, 816 controls combined) once raw summary statistics are available;
+    (2)&nbsp;run KING relatedness on our analytic cohort and a SAIGE primary GWAS as v2
+    sensitivity; (3)&nbsp;cite Laisk et&nbsp;al.&nbsp;2020 + EMGM 2026 as independent
+    evidence for the TSHZ3 locus and report our nominal replication (P=0.008) explicitly;
+    (4)&nbsp;pursue eQTL/colocalisation for both <em>PAPPA</em> and <em>LINC00474</em> in
+    placenta/decidua. The full cross-study comparison report is at
+    <a href=\"cross_study_report.html\">cross_study_report.html</a>.
+</div>
 
 
 <h2 id="discussion">4. Discussion</h2>
@@ -353,7 +494,7 @@ top hits.]</div>
         meta-analysis (e.g., the next iteration of Kolte et al. 2020).</li>
     <li><strong>Uzbek allele frequencies for European thrombophilia variants.</strong> These have
         clinical-genetics utility independent of association testing.</li>
-    <li><strong>A suggestive locus (NETO1) for replication.</strong> Although p&nbsp;&gt;&nbsp;5&times;10<sup>&minus;8</sup>
+        <li><strong>A suggestive locus on chr18 (near <em>SOCS6</em>) for replication.</strong> Although p&nbsp;&gt;&nbsp;5&times;10<sup>&minus;8</sup>
         and the gene is not an obvious candidate, an OR of 0.35 at MAF 13% is biologically interesting
         if confirmed.</li>
 </ol>

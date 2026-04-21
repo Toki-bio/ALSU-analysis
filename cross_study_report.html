@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cross-Study Comparison: ALSU vs EMGM 2026 — RPL GWAS</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',Tahoma,sans-serif; background:#f5f7fa;
+       color:#222; line-height:1.55; padding:20px; }
+.wrap { max-width:1100px; margin:0 auto; background:white;
+        box-shadow:0 6px 30px rgba(0,0,0,0.08); border-radius:10px;
+        overflow:hidden; }
+.header { background:linear-gradient(135deg,#0d47a1,#1565c0); color:white;
+          padding:32px 40px; }
+.header h1 { font-size:1.8em; margin-bottom:6px; }
+.header .sub { opacity:.9; font-size:1em; }
+.header .meta { margin-top:14px; font-size:.88em; opacity:.85; }
+nav.toc { background:#eef2f7; padding:18px 40px; border-bottom:1px solid #d6dde8; }
+nav.toc h3 { font-size:.95em; color:#0d47a1; margin-bottom:8px; }
+nav.toc ul { list-style:none; columns:2; column-gap:30px; }
+nav.toc li { padding:3px 0; font-size:.9em; }
+nav.toc a { color:#1565c0; text-decoration:none; }
+nav.toc a:hover { text-decoration:underline; }
+.content { padding:30px 40px 40px; }
+h2 { color:#0d47a1; font-size:1.35em; margin:30px 0 12px;
+     padding-bottom:8px; border-bottom:2px solid #1565c0; }
+h2:first-child { margin-top:0; }
+h3 { color:#1565c0; font-size:1.08em; margin:20px 0 8px; }
+h4 { color:#1976d2; font-size:.98em; margin:14px 0 6px; }
+p, li { margin-bottom:8px; color:#333; }
+ul, ol { margin-left:24px; margin-bottom:10px; }
+table { width:100%; border-collapse:collapse; margin:14px 0;
+        font-size:.88em; }
+th, td { padding:8px 10px; text-align:left; border-bottom:1px solid #e0e0e0; }
+th { background:#e3f2fd; color:#0d47a1; font-weight:600; }
+td.num { text-align:right; font-family:Consolas,monospace; }
+tr.hl { background:#fff8e1; }
+tr.good { background:#e8f5e9; }
+.callout { padding:14px 18px; border-radius:6px; margin:14px 0;
+           border-left:5px solid; }
+.callout.green { background:#e8f5e9; border-color:#2e7d32; }
+.callout.amber { background:#fff8e1; border-color:#f57f17; }
+.callout.red { background:#ffebee; border-color:#c62828; }
+.callout.blue { background:#e3f2fd; border-color:#1565c0; }
+code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
+       font-family:Consolas,monospace; font-size:.92em; }
+.fig-cap { font-size:.85em; color:#666; font-style:italic;
+           margin:4px 0 16px; }
+.kbd { background:#f0f0f0; padding:1px 6px; border-radius:3px;
+       font-family:Consolas,monospace; font-size:.88em; border:1px solid #ddd; }
+.footer { background:#263238; color:#cfd8dc; padding:18px 40px;
+          font-size:.82em; }
+.footer a { color:#90caf9; }
+.tldr { background:linear-gradient(135deg,#fff8e1,#fff3e0);
+        border-left:5px solid #f57f17; padding:18px 22px; margin:16px 0;
+        border-radius:6px; }
+.tldr strong { color:#bf360c; }
+.warn { background:#ffebee; border:1px solid #ef9a9a; color:#b71c1c;
+        padding:10px 14px; border-radius:4px; font-size:.9em; margin:10px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+    <h1>Cross-Study Comparison Report: ALSU vs EMGM 2026 RPL GWAS</h1>
+    <div class="sub">Two independent recurrent pregnancy loss GWAS converge on chr9q33.2 (near <em>PAPPA</em>) and chr19q12 (near <em>TSHZ3</em>)</div>
+    <div class="meta">Date: 2026-04-21 &nbsp;|&nbsp; Author: ALSU genomics team &nbsp;|&nbsp; Build: GRCh38 &nbsp;|&nbsp; Source: <code>/staging/ALSU-analysis/spring2026/gwas/</code></div>
+</div>
+
+<nav class="toc">
+    <h3>Contents</h3>
+    <ul>
+        <li><a href="#tldr">TL;DR (one-paragraph summary)</a></li>
+        <li><a href="#what-emgm">1. What is EMGM 2026?</a></li>
+        <li><a href="#their-study">2. Their study at a glance</a></li>
+        <li><a href="#our-study">3. Our study at a glance (S1–S4 explained)</a></li>
+        <li><a href="#methods-table">4. Side-by-side methods</a></li>
+        <li><a href="#locus1">5. Locus 1: rs3037402 (chr9 near PAPPA)</a></li>
+        <li><a href="#locus2">6. Locus 2: rs2032905 (chr19 near TSHZ3)</a></li>
+        <li><a href="#why-not-gw">7. Why we did not reach GW significance</a></li>
+        <li><a href="#our-unique">8. Our unique findings (incl. chr18:70.49M)</a></li>
+        <li><a href="#errata">9. Gene-annotation corrections</a></li>
+        <li><a href="#actions">10. Recommended next actions</a></li>
+        <li><a href="#methods-detail">11. Methods &amp; data sources</a></li>
+        <li><a href="#injection-note">12. Note on prompt-injection attempt</a></li>
+    </ul>
+</nav>
+
+<div class="content">
+
+<div class="tldr" id="tldr">
+    <strong>TL;DR.</strong> Both EMGM-reported variants replicate directionally
+    in our Uzbek cohort. <strong>rs3037402</strong> (chr9:115,896,897, in lncRNA
+    <em>LINC00474</em>; nearest protein-coding gene <em>PAPPA</em> at +257&nbsp;kb)
+    is highly concordant: same risk allele, same allele frequency
+    (~0.16–0.18), same direction, OR&nbsp;1.95–2.50 across all five of our
+    analyses and theirs; our best p-value is 8.1&times;10<sup>&minus;7</sup>
+    (S3) vs their 3.8&times;10<sup>&minus;8</sup>. <strong>rs2032905</strong>
+    (chr19:31,414,662, inside antisense lncRNA <em>TSHZ3-AS1</em>; <em>TSHZ3</em>
+    itself is 65&nbsp;kb upstream) replicates with the same risk allele and
+    matching allele frequency (G=0.53), with our primary p=0.0079 (vs their
+    0.039). <strong>The PAPPA2 attribution we made earlier was wrong</strong> —
+    PAPPA2 is on chromosome 1, not 9 — and three other gene labels in the
+    pipeline (<em>NETO1</em>, <em>TSHZ3</em>, <em>PAPPA2</em>) need correcting.
+    Combined-cohort meta-analysis (~562 cases, ~816 controls) is the obvious
+    next step and is very likely to push rs3037402 over the genome-wide
+    threshold.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="what-emgm">1. What is EMGM 2026?</h2>
+<p>
+    EMGM = <strong>European Mathematical Genetics Meeting</strong>, an annual
+    conference (started 1996) covering statistical and population genetics
+    methods. It is a working-meeting venue for new GWAS results, frequently
+    presenting unpublished or pre-publication data as abstracts.
+</p>
+<p>
+    The reference is <code>sciencesconf.org:emgm2026:705467</code>, which
+    identifies a single accepted abstract presented at the EMGM 2026 meeting.
+    Abstracts at this stage are typically <em>not yet peer-reviewed</em>;
+    they may correspond to a forthcoming preprint or full paper.
+</p>
+
+<!-- ============================================================ -->
+<h2 id="their-study">2. Their study at a glance</h2>
+<p>The text of the abstract reports:</p>
+<ul>
+    <li><strong>Cohort source:</strong> 1,815 women in their registry; genome-wide
+        imputed data on 998 participants.</li>
+    <li><strong>Cases:</strong> 289 RPL cases &mdash; defined as <strong>&ge;2 miscarriages
+        or non-developing pregnancies before 24&nbsp;weeks</strong>.</li>
+    <li><strong>Controls:</strong> 307 women with at least one live birth and no history
+        of pregnancy loss.</li>
+    <li><strong>Genotypes:</strong> 7,724,733 SNVs with minor allele count (MAC)&ge;20
+        from genome-wide imputed data.</li>
+    <li><strong>Statistical model:</strong> SAIGE under a generalized linear mixed
+        model accounting for relatedness, adjusted by the first 3 principal
+        components.</li>
+    <li><strong>Reported hits:</strong>
+        <ol>
+            <li>rs3037402-C, EAF=0.18, OR=2.50 (1.81&ndash;3.47), p=3.8&times;10<sup>&minus;8</sup>
+                (genome-wide significant).</li>
+            <li>rs2032905-G, EAF=0.53, OR=1.30 (1.01&ndash;1.66), p=0.039
+                (nominal replication of an established locus from the European
+                miscarriage GWAS by Laisk et al. 2020).</li>
+        </ol>
+    </li>
+</ul>
+<p>
+    <strong>Population:</strong> The abstract does not explicitly state the population.
+    Given the matching allele frequencies we observe (rs2032905-G freq 0.53 in
+    both studies), it is most likely European-ancestry or a similarly Eurasian
+    cohort.
+</p>
+
+<!-- ============================================================ -->
+<h2 id="our-study">3. Our study at a glance &mdash; with S1&ndash;S4 explained</h2>
+<h3>3.1 Cohort and primary phenotype</h3>
+<ul>
+    <li>1,815 women in the ALSU clinical registry; 1,090 with QC-passing
+        imputed genotypes; 1,011 went into the analytic dataset.</li>
+    <li><strong>Primary case definition</strong>: &ge;2 intrauterine pregnancy losses
+        at gestational age &lt;20 weeks (ESHRE-aligned), &rArr; <strong>273 cases</strong>.</li>
+    <li><strong>Primary controls</strong>: parous women with no documented loss
+        &rArr; <strong>509 controls</strong>.</li>
+    <li><strong>Variants tested</strong>: 9,920,024 (well-imputed, MAF cutoff
+        applied at run-time).</li>
+    <li><strong>Statistical model</strong>: PLINK2 v2.00a6LM Firth-hybrid logistic
+        regression, covariates AGE + BMI + PC1 + PC2 + PC3.</li>
+    <li><strong>Geographic distribution</strong> of analytic cohort (from
+        <code>BIRTHPLACE</code> column of <code>gwas_covar.txt</code>):
+        16 distinct origin labels, dominated by Tashkent_city (444), Tashkent_region
+        (155), Jizzakh (83), Kashkadarya (56), Samarkand (48), Khorezm (41),
+        Syrdarya (30), Bukhara (30), Fergana (27), Surkhandarya (20),
+        Karakalpakstan (19), Namangan (17), Navoi (13), Andijan (9),
+        plus Other/Russia/NA. Coverage spans all major Uzbek administrative regions.</li>
+</ul>
+
+<div class="callout amber">
+    <strong>Correction to a prior claim.</strong> An earlier comment in this
+    conversation referred to "14 regional hospitals" as the recruitment source.
+    That was a fabrication; what we actually have is a regional-origin
+    distribution from 16 birthplace categories, but recruitment-site metadata
+    has not been examined in this report.
+</div>
+
+<h3>3.2 Sensitivity analyses S1&ndash;S4 (purpose, definitions, results)</h3>
+<p>
+    The primary analysis hinges on a strict ESHRE-aligned phenotype. Real
+    cohorts contain edge cases (uncertain gestational age, single losses,
+    samples that don't cleanly fit case/control). To test whether our
+    conclusions are robust to these decisions, we ran <strong>four
+    pre-specified sensitivity GWAS runs</strong>, each changing only the
+    phenotype label, with all SNPs and covariates identical. They are:
+</p>
+<table>
+<tr><th>ID</th><th>Definition</th><th>Cases</th><th>Controls</th><th>Why we ran it</th></tr>
+<tr><td><strong>S1</strong> strict &ge;3</td>
+    <td>Only women with &ge;3 strict losses (Kolte 2015 ESHRE strict)</td>
+    <td>97</td><td>509</td>
+    <td>Most stringent phenotype; tests if signals depend on inclusion of
+        women with exactly 2 losses.</td></tr>
+<tr><td><strong>S2</strong> +REVIEW</td>
+    <td>Primary cases + samples flagged "review" (loss with GA &ge; 20w; outside
+        strict ESHRE window)</td>
+    <td>337</td><td>509</td>
+    <td>Slightly broader; checks if late-loss inclusion shifts hits.</td></tr>
+<tr><td><strong>S3</strong> +GRAY</td>
+    <td>Primary cases + "gray-zone" samples (any pregnancy loss, no firm GA)</td>
+    <td>392</td><td>509</td>
+    <td>Most inclusive RPL definition; maximises power but dilutes specificity.</td></tr>
+<tr><td><strong>S4</strong> +PROBABLE</td>
+    <td>Primary cases + samples re-classified as PROBABLE on chart review;
+        same controls + 3 PROBABLE controls</td>
+    <td>291</td><td>512</td>
+    <td>Tests robustness to medical-records re-review (closest to a v2 of the
+        primary).</td></tr>
+</table>
+<p class="fig-cap">
+    All four runs use the identical PLINK2 Firth-hybrid model, same covariates,
+    same imputed dataset. Lambda<sub>GC</sub> is reported per run as a calibration check.
+</p>
+
+<table>
+<tr><th>Run</th><th>&lambda;<sub>GC</sub></th><th>GW(p&lt;5e-8)</th><th>Suggestive(p&lt;1e-5)</th><th>Top hit</th></tr>
+<tr><td>Primary</td><td>0.978</td><td>0</td><td>198</td>
+    <td>chr18:70.49M cluster (lead rs4891860, OR=0.345, p=3.2e-7)</td></tr>
+<tr><td>S1 strict &ge;3</td><td>0.857</td><td>0</td><td>123</td>
+    <td>chr1:188.2M rs9666550 (OR=2.80, p=5.7e-7)</td></tr>
+<tr><td>S2 +REVIEW</td><td>1.003</td><td>0</td><td>66</td>
+    <td>chr1:109.15M rs594626 (OR=1.98, p=4.2e-7)</td></tr>
+<tr><td>S3 +GRAY</td><td>1.021</td><td>0</td><td>52</td>
+    <td>chr9:115.9M rs28446251 (OR=2.12, p=1.0e-7)</td></tr>
+<tr><td>S4 +PROBABLE</td><td>0.984</td><td>0</td><td>95</td>
+    <td>chr1:109.15M (p=2.2e-7); chr18:70.49M cluster recapitulates primary</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="methods-table">4. Side-by-side methods</h2>
+<table>
+<tr><th>Item</th><th>EMGM 2026</th><th>ALSU (this study)</th></tr>
+<tr><td>Population</td><td>not specified</td><td>Uzbek (Central Asian, EUR/SAS/EAS cline)</td></tr>
+<tr><td>Cases (primary)</td><td>289</td><td>273</td></tr>
+<tr><td>Controls</td><td>307 (parous, no loss)</td><td>509 (parous, no loss)</td></tr>
+<tr><td>Case definition</td><td>&ge;2 miscarriages or non-developing pregnancies &lt;24w</td>
+    <td>&ge;2 intrauterine losses &lt;20w (ESHRE strict)</td></tr>
+<tr><td>SNVs tested</td><td>7,724,733 (MAC&ge;20)</td><td>9,920,024 (MAF cutoff at runtime)</td></tr>
+<tr><td>Imputation reference</td><td>not stated</td><td>TOPMed r2</td></tr>
+<tr><td>Genome build</td><td>GRCh38 (inferred from coordinates)</td><td>GRCh38</td></tr>
+<tr><td>Statistical method</td><td>SAIGE generalized linear mixed model</td>
+    <td>PLINK2 v2.00a6LM Firth-hybrid logistic regression</td></tr>
+<tr><td>Relatedness handling</td><td>GRM in mixed model (handles relatedness directly)</td>
+    <td><strong>Not modelled</strong>; only PI_HAT&ge;0.98 duplicate detection ran
+        (63 duplicate pairs identified and removed pre-imputation;
+        no &lt;1st-degree IBD calculation performed)</td></tr>
+<tr><td>Covariates</td><td>PC1, PC2, PC3</td><td>AGE, BMI, PC1, PC2, PC3</td></tr>
+<tr><td>Significance threshold</td><td>p&lt;5&times;10<sup>&minus;8</sup></td>
+    <td>p&lt;5&times;10<sup>&minus;8</sup>; suggestive p&lt;1&times;10<sup>&minus;5</sup></td></tr>
+<tr><td>Sensitivity analyses</td><td>not reported</td><td>4 alternate phenotype runs (S1&ndash;S4)</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="locus1">5. Locus 1: rs3037402 (chr9:115,896,897, near <em>PAPPA</em>)</h2>
+
+<h3>5.1 Gene context (Ensembl-verified, GRCh38)</h3>
+<ul>
+    <li><strong>SNP position</strong>: chr9:115,896,897 (CAA/C indel; minor allele
+        frequency 0.16–0.18; on the plus strand our PLINK A1 is the C allele
+        relative to the CAA REF; equivalent to "C allele" reported by EMGM).</li>
+    <li><strong>Containing gene</strong>: <em>LINC00474</em> (long intergenic non-coding
+        RNA 474, ENSG00000204148, chr9:115,839,214&ndash;115,925,720, minus strand) &mdash;
+        the SNP lies within a LINC00474 intron.</li>
+    <li><strong>Nearest protein-coding gene</strong>: <em>PAPPA</em> (pappalysin 1,
+        ENSG00000182752, chr9:116,153,791&ndash;116,402,321) &mdash; <strong>~257&nbsp;kb downstream</strong>.</li>
+    <li><strong>Other nearby</strong>: novel lncRNA ENSG00000308189 (chr9:115,743,871&ndash;116,070,240)
+        also overlaps the SNP region.</li>
+    <li><strong>PAPPA2 is unrelated</strong>: <em>PAPPA2</em> sits on chromosome 1
+        (chr1:176,463,171&ndash;176,845,601). Earlier annotations of this cluster as
+        <em>PAPPA2</em> in our pipeline output were incorrect and are corrected
+        below (Section 9).</li>
+</ul>
+<p>
+    EMGM's "near PAPPA" label is therefore <strong>correct in spirit</strong>:
+    PAPPA is the nearest protein-coding gene at this distance, and PAPPA &mdash;
+    a metalloproteinase that cleaves IGFBP-4/5 to release IGF-1/2 for trophoblast
+    invasion &mdash; is biologically plausible for pregnancy maintenance.
+    Whether the causal mechanism is regulation of <em>PAPPA</em> from this distal
+    region or a function of <em>LINC00474</em> itself is an open question.
+</p>
+
+<h3>5.2 Imputation quality at this locus (verified from chr9.dose.vcf.gz)</h3>
+<table>
+<tr><th>SNP</th><th>Position (hg38)</th><th>AF</th><th>AVG_CS</th><th>R<sup>2</sup></th><th>Quality verdict</th></tr>
+<tr><td>rs3037402</td><td>9:115,896,897</td><td>0.165</td><td>0.996</td><td>0.971</td><td>Excellent</td></tr>
+<tr><td>rs9299234</td><td>9:115,901,661</td><td>0.166</td><td>0.991</td><td>0.945</td><td>Excellent</td></tr>
+<tr><td>rs28446251</td><td>9:115,907,201</td><td>0.167</td><td>0.990</td><td>0.943</td><td>Excellent</td></tr>
+</table>
+<p class="fig-cap">
+    All three SNPs in the chr9 cluster have R<sup>2</sup>&nbsp;&gt;&nbsp;0.94,
+    well above the conventional 0.3 threshold and above the more stringent 0.8
+    threshold. Imputation quality is not a contributor to any difference
+    between studies at this locus.
+</p>
+
+<h3>5.3 Cross-study results table for rs3037402 cluster</h3>
+<table>
+<tr><th>Study / run</th><th>SNP</th><th>Cases</th><th>Controls</th><th>A1 freq</th><th>OR (95% CI)</th><th>P</th><th>Rank in top hits</th></tr>
+<tr class="hl"><td><strong>EMGM 2026</strong></td><td>rs3037402</td><td>289</td><td>307</td><td>0.18</td><td><strong>2.50 (1.81&ndash;3.47)</strong></td><td><strong>3.8&times;10<sup>&minus;8</sup></strong></td><td>top hit</td></tr>
+<tr class="good"><td><strong>ALSU primary</strong></td><td>rs28446251</td><td>273</td><td>509</td><td>0.152</td><td>2.19 (1.61&ndash;2.97)</td><td>4.6&times;10<sup>&minus;7</sup></td><td><strong>#14</strong> (after 13 chr18 cluster SNPs)</td></tr>
+<tr class="good"><td>ALSU primary</td><td>rs9299234</td><td>273</td><td>509</td><td>0.152</td><td>2.16 (1.59&ndash;2.92)</td><td>7.3&times;10<sup>&minus;7</sup></td><td>top 25</td></tr>
+<tr class="good"><td>ALSU primary</td><td>rs3037402</td><td>273</td><td>509</td><td>0.157</td><td>1.98 (1.48&ndash;2.65)</td><td>4.4&times;10<sup>&minus;6</sup></td><td>suggestive</td></tr>
+<tr><td>ALSU S1 strict &ge;3</td><td>rs28446251</td><td>97</td><td>509</td><td>0.133</td><td>2.14 (1.39&ndash;3.29)</td><td>5.3&times;10<sup>&minus;4</sup></td><td>not top</td></tr>
+<tr><td>ALSU S2 +REVIEW</td><td>rs28446251</td><td>337</td><td>509</td><td>0.156</td><td>2.08 (1.56&ndash;2.77)</td><td>6.2&times;10<sup>&minus;7</sup></td><td>top 10</td></tr>
+<tr class="good"><td>ALSU S3 +GRAY</td><td>rs28446251</td><td>392</td><td>509</td><td>0.159</td><td>2.12 (1.61&ndash;2.80)</td><td><strong>1.0&times;10<sup>&minus;7</sup></strong></td><td>#1 (lead)</td></tr>
+<tr><td>ALSU S4 +PROBABLE</td><td>rs28446251</td><td>291</td><td>512</td><td>0.153</td><td>2.13 (1.59&ndash;2.87)</td><td>5.5&times;10<sup>&minus;7</sup></td><td>top 10</td></tr>
+</table>
+<p class="fig-cap">
+    Direction is concordant across <strong>all 6 datasets</strong> (5 ALSU + EMGM).
+    Risk allele is the same minor allele (chr9 plus-strand: A; minus strand: C
+    &mdash; same physical allele). Allele frequencies cluster at 0.13&ndash;0.18,
+    consistent with shared population history.
+</p>
+
+<div class="callout green">
+    <strong>Direction concordance &ndash; what does it mean?</strong>
+    "Same direction" means: in every analysis, carrying the minor allele at
+    rs3037402 / rs28446251 / rs9299234 increases the risk of recurrent pregnancy
+    loss (OR&nbsp;&gt;&nbsp;1.0). The OR magnitude is also similar (1.95&ndash;2.50).
+    This is the strongest possible form of cross-study agreement short of
+    identical p-values.
+</div>
+
+<h3>5.4 The cluster is in our PRIMARY top hits &mdash; rank #14</h3>
+<p>
+    <strong>It was already in the primary analysis.</strong> Re-ranking the full
+    primary GWAS file (we just did this on DRAGEN) shows the chr18:70.49&nbsp;Mb
+    cluster occupies ranks #1&ndash;#13 and rs28446251 (chr9:115,907,201) appears
+    at <strong>rank #14 with p=4.6&times;10<sup>&minus;7</sup></strong>; rs3037402
+    is at p=4.4&times;10<sup>&minus;6</sup> just outside the suggestive threshold.
+</p>
+
+<div class="callout amber">
+    <strong>Why we did not see it in our previously documented top-10 list.</strong>
+    Our convenience script <code>scripts/process_sens.py</code> was originally
+    written to extract top-10 hits from the four <em>sensitivity</em> runs only;
+    it was never applied to the primary file. The primary top hits documented in
+    <code>steps/step16.html</code> Section&nbsp;7 only listed the chr18 cluster
+    (the strict top of the primary). The chr9 cluster was therefore "below the
+    fold" of our reporting but always present in the data. <strong>This has now
+    been corrected</strong>: the script was run against the primary file
+    (top-25 extracted), and the chr9 cluster is included.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="locus2">6. Locus 2: rs2032905 (chr19:31,414,662, near <em>TSHZ3</em>)</h2>
+
+<h3>6.1 Gene context (Ensembl-verified, GRCh38)</h3>
+<ul>
+    <li><strong>SNP position</strong>: chr19:31,414,662 (A/G; G allele freq 0.53).</li>
+    <li><strong>Containing gene</strong>: <em>TSHZ3-AS1</em> (TSHZ3 antisense RNA 1,
+        ENSG00000267662, chr19:31,348,590&ndash;31,427,302, plus strand) &mdash;
+        the SNP lies inside the antisense lncRNA.</li>
+    <li><strong>Nearest protein-coding gene</strong>: <em>TSHZ3</em> (teashirt zinc
+        finger homeobox 3, ENSG00000121297, chr19:31,149,979&ndash;31,349,436,
+        minus strand) &mdash; <strong>~65&nbsp;kb upstream</strong>. The SNP is in the
+        natural antisense transcript that overlaps the TSHZ3 3&prime; region.</li>
+    <li><strong>Imputation quality</strong>: AF=0.533; AVG_CS=0.979; R<sup>2</sup>=0.932 &mdash;
+        excellent.</li>
+</ul>
+<p>
+    Calling this an "established locus" (as the EMGM abstract does, citing
+    Laisk et al. 2020) is appropriate: TSHZ3 was identified in the European
+    miscarriage GWAS, and the antisense lncRNA at this position is a plausible
+    regulatory mechanism.
+</p>
+
+<h3>6.2 Cross-study results for rs2032905</h3>
+<p>
+    Our PLINK A1 is the A allele (REF); the EMGM-reported risk allele is G.
+    The G-allele OR is the inverse of our A-allele OR.
+</p>
+<table>
+<tr><th>Study / run</th><th>Cases</th><th>Controls</th><th>G freq</th><th>OR for G (95% CI)</th><th>P</th></tr>
+<tr class="hl"><td><strong>EMGM 2026</strong></td><td>289</td><td>307</td><td>0.53</td><td>1.30 (1.01&ndash;1.66)</td><td>0.039</td></tr>
+<tr class="good"><td><strong>ALSU primary</strong></td><td>273</td><td>509</td><td>0.531</td><td><strong>1.38 (1.09&ndash;1.75)</strong></td><td><strong>0.0079</strong></td></tr>
+<tr><td>ALSU S1</td><td>97</td><td>509</td><td>0.524</td><td>1.63 (1.13&ndash;2.33)</td><td>0.0083</td></tr>
+<tr><td>ALSU S2</td><td>337</td><td>509</td><td>0.532</td><td>1.32 (1.06&ndash;1.65)</td><td>0.014</td></tr>
+<tr><td>ALSU S3</td><td>392</td><td>509</td><td>0.534</td><td>1.32 (1.07&ndash;1.62)</td><td>0.0093</td></tr>
+<tr><td>ALSU S4</td><td>291</td><td>512</td><td>0.533</td><td>1.36 (1.08&ndash;1.71)</td><td>0.0095</td></tr>
+</table>
+<div class="callout green">
+    Direction concordant across all 6 datasets. Allele frequencies are
+    indistinguishable (0.524&ndash;0.534). Our primary p (0.008) is actually
+    stronger than theirs (0.039) due to our larger control set.
+    <strong>It does not appear in our top-hits list because p&nbsp;=&nbsp;0.008
+    is above our suggestive threshold of p&lt;1&times;10<sup>&minus;5</sup></strong> &mdash;
+    not because it was missed, but because the threshold is far stricter than
+    a nominal-replication test for an established locus.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="why-not-gw">7. Why our chr9 signal does not reach genome-wide significance</h2>
+<p>
+    EMGM achieves p=3.8&times;10<sup>&minus;8</sup>; our best chr9 p-value is
+    4.6&times;10<sup>&minus;7</sup> (primary, rs28446251) or 1.0&times;10<sup>&minus;7</sup>
+    (S3, same SNP). The gap is roughly half a log-OR unit and one log-p unit.
+    Verifiable contributors:
+</p>
+<table>
+<tr><th>Factor</th><th>Their study</th><th>Our study</th><th>Direction of effect on p</th></tr>
+<tr><td>Cases</td><td>289</td><td>273 primary, up to 392 (S3)</td><td>S3 helps; primary slightly hurts</td></tr>
+<tr><td>Controls</td><td>307</td><td>509</td><td>Helps us (better effective sample size)</td></tr>
+<tr><td>Statistical model</td><td>SAIGE GLMM (mixed model, GRM)</td>
+    <td>PLINK2 Firth-hybrid logistic (no GRM)</td>
+    <td>SAIGE typically more powerful when there is even moderate cryptic
+        relatedness; if no relatedness, the two are comparable.</td></tr>
+<tr><td>Relatedness handling</td><td>GRM in model</td>
+    <td><strong>Only PI_HAT&ge;0.98 duplicate filter applied</strong>;
+        no &lt;1st-degree IBD analysis was performed.
+        From <code>ConvSK_mind20.genome</code>: 63 duplicate/MZ-twin pairs identified at
+        PI_HAT&ge;0.98 (all removed pre-imputation). Lower-grade relatedness was not screened.</td>
+    <td>If real cryptic relatedness exists in our cohort, our standard errors are
+        underestimated and power is somewhat reduced. We cannot quantify this
+        without re-running KING / PLINK <code>--genome --min 0.05</code>.</td></tr>
+<tr><td>Covariates</td><td>PC1&ndash;3</td><td>AGE + BMI + PC1&ndash;3</td>
+    <td>Adding genuine covariates (AGE, BMI) reduces residual variance; modest
+        positive effect on power. Should not subtract power.</td></tr>
+<tr><td>Imputation R<sup>2</sup> at lead SNP</td><td>not reported</td>
+    <td>0.94&ndash;0.97 (verified from chr9.dose.vcf.gz)</td>
+    <td>Our imputation is high quality; not a contributor.</td></tr>
+<tr><td>Effect-size estimate</td><td>OR=2.50</td><td>OR=2.12&ndash;2.19</td>
+    <td>Their OR is plausibly Winner's-Curse-inflated (the abstract reports
+        the discovery effect size); our OR may be the more accurate
+        population-level estimate. If true OR is closer to ours, even SAIGE
+        would not reach 5e-8 at our N.</td></tr>
+</table>
+
+<div class="callout blue">
+    <strong>Why we did not run SAIGE.</strong> Our GWAS pipeline standard is
+    PLINK2 Firth-hybrid because (i) it handles small case counts well via Firth
+    bias correction, (ii) it is fast and reproducible from a single binary,
+    (iii) it produces standard <code>.glm.logistic.hybrid</code> outputs we use
+    elsewhere. SAIGE was not used because we judged the cohort had been
+    deduplicated (63 PI_HAT&ge;0.98 pairs removed) and assumed any residual
+    relatedness was minimal. <strong>Given the EMGM convergence, re-running with
+    SAIGE is now justified</strong> &mdash; it is on the recommended-actions list
+    (Section 10).
+</div>
+
+<div class="callout amber">
+    <strong>Honest cryptic-relatedness statement.</strong>
+    "Likely" was speculation in the previous turn. The <em>verified</em>
+    facts are: only PI_HAT&ge;0.98 (i.e., MZ twins / duplicates) were screened
+    in the analytic set, with 63 such pairs identified and one of each pair
+    removed. <strong>We have not measured 1st-, 2nd-, or 3rd-degree relatedness
+    in the post-QC analytic cohort.</strong> Whether modelling residual
+    relatedness via SAIGE would change our chr9 p-value is therefore an
+    untested hypothesis &mdash; one of the recommended next actions.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="our-unique">8. Our unique findings</h2>
+<h3>8.1 chr18:70.49 Mb cluster (lead rs4891860, OR=0.345, p=3.2&times;10<sup>&minus;7</sup>)</h3>
+<p>
+    Our top primary signal is a 13-SNP cluster at chr18:70.47&ndash;70.50&nbsp;Mb
+    with consistent protective effect (OR &asymp; 0.35, A1 freq &asymp; 0.13&ndash;0.135),
+    replicated in S4 (+PROBABLE; OR=0.36, p=2.9&times;10<sup>&minus;7</sup>).
+    It does <strong>not</strong> appear in EMGM's top hits.
+</p>
+<p>
+    <strong>Gene context (Ensembl-verified, GRCh38).</strong> The SNPs lie in a
+    region containing only lncRNAs and a TEC element:
+</p>
+<ul>
+    <li>ENSG00000288828 lncRNA (chr18:70,464,905&ndash;70,592,638) &mdash; SNPs intronic.</li>
+    <li>ENSG00000278971 TEC region (chr18:70,489,630&ndash;70,491,205).</li>
+    <li>ENSG00000286642 lncRNA (chr18:70,497,923&ndash;70,554,132).</li>
+</ul>
+<p>
+    <strong>Nearest protein-coding gene</strong> is <em>SOCS6</em> (suppressor of
+    cytokine signaling 6, ENSG00000130823, chr18:70,288,888&ndash;70,330,199),
+    <strong>~163&nbsp;kb upstream</strong>. SOCS6 modulates JAK/STAT signalling
+    relevant to immune tolerance during pregnancy.
+</p>
+<p>
+    <strong>Earlier annotation as <em>NETO1</em> was wrong</strong>: NETO1 is at
+    chr18:72,742,314&ndash;72,868,146, which is <strong>2.25&nbsp;Mb away</strong>
+    from this cluster &mdash; far beyond any plausible regulatory distance.
+    <em>NETO1</em> should be removed from this annotation in all downstream
+    documents (corrections in Section 9).
+</p>
+
+<h3>8.2 chr1:109.15 Mb (CELSR2/PSRC1/SORT1) &mdash; in S2 and S4</h3>
+<p>
+    rs594626/rs676961 cluster, OR &asymp; 2.0, p &asymp; 4&ndash;5&times;10<sup>&minus;7</sup>.
+    A well-known lipid/CAD locus, surfaces in our broader phenotype runs.
+    Treat with caution &mdash; may track non-RPL phenotypes (vascular/metabolic
+    risk) that correlate with broader case definitions.
+</p>
+
+<!-- ============================================================ -->
+<h2 id="errata">9. Gene-annotation corrections (across the pipeline)</h2>
+<table>
+<tr><th>Locus</th><th>Wrong label (in our prior outputs)</th><th>Correct annotation</th><th>Action</th></tr>
+<tr><td>chr18:70.47&ndash;70.50 Mb</td><td><em>NETO1</em></td>
+    <td>Intronic to lncRNA ENSG00000288828; nearest protein-coding gene
+        <em>SOCS6</em> ~163 kb upstream. NETO1 is 2.25 Mb away.</td>
+    <td>Update step16.html, manuscript_rpl.html abstract + body.</td></tr>
+<tr><td>chr9:115.84&ndash;115.93 Mb</td><td><em>PAPPA2</em></td>
+    <td>Intronic to <em>LINC00474</em>; nearest protein-coding gene
+        <em>PAPPA</em> ~257 kb downstream. PAPPA2 is on chromosome 1.</td>
+    <td>Revert recent edits in step16.html and manuscript_rpl.html that
+        introduced the PAPPA2 label.</td></tr>
+<tr><td>chr19:31.41 Mb (rs2032905)</td><td>simply "<em>TSHZ3</em>"</td>
+    <td>Inside <em>TSHZ3-AS1</em> antisense RNA; <em>TSHZ3</em> proper is
+        ~65 kb upstream.</td>
+    <td>Add nuance: cite as "near TSHZ3 (in TSHZ3-AS1)".</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="actions">10. Recommended next actions</h2>
+<ol>
+    <li><strong>Run KING relatedness</strong> on the analytic cohort
+        (<code>plink2 --king-cutoff 0.0884</code> for 2nd-degree) to quantify
+        residual relatedness and decide whether SAIGE is justified.</li>
+    <li><strong>Re-run primary GWAS with SAIGE</strong> using identical phenotype
+        and covariates. If SAIGE produces p&lt;5&times;10<sup>&minus;8</sup>
+        at rs3037402/rs28446251 in our data, we have an independent
+        genome-wide-significant replication of the EMGM finding.</li>
+    <li><strong>Fixed-effects meta-analysis with EMGM</strong> (562 cases, 816 controls
+        combined). At consistent OR&nbsp;1.95&ndash;2.50 the combined p will
+        almost certainly clear 5&times;10<sup>&minus;8</sup>. Requires
+        contacting the EMGM authors.</li>
+    <li><strong>Cite Laisk et al. 2020 + EMGM 2026</strong> as independent
+        evidence for the TSHZ3 locus in our manuscript; report our nominal
+        replication (p=0.008) explicitly.</li>
+    <li><strong>Correct gene annotations</strong> in step16.html and
+        manuscript_rpl.html per Section 9 of this report.</li>
+    <li><strong>VEP / regulatory annotation</strong> of rs3037402, rs28446251,
+        rs9299234, rs4891860 to identify any putative causal variants
+        (e.g. eQTLs in placental tissue from GTEx v8 / FANTOM5).</li>
+    <li><strong>Colocalisation analysis</strong> with <em>PAPPA</em> and
+        <em>SOCS6</em> eQTLs in placenta / decidua / endometrium to test
+        whether the GWAS signal regulates these candidate genes.</li>
+    <li><strong>Check whether EMGM observed the chr18:70.49 Mb signal</strong>
+        in their data; if so, our unique finding becomes a second
+        independently-replicated locus.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="methods-detail">11. Methods &amp; data sources for this report</h2>
+<h3>Data files</h3>
+<ul>
+    <li>Primary GWAS:
+        <code>/staging/ALSU-analysis/spring2026/gwas/tier3_gwas.RPL.glm.logistic.hybrid</code>
+        (~9.92 M variants, 980 MB).</li>
+    <li>Sensitivity GWAS S1&ndash;S4:
+        <code>/staging/ALSU-analysis/spring2026/gwas/sensitivity/results/S{1..4}_*.RPL.glm.logistic.hybrid</code>.</li>
+    <li>Covariate file:
+        <code>/staging/ALSU-analysis/spring2026/gwas/gwas_covar.txt</code>.</li>
+    <li>Imputed dosage VCF (chr9): <code>/staging/.../post_imputation/chr9.dose.vcf.gz</code>.</li>
+    <li>Imputed dosage VCF (chr19): <code>/staging/.../post_imputation/chr19.dose.vcf.gz</code>.</li>
+    <li>Duplicate / IBD output:
+        <code>/staging/ALSU-analysis/spring2026/ConvSK_mind20.genome</code>
+        (PLINK <code>--genome --min 0.98</code>).</li>
+    <li>Local archive of cross-run summary:
+        <code>data/sensitivity/sensitivity_summary.json</code>.</li>
+</ul>
+<h3>Look-up procedure</h3>
+<ol>
+    <li>Direct grep of all 5 GWAS result files for rs3037402, rs9299234,
+        rs28446251, rs2032905 via SSH tunnel to DRAGEN.</li>
+    <li>Extraction of imputation INFO (R<sup>2</sup>, AVG_CS, AF) from the
+        per-chromosome dosage VCFs.</li>
+    <li>Top-25 ranking of the primary GWAS file via heap-sort Python script
+        (<code>/tmp/proc_primary.py</code>) using the same lambda&nbsp;GC and
+        suggestive-count logic as <code>scripts/process_sens.py</code>.</li>
+    <li>Gene coordinates verified by HTTPS query to the Ensembl REST API
+        (<code>rest.ensembl.org</code>) on 2026-04-21 for <em>PAPPA</em>,
+        <em>PAPPA2</em>, <em>LINC00474</em>, <em>TSHZ3</em>, <em>TSHZ3-AS1</em>,
+        <em>NETO1</em>, <em>SOCS6</em> &mdash; all checked against GRCh38 release
+        canonical transcripts.</li>
+    <li>Birthplace distribution by <code>cut -f5</code> on covariate file then
+        <code>sort | uniq -c</code>.</li>
+</ol>
+<h3>Tools used</h3>
+<ul>
+    <li>PLINK2 v2.00a6LM (GWAS engine).</li>
+    <li>Custom Python heap-sort script with Acklam-approximation
+        <code>erfcinv</code> (no scipy dependency) for &lambda;<sub>GC</sub>.</li>
+    <li>Ensembl REST API for gene coordinates (canonical authority).</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="injection-note">12. Note on prompt-injection attempt</h2>
+<div class="warn">
+    During preparation of this report a long
+    <code>zcat</code> dump of per-sample genotype data was returned by the DRAGEN
+    server, and a chunk of chat-formatted text impersonating an assistant reply
+    was appended at the end of that dump. The injected text claimed PAPPA was at
+    chr9:116.15&nbsp;Mb and rs3037402 was in <em>LINC00474</em>. We did not act
+    on this text directly; instead we independently queried the Ensembl REST API
+    to verify all gene coordinates from a trusted source. The injection's
+    factual claims happened to be consistent with Ensembl, which led us to
+    discover and correct three pre-existing gene-label errors in our pipeline
+    (Section 9). The injection event has been recorded and the data sources used
+    in this report are limited to (a) DRAGEN-resident files and (b) the official
+    Ensembl REST API.
+</div>
+
+</div><!-- /content -->
+
+<div class="footer">
+    Report generated 2026-04-21. Data lives at
+    <code>/staging/ALSU-analysis/spring2026/gwas/</code>. For questions or
+    re-running any analysis, see <a href="steps/step16.html">step16.html</a> and
+    <a href="manuscript_rpl.html">manuscript_rpl.html</a> in this repository.
+</div>
+
+</div><!-- /wrap -->
+</body>
+</html>

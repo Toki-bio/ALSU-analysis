@@ -646,8 +646,8 @@ Unmatched genotype: 36
 <div class="important">
     <strong>No genome-wide significant hits (p &lt; 5&times;10<sup>&minus;8</sup>).</strong>
     This is expected given the limited sample size (273 cases). The strongest signal is a cluster of
-    correlated SNPs at <strong>chr18:70.47&ndash;70.49 Mb</strong> (NETO1 locus, OR&nbsp;&asymp;&nbsp;0.35,
-    p&nbsp;&asymp;&nbsp;3.2&times;10<sup>&minus;7</sup>) suggesting a protective effect.
+    correlated SNPs at <strong>chr18:70.47&ndash;70.49 Mb</strong> (intronic to lncRNA ENSG00000288828; nearest protein-coding gene <em>SOCS6</em> ~163&nbsp;kb upstream &mdash; <em>not</em> NETO1, which is 2.25&nbsp;Mb away), OR&nbsp;&asymp;&nbsp;0.35,
+    p&nbsp;&asymp;&nbsp;3.2&times;10<sup>&minus;7</sup>, suggesting a protective effect.
 </div>
 
 <!-- Manhattan plot -->
@@ -793,8 +793,8 @@ Unmatched genotype: 36
     Four pre-registered sensitivity GWAS were run against alternative case/control definitions
     using the identical covariate model (<code>logit(RPL) ~ SNP + AGE + BMI + PC1 + PC2 + PC3</code>,
     Firth-hybrid logistic regression, PLINK2 v2.00a6LM, 16 threads on DRAGEN, run April 20, 2026).
-    The objective was to test whether the primary suggestive signal at <em>NETO1</em>
-    (chr18:70.49 Mb) and the absence of other genome-wide-significant hits are robust to
+    The objective was to test whether the primary suggestive signal at the chr18:70.49&nbsp;Mb cluster
+    (lncRNA region; nearest protein-coding <em>SOCS6</em>) and the absence of other genome-wide-significant hits are robust to
     plausible alternative phenotype encodings.
 </p>
 
@@ -810,7 +810,7 @@ Unmatched genotype: 36
         <td>CASE (&ge;2 losses GA&lt;20w) vs CONTROL (live, no losses)</td>
         <td>273</td><td>509</td><td>9.92M</td>
         <td>0</td><td>198</td><td>0.978</td>
-        <td><em>NETO1</em> chr18:70.49M (rs4891860 et al.)</td>
+        <td>chr18:70.49M cluster (near <em>SOCS6</em>; rs4891860 et al.)</td>
         <td>3.2e-7</td>
     </tr>
     <tr>
@@ -842,7 +842,7 @@ Unmatched genotype: 36
         <td>Primary + PROBABLE re-classified</td>
         <td>291</td><td>512</td><td>9.93M</td>
         <td>0</td><td>95</td><td>0.984</td>
-        <td><em>NETO1</em> chr18:70.49M (rs4243323) + chr1:109.15M</td>
+        <td>chr18:70.49M cluster (rs4243323; near <em>SOCS6</em>) + chr1:109.15M</td>
         <td>2.2e-7</td>
     </tr>
 </table>
@@ -855,32 +855,32 @@ Unmatched genotype: 36
     <tr><td>rs594626</td><td>1:109,154,605</td><td>C</td><td>0.220</td><td>1.98 (1.52&ndash;2.58)</td><td>4.2e-7</td><td>CELSR2/PSRC1/SORT1</td></tr>
     <tr><td>rs676961</td><td>1:109,155,659</td><td>G</td><td>0.169</td><td>2.07 (1.56&ndash;2.75)</td><td>4.8e-7</td><td>same locus</td></tr>
     <tr><td>rs11696445</td><td>20:2,865,606</td><td>T</td><td>0.026</td><td>6.85 (3.22&ndash;14.6)</td><td>5.7e-7</td><td><em>CDC25B</em> region (rare)</td></tr>
-    <tr><td>rs28446251</td><td>9:115,907,201</td><td>C</td><td>0.156</td><td>2.08 (1.56&ndash;2.77)</td><td>6.2e-7</td><td>chr9q33 intergenic</td></tr>
+    <tr><td>rs28446251</td><td>9:115,907,201</td><td>C</td><td>0.156</td><td>2.08 (1.56&ndash;2.77)</td><td>6.2e-7</td><td><em>LINC00474</em>; near <em>PAPPA</em> (chr9q33.2) &#9733;</td></tr>
 </table>
 
 <h4>S3 &mdash; +GRAY (392 cases)</h4>
 <table>
     <tr><th>SNP</th><th>CHR:POS</th><th>A1</th><th>FREQ</th><th>OR (95% CI)</th><th>p</th><th>Locus</th></tr>
-    <tr><td>rs28446251</td><td>9:115,907,201</td><td>C</td><td>0.159</td><td>2.12 (1.61&ndash;2.80)</td><td>1.0e-7</td><td>chr9q33</td></tr>
+    <tr><td>rs28446251</td><td>9:115,907,201</td><td>C</td><td>0.159</td><td>2.12 (1.61&ndash;2.80)</td><td>1.0e-7</td><td><em>LINC00474</em>; near <em>PAPPA</em> (chr9q33.2) &#9733;</td></tr>
     <tr><td>rs9299234</td><td>9:115,901,661</td><td>A</td><td>0.159</td><td>2.10 (1.59&ndash;2.76)</td><td>1.6e-7</td><td>same cluster</td></tr>
-    <tr><td>rs3037402</td><td>9:115,896,897</td><td>A</td><td>0.163</td><td>1.95 (1.49&ndash;2.54)</td><td>8.1e-7</td><td>same cluster</td></tr>
+    <tr><td>rs3037402</td><td>9:115,896,897</td><td>A</td><td>0.163</td><td>1.95 (1.49&ndash;2.54)</td><td>8.1e-7</td><td>same cluster &#9733; independently reported (EMGM&nbsp;2026)</td></tr>
     <tr><td>rs6415521</td><td>8:130,891,502</td><td>C</td><td>0.482</td><td>1.60 (1.32&ndash;1.93)</td><td>1.4e-6</td><td>chr8q24 (common)</td></tr>
 </table>
 
-<h4>S4 &mdash; +PROBABLE (291 cases) &mdash; <strong>replicates primary <em>NETO1</em></strong></h4>
+<h4>S4 &mdash; +PROBABLE (291 cases) &mdash; <strong>replicates primary chr18:70.49M cluster</strong></h4>
 <table>
     <tr><th>SNP</th><th>CHR:POS</th><th>A1</th><th>FREQ</th><th>OR (95% CI)</th><th>p</th><th>Locus</th></tr>
     <tr><td>rs594626</td><td>1:109,154,605</td><td>C</td><td>0.218</td><td>2.08 (1.58&ndash;2.75)</td><td>2.2e-7</td><td>CELSR2/PSRC1/SORT1</td></tr>
-    <tr style="background:#fff3e0;"><td>rs4243323</td><td>18:70,493,562</td><td>C</td><td>0.131</td><td>0.36 (0.24&ndash;0.53)</td><td>2.9e-7</td><td><em>NETO1</em> (replicates primary)</td></tr>
-    <tr style="background:#fff3e0;"><td>rs4891861</td><td>18:70,493,801</td><td>G</td><td>0.131</td><td>0.36 (0.24&ndash;0.53)</td><td>2.9e-7</td><td><em>NETO1</em></td></tr>
-    <tr style="background:#fff3e0;"><td>rs12956725</td><td>18:70,494,945</td><td>A</td><td>0.133</td><td>0.36 (0.25&ndash;0.54)</td><td>3.4e-7</td><td><em>NETO1</em></td></tr>
+    <tr style="background:#fff3e0;"><td>rs4243323</td><td>18:70,493,562</td><td>C</td><td>0.131</td><td>0.36 (0.24&ndash;0.53)</td><td>2.9e-7</td><td>chr18 cluster (near <em>SOCS6</em>) &mdash; replicates primary</td></tr>
+    <tr style="background:#fff3e0;"><td>rs4891861</td><td>18:70,493,801</td><td>G</td><td>0.131</td><td>0.36 (0.24&ndash;0.53)</td><td>2.9e-7</td><td>chr18 cluster (near <em>SOCS6</em>)</td></tr>
+    <tr style="background:#fff3e0;"><td>rs12956725</td><td>18:70,494,945</td><td>A</td><td>0.133</td><td>0.36 (0.25&ndash;0.54)</td><td>3.4e-7</td><td>chr18 cluster (near <em>SOCS6</em>)</td></tr>
 </table>
 
 <h3>8.3. Cross-Run Concordance (key loci)</h3>
 <table>
     <tr><th>Locus</th><th>Primary</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th></tr>
     <tr>
-        <td><em>NETO1</em> chr18:70.49M (protective, OR&asymp;0.35)</td>
+        <td>chr18:70.49M cluster (near <em>SOCS6</em>, protective, OR&asymp;0.35)</td>
         <td>3.2e-7</td><td>n.s.</td><td>n.s.</td><td>n.s.</td><td>2.9e-7 &checkmark;</td>
     </tr>
     <tr>
@@ -888,7 +888,7 @@ Unmatched genotype: 36
         <td>(below threshold)</td><td>n.s.</td><td>4.2e-7</td><td>~1e-5</td><td>2.2e-7</td>
     </tr>
     <tr>
-        <td>chr9q33 chr9:115.9M (risk, OR&asymp;2.1)</td>
+        <td>chr9:115.9M cluster (<em>LINC00474</em> / near <em>PAPPA</em>, risk, OR&asymp;2.1) &#9733;</td>
         <td>(below threshold)</td><td>n.s.</td><td>6.2e-7</td><td>1.0e-7</td><td>~1e-5</td>
     </tr>
 </table>
@@ -899,7 +899,7 @@ Unmatched genotype: 36
         <strong>What this tells us:</strong>
     </p>
     <ul>
-        <li><strong>The primary <em>NETO1</em> signal is robust to phenotype perturbation</strong> &mdash;
+        <li><strong>The primary chr18:70.49M cluster signal (near <em>SOCS6</em>) is robust to phenotype perturbation</strong> &mdash;
             it appears in the primary analysis (273 cases, p=3.2e-7) and is reproduced in S4
             (291 cases including PROBABLE re-classifications, p=2.9e-7) with identical
             direction (protective, OR&asymp;0.35) and lead SNPs. It does <em>not</em> replicate in
@@ -911,8 +911,26 @@ Unmatched genotype: 36
             Interpretation should be cautious: it appears only when broader case definitions
             are used, suggesting it may track a non-RPL-specific phenotype (vascular?
             metabolic?) that becomes more prevalent in broader case sets.</li>
-        <li><strong>S3 surfaces a chr9:115.9Mb cluster</strong> (rs28446251 OR=2.12, p=1.0e-7).
-            Again only in broader phenotype; treat as exploratory.</li>
+        <li><strong>S3 surfaces a chr9:115.9Mb cluster (<em>LINC00474</em>; near <em>PAPPA</em>)</strong>
+            (rs28446251 OR=2.12, p=1.0e-7; rs3037402 OR=1.95, p=8.1e-7). This signal also appears
+            in S2 (p=6.2e-7) and at p=4.6&times;10<sup>&minus;7</sup> in the primary analysis (rank #14).
+            Critically, rs3037402 was independently reported as a genome-wide-significant RPL hit
+            by a concurrent group at EMGM 2026 (OR=2.50, p=3.8&times;10<sup>&minus;8</sup>),
+            described by them as &ldquo;near PAPPA.&rdquo; Ensembl-verified GRCh38 coordinates:
+            rs3037402 (chr9:115,896,897) sits inside an intron of the long non-coding RNA
+            <em>LINC00474</em> (chr9:115,839,214&ndash;115,925,720); the nearest protein-coding
+            gene is <em>PAPPA</em> (pappalysin&nbsp;1, chr9:116,153,791&ndash;116,402,321), located
+            ~257&nbsp;kb downstream. <em>PAPPA2</em> (pappalysin&nbsp;2) is on chromosome&nbsp;1
+            (chr1:176,463,171&ndash;176,845,601) and is unrelated to this locus &mdash;
+            an earlier annotation of this cluster as <em>PAPPA2</em> in this section was
+            therefore wrong and has been corrected. PAPPA cleaves IGFBP-4/-5 to release
+            IGF-1/-2 for trophoblast invasion, which is a plausible biology for early
+            pregnancy maintenance. The convergence of two independent studies on rs3037402
+            substantially elevates the biological credibility of this locus.
+            <strong>Recommended action:</strong> report this SNP explicitly in the RPL manuscript;
+            pursue eQTL / colocalisation analysis for both <em>PAPPA</em> and <em>LINC00474</em>;
+            and contact the EMGM group for fixed-effects meta-analysis. See full report:
+            <a href="../cross_study_report.html">cross_study_report.html</a>.</li>
         <li><strong>None of the four sensitivity runs detected a genome-wide-significant
             (p&lt;5e-8) variant.</strong> This is consistent with the power calculation: at
             our cohort sizes the minimum detectable OR at the GW threshold is &ge;3 even at
