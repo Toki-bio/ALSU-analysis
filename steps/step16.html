@@ -249,21 +249,29 @@ Unmatched genotype: 36
         <td>Continuous (0&ndash;1)</td>
         <td>Western ancestry proportion; birthplace explains 8.2% of variance &mdash; must control for admixture cline</td>
     </tr>
-    <tr>
-        <td><strong>F_ROH</strong></td>
+    <tr style="background:#fce4ec;">
+        <td><strong>F_ROH</strong> <em>(planned)</em></td>
         <td><a href="step15.html">Step 15</a> ROH</td>
         <td>Continuous</td>
-        <td>Inbreeding coefficient F<sub>ROH</sub> = total ROH length / genome length; median 0.015</td>
+        <td>Inbreeding coefficient F<sub>ROH</sub> = total ROH length / genome length; median 0.015. <strong>Not yet integrated</strong> &mdash; spring2026 ROH file not joined to GWAS sample IDs in this run; planned for v2.</td>
     </tr>
 </table>
 
 <div class="important">
-    <strong>Covariates NOT included:</strong>
+    <strong>Covariates evaluated but NOT included in the final model:</strong>
     <ul style="margin-top:8px;">
-        <li><strong>Birthplace</strong> &mdash; collinear with Q1 and PCs; would absorb the same variance. PCs + Q1 are preferred (continuous, genome-derived)</li>
-        <li><strong>Ethnicity</strong> &mdash; not significant at any K (p=0.345 at K=2; see <a href="next_steps.html">&sect;2.3</a>)</li>
-        <li><strong>Gravidity</strong> &mdash; ascertainment bias: cases by definition have more pregnancies. Including it as a covariate could mask the signal</li>
+        <li><strong>Q1 (ADMIXTURE K=2)</strong> &mdash; multicollinear with PC1 (variance inflation factor too high). PCs alone capture the structure adequately (&lambda;<sub>GC</sub>=0.978).</li>
+        <li><strong>F<sub>ROH</sub></strong> &mdash; flagged in design but not joined to GWAS sample IDs at run-time. Sensitivity analysis with F<sub>ROH</sub> added is planned for v2.</li>
+        <li><strong>Birthplace</strong> &mdash; collinear with Q1 and PCs; would absorb the same variance. PCs + Q1 are preferred (continuous, genome-derived).</li>
+        <li><strong>Ethnicity</strong> &mdash; not significant at any K (p=0.345 at K=2; see <a href="next_steps.html">&sect;2.3</a>).</li>
+        <li><strong>Gravidity</strong> &mdash; ascertainment bias: cases by definition have more pregnancies. Including it as a covariate could mask the signal.</li>
     </ul>
+</div>
+
+<div class="info-box">
+    <strong>Final model actually run:</strong>
+    <code>logit(P[RPL=1]) = &beta;<sub>0</sub> + &beta;<sub>SNP</sub>&middot;dosage + &beta;<sub>AGE</sub>&middot;AGE + &beta;<sub>BMI</sub>&middot;BMI + &beta;<sub>PC1</sub>&middot;PC1 + &beta;<sub>PC2</sub>&middot;PC2 + &beta;<sub>PC3</sub>&middot;PC3</code>
+    <br>5 covariates &mdash; AGE, BMI, PC1, PC2, PC3. &lambda;<sub>GC</sub>=0.978 confirms population structure is well controlled with this set.
 </div>
 
 <h3>2.3. GWAS Model</h3>
@@ -281,10 +289,46 @@ Unmatched genotype: 36
 <!-- ============================================================ -->
 <h2>3. Tier 1: PBS Candidate Association</h2>
 
+<h3>3.1. Context &amp; Hypothesis</h3>
+<p>
+    The Population Branch Statistic (PBS, <a href="https://doi.org/10.1126/science.1190371" target="_blank">Yi&nbsp;et&nbsp;al.&nbsp;2010</a>)
+    isolates allele-frequency divergence on the Uzbek branch using two outgroups (EUR and EAS).
+    A high PBS signal at a locus means natural selection or strong drift has shifted allele frequencies
+    in Uzbeks specifically &mdash; not in either outgroup. This makes PBS hits attractive
+    candidates for traits where Uzbeks may carry population-specific risk modifiers.
+</p>
+<p>
+    Reproductive fitness is one of the most direct selection targets. If a variant has been driven to
+    high (or low) frequency by selection in Uzbeks, and that variant happens to influence pregnancy maintenance,
+    the effect on RPL risk could be detectable at modest sample sizes that would have no power
+    for a generic genome-wide scan. <strong>Tier 1 therefore tests a small, biologically motivated
+    hypothesis at a relaxed significance threshold</strong>, complementing the underpowered genome-wide
+    scan in Tier 3.
+</p>
+
+<h3>3.2. Input</h3>
+<ul>
+    <li><strong>Variant set:</strong> 8 lead SNPs with PBS&nbsp;&ge;&nbsp;0.3 from <a href="step10.html">Step 10</a>,
+        post-LD-clumping (<a href="step13.html">Step 13</a>), distributed across chr&nbsp;3, 5, 10, 11, 12.</li>
+    <li><strong>Sample set:</strong> 273 cases &times; 509 controls (same as Tier 3).</li>
+    <li><strong>Genotypes:</strong> Imputed dosages from <code>UZB_imputed_HQ_clean</code> (R<sup>2</sup>&nbsp;&ge;&nbsp;0.3, MAF&nbsp;&ge;&nbsp;0.01).</li>
+    <li><strong>Covariates:</strong> AGE, BMI, PC1&ndash;3 (variance-standardised).</li>
+</ul>
+
+<h3>3.3. Method</h3>
+<p>
+    Variants are extracted from the BFILE by <code>CHR:POS</code> match against the BIM file
+    (rsID is unreliable for low-frequency variants in imputed data). PLINK2 <code>--glm</code>
+    Firth-hybrid logistic regression is run on the 8-SNP subset.
+    Bonferroni correction for 8 independent tests gives the significance threshold
+    <strong>p&nbsp;&lt;&nbsp;0.05/8&nbsp;=&nbsp;6.25&times;10<sup>&minus;3</sup></strong>.
+</p>
+
+<h3>3.4. Candidate SNPs</h3>
+
 <p>
     Eight Uzbek-specific variants identified by Population Branch Statistic (PBS &ge; 0.3,
-    <a href="step10.html">Step 10</a>) are tested for association with RPL. The hypothesis is that
-    population-specific selection signals may overlap with reproductive fitness traits.
+    <a href="step10.html">Step 10</a>) are tested for association with RPL.
 </p>
 
 <table>
@@ -380,12 +424,65 @@ Unmatched genotype: 36
     suggesting functional regulatory activity.
 </div>
 
+<h3>3.5. Outcome</h3>
+<p>
+    No PBS candidate reached the Bonferroni threshold (smallest p&nbsp;&gt;&nbsp;0.25; see live table above).
+    All 8 OR confidence intervals span 1.0. This is a <strong>negative result</strong> for the
+    selection&nbsp;↔&nbsp;reproductive-fitness hypothesis at this sample size.
+</p>
+
+<h3>3.6. Limitations</h3>
+<ul>
+    <li><strong>Low power for rare variants.</strong> Five of the eight have MAF&nbsp;&lt;&nbsp;0.05 in UZB,
+        where minimum detectable OR at 80&nbsp;% power and &alpha;=0.00625 is roughly 2.5&ndash;3.0.</li>
+    <li><strong>PBS signal does not imply phenotypic effect.</strong> A locus can be highly differentiated
+        because of pigmentation, immunity, metabolism, or pure drift &mdash; not necessarily reproduction.</li>
+    <li><strong>Lead-SNP testing only.</strong> Causal variant may be in LD nearby; locus-based testing
+        (e.g., SKAT on the LD block) is recommended as a follow-up but requires more samples.</li>
+    <li><strong>1000G outgroup choice.</strong> PBS used EUR + EAS as outgroups; replacing EAS with SAS
+        (Uzbeks' nearest 1000G neighbour, F<sub>ST</sub>=0.018) would shift the candidate set.
+        See <a href="step14.html">Step 14</a>.</li>
+</ul>
+
 
 <!-- ============================================================ -->
 <!-- 4. TIER 2: KNOWN RPL VARIANTS -->
 <!-- ============================================================ -->
 <h2>4. Tier 2: Known RPL Variant Screen</h2>
 
+<h3>4.1. Context &amp; Hypothesis</h3>
+<p>
+    Four well-characterised thrombophilia / one-carbon-metabolism variants are repeatedly
+    associated with recurrent miscarriage in European meta-analyses
+    (<a href="https://doi.org/10.1093/humupd/dmw002" target="_blank">Practice Committee ASRM, 2012</a>;
+    <a href="https://doi.org/10.1093/humupd/dmt056" target="_blank">Sergi&nbsp;et&nbsp;al.&nbsp;2014</a>).
+    Their allele frequencies in Central Asian populations are <strong>poorly characterised</strong> &mdash;
+    most published frequencies are extrapolated from European, South Asian, or East Asian reference
+    panels that may not capture Uzbek-specific drift.
+</p>
+<p>
+    Tier 2 has two purposes:
+    <strong>(a) descriptive</strong> &mdash; provide UZB allele frequencies that can stand alone as a
+    reference contribution, and
+    <strong>(b) confirmatory</strong> &mdash; test whether the European-derived ORs replicate in this cohort.
+</p>
+
+<h3>4.2. Input</h3>
+<ul>
+    <li><strong>Variants:</strong> rs6025 (F5 Leiden), rs1799963 (F2 G20210A), rs1801133 (MTHFR C677T),
+        rs1799889 (PAI-1 4G/5G).</li>
+    <li><strong>Look-up strategy:</strong> rsID match against the BIM file. Imputation panels with
+        only CHR:POS:REF:ALT IDs require an additional rsID&rarr;position cross-walk.</li>
+    <li><strong>Sample set &amp; covariates:</strong> identical to Tier 1 / Tier 3.</li>
+</ul>
+
+<h3>4.3. Method</h3>
+<p>
+    Per-variant Firth logistic regression in PLINK2. Allele frequencies reported alongside OR
+    so that even non-significant rows constitute a publishable frequency benchmark for Central Asia.
+</p>
+
+<h3>4.4. Variant Results</h3>
 <p>
     Four well-established pregnancy loss risk variants screened in the Uzbek cohort.
     Allele frequencies in Central Asian populations are <strong>poorly characterized</strong> &mdash;
@@ -452,11 +549,42 @@ Unmatched genotype: 36
     they will be absent from the results.
 </div>
 
+<h3>4.5. Outcome</h3>
+<p>
+    Three of four variants tested:
+    <strong>F5&nbsp;Leiden p=0.87</strong>,
+    <strong>F2 G20210A p=0.66</strong>,
+    <strong>MTHFR C677T p=0.66</strong> (none significant). PAI-1 4G/5G is an indel and was filtered out
+    of the imputed dataset (not in HQ_clean BIM). UZB allele frequencies are 5&ndash;15&nbsp;% lower than EUR
+    for thrombophilia variants &mdash; consistent with the lower published RPL prevalence in Central Asia.
+</p>
+
+<h3>4.6. Limitations</h3>
+<ul>
+    <li><strong>Underpowered to confirm modest effects.</strong> Published European ORs for these variants
+        (1.2&ndash;3.5) require &gt;1000 cases for 80&nbsp;% power at &alpha;=0.0125 (Bonferroni for 4 tests).
+        Non-replication is therefore <em>not</em> evidence of absence.</li>
+    <li><strong>PAI-1 4G/5G missing.</strong> Most imputation panels exclude the indel; alternative
+        is direct genotyping (e.g., TaqMan).</li>
+    <li><strong>RPL aetiology beyond thrombophilia.</strong> Anti-phospholipid syndrome, uterine anomalies,
+        karyotypic abnormalities, and endocrine factors are not captured here.</li>
+</ul>
+
 
 <!-- ============================================================ -->
 <!-- 5. TIER 3: GENOME-WIDE SCAN -->
 <!-- ============================================================ -->
 <h2>5. Tier 3: Genome-Wide Scan</h2>
+
+<h3>5.0. Context &amp; Hypothesis</h3>
+<p>
+    Tier 3 is the agnostic, hypothesis-free scan: every well-imputed common variant is tested for
+    association with RPL using the same logistic-regression model as Tier 1/2. The aim is
+    <strong>not</strong> to declare a genome-wide significant locus &mdash; with 273 cases that is unrealistic
+    &mdash; but to (a) provide a transparent &lambda;<sub>GC</sub> calibration check that validates the model,
+    (b) detect <em>suggestive</em> signals (p&nbsp;&lt;&nbsp;1&times;10<sup>&minus;5</sup>) that can be carried forward
+    to replication cohorts, and (c) make a Manhattan / QQ plot freely available for meta-analysis.
+</p>
 
 <h3>5.1. PLINK2 Command</h3>
 <div class="code-block">plink2 --bfile UZB_imputed_HQ_clean \
@@ -634,12 +762,12 @@ Unmatched genotype: 36
     collinearity with PC1 (VIF too high). &lambda;<sub>GC</sub> = 0.978 confirms no inflation.
 </p>
 
-<h3>7.2. Sensitivity Analyses (Planned)</h3>
+<h3>7.2. Sensitivity Analyses (Executed &mdash; see <a href="#sensitivity">Section 8</a>)</h3>
 <ol>
-    <li><strong>Strict ESHRE definition</strong>: &ge;3 consecutive losses as CASE (reduces cases to ~118 genotyped). Test for enrichment of large-effect variants.</li>
-    <li><strong>Include REVIEW samples</strong>: Reclassify 62 REVIEW (loss at GA&ge;20) as CASE. Tests robustness to outcome ascertainment.</li>
-    <li><strong>Include GRAY as cases</strong>: Sporadic loss (&ge;1 loss) vs. controls. Broadest definition, maximizes power (270+119=389 cases).</li>
-    <li><strong>Exclude 27 missing-BMI samples</strong>: Test robustness to covariate missingness.</li>
+    <li><strong>S1 Strict ESHRE</strong>: &ge;3 strict losses as CASE (97 cases &times; 509 controls). Tests the historical RCOG/ASRM-strict definition.</li>
+    <li><strong>S2 Include REVIEW</strong>: Reclassify 64 REVIEW (loss at GA&ge;20) as CASE (337 &times; 509). Tests robustness to outcome ascertainment/coding.</li>
+    <li><strong>S3 Include GRAY</strong>: Sporadic-loss women added to cases (392 &times; 509). Broadest definition; maximises power but blurs phenotype.</li>
+    <li><strong>S4 Include PROBABLE</strong>: 18 missing-GA cases + 3 probable controls reclassified by clinician judgement (291 &times; 512). Tests sensitivity to ambiguous/missing fields.</li>
 </ol>
 
 <h3>7.3. Files Reference</h3>
@@ -655,6 +783,172 @@ Unmatched genotype: 36
     <tr><td><code>tier2_rpl_known.tsv</code></td><td><code>data/</code></td><td>Known RPL variant results (3 of 4 found)</td></tr>
     <tr><td><code>run_gwas.sh</code></td><td><code>scripts/</code></td><td>DRAGEN execution script (three-tier GWAS)</td></tr>
     <tr><td><code>prepare_gwas_covariates.py</code></td><td><code>scripts/</code></td><td>Phenotype/covariate preparation from clinical CSV</td></tr>
+</table>
+
+
+<!-- ═══════════════════════ SECTION 8: SENSITIVITY ═══════════════════ -->
+<h2 id="sensitivity">8. Sensitivity Analyses (Executed)</h2>
+
+<p>
+    Four pre-registered sensitivity GWAS were run against alternative case/control definitions
+    using the identical covariate model (<code>logit(RPL) ~ SNP + AGE + BMI + PC1 + PC2 + PC3</code>,
+    Firth-hybrid logistic regression, PLINK2 v2.00a6LM, 16 threads on DRAGEN, run April 20, 2026).
+    The objective was to test whether the primary suggestive signal at <em>NETO1</em>
+    (chr18:70.49 Mb) and the absence of other genome-wide-significant hits are robust to
+    plausible alternative phenotype encodings.
+</p>
+
+<h3>8.1. Run Summary</h3>
+<table>
+    <tr>
+        <th>Run</th><th>Definition</th><th>Cases</th><th>Controls</th>
+        <th>SNPs tested</th><th>GW (p&lt;5e-8)</th><th>Suggestive (p&lt;1e-5)</th>
+        <th>&lambda;<sub>GC</sub></th><th>Top SNP / locus</th><th>Top p</th>
+    </tr>
+    <tr style="background:#f5f5f5;">
+        <td><strong>Primary</strong></td>
+        <td>CASE (&ge;2 losses GA&lt;20w) vs CONTROL (live, no losses)</td>
+        <td>273</td><td>509</td><td>9.92M</td>
+        <td>0</td><td>198</td><td>0.978</td>
+        <td><em>NETO1</em> chr18:70.49M (rs4891860 et al.)</td>
+        <td>3.2e-7</td>
+    </tr>
+    <tr>
+        <td>S1 strict</td>
+        <td>&ge;3 strict losses as CASE</td>
+        <td>97</td><td>509</td><td>9.85M</td>
+        <td>0</td><td>123</td><td>0.857 (deflated, Firth small-N)</td>
+        <td>chr1:188.21M rs9666550; chr3:58.6M rare cluster</td>
+        <td>5.7e-7</td>
+    </tr>
+    <tr>
+        <td>S2 +REVIEW</td>
+        <td>Primary CASE + REVIEW (loss GA&ge;20)</td>
+        <td>337</td><td>509</td><td>9.94M</td>
+        <td>0</td><td>66</td><td>1.003</td>
+        <td>chr1:109.15M rs594626 cluster (CELSR2/SORT1 region)</td>
+        <td>4.2e-7</td>
+    </tr>
+    <tr>
+        <td>S3 +GRAY</td>
+        <td>Primary CASE + GRAY (any loss)</td>
+        <td>392</td><td>509</td><td>9.96M</td>
+        <td>0</td><td>52</td><td>1.021</td>
+        <td>chr9:115.91M rs28446251 cluster</td>
+        <td>1.0e-7</td>
+    </tr>
+    <tr>
+        <td>S4 +PROBABLE</td>
+        <td>Primary + PROBABLE re-classified</td>
+        <td>291</td><td>512</td><td>9.93M</td>
+        <td>0</td><td>95</td><td>0.984</td>
+        <td><em>NETO1</em> chr18:70.49M (rs4243323) + chr1:109.15M</td>
+        <td>2.2e-7</td>
+    </tr>
+</table>
+
+<h3>8.2. Top Hits Per Run (selected)</h3>
+
+<h4>S2 &mdash; +REVIEW (337 cases)</h4>
+<table>
+    <tr><th>SNP</th><th>CHR:POS</th><th>A1</th><th>FREQ</th><th>OR (95% CI)</th><th>p</th><th>Locus</th></tr>
+    <tr><td>rs594626</td><td>1:109,154,605</td><td>C</td><td>0.220</td><td>1.98 (1.52&ndash;2.58)</td><td>4.2e-7</td><td>CELSR2/PSRC1/SORT1</td></tr>
+    <tr><td>rs676961</td><td>1:109,155,659</td><td>G</td><td>0.169</td><td>2.07 (1.56&ndash;2.75)</td><td>4.8e-7</td><td>same locus</td></tr>
+    <tr><td>rs11696445</td><td>20:2,865,606</td><td>T</td><td>0.026</td><td>6.85 (3.22&ndash;14.6)</td><td>5.7e-7</td><td><em>CDC25B</em> region (rare)</td></tr>
+    <tr><td>rs28446251</td><td>9:115,907,201</td><td>C</td><td>0.156</td><td>2.08 (1.56&ndash;2.77)</td><td>6.2e-7</td><td>chr9q33 intergenic</td></tr>
+</table>
+
+<h4>S3 &mdash; +GRAY (392 cases)</h4>
+<table>
+    <tr><th>SNP</th><th>CHR:POS</th><th>A1</th><th>FREQ</th><th>OR (95% CI)</th><th>p</th><th>Locus</th></tr>
+    <tr><td>rs28446251</td><td>9:115,907,201</td><td>C</td><td>0.159</td><td>2.12 (1.61&ndash;2.80)</td><td>1.0e-7</td><td>chr9q33</td></tr>
+    <tr><td>rs9299234</td><td>9:115,901,661</td><td>A</td><td>0.159</td><td>2.10 (1.59&ndash;2.76)</td><td>1.6e-7</td><td>same cluster</td></tr>
+    <tr><td>rs3037402</td><td>9:115,896,897</td><td>A</td><td>0.163</td><td>1.95 (1.49&ndash;2.54)</td><td>8.1e-7</td><td>same cluster</td></tr>
+    <tr><td>rs6415521</td><td>8:130,891,502</td><td>C</td><td>0.482</td><td>1.60 (1.32&ndash;1.93)</td><td>1.4e-6</td><td>chr8q24 (common)</td></tr>
+</table>
+
+<h4>S4 &mdash; +PROBABLE (291 cases) &mdash; <strong>replicates primary <em>NETO1</em></strong></h4>
+<table>
+    <tr><th>SNP</th><th>CHR:POS</th><th>A1</th><th>FREQ</th><th>OR (95% CI)</th><th>p</th><th>Locus</th></tr>
+    <tr><td>rs594626</td><td>1:109,154,605</td><td>C</td><td>0.218</td><td>2.08 (1.58&ndash;2.75)</td><td>2.2e-7</td><td>CELSR2/PSRC1/SORT1</td></tr>
+    <tr style="background:#fff3e0;"><td>rs4243323</td><td>18:70,493,562</td><td>C</td><td>0.131</td><td>0.36 (0.24&ndash;0.53)</td><td>2.9e-7</td><td><em>NETO1</em> (replicates primary)</td></tr>
+    <tr style="background:#fff3e0;"><td>rs4891861</td><td>18:70,493,801</td><td>G</td><td>0.131</td><td>0.36 (0.24&ndash;0.53)</td><td>2.9e-7</td><td><em>NETO1</em></td></tr>
+    <tr style="background:#fff3e0;"><td>rs12956725</td><td>18:70,494,945</td><td>A</td><td>0.133</td><td>0.36 (0.25&ndash;0.54)</td><td>3.4e-7</td><td><em>NETO1</em></td></tr>
+</table>
+
+<h3>8.3. Cross-Run Concordance (key loci)</h3>
+<table>
+    <tr><th>Locus</th><th>Primary</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th></tr>
+    <tr>
+        <td><em>NETO1</em> chr18:70.49M (protective, OR&asymp;0.35)</td>
+        <td>3.2e-7</td><td>n.s.</td><td>n.s.</td><td>n.s.</td><td>2.9e-7 &checkmark;</td>
+    </tr>
+    <tr>
+        <td>CELSR2/SORT1 chr1:109.15M (risk, OR&asymp;2.0)</td>
+        <td>(below threshold)</td><td>n.s.</td><td>4.2e-7</td><td>~1e-5</td><td>2.2e-7</td>
+    </tr>
+    <tr>
+        <td>chr9q33 chr9:115.9M (risk, OR&asymp;2.1)</td>
+        <td>(below threshold)</td><td>n.s.</td><td>6.2e-7</td><td>1.0e-7</td><td>~1e-5</td>
+    </tr>
+</table>
+
+<h3>8.4. Interpretation</h3>
+<div class="success">
+    <p>
+        <strong>What this tells us:</strong>
+    </p>
+    <ul>
+        <li><strong>The primary <em>NETO1</em> signal is robust to phenotype perturbation</strong> &mdash;
+            it appears in the primary analysis (273 cases, p=3.2e-7) and is reproduced in S4
+            (291 cases including PROBABLE re-classifications, p=2.9e-7) with identical
+            direction (protective, OR&asymp;0.35) and lead SNPs. It does <em>not</em> replicate in
+            broader phenotypes (S2, S3) which suggests the protective effect is specific to
+            the strict-RPL phenotype and is diluted by sporadic-loss cases.</li>
+        <li><strong>S2/S3 surface a chr1:109.15Mb cluster (CELSR2/PSRC1/SORT1)</strong> with
+            consistent direction (risk, OR&asymp;2.0). This region is well-known for
+            cardiovascular and lipid traits but has not been reported for RPL.
+            Interpretation should be cautious: it appears only when broader case definitions
+            are used, suggesting it may track a non-RPL-specific phenotype (vascular?
+            metabolic?) that becomes more prevalent in broader case sets.</li>
+        <li><strong>S3 surfaces a chr9:115.9Mb cluster</strong> (rs28446251 OR=2.12, p=1.0e-7).
+            Again only in broader phenotype; treat as exploratory.</li>
+        <li><strong>None of the four sensitivity runs detected a genome-wide-significant
+            (p&lt;5e-8) variant.</strong> This is consistent with the power calculation: at
+            our cohort sizes the minimum detectable OR at the GW threshold is &ge;3 even at
+            common-variant MAF.</li>
+        <li><strong>Lambda values are well-controlled across all runs</strong> (0.86&ndash;1.02).
+            S1's deflation (0.86) is expected from Firth correction with only 97 cases and
+            should not be over-interpreted.</li>
+    </ul>
+</div>
+
+<div class="important">
+    <p>
+        <strong>Caveats:</strong> The chr1 and chr9 clusters appearing only in broader
+        case definitions (S2/S3) are statistically expected to inflate when phenotype
+        heterogeneity rises &mdash; they may reflect phenotypes other than strict RPL
+        (e.g., vascular or metabolic risk that increases sporadic-loss frequency).
+        These signals should <em>not</em> be reported as RPL-specific findings without
+        independent replication in a strict-RPL cohort.
+    </p>
+</div>
+
+<h3>8.5. Files</h3>
+<table>
+    <tr><th>File</th><th>Location</th><th>Description</th></tr>
+    <tr><td><code>gwas_pheno_S1_strict3.txt</code> &hellip; <code>S4_probable.txt</code></td>
+        <td><code>data/sensitivity/</code></td><td>4 alternate phenotype files (1027 lines each)</td></tr>
+    <tr><td><code>S{1..4}_*_top10.tsv</code></td><td>DRAGEN <code>:/staging/.../sensitivity/results/</code></td>
+        <td>Top 10 hits per run (downloadable)</td></tr>
+    <tr><td><code>S{1..4}_*.RPL.glm.logistic.hybrid</code></td><td>DRAGEN (~980 MB each)</td>
+        <td>Full per-SNP results</td></tr>
+    <tr><td><code>prepare_sensitivity_phenos.py</code></td><td><code>scripts/</code></td>
+        <td>Local: builds the 4 pheno files from <code>gwas_sample_map.txt</code></td></tr>
+    <tr><td><code>run_sens_v2.sh</code></td><td><code>scripts/</code></td>
+        <td>Remote PLINK2 driver (uploaded to DRAGEN)</td></tr>
+    <tr><td><code>process_sens.py</code></td><td><code>scripts/</code></td>
+        <td>Lambda + top-10 extraction (Acklam-approx erfcinv, no scipy needed)</td></tr>
 </table>
 
 

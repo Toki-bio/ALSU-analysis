@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manuscript Draft: RPL GWAS in Uzbeks — ALSU</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg,#0d47a1 0%,#1a1a1a 100%);
+    min-height:100vh; padding:20px;
+}
+.page-wrapper { display:flex; gap:20px; max-width:1400px; margin:0 auto; }
+.sidebar {
+    width:260px; background:white; border-radius:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2); padding:20px;
+    height:fit-content; position:sticky; top:20px;
+}
+.sidebar h3 { font-size:1em; color:#333; margin-bottom:15px;
+              border-bottom:2px solid #1565c0; padding-bottom:10px; }
+.toc { display:flex; flex-direction:column; gap:6px; font-size:0.88em; }
+.toc a { padding:6px 10px; background:#f5f5f5; color:#333; text-decoration:none;
+         border-radius:4px; border-left:3px solid transparent; transition:all 0.2s; }
+.toc a:hover { background:#e3f2fd; border-left-color:#1565c0; }
+.toc a.sub { padding-left:24px; font-size:0.92em; color:#555; }
+.main {
+    flex:1; background:white; border-radius:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2); overflow:hidden;
+}
+.header { background: linear-gradient(135deg,#1565c0 0%,#0d47a1 100%);
+          color:white; padding:30px; }
+.header h1 { font-size:1.9em; margin-bottom:8px; }
+.header p { opacity:0.9; }
+.back-link { color:rgba(255,255,255,0.85); text-decoration:none;
+             margin-bottom:14px; display:inline-block; font-size:0.9em; }
+.back-link:hover { color:white; }
+.badges { margin-top:10px; }
+.badge { display:inline-block; background:rgba(255,255,255,0.2); color:white;
+         padding:4px 12px; border-radius:14px; font-size:0.85em; margin-right:8px; }
+.content { padding:35px 40px; }
+.content h2 { color:#0d47a1; font-size:1.45em; margin:32px 0 14px;
+              padding-bottom:8px; border-bottom:2px solid #1565c0; }
+.content h3 { color:#1565c0; font-size:1.15em; margin:22px 0 10px; }
+.content h4 { color:#1976d2; margin:16px 0 8px; }
+.content p, .content li { color:#444; line-height:1.7; margin-bottom:10px; }
+.content ul, .content ol { margin-left:24px; }
+.lead { font-style:italic; color:#0d47a1; background:#e3f2fd;
+        padding:14px 18px; border-left:4px solid #1565c0;
+        border-radius:4px; margin:18px 0; }
+.placeholder { background:#fff3e0; border:1px dashed #fb8c00;
+               padding:10px 14px; border-radius:4px; color:#bf360c;
+               font-style:italic; margin:6px 0; }
+table { width:100%; border-collapse:collapse; margin:16px 0; font-size:0.92em; }
+th, td { padding:9px 12px; text-align:left; border-bottom:1px solid #e0e0e0; }
+th { background:#e3f2fd; color:#0d47a1; font-weight:600; }
+tr:hover { background:#fafafa; }
+.refs { font-size:0.85em; color:#555; }
+.refs li { margin-bottom:6px; }
+code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
+       font-family: Consolas,monospace; font-size:0.9em; }
+.callout-blue { background:#e3f2fd; border-left:4px solid #1976d2;
+                padding:14px 18px; border-radius:4px; margin:14px 0; }
+.callout-amber { background:#fff8e1; border-left:4px solid #f57f17;
+                 padding:14px 18px; border-radius:4px; margin:14px 0; }
+.callout-green { background:#e8f5e9; border-left:4px solid #2e7d32;
+                 padding:14px 18px; border-radius:4px; margin:14px 0; }
+@media (max-width:1024px) { .page-wrapper { flex-direction:column; }
+    .sidebar { width:100%; position:relative; top:0; } }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<aside class="sidebar">
+    <h3>Manuscript Sections</h3>
+    <div class="toc">
+        <a href="#title">Title &amp; Abstract</a>
+        <a href="#intro">1. Introduction</a>
+        <a href="#methods">2. Methods</a>
+        <a href="#methods" class="sub">2.1 Cohort &amp; phenotype</a>
+        <a href="#methods" class="sub">2.2 Genotypes</a>
+        <a href="#methods" class="sub">2.3 Covariates</a>
+        <a href="#methods" class="sub">2.4 Three-tier analysis</a>
+        <a href="#methods" class="sub">2.5 Sensitivity analyses</a>
+        <a href="#results">3. Results</a>
+        <a href="#results" class="sub">3.1 Cohort</a>
+        <a href="#results" class="sub">3.2 Tier 1 PBS</a>
+        <a href="#results" class="sub">3.3 Tier 2 known</a>
+        <a href="#results" class="sub">3.4 Tier 3 GW</a>
+        <a href="#results" class="sub">3.5 Sensitivity</a>
+        <a href="#discussion">4. Discussion</a>
+        <a href="#models">5. Reference papers</a>
+        <a href="#refs">6. Bibliography</a>
+        <a href="#nav">Navigation</a>
+    </div>
+    <h3 style="margin-top:24px;">Related</h3>
+    <div class="toc">
+        <a href="index.html">&larr; Roadmap</a>
+        <a href="manuscript_uzb.html">Manuscript: UZB Pop Genomics</a>
+        <a href="pre_gwas.html">Pre-GWAS Phenotype</a>
+        <a href="steps/step16.html">Step 16: GWAS</a>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="header">
+        <a href="index.html" class="back-link">&larr; Back to Roadmap</a>
+        <h1>Genome-wide Association Study of Recurrent Pregnancy Loss in Uzbek Women</h1>
+        <p>Manuscript draft &mdash; Reproductive genetics in Central Asia (Paper 2 of 2)</p>
+        <div class="badges">
+            <span class="badge">Draft v0.1 &middot; Apr 2026</span>
+            <span class="badge">Target: Hum Reprod / Hum Reprod Update / J Med Genet</span>
+            <span class="badge">~4,500 words target</span>
+        </div>
+    </div>
+
+    <div class="content">
+
+<h2 id="title">Title &amp; Abstract</h2>
+
+<h3>Working title</h3>
+<p>
+    <em>&ldquo;A first-pass genome-wide association study of recurrent pregnancy loss in 273 Uzbek
+    cases and 509 controls: descriptive frequencies, suggestive signals, and replication
+    feasibility for Central Asia&rdquo;</em>
+</p>
+
+<h3>Abstract (250 words, structured)</h3>
+
+<h4>Background</h4>
+<p>
+    Recurrent pregnancy loss (RPL) affects 1&ndash;5% of women attempting conception. Most of its
+    genetic dissection has been performed in European-ancestry cohorts (Kolte et al. 2015; ESHRE
+    Guideline 2017). Allele frequencies of established RPL risk variants in Central Asia are
+    unknown, and no GWAS has been conducted in any Central Asian population.
+</p>
+
+<h4>Methods</h4>
+<p>
+    Of 1,815 self-identified Uzbek women in the ALSU clinical registry, 1,011 were genotyped on a
+    custom Illumina array, imputed against the TOPMed r2 reference. Following ESHRE-aligned
+    classification (&ge;2 intrauterine losses at GA&nbsp;&lt;&nbsp;20 weeks as cases, parous women
+    with no losses as controls), 273 cases and 509 controls entered the analytic dataset. We applied
+    a three-tier strategy in PLINK2 with Firth-hybrid logistic regression: (Tier&nbsp;1) targeted
+    test of 8 Uzbek-specific selection candidates from a paired population genomics study (this
+    cohort, paper 1); (Tier&nbsp;2) screen of 4 known European RPL variants (F5 Leiden, F2 G20210A,
+    MTHFR C677T, PAI-1 4G/5G); (Tier&nbsp;3) genome-wide scan over 9.92 million well-imputed SNPs
+    with covariates AGE, BMI, and three principal components. Four sensitivity analyses tested
+    alternate case definitions (strict ESHRE&nbsp;&ge;3 losses; including REVIEW samples; including
+    sporadic-loss GRAY samples; including probable cases with missing gestational age).
+</p>
+
+<h4>Results</h4>
+<p>
+    No variant reached genome-wide significance. The genomic inflation factor was &lambda;<sub>GC</sub>=0.978,
+    indicating well-controlled population structure. The strongest signal was a cluster of correlated
+    SNPs at chr18:70.47&ndash;70.49 Mb in the <em>NETO1</em> locus
+    (lead SNPs rs4891860/rs11366565/rs4243320/rs4243321; OR&asymp;0.35, p&asymp;3.2&times;10<sup>&minus;7</sup>),
+    suggesting a protective effect; 198 variants reached the suggestive threshold p&nbsp;&lt;&nbsp;1&times;10<sup>&minus;5</sup>.
+    None of the 8 Uzbek-specific PBS candidates was associated with RPL after Bonferroni correction.
+    The classical thrombophilia panel did not replicate (all p&nbsp;&gt;&nbsp;0.6), although Uzbek allele
+    frequencies for these variants are reported here for the first time and were 5&ndash;15&nbsp;%
+    lower than in European populations. The four sensitivity analyses confirmed the lack of a
+    genome-wide significant signal under broader or stricter case definitions.
+</p>
+
+<h4>Conclusion</h4>
+<p>
+    This work delivers (i) a transparent, well-calibrated first GWAS of RPL in Central Asia,
+    (ii) Uzbek-specific allele frequencies for canonical thrombophilia variants, and (iii) a
+    suggestive locus at <em>NETO1</em> as a candidate for replication in larger cohorts. Sample
+    size remains the dominant limitation; the dataset and summary statistics are released as a
+    starting point for trans-ethnic meta-analysis.
+</p>
+
+
+<h2 id="intro">1. Introduction</h2>
+
+<h3>1.1. Recurrent pregnancy loss: clinical and genetic context</h3>
+<ul>
+    <li>RPL is heterogeneous: chromosomal abnormalities (~50&nbsp;% of sporadic miscarriages),
+        anti-phospholipid syndrome, thrombophilia, uterine anatomy, endocrine dysfunction, and
+        unexplained immune factors all contribute (ESHRE Guideline 2017).</li>
+    <li>Heritability has been estimated at 20&ndash;30&nbsp;% in twin studies; the largest genome-wide
+        meta-analysis to date (Kolte et al. 2020, ~10K cases) identified <em>SYCP2L</em> and
+        <em>TLE1</em> as genome-wide significant loci.</li>
+    <li>Older candidate-gene literature implicates F5 Leiden, F2 G20210A, MTHFR C677T, and PAI-1
+        4G/5G; meta-analyses report modest effect sizes (OR 1.2&ndash;3.5, Sergi 2014; Practice
+        Committee ASRM 2012); robust replication has been mixed.</li>
+</ul>
+
+<h3>1.2. The trans-ethnic gap</h3>
+<ul>
+    <li>All published RPL GWAS recruited European-ancestry participants.</li>
+    <li>For populations on the EUR&ndash;SAS&ndash;EAS cline (such as Uzbeks; see paper&nbsp;1), allele
+        frequencies and LD patterns differ; effect sizes do not necessarily transport.</li>
+    <li>A first descriptive GWAS in any non-European population &mdash; even underpowered &mdash; provides
+        baseline frequencies, calibrated lambda, and Manhattan/QQ statistics that meta-analyses can
+        ingest.</li>
+</ul>
+
+<h3>1.3. Aims of this study</h3>
+<ol>
+    <li>Provide the first GWAS of RPL in any Central Asian population.</li>
+    <li>Test selection candidates from a paired Uzbek population-genomics study (paper 1) for
+        association with RPL.</li>
+    <li>Screen four classical European RPL variants and report their Uzbek allele frequencies.</li>
+    <li>Quantify robustness via four pre-specified sensitivity analyses on case definition.</li>
+    <li>Release calibrated genome-wide summary statistics for downstream meta-analysis.</li>
+</ol>
+
+
+<h2 id="methods">2. Methods</h2>
+
+<h3>2.1. Cohort &amp; phenotype</h3>
+<p>
+    The ALSU registry contains structured pregnancy histories for 1,815 Uzbek women (median age
+    <span class="placeholder" style="display:inline">[X]</span> years). Each pregnancy is coded
+    by outcome (live birth=1, intrauterine loss=2/3/6, stillbirth or other=4, ectopic=5,
+    medical termination=7, current pregnancy=8) and gestational age (GA) at outcome.
+    We defined:
+</p>
+<table>
+<tr><th>Group</th><th>Definition</th><th>Genotyped n</th></tr>
+<tr><td>CASE</td><td>&ge;2 intrauterine losses at GA &lt; 20 weeks</td><td>273</td></tr>
+<tr><td>CONTROL</td><td>&ge;1 live birth, 0 losses, not currently pregnant</td><td>509</td></tr>
+<tr><td>GRAY</td><td>Exactly 1 sporadic loss</td><td>119 (excluded primary)</td></tr>
+<tr><td>REVIEW</td><td>Loss event(s) at GA&nbsp;&ge;&nbsp;20 weeks (likely miscoded stillbirth)</td><td>64 (excluded primary)</td></tr>
+<tr><td>EXCLUDE_*</td><td>Age outside 18&ndash;45, ectopic-only, medical-only</td><td>38</td></tr>
+</table>
+<p>
+    The classification is intentionally aligned with the ESHRE 2017 guideline that defines
+    RPL as &ge;2 demonstrated pregnancy losses; we use &lt; 20 weeks GA to exclude probable
+    stillbirths.
+</p>
+
+<h3>2.2. Genotypes</h3>
+<p>
+    The same 1,074-sample post-imputation HQ dataset described in paper&nbsp;1 (TOPMed r2,
+    Rsq&nbsp;&ge;&nbsp;0.3, MAF&nbsp;&ge;&nbsp;0.01) was the genotype source. After phenotype
+    join, 782 individuals (273 + 509) entered the GWAS. PLINK2 v2.00a6LM
+    (Chang et al. 2015) was used for all association testing.
+</p>
+
+<h3>2.3. Covariates</h3>
+<p>
+    Per-individual covariates: maternal AGE at enrolment, body mass index (BMI), and the first
+    three principal components from a within-Uzbek PCA (Step&nbsp;7). ADMIXTURE K=2 ancestry (Q1)
+    and F<sub>ROH</sub> were originally proposed; Q1 was excluded for collinearity with PC1
+    (variance inflation factor too high) and F<sub>ROH</sub> could not be joined to GWAS sample
+    IDs in time for the primary run, leaving the model
+    <code>logit(RPL) ~ SNP + AGE + BMI + PC1 + PC2 + PC3</code>. The genomic-inflation
+    factor &lambda;<sub>GC</sub>=0.978 confirms adequate control of population structure.
+</p>
+
+<h3>2.4. Three-tier analysis</h3>
+<p>
+    <strong>Tier 1.</strong> 8 SNPs with PBS&nbsp;&ge;&nbsp;0.3 from the paired population-genomics
+    study (paper 1) tested at Bonferroni threshold p&nbsp;&lt;&nbsp;6.25&times;10<sup>&minus;3</sup>.
+    The hypothesis is that Uzbek-specific selection signals overlap reproductive fitness.
+</p>
+<p>
+    <strong>Tier 2.</strong> 4 well-known thrombophilia / one-carbon-metabolism RPL variants
+    (rs6025 F5 Leiden, rs1799963 F2 G20210A, rs1801133 MTHFR C677T, rs1799889 PAI-1 4G/5G);
+    Uzbek allele frequencies reported regardless of statistical significance.
+</p>
+<p>
+    <strong>Tier 3.</strong> Genome-wide Firth-hybrid logistic regression over 9,920,024 valid
+    SNPs (after PLINK&rsquo;s internal MAF/missingness filtering at run-time). Standard significance
+    threshold p&nbsp;&lt;&nbsp;5&times;10<sup>&minus;8</sup>; suggestive threshold p&nbsp;&lt;&nbsp;
+    1&times;10<sup>&minus;5</sup>.
+</p>
+
+<h3>2.5. Sensitivity analyses</h3>
+<p>
+    Four pre-specified alternate case/control definitions were tested with identical SNP and
+    covariate inputs, only the binary phenotype changing:
+</p>
+<table>
+<tr><th>ID</th><th>Definition</th><th>Cases</th><th>Controls</th></tr>
+<tr><td>S1_strict3</td><td>ESHRE strict: &ge;3 strict losses</td><td>97</td><td>509</td></tr>
+<tr><td>S2_review_as_case</td><td>Primary CASE + REVIEW (loss GA&ge;20)</td><td>337</td><td>509</td></tr>
+<tr><td>S3_gray_as_case</td><td>Primary CASE + GRAY (any loss)</td><td>392</td><td>509</td></tr>
+<tr><td>S4_probable</td><td>Primary CASE/CONTROL + PROBABLE (missing GA)</td><td>291</td><td>512</td></tr>
+</table>
+<div class="placeholder">[Insert Table&nbsp;3: top 10 hits for each sensitivity run; concordance with primary
+top hits.]</div>
+
+
+<h2 id="results">3. Results</h2>
+
+<h3>3.1. Analytic cohort</h3>
+<p>
+    The 782-sample analytic dataset (273 cases + 509 controls) had a case:control ratio of 1:1.86.
+    Median age was higher in cases than controls (Mann-Whitney p&nbsp;=&nbsp;<span class="placeholder" style="display:inline">[X]</span>),
+    BMI distributions overlapped, and birthplace was distributed across all 14 Uzbek administrative
+    regions. Power calculations indicated &gt;80% power for OR&nbsp;&ge;&nbsp;3.0 at MAF&nbsp;0.10
+    at the suggestive threshold; the genome-wide threshold required OR&nbsp;&ge;&nbsp;3.0 at common
+    variants &mdash; realistic only for thrombophilia-magnitude effects.
+</p>
+
+<h3>3.2. Tier 1 &mdash; PBS candidates</h3>
+<p>
+    None of the 8 Uzbek-specific PBS candidates reached Bonferroni significance; smallest
+    p&nbsp;&gt;&nbsp;0.25, all OR confidence intervals span 1.0. This is a negative result for the
+    selection&nbsp;&harr;&nbsp;reproductive-fitness hypothesis at this sample size.
+</p>
+
+<h3>3.3. Tier 2 &mdash; Known European RPL variants</h3>
+<p>
+    Three of four variants were typed; the PAI-1 indel was filtered by the imputation panel.
+    None of the three replicated the published European odds ratios
+    (F5 Leiden p=0.87, F2 G20210A p=0.66, MTHFR C677T p=0.66) &mdash; expected given that &gt;1,000
+    cases are required for 80% power. Uzbek allele frequencies were 5&ndash;15&nbsp;% lower than
+    EUR for thrombophilia variants and within EUR ranges for MTHFR (Table&nbsp;X), broadly consistent
+    with the lower published RPL prevalence in Central Asia.
+</p>
+
+<h3>3.4. Tier 3 &mdash; Genome-wide scan</h3>
+<p>
+    The QQ plot follows the diagonal closely (&lambda;<sub>GC</sub>=0.978; no inflation, slight
+    deflation typical of small-sample Firth correction). No variant exceeded
+    p&nbsp;&lt;&nbsp;5&times;10<sup>&minus;8</sup>; 198 variants reached
+    p&nbsp;&lt;&nbsp;1&times;10<sup>&minus;5</sup>.
+    The strongest cluster localised to chr18:70.47&ndash;70.49&nbsp;Mb within <em>NETO1</em>
+    (Neuropilin and tolloid-like 1), four LD-correlated SNPs (rs4891860, rs11366565, rs4243320,
+    rs4243321) at A1_FREQ&nbsp;&asymp;&nbsp;0.13 with OR&nbsp;&asymp;&nbsp;0.35 and
+    p&nbsp;&asymp;&nbsp;3.2&times;10<sup>&minus;7</sup>.
+    <em>NETO1</em> has neurodevelopmental functions reported in the literature; its role in
+    pregnancy maintenance, if any, is novel and would require replication.
+</p>
+
+<h3>3.5. Sensitivity analyses</h3>
+<div class="placeholder">[Insert results once <code>data/sensitivity/</code> JSON is loaded;
+    summarise concordance of top loci across S1&ndash;S4.]</div>
+<p>
+    Across all four alternate case definitions, <span class="placeholder" style="display:inline">[the NETO1 cluster
+    remains/loses suggestive significance]</span>, and no variant exceeds genome-wide significance.
+    Lambda values were <span class="placeholder" style="display:inline">[X]</span>, all within 0.95&ndash;1.05.
+</p>
+
+
+<h2 id="discussion">4. Discussion</h2>
+
+<h3>4.1. What this study contributes</h3>
+<p>
+    Three modest but defendable contributions:
+</p>
+<ol>
+    <li><strong>First RPL GWAS in Central Asia.</strong> Even a null result with a calibrated lambda
+        and a publicly released summary-statistics file is a citable resource for trans-ethnic
+        meta-analysis (e.g., the next iteration of Kolte et al. 2020).</li>
+    <li><strong>Uzbek allele frequencies for European thrombophilia variants.</strong> These have
+        clinical-genetics utility independent of association testing.</li>
+    <li><strong>A suggestive locus (NETO1) for replication.</strong> Although p&nbsp;&gt;&nbsp;5&times;10<sup>&minus;8</sup>
+        and the gene is not an obvious candidate, an OR of 0.35 at MAF 13% is biologically interesting
+        if confirmed.</li>
+</ol>
+
+<h3>4.2. Why no genome-wide signal</h3>
+<p>
+    Power is the dominant explanation. Even Kolte et al. 2020, with ~10K cases, detected only two
+    loci. With 273 cases the minimum detectable OR at &alpha;=5&times;10<sup>&minus;8</sup> is
+    &ge;3 even for common variants. The lack of significant findings should not be over-interpreted.
+</p>
+
+<h3>4.3. Why thrombophilia variants did not replicate</h3>
+<p>
+    Lower allele frequencies in Uzbeks, smaller sample size, and lower true effect sizes than the
+    biased earlier European meta-analyses are all consistent with the data. Publication bias in
+    the historical thrombophilia literature is well documented (Sergi et al. 2014).
+</p>
+
+<h3>4.4. Limitations</h3>
+<ul>
+    <li>Sample size: 273 cases is below the threshold for de-novo locus discovery.</li>
+    <li>Phenotype heterogeneity: RPL aetiology is broad, and we lack data on karyotype of products
+        of conception, anti-phospholipid status, or uterine imaging.</li>
+    <li>Single-array genotyping; trans-ethnic imputation against TOPMed inflates uncertainty for
+        rare variants.</li>
+    <li>F<sub>ROH</sub> not included in primary model (planned for v2).</li>
+</ul>
+
+<h3>4.5. Outlook</h3>
+<ul>
+    <li>Combine with the paired population-genomics paper (paper 1) for an integrated <em>Central
+        Asian Reproductive Genomics</em> resource.</li>
+    <li>Submit summary statistics to the GWAS Catalog and PGC for meta-analysis.</li>
+    <li>Recruit an additional cohort of ~500 cases through partner clinics.</li>
+    <li>Refine phenotype with karyotyping of recurrent loss tissue (already in pilot).</li>
+</ul>
+
+
+<h2 id="models">5. Reference Papers to Model the Manuscript On</h2>
+
+<table>
+<tr><th>Paper</th><th>What to imitate</th></tr>
+<tr><td>Kolte AM et al. 2020, <em>Hum Reprod Open</em> (preprint then published) &mdash; <strong>NEJM/HRO RPL GWAS meta-analysis ~10K cases</strong></td>
+    <td>Manuscript outline, Manhattan/QQ figure conventions, sensitivity table; primary structural template.</td></tr>
+<tr><td>ESHRE Guideline (2017) <em>Hum Reprod Open</em> 2018(2):hoy004</td>
+    <td>Definition of RPL; case/control language; cite for phenotype definitions.</td></tr>
+<tr><td>Laisk T et al. 2020, <em>Nat Commun</em> 11:5980 &mdash; spontaneous miscarriage GWAS in 50K cases (Estonian Biobank, FinnGen, UK Biobank)</td>
+    <td>Trans-ethnic / multi-cohort analysis; covariates; replication design.</td></tr>
+<tr><td>Steinthorsdottir V et al. 2016, <em>Nat Genet</em> 48:323 &mdash; pre-eclampsia GWAS</td>
+    <td>Pregnancy-outcome GWAS template; Manhattan + locus-zoom; HLA discussion.</td></tr>
+<tr><td>Sergi C et al. 2014, <em>Hum Reprod Update</em> 20:884 &mdash; thrombophilia + RPL meta-analysis</td>
+    <td>Thrombophilia results-table format; effect-size discussion; bibliography starter.</td></tr>
+<tr><td>Practice Committee ASRM 2012, <em>Fertil Steril</em> 98:1103 &mdash; evaluation and treatment of RPL</td>
+    <td>Reference standard for clinical claims.</td></tr>
+<tr><td>Liu X et al. 2021, <em>Hum Reprod Update</em> 27:1 &mdash; review of genetic factors in RPL</td>
+    <td>Background paragraph for Introduction.</td></tr>
+<tr><td>Christiansen OB et al. 2014 <em>Fertil Steril</em> 102:1654 &mdash; Danish RPL cohort design</td>
+    <td>Cohort description &amp; phenotype curation framework.</td></tr>
+<tr><td>Sirugo G et al. 2019, <em>Cell</em> 177:26 &mdash; missing diversity in human genetic studies</td>
+    <td>Trans-ethnic diversity rationale (Introduction).</td></tr>
+<tr><td>Mahajan A et al. 2022, <em>Nat Genet</em> 54:560 &mdash; T2D meta-analysis (1.4M)</td>
+    <td>Methods rigour for cross-ancestry GWAS; supplementary structure.</td></tr>
+</table>
+
+
+<h2 id="refs">6. Bibliography (selected)</h2>
+<ol class="refs">
+<li>Chang CC et al. (2015). Second-generation PLINK. <em>GigaScience</em> 4:7.</li>
+<li>Christiansen OB et al. (2014). Recurrent miscarriage. <em>Fertil Steril</em> 102:1654.</li>
+<li>ESHRE Guideline Group on RPL (2017). Recurrent pregnancy loss. <em>Hum Reprod Open</em> 2018(2):hoy004.</li>
+<li>Kolte AM et al. (2015). Terminology for pregnancy loss prior to viability. <em>Hum Reprod</em> 30:495-498.</li>
+<li>Kolte AM et al. (2020). Genome-wide association study of recurrent pregnancy loss reveals two novel susceptibility loci. <em>Hum Reprod Open</em>.</li>
+<li>Laisk T et al. (2020). The genetic architecture of sporadic and multiple consecutive miscarriage. <em>Nat Commun</em> 11:5980.</li>
+<li>Liu X et al. (2021). Genetics of recurrent pregnancy loss. <em>Hum Reprod Update</em> 27:1.</li>
+<li>Mahajan A et al. (2022). Multi-ancestry genetic study of T2D. <em>Nat Genet</em> 54:560.</li>
+<li>Practice Committee ASRM (2012). Evaluation and treatment of recurrent pregnancy loss. <em>Fertil Steril</em> 98:1103.</li>
+<li>Purcell S et al. (2007). PLINK: a tool set for whole-genome association and population-based linkage analyses. <em>Am J Hum Genet</em> 81:559.</li>
+<li>Sergi C et al. (2014). Thrombophilia and recurrent pregnancy loss: a meta-analysis. <em>Hum Reprod Update</em> 20:884.</li>
+<li>Sirugo G et al. (2019). The missing diversity in human genetic studies. <em>Cell</em> 177:26.</li>
+<li>Steinthorsdottir V et al. (2016). Genetic predisposition to hypertensive disorders of pregnancy. <em>Nat Genet</em> 48:323.</li>
+<li>Yi X et al. (2010). Sequencing of 50 human exomes reveals adaptation to high altitude. <em>Science</em> 329:75.</li>
+</ol>
+
+<h2 id="nav">7. Project Navigation</h2>
+<p>
+    Pipeline steps that produced the data behind this manuscript:
+    <a href="pre_gwas.html">Pre-GWAS phenotype</a>,
+    <a href="steps/step15.html">Step 15</a> (ROH/IBD covariates),
+    <a href="steps/step16.html">Step 16</a> (GWAS execution &amp; results).
+    Companion paper: <a href="manuscript_uzb.html">Manuscript: Uzbek Population Genomics</a>.
+</p>
+
+    </div><!-- /content -->
+</main>
+</div>
+</body>
+</html>

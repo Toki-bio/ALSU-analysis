@@ -1,0 +1,20 @@
+{
+  "generated": "2026-04-20T08:50 PDT",
+  "model": "logit(RPL) ~ SNP + AGE + BMI + PC1 + PC2 + PC3, Firth-hybrid, PLINK2 v2.00a6LM",
+  "bfile": "UZB_imputed_HQ_clean (1090 samples, 9.98M SNPs)",
+  "runs": {
+    "primary": {"cases": 273, "controls": 509, "tested": 9920024, "gw": 0, "suggestive": 198, "lambda_gc": 0.978, "top": "NETO1 chr18:70.49M rs4891860 OR=0.35 p=3.2e-7"},
+    "S1_strict3": {"cases": 97, "controls": 509, "tested": 9848013, "gw": 0, "suggestive": 123, "lambda_gc": 0.857, "median_p": 0.532091, "top": "rs9666550 chr1:188.21M OR=2.80 p=5.7e-7"},
+    "S2_review_as_case": {"cases": 337, "controls": 509, "tested": 9935141, "gw": 0, "suggestive": 66, "lambda_gc": 1.003, "median_p": 0.499162, "top": "rs594626 chr1:109.15M (CELSR2/SORT1) OR=1.98 p=4.18e-7"},
+    "S3_gray_as_case": {"cases": 392, "controls": 509, "tested": 9959494, "gw": 0, "suggestive": 52, "lambda_gc": 1.021, "median_p": 0.495369, "top": "rs28446251 chr9:115.91M OR=2.12 p=1.03e-7"},
+    "S4_probable": {"cases": 291, "controls": 512, "tested": 9926237, "gw": 0, "suggestive": 95, "lambda_gc": 0.984, "median_p": 0.503312, "top": "rs594626 chr1:109.15M OR=2.08 p=2.17e-7; NETO1 cluster rs4243323 OR=0.36 p=2.9e-7 REPLICATES PRIMARY"}
+  },
+  "key_findings": [
+    "NETO1 (chr18:70.49M) protective signal robust under primary + S4 (broader probable cases)",
+    "chr1:109.15M CELSR2/PSRC1/SORT1 risk cluster appears in S2/S3/S4 only (broader phenotypes)",
+    "chr9:115.9M intergenic risk cluster appears in S3 only",
+    "No genome-wide significant variants across any of the 5 runs",
+    "Lambda well-controlled (0.86-1.02); S1 deflation expected (Firth small-N with 97 cases)"
+  ],
+  "remote_files": "/staging/ALSU-analysis/spring2026/gwas/sensitivity/results/{S1..S4}_*_top10.tsv"
+}

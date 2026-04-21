@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manuscript Draft: Uzbek Population Genomics — ALSU</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg,#3e2723 0%,#1a1a1a 100%);
+    min-height:100vh; padding:20px;
+}
+.page-wrapper { display:flex; gap:20px; max-width:1400px; margin:0 auto; }
+.sidebar {
+    width:260px; background:white; border-radius:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2); padding:20px;
+    height:fit-content; position:sticky; top:20px;
+}
+.sidebar h3 { font-size:1em; color:#333; margin-bottom:15px;
+              border-bottom:2px solid #6d4c41; padding-bottom:10px; }
+.toc { display:flex; flex-direction:column; gap:6px; font-size:0.88em; }
+.toc a { padding:6px 10px; background:#f5f5f5; color:#333; text-decoration:none;
+         border-radius:4px; border-left:3px solid transparent; transition:all 0.2s; }
+.toc a:hover { background:#efebe9; border-left-color:#6d4c41; }
+.toc a.sub { padding-left:24px; font-size:0.92em; color:#555; }
+.main {
+    flex:1; background:white; border-radius:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2); overflow:hidden;
+}
+.header { background: linear-gradient(135deg,#5d4037 0%,#3e2723 100%);
+          color:white; padding:30px; }
+.header h1 { font-size:1.9em; margin-bottom:8px; }
+.header p { opacity:0.9; }
+.back-link { color:rgba(255,255,255,0.85); text-decoration:none;
+             margin-bottom:14px; display:inline-block; font-size:0.9em; }
+.back-link:hover { color:white; }
+.badges { margin-top:10px; }
+.badge { display:inline-block; background:rgba(255,255,255,0.2); color:white;
+         padding:4px 12px; border-radius:14px; font-size:0.85em; margin-right:8px; }
+.content { padding:35px 40px; }
+.content h2 { color:#3e2723; font-size:1.45em; margin:32px 0 14px;
+              padding-bottom:8px; border-bottom:2px solid #8d6e63; }
+.content h3 { color:#5d4037; font-size:1.15em; margin:22px 0 10px; }
+.content h4 { color:#6d4c41; margin:16px 0 8px; }
+.content p, .content li { color:#444; line-height:1.7; margin-bottom:10px; }
+.content ul, .content ol { margin-left:24px; }
+.lead { font-style:italic; color:#5d4037; background:#efebe9;
+        padding:14px 18px; border-left:4px solid #8d6e63;
+        border-radius:4px; margin:18px 0; }
+.placeholder { background:#fff3e0; border:1px dashed #fb8c00;
+               padding:10px 14px; border-radius:4px; color:#bf360c;
+               font-style:italic; margin:6px 0; }
+table { width:100%; border-collapse:collapse; margin:16px 0; font-size:0.92em; }
+th, td { padding:9px 12px; text-align:left; border-bottom:1px solid #e0e0e0; }
+th { background:#efebe9; color:#3e2723; font-weight:600; }
+tr:hover { background:#fafafa; }
+.refs { font-size:0.85em; color:#555; }
+.refs li { margin-bottom:6px; }
+code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
+       font-family: Consolas,monospace; font-size:0.9em; }
+.fig-cap { font-size:0.85em; color:#666; font-style:italic;
+           text-align:center; margin-top:6px; }
+.callout-blue { background:#e3f2fd; border-left:4px solid #1976d2;
+                padding:14px 18px; border-radius:4px; margin:14px 0; }
+.callout-amber { background:#fff8e1; border-left:4px solid #f57f17;
+                 padding:14px 18px; border-radius:4px; margin:14px 0; }
+.callout-green { background:#e8f5e9; border-left:4px solid #2e7d32;
+                 padding:14px 18px; border-radius:4px; margin:14px 0; }
+.example { background:#f3e5f5; border-left:4px solid #6a1b9a;
+           padding:14px 18px; border-radius:4px; margin:14px 0; font-size:0.93em; }
+.example strong { color:#4a148c; }
+@media (max-width:1024px) { .page-wrapper { flex-direction:column; }
+    .sidebar { width:100%; position:relative; top:0; } }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ── SIDEBAR ──────────────────────────────── -->
+<aside class="sidebar">
+    <h3>Manuscript Sections</h3>
+    <div class="toc">
+        <a href="#title">Title &amp; Abstract</a>
+        <a href="#intro">1. Introduction</a>
+        <a href="#methods">2. Methods</a>
+        <a href="#methods" class="sub">2.1 Samples &amp; QC</a>
+        <a href="#methods" class="sub">2.2 Imputation</a>
+        <a href="#methods" class="sub">2.3 Reference panels</a>
+        <a href="#methods" class="sub">2.4 PCA &amp; ADMIXTURE</a>
+        <a href="#methods" class="sub">2.5 PBS &amp; selection</a>
+        <a href="#methods" class="sub">2.6 ROH</a>
+        <a href="#results">3. Results</a>
+        <a href="#results" class="sub">3.1 Cohort overview</a>
+        <a href="#results" class="sub">3.2 Population structure</a>
+        <a href="#results" class="sub">3.3 Admixture</a>
+        <a href="#results" class="sub">3.4 PBS candidates</a>
+        <a href="#results" class="sub">3.5 ROH &amp; F<sub>ROH</sub></a>
+        <a href="#discussion">4. Discussion</a>
+        <a href="#models">5. Reference papers</a>
+        <a href="#refs">6. Bibliography</a>
+        <a href="#nav">Navigation</a>
+    </div>
+    <h3 style="margin-top:24px;">Related</h3>
+    <div class="toc">
+        <a href="../index.html">&larr; Roadmap</a>
+        <a href="manuscript_rpl.html">Manuscript: RPL GWAS</a>
+        <a href="../steps/step11.html">ADMIXTURE</a>
+        <a href="../steps/step12.html">PBS Annotation</a>
+        <a href="../steps/step14.html">F<sub>ST</sub> &amp; MDS</a>
+        <a href="../steps/step15.html">ROH &amp; IBD</a>
+    </div>
+</aside>
+
+<!-- ── MAIN ─────────────────────────────────── -->
+<main class="main">
+    <div class="header">
+        <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
+        <h1>Population Genomics of Uzbeks: Genome-wide Insights from a 1,047-individual Cohort</h1>
+        <p>Manuscript draft &mdash; Population genetics of Central Asia (Paper 1 of 2)</p>
+        <div class="badges">
+            <span class="badge">Draft v0.1 &middot; Apr 2026</span>
+            <span class="badge">Target: Genome Biology / Eur J Hum Genet / Genome Med</span>
+            <span class="badge">~5,000 words target</span>
+        </div>
+    </div>
+
+    <div class="content">
+
+<!-- ── ABSTRACT ── -->
+<h2 id="title">Title &amp; Abstract</h2>
+
+<h3>Working title</h3>
+<p>
+    <em>&ldquo;Genome-wide characterisation of the Uzbek population reveals South-Asian/East-European
+    admixture, low inbreeding, and selection signatures at immune and metabolic loci&rdquo;</em>
+</p>
+
+<h3>Abstract (250 words, structured)</h3>
+
+<h4>Background</h4>
+<p>
+    Central Asian populations remain under-represented in human genomic resources. Existing reference
+    panels (1000 Genomes, gnomAD) contain few or no Uzbek samples, limiting variant frequency estimation,
+    imputation accuracy, and clinical interpretation in this population of ~36 million. Comparative
+    studies place Uzbeks at the cline between European, South Asian, and East Asian ancestries
+    (Yunusbayev et al. 2012; Jeong et al. 2019), but high-resolution autosomal data have not been published.
+</p>
+
+<h4>Methods</h4>
+<p>
+    We genotyped 1,247 Uzbek individuals on a custom Illumina array, applied a multi-stage QC pipeline
+    (sample missingness, IBD deduplication, variant call rate, HWE), imputed against the TOPMed&nbsp;r2
+    reference (Michigan Imputation Server, Eagle&nbsp;v2.4 + Minimac4), and merged the resulting 1,074-sample
+    high-quality dataset with all 2,548 samples of the 1000 Genomes Phase&nbsp;3 release. We ran principal
+    component analysis, ADMIXTURE (K=2&ndash;8), unsupervised sNMF (validation), pairwise Weir &amp;
+    Cockerham F<sub>ST</sub>, classical multidimensional scaling, the Population Branch Statistic
+    (PBS), Ensembl Variant Effect Predictor annotation, runs-of-homozygosity analysis, and IBD-based
+    relatedness.
+</p>
+
+<h4>Results</h4>
+<p>
+    Uzbeks form a single genetic cluster intermediate between European and South Asian populations,
+    with weighted F<sub>ST</sub>=0.018 against SAS and 0.020 against EUR; F<sub>ST</sub>=0.060 vs AFR.
+    ADMIXTURE K=5 best partitions the global panel; within Uzbeks, K=2 is parsimonious and follows
+    a geographic East&ndash;West cline that explains 8.2% of variance. PBS analysis identifies 8 lead
+    variants (PBS&nbsp;&ge;&nbsp;0.3) and 490 candidates after relaxation, enriching for HLA/MHC genes
+    (chr&nbsp;6 &mdash; 33.7% of independent loci) and immune/metabolic functions; 5 are missense including
+    damaging variants in <em>SPI1</em> and <em>SLC6A2</em>. Median F<sub>ROH</sub>=0.015, comparable
+    to outbred European populations and distinctly lower than reported values for some other Central
+    Asian groups; only 0.08% of pairs exceed PI_HAT&nbsp;0.0884.
+</p>
+
+<h4>Conclusion</h4>
+<p>
+    This work establishes the first medium-scale, openly described autosomal reference for Uzbeks,
+    refines their position within global human genetic variation, identifies population-specific
+    selection candidates, and provides imputation-quality summary statistics for downstream
+    biomedical genomics in Central Asia.
+</p>
+
+
+<!-- ── INTRODUCTION ── -->
+<h2 id="intro">1. Introduction</h2>
+
+<div class="lead">
+    Two narrative arcs to weave together: (1) Central Asia as a missing piece of the global genomic
+    map, (2) the methodological case for adding Uzbeks specifically &mdash; geographic position, sample
+    feasibility, biomedical relevance.
+</div>
+
+<h3>1.1. The Central Asia gap in human genomics</h3>
+<ul>
+    <li>Population-genomic literature on Central Asia is dominated by Y-chromosome / mtDNA studies
+        (Wells et al. 2001; Heyer et al. 2009; Karafet et al. 2018); autosomal SNP arrays are rarer.</li>
+    <li>Existing autosomal references include the HGDP (small Uyghur and Hazara samples; Bergstrom et al. 2020),
+        Yunusbayev et al. 2012 (~600,000 SNPs across multiple Turkic groups, including a small Uzbek subset),
+        and the SGDP (Mallick et al. 2016, single-digit Uzbek samples).</li>
+    <li>The 1000 Genomes Phase 3 release contains <strong>no Uzbek samples</strong>; gnomAD v3.1 reports
+        no Central Asian super-population.</li>
+    <li>Consequence: imputation accuracy in Central Asia is reduced, allele-frequency estimates for
+        clinical variants are extrapolated, and association studies cannot use a population-matched
+        reference.</li>
+</ul>
+
+<h3>1.2. Why Uzbeks specifically?</h3>
+<ul>
+    <li><strong>Demographic weight</strong>: ~36 million people, the largest Central Asian nationality.</li>
+    <li><strong>Geographic centrality</strong>: spans East&ndash;West Silk Road; a natural test case for
+        ancient admixture.</li>
+    <li><strong>Mixed ancestry expectation</strong>: prior work places them between EUR and EAS; this
+        study quantifies the proportions and tests whether structure correlates with internal regional
+        provenance.</li>
+</ul>
+
+<h3>1.3. Aims</h3>
+<ol>
+    <li>Provide a publicly described 1,047-sample autosomal reference for Uzbeks at imputation-grade
+        SNP density (post-imputation 9.9M well-imputed variants).</li>
+    <li>Position the Uzbek genetic background in global ancestry space using PCA, F<sub>ST</sub>, and
+        ADMIXTURE.</li>
+    <li>Identify population-specific selection signatures using PBS with EUR + EAS outgroups.</li>
+    <li>Quantify endogamy and relatedness via ROH and IBD.</li>
+</ol>
+
+
+<!-- ── METHODS ── -->
+<h2 id="methods">2. Methods</h2>
+
+<h3>2.1. Sample collection &amp; ethics</h3>
+<div class="placeholder">[Insert: ALSU consent procedure, IRB number, recruitment site(s),
+    inclusion/exclusion criteria, demographic table.]</div>
+
+<h3>2.2. Genotyping &amp; QC</h3>
+<p>
+    DNA from 1,247 self-identified Uzbek volunteers was genotyped on the
+    <span class="placeholder" style="display:inline">[array name]</span> following the manufacturer&rsquo;s protocol.
+    Quality control was performed in PLINK 1.9 (Chang et al. 2015):
+    sample missingness &gt; 0.20 (n=92 removed; 1,155 retained), IBD deduplication
+    (PI_HAT &ge; 0.98 for monozygotic / sample duplicates; 57 removed; 1,098 retained),
+    SNP call rate &lt; 0.10, MAF &lt; 0.01, HWE p &lt; 10<sup>&minus;6</sup>
+    (654K &rarr; 473K variants).
+    See <a href="../steps/step1.html">Step 1</a>&ndash;<a href="../steps/step3.html">Step 3</a>.
+</p>
+
+<h3>2.3. Imputation</h3>
+<p>
+    Eagle v2.4 phasing followed by Minimac4 imputation against TOPMed r2 was performed on the
+    Michigan Imputation Server. Post-imputation we filtered on Rsq &ge; 0.3, MAF &ge; 0.01,
+    HWE p &lt; 10<sup>&minus;6</sup> in controls, retaining 9,981,814 SNPs across 1,074 samples;
+    16 samples were lost to ID-merge failures and the final analytic dataset comprised 1,047
+    individuals after population QC. See <a href="../steps/step4.html">Step 4</a>&ndash;
+    <a href="../steps/step6.html">Step 6</a>.
+</p>
+
+<h3>2.4. Reference panel merging</h3>
+<p>
+    Variants were intersected by chromosomal position with the 1000 Genomes Phase&nbsp;3 reference
+    (2,548 samples after liftover to GRCh38), restricted to overlapping bi-allelic SNPs and
+    LD-pruned (PLINK <code>--indep-pairwise 50 5 0.2</code>) yielding ~376,000 SNPs for ADMIXTURE
+    and ~88,000 for population statistics.
+</p>
+
+<h3>2.5. PCA &amp; ADMIXTURE</h3>
+<p>
+    PCA was computed with PLINK2; the first two PCs separate Uzbeks from EUR/SAS/EAS axes.
+    ADMIXTURE 1.3 was run for K=2&ndash;8 with 10-fold cross-validation; sNMF (Frichot et al. 2014)
+    was used as a model-class robustness check. Within-Uzbek structure was assessed at K=2&ndash;5
+    on the Uzbek-only LD-pruned subset.
+</p>
+
+<h3>2.6. F<sub>ST</sub> &amp; MDS</h3>
+<p>
+    Pairwise Weir &amp; Cockerham F<sub>ST</sub> (Weir &amp; Cockerham 1984) was estimated with
+    PLINK&nbsp;<code>--fst</code> across 5 super-populations (UZB, EUR, EAS, SAS, AFR);
+    MDS in 2 dimensions was computed on the F<sub>ST</sub> distance matrix.
+</p>
+
+<h3>2.7. PBS &amp; functional annotation</h3>
+<p>
+    PBS (Yi et al. 2010) was computed with EUR and EAS as outgroups, treating Uzbek as the focal
+    branch. The 8 SNPs with PBS &ge; 0.3 (and 490 with PBS &ge; 0.15 after pruning) were annotated
+    with Ensembl VEP 110 against GENCODE 44 and cross-referenced to GTEx v8 eQTLs and the GWAS
+    Catalog.
+</p>
+
+<h3>2.8. Runs of homozygosity &amp; relatedness</h3>
+<p>
+    ROH segments were called with PLINK&nbsp;<code>--homozyg</code> (window 50 SNPs, density 50&nbsp;kb,
+    minimum 1 Mb). F<sub>ROH</sub> was computed as total ROH length / autosomal genome length
+    (2,881,033 kb GRCh38). IBD/PI_HAT was estimated with PLINK on the LD-pruned dataset; pairs
+    with PI_HAT &gt; 0.0884 (loosely 3rd-degree relatives) were flagged.
+</p>
+
+
+<!-- ── RESULTS ── -->
+<h2 id="results">3. Results</h2>
+
+<h3>3.1. Cohort overview</h3>
+<p>
+    Of 1,247 individuals genotyped, 1,074 passed all QC and 1,047 entered the final population-genetic
+    analyses (Table&nbsp;1). Median age was <span class="placeholder" style="display:inline">[X]</span> years;
+    sex distribution and birthplace breakdown across 14 Uzbek administrative regions are given in
+    Supplementary Table S1.
+</p>
+
+<h3>3.2. PCA &amp; global F<sub>ST</sub></h3>
+<p>
+    Projected onto the 1000 Genomes PC space, Uzbeks form a tight cluster intermediate between
+    EUR and SAS along PC1, with mild spread along PC2 toward EAS. Pairwise F<sub>ST</sub> places UZB
+    closest to SAS (0.018), then EUR (0.020), EAS (0.039), and AFR (0.060) &mdash; values within
+    published ranges for between-continent comparisons (1000 Genomes Consortium 2015).
+</p>
+
+<div class="placeholder">[Insert Fig. 1: global PCA scatter; Fig. 2: F<sub>ST</sub> heatmap + MDS]</div>
+
+<h3>3.3. ADMIXTURE</h3>
+<p>
+    Cross-validation supports K=5 as the most parsimonious global model
+    (CV<sub>K=5</sub>=0.294, plateau through K=8). Uzbeks consistently express a mixture of
+    a Western (EUR-like) and an Eastern (CAS/SAS-like) component, with smaller fractions of
+    East-Asian and African ancestry. Within Uzbeks alone, K=2 is best (CV monotonically increases
+    K=2&rarr;8); the K=2 Western component (Q1) varies smoothly across geographic regions and
+    explains 8.2% of birthplace variance (ANOVA, <em>p</em>&nbsp;&lt;&nbsp;10<sup>&minus;15</sup>),
+    refuting the hypothesis of discrete sub-populations.
+</p>
+
+<div class="placeholder">[Insert Fig. 3: stacked-bar ADMIXTURE plots K=2&ndash;5;
+    Fig. 4: Q1 vs birthplace boxplot]</div>
+
+<h3>3.4. PBS selection candidates</h3>
+<p>
+    Eight lead variants had PBS &ge; 0.3 (Table&nbsp;2). After LD clumping
+    (<a href="../steps/step13.html">Step 13</a>) the broader candidate set (PBS &ge; 0.15)
+    contained 401 independent loci across all 22 autosomes; 33.7% (135) localised to chr&nbsp;6
+    (HLA/MHC). Five candidates were missense (SPI1, SLC6A2, TNXB, two further in HLA region);
+    four were predicted damaging by SIFT &amp; PolyPhen. Twelve candidates overlapped GTEx
+    eQTLs in immune tissues. None of the 8 lead PBS variants had a prior GWAS Catalog or ClinVar
+    entry.
+</p>
+
+<div class="placeholder">[Insert Fig. 5: PBS Manhattan; Table 2: top 8 PBS candidates with annotation]</div>
+
+<h3>3.5. ROH &amp; relatedness</h3>
+<p>
+    36,702 ROH segments &ge; 1 Mb were detected across 1,047 individuals; median F<sub>ROH</sub>=0.015,
+    consistent with outbred populations and distinctly lower than ROH-rich groups such as
+    isolated Pakistani or Saudi cohorts (Pemberton et al. 2012). PI_HAT &gt; 0.0884 was observed for
+    only 0.08% of all pairs (428 of 547,581), supporting the use of an unrelated subset for GWAS.
+</p>
+
+
+<!-- ── DISCUSSION ── -->
+<h2 id="discussion">4. Discussion</h2>
+
+<h3>4.1. Position of Uzbeks in global variation</h3>
+<p>
+    Our F<sub>ST</sub> estimates and admixture proportions reproduce the East&ndash;West gradient
+    described in earlier sparse-marker studies (Yunusbayev et al. 2012; Jeong et al. 2019) at
+    higher resolution. The proximity to South Asians (F<sub>ST</sub>=0.018) is closer than the
+    long-standing assumption that Central Asia is primarily &ldquo;between EUR and EAS&rdquo;, and is
+    consistent with archaeogenomic evidence of Indo-Iranian gene flow (Narasimhan et al. 2019).
+</p>
+
+<h3>4.2. Selection signatures</h3>
+<p>
+    HLA/MHC enrichment among PBS candidates is a recurring feature of selection scans in
+    inter-cluster human populations (Sabeti et al. 2007; Bersaglieri et al. 2004) and consistent
+    with pathogen-driven balancing selection. The non-HLA candidates &mdash; <em>SPI1</em>
+    (haematopoiesis), <em>SLC6A2</em> (norepinephrine transporter), <em>SLC6A3</em>, <em>TNXB</em>
+    &mdash; nominate immune and metabolic processes for follow-up.
+</p>
+
+<h3>4.3. Endogamy</h3>
+<p>
+    The low F<sub>ROH</sub> contrasts with anecdotal expectations of high consanguinity in Central Asia
+    and parallels the urban/peri-urban recruitment of this cohort. Geographic stratification of
+    F<sub>ROH</sub> within Uzbekistan is likely and should be the subject of a focused follow-up.
+</p>
+
+<h3>4.4. Limitations</h3>
+<ul>
+    <li>Single-array genotyping introduces ascertainment bias; whole-genome sequencing of a subset
+        is the obvious next step.</li>
+    <li>Recruitment from a limited number of clinical sites may not capture rural diversity.</li>
+    <li>Imputation against TOPMed (Anglo-American-dominant reference) inflates uncertainty for
+        rare Central-Asian-specific variants.</li>
+</ul>
+
+<h3>4.5. Resources released with this paper</h3>
+<ul>
+    <li>1,047-sample LD-pruned PLINK BFILE for population genomic re-use (controlled access).</li>
+    <li>Per-variant allele frequency table for 9.9M imputed SNPs.</li>
+    <li>ADMIXTURE Q-matrices K=2&ndash;8 (whole-cohort and Uzbek-only).</li>
+    <li>F<sub>ST</sub> and PBS summary statistics in standard formats.</li>
+</ul>
+
+
+<!-- ── REFERENCE / BENCHMARK PAPERS ── -->
+<h2 id="models">5. Reference Papers to Model the Manuscript On</h2>
+<p>
+    The papers below are templates for structure, depth, and figure choice. Cited models cover
+    populations of comparable size (5K&ndash;25K samples) but the analytic backbone scales to ~1K.
+</p>
+
+<table>
+<tr><th>Paper</th><th>Population</th><th>What to imitate</th></tr>
+<tr><td>Yunusbayev et al. 2012, <em>Mol Biol Evol</em> 29(1):359&ndash;65</td>
+    <td>Turkic-speaking peoples (incl. small Uzbek subset)</td>
+    <td>Frame for placing Uzbeks against neighbours; ADMIXTURE + F<sub>ST</sub> figure choice.</td></tr>
+<tr><td>Jeong et al. 2019, <em>Nature</em> 569:374&ndash;9</td>
+    <td>Mongolian steppe</td>
+    <td>Discussion of ancient admixture / Silk-Road; figure for ancestry decomposition.</td></tr>
+<tr><td>Narasimhan et al. 2019, <em>Science</em> 365:eaat7487</td>
+    <td>South &amp; Central Asia, ancient + modern</td>
+    <td>Methods rigour for f-statistics &amp; admixture timing.</td></tr>
+<tr><td>Bergstrom et al. 2020, <em>Science</em> 367:eaay5012 (HGDP-WGS)</td>
+    <td>54 worldwide populations including Uzbeks &amp; Uyghurs</td>
+    <td>Methods structure: QC, ROH, drift; supplementary tables format.</td></tr>
+<tr><td>Mallick et al. 2016, <em>Nature</em> 538:201&ndash;6 (SGDP)</td>
+    <td>300 individuals, 142 populations</td>
+    <td>Concise methods; per-population summary tables.</td></tr>
+<tr><td>Pemberton et al. 2012, <em>Am J Hum Genet</em> 91:275&ndash;92</td>
+    <td>HGDP ROH analysis</td>
+    <td>Direct template for ROH section; figure types; F<sub>ROH</sub> categories.</td></tr>
+<tr><td>Karafet et al. 2018, <em>Hum Genet</em> 137:175&ndash;87</td>
+    <td>Uzbek Y-chromosomes</td>
+    <td>Cross-citation; positions our autosomal results.</td></tr>
+<tr><td>1000 Genomes Consortium 2015, <em>Nature</em> 526:68&ndash;74</td>
+    <td>2,504 individuals, 26 populations</td>
+    <td>Tone-setting reference; PCA / F<sub>ST</sub> figure conventions.</td></tr>
+<tr><td>Reich et al. 2009, <em>Nature</em> 461:489&ndash;94</td>
+    <td>Indian populations</td>
+    <td>Structure for &ldquo;new population&rdquo; story; admixture LD methods.</td></tr>
+</table>
+
+
+<!-- ── BIBLIOGRAPHY ── -->
+<h2 id="refs">6. Bibliography (selected)</h2>
+<ol class="refs">
+<li>Bergstrom A et al. (2020). Insights into human genetic variation and population history from 929 diverse genomes. <em>Science</em> 367(6484):eaay5012.</li>
+<li>Bersaglieri T et al. (2004). Genetic signatures of strong recent positive selection at the lactase gene. <em>Am J Hum Genet</em> 74(6):1111-1120.</li>
+<li>Chang CC et al. (2015). Second-generation PLINK: rising to the challenge of larger and richer datasets. <em>GigaScience</em> 4:7.</li>
+<li>Frichot E et al. (2014). Fast and efficient estimation of individual ancestry coefficients. <em>Genetics</em> 196:973-983.</li>
+<li>Heyer E et al. (2009). Genetic diversity and the emergence of ethnic groups in Central Asia. <em>BMC Genet</em> 10:49.</li>
+<li>Jeong C et al. (2019). The genetic history of admixture across inner Eurasia. <em>Nat Ecol Evol</em> 3:966-976.</li>
+<li>Karafet TM et al. (2018). Coevolution of genes and languages and high levels of population structure among the highland populations of Daghestan. <em>J Hum Genet</em> 60:181-192.</li>
+<li>Mallick S et al. (2016). The Simons Genome Diversity Project: 300 genomes from 142 diverse populations. <em>Nature</em> 538:201-206.</li>
+<li>Narasimhan VM et al. (2019). The formation of human populations in South and Central Asia. <em>Science</em> 365:eaat7487.</li>
+<li>Pemberton TJ et al. (2012). Genomic patterns of homozygosity in worldwide human populations. <em>Am J Hum Genet</em> 91:275-292.</li>
+<li>Reich D et al. (2009). Reconstructing Indian population history. <em>Nature</em> 461:489-494.</li>
+<li>Sabeti PC et al. (2007). Genome-wide detection and characterization of positive selection in human populations. <em>Nature</em> 449:913-918.</li>
+<li>Weir BS &amp; Cockerham CC (1984). Estimating F-statistics for the analysis of population structure. <em>Evolution</em> 38:1358-1370.</li>
+<li>Wells RS et al. (2001). The Eurasian heartland: a continental perspective on Y-chromosome diversity. <em>PNAS</em> 98:10244-10249.</li>
+<li>Yi X et al. (2010). Sequencing of 50 human exomes reveals adaptation to high altitude. <em>Science</em> 329:75-78.</li>
+<li>Yunusbayev B et al. (2012). The Caucasus as an asymmetric semipermeable barrier to ancient human migrations. <em>Mol Biol Evol</em> 29:359-365.</li>
+<li>1000 Genomes Project Consortium (2015). A global reference for human genetic variation. <em>Nature</em> 526:68-74.</li>
+</ol>
+
+<!-- ── NAVIGATION ── -->
+<h2 id="nav">7. Project Navigation</h2>
+<p>
+    Pipeline steps that produced the data behind every figure cited above:
+    <a href="../steps/step1.html">Steps 1&ndash;6</a> (QC), <a href="../steps/step7.html">Steps 7&ndash;8</a> (PCA),
+    <a href="../steps/step9.html">Steps 9&ndash;10</a> (F<sub>ST</sub>/PBS), <a href="../steps/step11.html">Step 11</a> (ADMIXTURE),
+    <a href="../steps/step12.html">Step 12</a> (annotation), <a href="../steps/step13.html">Step 13</a> (LD),
+    <a href="../steps/step14.html">Step 14</a> (heatmap/MDS), <a href="../steps/step15.html">Step 15</a> (ROH/IBD).
+</p>
+
+    </div><!-- /content -->
+</main>
+</div>
+</body>
+</html>

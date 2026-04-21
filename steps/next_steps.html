@@ -973,7 +973,202 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td>&mdash;</td>
         <td>Complete (Step 14)</td>
     </tr>
+    <tr style="background:#e8f5e9;">
+        <td>16</td>
+        <td>GWAS execution + 4 sensitivity runs</td>
+        <td class="status-done">DONE</td>
+        <td>#5,#6,#7</td>
+        <td>Complete (<a href="step16.html">Step 16</a>)</td>
+    </tr>
 </table>
+
+<div class="info" style="margin-top:14px;">
+    <strong>April 2026 status update:</strong> Items 4&ndash;9, 12, 15, and 16 are now complete.
+    The pipeline has produced calibrated genome-wide summary statistics (&lambda;<sub>GC</sub>=0.978),
+    a tier-1/2/3 results page, and four sensitivity analyses on alternate case definitions
+    (S1 strict ESHRE &ge;3, S2 +REVIEW, S3 +GRAY, S4 +PROBABLE). The remaining roadmap (items 10,
+    11 finalisation, 13, 14) is now sub-leading; the dominant outstanding work is the
+    <em>publication-readiness</em> programme described in Section 6.
+</div>
+
+
+<!-- ═══════════════════════════ PUBLICATION ROADMAP ════════════════ -->
+<h2>6. Publication-readiness Roadmap</h2>
+
+<p>
+    The pipeline now contains everything needed for two publishable manuscripts (see
+    drafts: <a href="../manuscript_uzb.html">Manuscript &mdash; UZB Population Genomics</a> and
+    <a href="../manuscript_rpl.html">Manuscript &mdash; RPL GWAS</a>). The list below is
+    ordered by impact on submission readiness.
+</p>
+
+<h3>6.1. Mandatory before submission (HIGH)</h3>
+<table>
+    <tr><th>#</th><th>Task</th><th>Rationale</th><th>Effort</th></tr>
+    <tr style="background:#fff3e0;">
+        <td>P1</td>
+        <td>Compute &lambda;<sub>GC</sub> &amp; build QQ + Manhattan figures for all 5 GWAS runs (primary + S1&ndash;S4)</td>
+        <td>Required figure for any GWAS paper; demonstrates calibration.</td>
+        <td>0.5 day</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>P2</td>
+        <td>Annotate top 50 hits per run with <code>VEP</code> &amp; nearest-gene + LD-clump (PLINK2 <code>--clump</code>)</td>
+        <td>Standard supplementary table; needed to discuss biology.</td>
+        <td>0.5 day</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>P3</td>
+        <td>Re-run primary GWAS with F<sub>ROH</sub> as an additional covariate (currently only AGE,BMI,PC1-3)</td>
+        <td>Step 15 already shows mean F<sub>ROH</sub>&asymp;0.045; small but principled correction.</td>
+        <td>2 hours</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>P4</td>
+        <td>Sex-check + heterozygosity outlier removal at QC stage (re-run KING, regenerate IBD report)</td>
+        <td>Already partly done; document explicitly.</td>
+        <td>2 hours</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>P5</td>
+        <td>Generate concordance table across 5 case definitions (top hits, OR direction, p)</td>
+        <td>Demonstrates robustness; expected by reviewers.</td>
+        <td>0.5 day</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>P6</td>
+        <td>Allele-frequency table for known thrombophilia variants vs. EUR/SAS/EAS (1000G)</td>
+        <td>Headline novelty for the trans-ethnic angle.</td>
+        <td>0.5 day</td>
+    </tr>
+    <tr style="background:#fff3e0;">
+        <td>P7</td>
+        <td>Power calculation appendix (Quanto / GAS power calculator) at observed N</td>
+        <td>Reviewers always ask.</td>
+        <td>2 hours</td>
+    </tr>
+</table>
+
+<h3>6.2. Strong-recommendation (MEDIUM)</h3>
+<table>
+    <tr><th>#</th><th>Task</th><th>Rationale</th><th>Effort</th></tr>
+    <tr style="background:#e3f2fd;">
+        <td>P8</td>
+        <td>Replication: identify 1&ndash;2 partner cohorts for &ge;500-case extension</td>
+        <td>Turns suggestive locus into a publishable finding.</td>
+        <td>External &mdash; weeks</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>P9</td>
+        <td>Trans-ethnic LD score regression (&Delta;-LDSC) vs. UK Biobank RPL</td>
+        <td>Heritability + cross-population genetic correlation.</td>
+        <td>1 day (need EUR LD panel)</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>P10</td>
+        <td>Polygenic Risk Score: build PRS from Kolte 2020 / Laisk 2020 weights, test in our cohort</td>
+        <td>Tests transferability of European RPL PRS to Central Asia.</td>
+        <td>1 day</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>P11</td>
+        <td>Co-localisation of NETO1 region with eQTL data (GTEx, eQTLGen)</td>
+        <td>Functional plausibility of suggestive hit.</td>
+        <td>0.5 day</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>P12</td>
+        <td>WGS subset (10&ndash;30 cases): structural variants &amp; CNVs missed by SNP array</td>
+        <td>Adds modest novelty; relatively cheap if budget exists.</td>
+        <td>External</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>P13</td>
+        <td>Bootstrap confidence intervals on PBS Tier-1 candidates (1000 resamples)</td>
+        <td>Selection scans without CIs are increasingly rejected.</td>
+        <td>0.5 day</td>
+    </tr>
+    <tr style="background:#e3f2fd;">
+        <td>P14</td>
+        <td>iHS / nSL haplotype-based selection scans (selscan)</td>
+        <td>Complements PBS; orthogonal evidence for selection.</td>
+        <td>1&ndash;2 days</td>
+    </tr>
+</table>
+
+<h3>6.3. Data &amp; reproducibility deposits (MUST-HAVE for major journals)</h3>
+<table>
+    <tr><th>#</th><th>Task</th><th>Repository</th><th>Effort</th></tr>
+    <tr style="background:#f5f5f5;">
+        <td>D1</td>
+        <td>Submit summary statistics (5 runs)</td>
+        <td>GWAS Catalog (open) + PGS Catalog if PRS</td>
+        <td>1 day prep</td>
+    </tr>
+    <tr style="background:#f5f5f5;">
+        <td>D2</td>
+        <td>Allele-frequency database release (Uzbek-only, all 9.98M SNPs)</td>
+        <td>Zenodo / institutional repo</td>
+        <td>2 hours</td>
+    </tr>
+    <tr style="background:#f5f5f5;">
+        <td>D3</td>
+        <td>Individual-level genotypes &amp; phenotypes</td>
+        <td>EGA (controlled-access) or dbGaP &mdash; requires local IRB approval</td>
+        <td>External &mdash; weeks</td>
+    </tr>
+    <tr style="background:#f5f5f5;">
+        <td>D4</td>
+        <td>Pipeline code &amp; scripts (this repo)</td>
+        <td>GitHub + Zenodo DOI</td>
+        <td>0.5 day cleanup</td>
+    </tr>
+    <tr style="background:#f5f5f5;">
+        <td>D5</td>
+        <td>HTML report bundle (this site) as supplementary material</td>
+        <td>Zenodo</td>
+        <td>1 hour</td>
+    </tr>
+    <tr style="background:#f5f5f5;">
+        <td>D6</td>
+        <td>STREGA / GWAS Reporting Standard checklist</td>
+        <td>Supplementary PDF</td>
+        <td>0.5 day</td>
+    </tr>
+</table>
+
+<h3>6.4. Methodological "polish" (NICE TO HAVE)</h3>
+<ul>
+    <li>Re-do PCA after dropping IBD-related pairs (PI_HAT&nbsp;&gt;&nbsp;0.185) and report with/without comparison.</li>
+    <li>Sensitivity analysis: GWAS with linear mixed model (GCTA-LOCO or REGENIE) to handle relatedness directly &mdash; useful for any reviewer who suspects population structure beyond PCs.</li>
+    <li>Per-region (oblast) F<sub>ST</sub> matrix as supplementary; would let referees see internal sub-structure.</li>
+    <li>X-chromosome GWAS (currently autosomal-only).</li>
+    <li>Conditional analysis at NETO1 to test for independent secondary signals.</li>
+    <li>Phenome-wide scan: lookup our top hits in OpenTargets / PhenoScanner for pleiotropy.</li>
+</ul>
+
+<h3>6.5. Suggested journal targets (for context)</h3>
+<table>
+    <tr><th>Manuscript</th><th>First-tier</th><th>Realistic</th><th>Backup</th></tr>
+    <tr>
+        <td>Paper 1: Uzbek population genomics</td>
+        <td><em>Genome Biology</em></td>
+        <td><em>European Journal of Human Genetics</em></td>
+        <td><em>BMC Genomics</em>, <em>Annals of Human Genetics</em></td>
+    </tr>
+    <tr>
+        <td>Paper 2: RPL GWAS</td>
+        <td><em>Human Reproduction</em></td>
+        <td><em>Journal of Medical Genetics</em></td>
+        <td><em>Reproductive BioMedicine Online</em></td>
+    </tr>
+</table>
+
+<div class="important">
+    <strong>Critical-path summary:</strong> P1, P2, P3, P5, P6 (≈3 person-days) take the
+    project from "draft + raw GWAS output" to "submission-ready". P8 (replication cohort)
+    is the single biggest impact-multiplier for paper 2 if achievable.
+</div>
 
 
             </div> <!-- /content -->
