@@ -609,7 +609,7 @@
         for (const [status, elId] of Object.entries(statusMap)) {
           const arr = statusGroups[status] || [];
           const rows = arr.sort((a,b) => a.iid.localeCompare(b.iid))
-            .map(s => [s.iid, s.barcode || '—', s.fmiss !== undefined ? s.fmiss.toFixed(3) : '—', (s.reasons || []).join('; ')]);
+            .map(s => [s.iid, s.barcode || '—', s.fmiss !== undefined ? s.fmiss.toFixed(3) : '—', s.reasons || '—']);
           renderList(elId, rows, ['Sample ID', 'Chip', 'F_MISS', 'Reasons']);
         }
 
