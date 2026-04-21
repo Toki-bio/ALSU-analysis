@@ -292,14 +292,15 @@ const saigeTrace = {
   xaxis: 'x', yaxis: 'y1',
 };
 
-// Green dots for genotyped SNPs on ruler (mark all SNPs as genotyped for now)
+// Green dots for genotyped SNPs on ruler (mark only lead SNP as array-genotyped)
+const genotypedSNPs = snps.filter(s => s.id === leadId);
 const genotypedTrace = {
-  x: snps.map(s => s.pos),
-  y: snps.map(s => 0), // all on ruler at y=0 in yaxis0
-  mode: 'markers', type: 'scatter', name: 'Genotyped',
-  marker: { size: 7, color: '#2e7d32', symbol: 'circle', 
-            opacity: 0.85, line:{width:1, color:'#1b5e20'} },
-  text: snps.map(s => `<b>${s.id}</b><br>Genotyped<br>chr18:${s.pos.toLocaleString()}`),
+  x: genotypedSNPs.map(s => s.pos),
+  y: genotypedSNPs.map(s => 0), // on ruler at y=0 in yaxis0
+  mode: 'markers', type: 'scatter', name: 'Array Genotyped',
+  marker: { size: 8, color: '#1b5e20', symbol: 'circle', 
+            opacity: 0.9, line:{width:1.5, color:'#0d3d0d'} },
+  text: genotypedSNPs.map(s => `<b>${s.id}</b><br><b>Array Genotyped</b><br>chr18:${s.pos.toLocaleString()}`),
   hovertemplate: '%{text}<extra></extra>',
   xaxis: 'x', yaxis: 'y0', showlegend: true,
 };
