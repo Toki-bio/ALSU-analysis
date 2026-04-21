@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Build: 20260421-native-scale-13-genotyped -->
+<!-- Build: 20260421-fix-invalid-yaxis0-to-yaxis4 -->
 <title>chr18 locus — ALSU RPL GWAS</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
@@ -220,7 +220,7 @@ const genotypedTrace = {
   textfont: { size: 8, color:'#1b5e20', family:'Consolas,monospace' },
   hovertext: arrayGenotyped.map(s => `<b>${s.id}</b><br>Array Genotyped<br>chr18:${s.pos.toLocaleString()}`),
   hovertemplate: '%{hovertext}<extra></extra>',
-  xaxis: 'x', yaxis: 'y0', showlegend: true,
+  xaxis: 'x', yaxis: 'y4', showlegend: true,
 };
 
 const saigeSnps = snps.filter(s => typeof s.saige_p === 'number');
@@ -237,13 +237,13 @@ const saigeTrace = {
 
 // Add vertical tick marks at SNP positions (ruler) positioned on DNA bar
 const rulerTicks = snps.map(s => ({
-  type:'line', xref:'x', yref:'y0', x0:s.pos, x1:s.pos,
+  type:'line', xref:'x', yref:'y4', x0:s.pos, x1:s.pos,
   y0:-0.15, y1:0.15, line:{ color: r2Color(s.r2_lead), width: s.id === leadId ? 2 : 1.2 }
 }));
 
 // DNA bar visualization
 const dnaBar = {
-  type:'rect', xref:'x', yref:'y0',
+  type:'rect', xref:'x', yref:'y4',
   x0:x0, x1:x1, y0:-0.05, y1:0.05,
   fillcolor:'rgba(200,200,200,0.2)', line:{color:'#999', width:1}
 };
@@ -402,7 +402,7 @@ const layout = {
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
             tickangle:45, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             ticks:'outside', anchor:'y3', side:'top', ticklen:3 },
-  yaxis0: { domain:[0.44, 0.53], range:[-2.0, 0.6],
+  yaxis4: { domain:[0.44, 0.55], range:[-2.0, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
   yaxis:  { domain:[0.58, 0.84], title:'−log₁₀ P', zeroline:false,
             range:[4.0, 8.0], gridcolor:'#eaeef2', ticks:'outside' },
@@ -417,7 +417,7 @@ const layout = {
     ...geneAnnots, leadLabel,
     { x: x0, y: nLanes-0.5, xref:'x', yref:'y2', text:'genes',
       showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
-    { x: x0 + (x1-x0)*0.01, y: -0.50, xref:'x', yref:'y0', text:'Mb',
+    { x: x0 + (x1-x0)*0.01, y: -0.50, xref:'x', yref:'y4', text:'Mb',
       showarrow:false, font:{size:9, color:'#999'}, xanchor:'left' },
     { x: x1, y: -Math.log10(5e-8), xref:'x', yref:'y1', text:'GWS 5×10⁻⁸',
       showarrow:false, font:{size:10, color:'#d32f2f'}, xanchor:'right', yanchor:'bottom' },
