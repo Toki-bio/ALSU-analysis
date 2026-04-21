@@ -323,15 +323,22 @@ for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
   });
 }
 
-// Connector lines from heatmap rsID labels (bottom) to ruler SNP ticks
-// Trace each SNP's rotated label up to its corresponding ruler tick
-const connectorLines = snps.map(s => ({
-  type:'line', xref:'x', yref:'paper',
-  x0:s.pos, x1:s.pos,
-  y0:-0.01, y1:0.55, // Span from heatmap bottom to genes top
-  line:{ color:'rgba(80,120,180,0.5)', width:2 },
-  layer:'below'
-}));
+// Connector lines from heatmap rsID labels (categorical, evenly-spaced) to ruler ticks (genomic position)
+const ldOrderForConn = ldVars.map((v,i)=>({v,i,pos:(snps.find(s=>s.id===v)||{}).pos||0}))
+                              .sort((a,b)=>a.pos-b.pos);
+const nldConn = ldOrderForConn.length;
+const connectorLines = ldOrderForConn.map((o, i) => {
+  const labelGenomicX = x0 + ((i + 0.5) / nldConn) * (x1 - x0);
+  const snp = snps.find(s => s.id === o.v);
+  if (!snp) return null;
+  return {
+    type:'line', xref:'x', yref:'paper',
+    x0: labelGenomicX, y0: 0.40,
+    x1: snp.pos,       y1: 0.50,
+    line:{ color: r2Color(snp.r2_lead), width: 1, dash:'dot' },
+    layer:'above'
+  };
+}).filter(Boolean);
 
 const shapes = [
   { type:'line', xref:'x', yref:'y1', x0:x0, x1:x1,
@@ -371,8 +378,18 @@ const geneTraces = [];
 const geneAnnots = [];
 genes.forEach(g => {
   const lane = laneByGene[g.id];
-  // Prefer external_name; fallback to ENSG ID (not biotype)
-  const displayName = g.external_name || g.id.replace('ENSG00000','ENSG.');
+  // Build informative display name. For unnamed genes, use ENSG ID + biotype hint
+  let displayName;
+  if (g.external_name) {
+    displayName = g.external_name;
+  } else {
+    const ensg = g.id.replace('ENSG00000', 'ENSG.');
+    const typeAbbr = g.biotype === 'lncRNA' ? 'lncRNA'
+                   : g.biotype === 'TEC' ? 'TEC'
+                   : g.biotype === 'processed_pseudogene' ? 'pseudo'
+                   : g.biotype;
+    displayName = `${ensg} (${typeAbbr})`;
+  }
   const btype = g.biotype;
   const isPC = btype === 'protein_coding';
   const color = isPC ? '#2e7d32'
@@ -409,10 +426,10 @@ genes.forEach(g => {
 });
 
 // Panel 3: LD heatmap matrix (upper triangle), rsIDs as tick labels
-const ldOrder = ldVars.map((v,i)=>({v,i,pos:(snps.find(s=>s.id===v)||{}).pos||0}))
-                      .sort((a,b)=>a.pos-b.pos);
+const ldOrder = ldOrderForConn;
 const nld = ldOrder.length;
 const ldLabels = ldOrder.map(o => o.v);
+
 // Build upper-triangle z-matrix; lower half = null (transparent)
 const Z = [];
 const T = [];
@@ -454,13 +471,13 @@ const layout = {
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
             tickangle:45, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             ticks:'outside', anchor:'y3', side:'top', ticklen:3 },
-  yaxis0: { domain:[0.45, 0.55], range:[-0.6, 0.6],
+  yaxis0: { domain:[0.50, 0.55], range:[-0.6, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis:  { domain:[0.65, 1.0], title:'−log₁₀ P', zeroline:false,
+  yaxis:  { domain:[0.66, 1.0], title:'−log₁₀ P', zeroline:false,
             gridcolor:'#eaeef2', ticks:'outside' },
   yaxis2: { domain:[0.55, 0.65], range:[-0.6, nLanes-0.2],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
-  yaxis3: { domain:[0.00, 0.45], autorange:'reversed',
+  yaxis3: { domain:[0.00, 0.40], autorange:'reversed',
             showticklabels:true, tickfont:{size:7, family:'Consolas, Menlo, monospace'},
             zeroline:false, showgrid:false, ticks:'outside' },
   shapes: shapes,
