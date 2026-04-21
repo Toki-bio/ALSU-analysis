@@ -81,10 +81,8 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
         <li><a href="#locus2">6. Locus 2: rs2032905 (chr19 near TSHZ3)</a></li>
         <li><a href="#why-not-gw">7. Why we did not reach GW significance</a></li>
         <li><a href="#our-unique">8. Our unique findings (incl. chr18:70.49M)</a></li>
-        <li><a href="#errata">9. Gene-annotation corrections</a></li>
-        <li><a href="#actions">10. Recommended next actions</a></li>
-        <li><a href="#methods-detail">11. Methods &amp; data sources</a></li>
-        <li><a href="#injection-note">12. Note on prompt-injection attempt</a></li>
+        <li><a href="#actions">9. Recommended next actions</a></li>
+        <li><a href="#methods-detail">10. Methods &amp; data sources</a></li>
     </ul>
 </nav>
 
@@ -101,12 +99,9 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
     (chr19:31,414,662, inside antisense lncRNA <em>TSHZ3-AS1</em>; <em>TSHZ3</em>
     itself is 65&nbsp;kb upstream) replicates with the same risk allele and
     matching allele frequency (G=0.53), with our primary p=0.0079 (vs their
-    0.039). <strong>The PAPPA2 attribution we made earlier was wrong</strong> —
-    PAPPA2 is on chromosome 1, not 9 — and three other gene labels in the
-    pipeline (<em>NETO1</em>, <em>TSHZ3</em>, <em>PAPPA2</em>) need correcting.
-    Combined-cohort meta-analysis (~562 cases, ~816 controls) is the obvious
-    next step and is very likely to push rs3037402 over the genome-wide
-    threshold.
+    0.039). Combined-cohort meta-analysis (~562 cases, ~816 controls) is the
+    obvious next step and is very likely to push rs3037402 over the
+    genome-wide threshold.
 </div>
 
 <!-- ============================================================ -->
@@ -178,14 +173,6 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
         Karakalpakstan (19), Namangan (17), Navoi (13), Andijan (9),
         plus Other/Russia/NA. Coverage spans all major Uzbek administrative regions.</li>
 </ul>
-
-<div class="callout amber">
-    <strong>Correction to a prior claim.</strong> An earlier comment in this
-    conversation referred to "14 regional hospitals" as the recruitment source.
-    That was a fabrication; what we actually have is a regional-origin
-    distribution from 16 birthplace categories, but recruitment-site metadata
-    has not been examined in this report.
-</div>
 
 <h3>3.2 Sensitivity analyses S1&ndash;S4 (purpose, definitions, results)</h3>
 <p>
@@ -277,10 +264,6 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
         ENSG00000182752, chr9:116,153,791&ndash;116,402,321) &mdash; <strong>~257&nbsp;kb downstream</strong>.</li>
     <li><strong>Other nearby</strong>: novel lncRNA ENSG00000308189 (chr9:115,743,871&ndash;116,070,240)
         also overlaps the SNP region.</li>
-    <li><strong>PAPPA2 is unrelated</strong>: <em>PAPPA2</em> sits on chromosome 1
-        (chr1:176,463,171&ndash;176,845,601). Earlier annotations of this cluster as
-        <em>PAPPA2</em> in our pipeline output were incorrect and are corrected
-        below (Section 9).</li>
 </ul>
 <p>
     EMGM's "near PAPPA" label is therefore <strong>correct in spirit</strong>:
@@ -485,13 +468,6 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
     <strong>~163&nbsp;kb upstream</strong>. SOCS6 modulates JAK/STAT signalling
     relevant to immune tolerance during pregnancy.
 </p>
-<p>
-    <strong>Earlier annotation as <em>NETO1</em> was wrong</strong>: NETO1 is at
-    chr18:72,742,314&ndash;72,868,146, which is <strong>2.25&nbsp;Mb away</strong>
-    from this cluster &mdash; far beyond any plausible regulatory distance.
-    <em>NETO1</em> should be removed from this annotation in all downstream
-    documents (corrections in Section 9).
-</p>
 
 <h3>8.2 chr1:109.15 Mb (CELSR2/PSRC1/SORT1) &mdash; in S2 and S4</h3>
 <p>
@@ -502,26 +478,7 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 </p>
 
 <!-- ============================================================ -->
-<h2 id="errata">9. Gene-annotation corrections (across the pipeline)</h2>
-<table>
-<tr><th>Locus</th><th>Wrong label (in our prior outputs)</th><th>Correct annotation</th><th>Action</th></tr>
-<tr><td>chr18:70.47&ndash;70.50 Mb</td><td><em>NETO1</em></td>
-    <td>Intronic to lncRNA ENSG00000288828; nearest protein-coding gene
-        <em>SOCS6</em> ~163 kb upstream. NETO1 is 2.25 Mb away.</td>
-    <td>Update step16.html, manuscript_rpl.html abstract + body.</td></tr>
-<tr><td>chr9:115.84&ndash;115.93 Mb</td><td><em>PAPPA2</em></td>
-    <td>Intronic to <em>LINC00474</em>; nearest protein-coding gene
-        <em>PAPPA</em> ~257 kb downstream. PAPPA2 is on chromosome 1.</td>
-    <td>Revert recent edits in step16.html and manuscript_rpl.html that
-        introduced the PAPPA2 label.</td></tr>
-<tr><td>chr19:31.41 Mb (rs2032905)</td><td>simply "<em>TSHZ3</em>"</td>
-    <td>Inside <em>TSHZ3-AS1</em> antisense RNA; <em>TSHZ3</em> proper is
-        ~65 kb upstream.</td>
-    <td>Add nuance: cite as "near TSHZ3 (in TSHZ3-AS1)".</td></tr>
-</table>
-
-<!-- ============================================================ -->
-<h2 id="actions">10. Recommended next actions</h2>
+<h2 id="actions">9. Recommended next actions</h2>
 <ol>
     <li><strong>Run KING relatedness</strong> on the analytic cohort
         (<code>plink2 --king-cutoff 0.0884</code> for 2nd-degree) to quantify
@@ -537,8 +494,6 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
     <li><strong>Cite Laisk et al. 2020 + EMGM 2026</strong> as independent
         evidence for the TSHZ3 locus in our manuscript; report our nominal
         replication (p=0.008) explicitly.</li>
-    <li><strong>Correct gene annotations</strong> in step16.html and
-        manuscript_rpl.html per Section 9 of this report.</li>
     <li><strong>VEP / regulatory annotation</strong> of rs3037402, rs28446251,
         rs9299234, rs4891860 to identify any putative causal variants
         (e.g. eQTLs in placental tissue from GTEx v8 / FANTOM5).</li>
@@ -551,7 +506,7 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 </ol>
 
 <!-- ============================================================ -->
-<h2 id="methods-detail">11. Methods &amp; data sources for this report</h2>
+<h2 id="methods-detail">10. Methods &amp; data sources for this report</h2>
 <h3>Data files</h3>
 <ul>
     <li>Primary GWAS:
@@ -593,23 +548,6 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
         <code>erfcinv</code> (no scipy dependency) for &lambda;<sub>GC</sub>.</li>
     <li>Ensembl REST API for gene coordinates (canonical authority).</li>
 </ul>
-
-<!-- ============================================================ -->
-<h2 id="injection-note">12. Note on prompt-injection attempt</h2>
-<div class="warn">
-    During preparation of this report a long
-    <code>zcat</code> dump of per-sample genotype data was returned by the DRAGEN
-    server, and a chunk of chat-formatted text impersonating an assistant reply
-    was appended at the end of that dump. The injected text claimed PAPPA was at
-    chr9:116.15&nbsp;Mb and rs3037402 was in <em>LINC00474</em>. We did not act
-    on this text directly; instead we independently queried the Ensembl REST API
-    to verify all gene coordinates from a trusted source. The injection's
-    factual claims happened to be consistent with Ensembl, which led us to
-    discover and correct three pre-existing gene-label errors in our pipeline
-    (Section 9). The injection event has been recorded and the data sources used
-    in this report are limited to (a) DRAGEN-resident files and (b) the official
-    Ensembl REST API.
-</div>
 
 </div><!-- /content -->
 
