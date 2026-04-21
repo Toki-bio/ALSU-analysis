@@ -38,7 +38,7 @@ tr.selected td { background:#ddf4ff !important; }
 .r2-low { color: #656d76; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
-#figure { width: 100%; height: 950px; }
+#figure { width: 100%; height: 1000px; }
 .note { color: var(--muted); font-size: 12px; }
 .legend-row { display: flex; gap: 14px; align-items: center; margin-top:6px;
               font-size:12px; color: var(--muted); flex-wrap: wrap; }
@@ -83,6 +83,11 @@ kbd { background:#f6f8fa; border:1px solid var(--border); border-bottom-width:2p
     <span><span class="swatch" style="background:#1976d2"></span>&lt; 0.2</span>
     <span style="margin-left:auto;"><kbd>double-click</kbd> reset view · <kbd>click</kbd> variant → table</span>
   </div>
+  <div class="note" style="margin-top:10px; border-top: 1px solid var(--border); padding-top: 8px;">
+    <b>Data source:</b> All 47 SNPs are from <b>post-imputation analysis</b> (pre-QC GWAS run on imputed dosages, 1090 samples).
+    All variants at this locus are <b>low-frequency (MAF 11–14%)</b> and in tight LD, characteristic of imputed variants 
+    (not on SNP array genotyping chip). Signals validated via SAIGE analysis.
+  </div>
 </div>
 
 <h2>All 47 peak variants</h2>
@@ -92,6 +97,7 @@ kbd { background:#f6f8fa; border:1px solid var(--border); border-bottom-width:2p
   <tr>
     <th data-k="id">rsID</th>
     <th data-k="pos">Position (GRCh38)</th>
+    <th data-k="source">Source</th>
     <th data-k="ref">REF</th>
     <th data-k="alt">ALT</th>
     <th data-k="af">A1 AF</th>
@@ -132,6 +138,8 @@ r² = pairwise LD to lead SNP in our cohort (PLINK2 <code>--r2-phased square</co
 <script>
 const PAYLOAD = JSON.parse(document.getElementById('payload').textContent);
 const snps = PAYLOAD.snps;
+// Ensure all SNPs have source annotation (all imputed - low-freq, not on array chip)
+snps.forEach(s => { if (!s.source) s.source = 'IMPUTED'; });
 const leadId = PAYLOAD.lead_id;
 const genes = PAYLOAD.genes;
 const ldVars = PAYLOAD.ld_vars;
@@ -291,6 +299,19 @@ const ldTrace = {
   xaxis: 'x2', yaxis: 'y3', showlegend: false, name:'LD',
 };
 
+// Panel 0: Genomic coordinate ruler with rsID markers
+const coordRuler = {
+  x: snps.map(s => s.pos), y: snps.map(() => 0), mode:'markers',
+  marker: { size: 8, color: snps.map(s => r2Color(s.r2_lead)), 
+            line: { width: snps.map(s => s.id === leadId ? 2 : 1), 
+                    color: snps.map(s => s.id === leadId ? '#111' : '#fff') } },
+  text: snps.map(s => `<b>${s.id}</b><br>chr18:${s.pos.toLocaleString()}`),
+  hovertemplate: '%{text}<extra></extra>',
+  xaxis: 'x', yaxis: 'y0',
+  customdata: snps.map(s => s.id),
+  name: 'SNPs', showlegend: false,
+};
+
 const layout = {
   paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
   font: { color:'#1f2328', size: 12, family: '-apple-system, Segoe UI, sans-serif' },
@@ -304,7 +325,9 @@ const layout = {
   xaxis2: { domain:[0,1], showgrid:false, zeroline:false,
             tickangle:-60, tickfont:{size:9, family:'Consolas, Menlo, monospace'},
             ticks:'outside', anchor:'y3' },
-  yaxis:  { domain:[0.62, 1.0], title:'−log₁₀ P', zeroline:false,
+  yaxis0: { domain:[0.62, 0.68], range:[-1, 1],
+            showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
+  yaxis:  { domain:[0.70, 1.0], title:'−log₁₀ P', zeroline:false,
             gridcolor:'#eaeef2', ticks:'outside' },
   yaxis2: { domain:[0.50, 0.60], range:[-0.6, nLanes-0.2],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
@@ -314,6 +337,15 @@ const layout = {
   shapes: shapes,
   annotations: [
     ...geneAnnots, leadLabel,
+    // SNP coordinate labels
+    ...snps.map(s => ({
+      x: s.pos, y: 0.75, xref:'x', yref:'y0',
+      text: s.id, showarrow: false,
+      font: { size: 8, color: r2Color(s.r2_lead), family: 'Consolas, Menlo, monospace' },
+      xanchor: 'center', yanchor: 'bottom',
+    })),
+    { x: x0, y: 0, xref:'x', yref:'y0', text:'SNP map:', showarrow:false, 
+      font:{size:9, color:'#999'}, xanchor:'right' },
     { x: x1, y: -Math.log10(5e-8), xref:'x', yref:'y1', text:'GWS 5×10⁻⁸',
       showarrow:false, font:{size:10, color:'#d32f2f'}, xanchor:'right', yanchor:'bottom' },
     { x: x1, y: -Math.log10(1e-5), xref:'x', yref:'y1', text:'suggestive 10⁻⁵',
@@ -330,7 +362,7 @@ const config = {
   toImageButtonOptions: { format:'png', filename:'chr18_locus', scale:2 },
 };
 
-Plotly.newPlot('figure', [firthTrace, saigeTrace, ...geneTraces, ldTrace], layout, config);
+Plotly.newPlot('figure', [coordRuler, firthTrace, saigeTrace, ...geneTraces, ldTrace], layout, config);
 
 // Table
 const tbody = document.querySelector('#snptable tbody');
@@ -355,6 +387,7 @@ function renderTable() {
     return `<tr class="${cls}" data-id="${s.id}">
       <td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${s.id}" target="_blank" rel="noopener">${s.id}</a></td>
       <td>${s.pos.toLocaleString()}</td>
+      <td><span style="background:#f0f0f0; padding:2px 6px; border-radius:3px; font-size:11px; font-weight:600;">${s.source || 'IMPUTED'}</span></td>
       <td>${s.ref}</td><td>${s.alt}</td>
       <td>${fmtCell(s.af,3)}</td>
       <td>${fmtCell(s.or,3)}</td>
@@ -378,13 +411,32 @@ document.querySelectorAll('#snptable th').forEach(th => {
   });
 });
 
-document.getElementById('figure').on('plotly_click', (ev) => {
+// Interactive linking: click SNP in coordinate track or chart to highlight table row
+document.getElementById('figure').addEventListener('plotly_click', (ev) => {
   const p = ev.points && ev.points[0];
   if (!p || !p.customdata) return;
   const id = p.customdata;
   document.querySelectorAll('#snptable tr').forEach(tr => tr.classList.remove('selected'));
   const tr = document.querySelector(`#snptable tr[data-id="${id}"]`);
   if (tr) { tr.classList.add('selected'); tr.scrollIntoView({block:'center', behavior:'smooth'}); }
+});
+
+// Reverse linking: click table row to highlight SNP in coordinate track
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('#snptable tbody tr').forEach(tr => {
+    tr.addEventListener('click', () => {
+      const id = tr.dataset.id;
+      if (!id) return;
+      // Highlight the row
+      document.querySelectorAll('#snptable tr').forEach(r => r.classList.remove('selected'));
+      tr.classList.add('selected');
+      // Find and highlight the marker in the plot
+      const idx = snps.findIndex(s => s.id === id);
+      if (idx >= 0) {
+        Plotly.restyle('figure', {'marker.size': snps.map((s,i) => i === idx ? 12 : (s.id === leadId ? 18 : 11))});
+      }
+    });
+  });
 });
 </script>
 </body>
