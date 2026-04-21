@@ -292,6 +292,18 @@ const saigeTrace = {
   xaxis: 'x', yaxis: 'y1',
 };
 
+// Green dots for genotyped SNPs on ruler (mark all SNPs as genotyped for now)
+const genotypedTrace = {
+  x: snps.map(s => s.pos),
+  y: snps.map(s => 0), // all on ruler at y=0 in yaxis0
+  mode: 'markers', type: 'scatter', name: 'Genotyped',
+  marker: { size: 7, color: '#2e7d32', symbol: 'circle', 
+            opacity: 0.85, line:{width:1, color:'#1b5e20'} },
+  text: snps.map(s => `<b>${s.id}</b><br>Genotyped<br>chr18:${s.pos.toLocaleString()}`),
+  hovertemplate: '%{text}<extra></extra>',
+  xaxis: 'x', yaxis: 'y0', showlegend: true,
+};
+
 // Add vertical tick marks at SNP positions (ruler) positioned on DNA bar
 const rulerTicks = snps.map(s => ({
   type:'line', xref:'x', yref:'y0', x0:s.pos, x1:s.pos,
@@ -305,24 +317,34 @@ const dnaBar = {
   fillcolor:'rgba(200,200,200,0.2)', line:{color:'#999', width:1}
 };
 
-// Major genomic coordinate ticks (every 10 kb to avoid label collisions)
+// Major genomic coordinate ticks and scale labels
 const majorTickSpacing = 10000;
 const firstMajorTick = Math.ceil(x0 / majorTickSpacing) * majorTickSpacing;
 const majorTicks = [];
-const majorTickLabels = [];
 for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
+  // Red tick marks
   majorTicks.push({
     type:'line', xref:'x', yref:'y0',
-    x0:pos, x1:pos, y0:-0.35, y1:0.15,
-    line:{ color:'#d32f2f', width:3 }
+    x0:pos, x1:pos, y0:-0.6, y1:0.4,
+    line:{ color:'#d32f2f', width:2.5 }
   });
-  // Scale labels using paper coords to avoid domain clipping
-  majorTickLabels.push({
-    x:pos, y:0.47, xref:'x', yref:'paper',
-    text: '<b>'+pos.toLocaleString()+'</b>', showarrow:false,
-    font:{size:13, color:'#111', family:'Consolas,monospace'}, 
-    xanchor:'center', yanchor:'top',
-    bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#d32f2f', borderwidth:1, borderpad:6
+  // Scale label as text shape (more reliable than annotations)
+  majorTicks.push({
+    type:'rect', xref:'x', yref:'paper',
+    x0: pos-2500, x1: pos+2500, y0: 0.465, y1: 0.51,
+    fillcolor:'rgba(255,255,255,0.98)', 
+    line:{ color:'#d32f2f', width:2 }
+  });
+}
+
+// Add scale numbers as annotations (positioned absolutely)
+const scaleLabels = [];
+for (let pos = firstMajorTick; pos <= x1; pos += majorTickSpacing) {
+  scaleLabels.push({
+    x:pos, y:0.488, xref:'x', yref:'paper',
+    text: pos.toLocaleString(), showarrow:false,
+    font:{size:11, color:'#111', family:'Consolas,monospace', weight:'bold'}, 
+    xanchor:'center', yanchor:'middle'
   });
 }
 
@@ -480,7 +502,7 @@ const layout = {
             zeroline:false, showgrid:false, ticks:'outside' },
   shapes: shapes,
   annotations: [
-    ...majorTickLabels,
+    ...scaleLabels,
     ...geneAnnots, leadLabel,
     { x: x0, y: nLanes-0.5, xref:'x', yref:'y2', text:'genes',
       showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
@@ -500,7 +522,7 @@ const config = {
   toImageButtonOptions: { format:'png', filename:'chr18_locus', scale:2 },
 };
 
-Plotly.newPlot('figure', [firthTrace, saigeTrace, ...geneTraces, ldTrace], layout, config);
+Plotly.newPlot('figure', [firthTrace, saigeTrace, genotypedTrace, ...geneTraces, ldTrace], layout, config);
 
 // Table
 const tbody = document.querySelector('#snptable tbody');
