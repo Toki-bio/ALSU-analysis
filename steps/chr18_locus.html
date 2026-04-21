@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Build: 20260421-z-connectors-staggered-labels -->
+<!-- Build: 20260421-clean-simple-connectors-dots-only -->
 <title>chr18 locus — ALSU RPL GWAS</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
@@ -219,18 +219,6 @@ const genotypedTrace = {
   hovertemplate: '%{hovertext}<extra></extra>',
   xaxis: 'x', yaxis: 'y4', showlegend: true,
 };
-// Stagger rsID labels across 3 rows (zigzag) to prevent overlap for clustered SNPs
-const genotypedLabels = arrayGenotyped.map((s, i) => ({
-  x: s.pos,
-  y: -0.55 - (i % 3) * 0.45, // rows at y = -0.55, -1.00, -1.45
-  xref: 'x', yref: 'y4',
-  text: s.id.replace(/^GSA-/, ''),
-  showarrow: true, arrowhead: 0, arrowwidth: 0.8, arrowcolor: '#2e7d32',
-  ax: 0, ay: 0, standoff: 0,
-  font: { size: 9, color: '#1b5e20', family: 'Consolas,monospace', weight:'bold' },
-  xanchor: 'center', yanchor: 'top',
-  bgcolor: 'rgba(255,255,255,0.85)', borderpad: 1,
-}));
 
 const saigeSnps = snps.filter(s => typeof s.saige_p === 'number');
 const saigeTrace = {
@@ -272,26 +260,15 @@ const connectorLines = ldOrderForConn.map((o, i) => {
   const labelGenomicX = x0 + ((i + 0.5) / nldConn) * (x1 - x0);
   const snp = snps.find(s => s.id === o.v);
   if (!snp) return null;
-  // Z-shaped connector: vertical stub from label up, horizontal across, vertical stub up to SNP
-  const yLabelTop = 0.33;    // right at top of heatmap rsID labels (no gap)
-  const yMid      = 0.40;    // horizontal connector row
-  const ySnpBottom = 0.48;   // just below ruler band
-  const color = r2Color(snp.r2_lead);
-  return [
-    // stub 1: from label position straight up
-    { type:'line', xref:'x', yref:'paper',
-      x0: labelGenomicX, y0: yLabelTop, x1: labelGenomicX, y1: yMid,
-      line:{ color: color, width: 1, dash:'dot' }, layer:'above' },
-    // horizontal connector
-    { type:'line', xref:'x', yref:'paper',
-      x0: labelGenomicX, y0: yMid, x1: snp.pos, y1: yMid,
-      line:{ color: color, width: 1, dash:'dot' }, layer:'above' },
-    // stub 2: from horizontal up to SNP position on ruler
-    { type:'line', xref:'x', yref:'paper',
-      x0: snp.pos, y0: yMid, x1: snp.pos, y1: ySnpBottom,
-      line:{ color: color, width: 1, dash:'dot' }, layer:'above' },
-  ];
-}).filter(Boolean).flat();
+  // Simple diagonal line from heatmap label top to ruler bottom
+  return {
+    type:'line', xref:'x', yref:'paper',
+    x0: labelGenomicX, y0: 0.33, // top of heatmap rsID labels
+    x1: snp.pos,       y1: 0.48, // bottom of ruler band
+    line:{ color: r2Color(snp.r2_lead), width: 0.8, dash:'dot' },
+    layer:'above'
+  };
+}).filter(Boolean);
 
 const shapes = [
   { type:'line', xref:'x', yref:'y1', x0:x0, x1:x1,
@@ -435,7 +412,6 @@ const layout = {
   shapes: shapes,
   annotations: [
     ...scaleLabels,
-    ...genotypedLabels,
     ...geneAnnots, leadLabel,
     { x: x0, y: nLanes-0.5, xref:'x', yref:'y2', text:'genes',
       showarrow:false, font:{size:10, color:'#656d76'}, xanchor:'left' },
