@@ -179,22 +179,7 @@ const hoverFirth = snps.map(s =>
   `<b>Firth P = ${fmtP(s.p)}</b><br>` +
   `SAIGE P = ${fmtP(s.saige_p)}<br>` +
   `r² to lead = ${s.r2_lead==null ? '—' : fmtF(s.r2_lead,3)}`
-);
-const genotypedIdSet = new Set(arrayGenotyped.map(s => s.id));
-const firthTrace = {
-  x: snps.map(s => s.pos), y: snps.map(s => s.logp),
-  mode: 'markers', type: 'scatter', name: 'Firth',
-  marker: {
-    size: snps.map(s => s.id === leadId ? 9 : genotypedIdSet.has(s.id) ? 8 : 5),
-    color: snps.map(s => r2Color(s.r2_lead)),
-    symbol: snps.map(s => s.id === leadId ? 'diamond' : genotypedIdSet.has(s.id) ? 'star' : 'circle'),
-    line: { width: snps.map(s => (s.id === leadId || genotypedIdSet.has(s.id)) ? 1.5 : 0.5),
-            color: snps.map(s => (s.id === leadId || genotypedIdSet.has(s.id)) ? '#111' : '#ffffff') },
-  },
-  text: hoverFirth, hovertemplate: '%{text}<extra></extra>',
-  xaxis: 'x', yaxis: 'y1', customdata: snps.map(s => s.id),
-};
-// Green dots for array-genotyped SNPs on ruler (from PLINK .bim, 13 in window)
+);// Array-genotyped SNPs (from PLINK .bim, 13 in window)
 const arrayGenotyped = [
   {pos:70462475, id:'rs1986841'},
   {pos:70467093, id:'GSA-rs12373479'},
@@ -209,7 +194,21 @@ const arrayGenotyped = [
   {pos:70496705, id:'rs12607439'},
   {pos:70497538, id:'rs17819738'},
   {pos:70500037, id:'rs17241630'},
-];
+];const genotypedIdSet = new Set(arrayGenotyped.map(s => s.id));
+const firthTrace = {
+  x: snps.map(s => s.pos), y: snps.map(s => s.logp),
+  mode: 'markers', type: 'scatter', name: 'Firth',
+  marker: {
+    size: snps.map(s => s.id === leadId ? 9 : genotypedIdSet.has(s.id) ? 8 : 5),
+    color: snps.map(s => r2Color(s.r2_lead)),
+    symbol: snps.map(s => s.id === leadId ? 'diamond' : genotypedIdSet.has(s.id) ? 'star' : 'circle'),
+    line: { width: snps.map(s => (s.id === leadId || genotypedIdSet.has(s.id)) ? 1.5 : 0.5),
+            color: snps.map(s => (s.id === leadId || genotypedIdSet.has(s.id)) ? '#111' : '#ffffff') },
+  },
+  text: hoverFirth, hovertemplate: '%{text}<extra></extra>',
+  xaxis: 'x', yaxis: 'y1', customdata: snps.map(s => s.id),
+};
+// Green dots for array-genotyped SNPs on ruler
 const genotypedTrace = {
   x: arrayGenotyped.map(s => s.pos),
   y: arrayGenotyped.map(() => -0.15), // dots on ruler line
@@ -238,6 +237,20 @@ const saigeTrace = {
   text: saigeSnps.map(s => `${s.id}<br>SAIGE P = ${fmtP(s.saige_p)}`),
   hovertemplate: '%{text}<extra></extra>',
   xaxis: 'x', yaxis: 'y1',
+};
+
+// Recombination rate — Beagle GRCh38 genetic map, piecewise cM/Mb between consecutive markers
+// Hotspot at ~70,452 kb (~8 kb upstream of window) defines left boundary of LD block
+const recombPos = [70452075,70452998,70454581,70456592,70457747,70458551,70459505,70459942,70461253,70463020,70463933,70465032,70466491,70468628,70470282,70470740,70471474,70472352,70472732,70472813,70473148,70473510,70474135,70474927,70475194,70475344,70475581,70475970,70476341,70478032,70479655,70481367,70483090,70483289,70483824,70484375,70484628,70484937,70485453,70486055,70486485,70487146,70487847,70488599,70489228,70489273,70489398,70489562,70489739,70490204,70490737,70491868,70492890,70493018,70493094,70493224,70493438,70493550,70493653,70493772,70493869,70494183,70494687,70495202,70496082,70497023,70497440,70498046,70498613,70498878,70499180,70499302,70499608,70499961,70501820,70504399];
+const recombRateArr = [23.692,19.45,0.888,0.887,0.887,0.893,0.93,0.932,3.126,3.688,3.689,3.69,3.692,0.749,0.192,0.124,0.12,0.121,0.163,0.241,0.76,0.624,0.332,0.329,0.333,0.33,0.333,0.336,0.333,0.323,0.189,0.184,0.155,0.103,0.082,0.084,0.075,0.076,0.075,0.075,0.069,0.074,0.071,0.074,0.2,0.278,0.306,0.308,0.738,1.164,3.137,0.072,0.08,0.076,0.118,0.137,2.465,1.042,0.495,0.544,0.581,0.583,0.591,0.646,0.677,1.301,1.173,1.019,1.009,1.236,1.261,1.263,1.28,2.257,2.258,2.2];
+const recombTrace = {
+  x: recombPos, y: recombRateArr,
+  mode: 'lines', type: 'scatter', name: 'Recomb rate',
+  fill: 'tozeroy', fillcolor: 'rgba(21,101,192,0.12)',
+  line: { color: '#1565c0', width: 1.5, shape: 'hv' },
+  xaxis: 'x', yaxis: 'y5',
+  hovertemplate: '%{y:.2f} cM/Mb<extra>Recomb rate (Beagle GRCh38)</extra>',
+  showlegend: true,
 };
 
 // Add vertical tick marks at SNP positions (ruler) positioned on DNA bar
@@ -410,6 +423,10 @@ const layout = {
             ticks:'outside', anchor:'y3', side:'top', ticklen:3 },
   yaxis4: { domain:[0.38, 0.56], range:[-2.5, 0.6],
             showticklabels:false, zeroline:false, showgrid:false, ticks:'' },
+  yaxis5: { overlaying: 'y', side: 'right', range: [0, 25],
+            showgrid: false, zeroline: false, ticks: 'outside', ticklen: 4,
+            title: 'cM/Mb', titlefont: { color: '#1565c0', size: 10 },
+            tickfont: { color: '#1565c0', size: 9 }, tickcolor: '#1565c0' },
   yaxis:  { domain:[0.58, 0.84], title:'−log₁₀ P', zeroline:false,
             range:[4.0, 8.0], gridcolor:'#eaeef2', ticks:'outside' },
   yaxis2: { domain:[0.88, 1.00], range:[-0.4, nLanes-0.2],
@@ -439,7 +456,7 @@ const config = {
   toImageButtonOptions: { format:'png', filename:'chr18_locus', scale:2 },
 };
 
-Plotly.newPlot('figure', [firthTrace, saigeTrace, genotypedTrace, ...geneTraces, ldTrace], layout, config);
+Plotly.newPlot('figure', [recombTrace, firthTrace, saigeTrace, genotypedTrace, ...geneTraces, ldTrace], layout, config);
 
 // Table
 const tbody = document.querySelector('#snptable tbody');
