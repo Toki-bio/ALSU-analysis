@@ -82,14 +82,17 @@ kbd { background:#f6f8fa; border:1px solid var(--border); border-bottom-width:2p
     <span><span class="swatch" style="background:#fbc02d"></span>0.4–0.6</span>
     <span><span class="swatch" style="background:#7cb342"></span>0.2–0.4</span>
     <span><span class="swatch" style="background:#1976d2"></span>&lt; 0.2</span>
-    <span style="margin-left:auto;"><b>Variants:</b> all <b style="color:#d32f2f;">IMPUTED</b> (post-QC, not genotyped)</span>
+    <span style="margin-left:auto;">
+      <b>Variants:</b> 46 <b style="color:#d32f2f;">imputed</b> + 1 <b style="color:#2e7d32;">★ array-genotyped</b> (rs11663206)
+    </span>
   </div>
   <div class="note" style="margin-top:10px; border-top: 1px solid var(--border); padding-top: 8px;">
     <b>Data & visualization:</b><br>
-    • <b style="color:#d32f2f;">SNP positions</b> (ruler with DNA bar) show genomic coordinates; ticks colored by r² to lead<br>
+    • <b style="color:#d32f2f;">SNP ticks</b> on ruler show genomic positions, colored by r² to lead SNP<br>
+    • <b style="color:#2e7d32;">★ star symbol</b> in scatter = directly genotyped on array; <b>◆ diamond</b> = lead SNP; circles = imputed<br>
+    • <b style="color:#2e7d32;">● green dots</b> on ruler = all 13 array-genotyped SNPs in this window (most below display p-value threshold)<br>
     • <b>rsID labels</b> (rotated 45°) above LD heatmap connect downward to ruler positions via faint guidelines<br>
-    • <b>All 47 variants:</b> post-imputation analysis, low-frequency (MAF 11–14%), tight LD block (r² ≥ 0.67)<br>
-    • <b>Not on array:</b> these are imputed variants, not SNP chip genotypes; cross-validated via SAIGE
+    • <b>46 imputed variants:</b> post-imputation analysis, MAF 11–14%, tight LD block (r² ≥ 0.67), cross-validated via SAIGE
   </div>
 </div>
 
@@ -211,7 +214,7 @@ const firthTrace = {
 // Green dots for array-genotyped SNPs on ruler
 const genotypedTrace = {
   x: arrayGenotyped.map(s => s.pos),
-  y: arrayGenotyped.map(() => -0.15), // dots on ruler line
+  y: arrayGenotyped.map(() => 0.0), // dots on ruler centre line
   mode: 'markers', type: 'scatter', name: 'Array Genotyped',
   marker: { size: 9, color: '#2e7d32', symbol: 'circle', 
             opacity: 0.95, line:{width:1.5, color:'#0d3d0d'} },
