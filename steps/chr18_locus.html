@@ -180,15 +180,16 @@ const hoverFirth = snps.map(s =>
   `SAIGE P = ${fmtP(s.saige_p)}<br>` +
   `r² to lead = ${s.r2_lead==null ? '—' : fmtF(s.r2_lead,3)}`
 );
+const genotypedIdSet = new Set(arrayGenotyped.map(s => s.id));
 const firthTrace = {
   x: snps.map(s => s.pos), y: snps.map(s => s.logp),
   mode: 'markers', type: 'scatter', name: 'Firth',
   marker: {
-    size: snps.map(s => s.id === leadId ? 9 : 5),
+    size: snps.map(s => s.id === leadId ? 9 : genotypedIdSet.has(s.id) ? 8 : 5),
     color: snps.map(s => r2Color(s.r2_lead)),
-    symbol: snps.map(s => s.id === leadId ? 'diamond' : 'circle'),
-    line: { width: snps.map(s => s.id === leadId ? 1.5 : 0.5),
-            color: snps.map(s => s.id === leadId ? '#111' : '#ffffff') },
+    symbol: snps.map(s => s.id === leadId ? 'diamond' : genotypedIdSet.has(s.id) ? 'star' : 'circle'),
+    line: { width: snps.map(s => (s.id === leadId || genotypedIdSet.has(s.id)) ? 1.5 : 0.5),
+            color: snps.map(s => (s.id === leadId || genotypedIdSet.has(s.id)) ? '#111' : '#ffffff') },
   },
   text: hoverFirth, hovertemplate: '%{text}<extra></extra>',
   xaxis: 'x', yaxis: 'y1', customdata: snps.map(s => s.id),
@@ -215,7 +216,14 @@ const genotypedTrace = {
   mode: 'markers', type: 'scatter', name: 'Array Genotyped',
   marker: { size: 9, color: '#2e7d32', symbol: 'circle', 
             opacity: 0.95, line:{width:1.5, color:'#0d3d0d'} },
-  hovertext: arrayGenotyped.map(s => `<b>${s.id}</b><br>Array Genotyped<br>chr18:${s.pos.toLocaleString()}`),
+  hovertext: arrayGenotyped.map(s => {
+    const m = snps.find(x => x.id === s.id);
+    if (m) return `<b>${s.id}</b> ★ Array Genotyped<br>chr18:${s.pos.toLocaleString()}<br>` +
+      `Firth P = ${fmtP(m.p)} | SAIGE P = ${fmtP(m.saige_p)}<br>` +
+      `OR = ${fmtF(m.or,3)} [${fmtF(m.l95,3)}, ${fmtF(m.u95,3)}]<br>` +
+      `AF = ${fmtF(m.af,3)} | r² to lead = ${fmtF(m.r2_lead,3)}`;
+    return `<b>${s.id}</b> ★ Array Genotyped<br>chr18:${s.pos.toLocaleString()}<br>(below GWAS display threshold)`;
+  }),
   hovertemplate: '%{hovertext}<extra></extra>',
   xaxis: 'x', yaxis: 'y4', showlegend: true,
 };
