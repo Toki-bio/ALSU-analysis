@@ -685,7 +685,7 @@ Unmatched genotype: 36
     </div>
 </div>
 
-<h4>Top 20 Genome-Wide Hits</h4>
+<h4>Top 50 Genome-Wide Hits</h4>
 <table id="topHitsTable">
     <tr>
         <th>#</th>
@@ -1034,8 +1034,8 @@ fetch('../data/gwas_results.json')
 
         // ── Top hits table ──
         const tbl = document.getElementById('topHitsTable');
-        const top20 = data.top_hits.slice(0, 20);
-        top20.forEach((h, i) => {
+        const top50 = data.top_hits.slice(0, 50);
+        top50.forEach((h, i) => {
             const tr = tbl.insertRow(-1);
             tr.innerHTML = '<td>'+(i+1)+'</td><td>'+h.chr+'</td><td>'+h.pos.toLocaleString()+'</td>' +
                 '<td><a href="https://www.ensembl.org/Homo_sapiens/Variation/Explore?v='+h.id+'" target="_blank">' +
