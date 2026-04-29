@@ -519,13 +519,114 @@
                     </div>
                 </div>
 
-                <!-- 9. OPEN ITEMS -->
+                <!-- 9. RESCUE PLAN -->
                 <div class="section">
-                    <h2 class="section-header">9. Open Items</h2>
+                    <h2 class="section-header">9. 69-Sample Rescue Plan</h2>
+                    <div class="section-content">
+                        <div class="success-box">
+                            <strong>Recommended first action:</strong> genotype a custom 96-SNP identity fingerprint panel on all 69 original DNA tubes,
+                            using SNPs already present in the existing Illumina GSA data. Then compare each 96-SNP barcode against all 1,247
+                            raw GSA genotypes. Full GSA regenotyping is reserved for failed-chip samples or tubes that fingerprint as a missing
+                            individual, not for every identity-discordant sample.
+                        </div>
+
+                        <h3 style="margin-top: 20px; color: #333;">What assay is this?</h3>
+                        <table class="metric-table">
+                            <tr><th>Technique</th><th>What it measures</th><th>Role in this rescue</th></tr>
+                            <tr>
+                                <td><strong>SNP array / microarray</strong><br><code>Illumina GSA</code></td>
+                                <td>Hundreds of thousands of fixed genome-wide SNPs in one assay.</td>
+                                <td>Best for full GWAS-quality regenotyping. Use after fingerprinting only when the original tube represents a missing individual or a failed-chip sample worth recovering.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Targeted SNP genotyping</strong><br><code>KASP</code>, <code>TaqMan</code>, <code>OpenArray</code></td>
+                                <td>A selected list of SNPs, usually read by allele-specific PCR chemistry.</td>
+                                <td><strong>Preferred identity test.</strong> Cheap, fast, and enough to confirm whether a tube matches an existing GSA genotype.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Agena MassARRAY iPLEX</strong></td>
+                                <td>Multiplex PCR followed by mass-spectrometry allele calling for tens to hundreds of SNPs.</td>
+                                <td>Also well suited for a 96-SNP fingerprint panel if a core facility offers it.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Targeted amplicon sequencing</strong></td>
+                                <td>Sequencing short PCR amplicons around the selected SNPs.</td>
+                                <td>Acceptable if the local core prefers sequencing, but usually more than is needed for identity resolution.</td>
+                            </tr>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>Panel design:</strong> The draft panel in
+                            <a href="../data/rescue_96snp_panel_candidates.tsv" class="crossref">data/rescue_96snp_panel_candidates.tsv</a>
+                            was selected from existing cleaned GSA markers: autosomal rsIDs, A/C/G/T non-palindromic alleles, MAF >= 0.40,
+                            F_MISS <= 0.002, LD-pruned, and physically spread across the genome. This avoids a generic identity panel that cannot be
+                            matched directly to the existing PLINK genotypes.
+                        </div>
+
+                        <h3 style="margin-top: 20px; color: #333;">Sample Tiers</h3>
+                        <table class="metric-table">
+                            <tr><th>Tier</th><th>Samples</th><th>Action</th><th>Interpretation</th></tr>
+                            <tr>
+                                <td><strong>Tier 1A</strong></td>
+                                <td><strong>30</strong> KEEP / unverified identity samples</td>
+                                <td>96-SNP fingerprint first.</td>
+                                <td>If the tube barcode matches the current GSA genotype, the phenotype-genotype link can be restored for GWAS. If it matches another sample or no sample, keep excluded until relabeled or regenotyped.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tier 1B</strong></td>
+                                <td><strong>33</strong> removed duplicate/partner samples</td>
+                                <td>96-SNP fingerprint comparator.</td>
+                                <td>Mainly identifies which original tube owns each existing genotype. These are not automatically new recoverable GWAS samples.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tier 2</strong></td>
+                                <td><strong>3</strong> KING-only clean checks<br><code>04-50</code>, <code>08-123</code>, <code>20-08</code></td>
+                                <td>96-SNP fingerprint first; consider full array only if identity is retained and the sample is needed.</td>
+                                <td>Clarifies additional duplicate signals found by KING and protects against adding mislabeled phenotype records.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tier 3</strong></td>
+                                <td><strong>3</strong> failed-chip rescue candidates<br><code>08-742</code>, <code>08-749</code>, <code>08-754</code></td>
+                                <td>96-SNP fingerprint plus full GSA regenotyping if the tube is valid.</td>
+                                <td>These are the clearest full-regenotyping priorities because the existing array data are poor or failed.</td>
+                            </tr>
+                        </table>
+
+                        <div class="warning-box">
+                            <strong>Important lab handling:</strong> No known contaminated samples (<code>08-25</code>, <code>08-495</code>, <code>08-701</code>) are in this 69-sample rescue panel.
+                            d/t suffix samples must be pulled by the base Sample_ID plus barcode and plate position, because the suffix is not the original sample-sheet ID.
+                        </div>
+
+                        <details>
+                            <summary>Practical files for ordering and lab execution</summary>
+                            <div class="detail-content">
+                                <table class="metric-table">
+                                    <tr><th>File</th><th>Use</th></tr>
+                                    <tr>
+                                        <td><a href="../RESCUE_69_PRACTICAL_GUIDE.md" class="crossref">RESCUE_69_PRACTICAL_GUIDE.md</a></td>
+                                        <td>Plain-English ordering guide, assay choices, vendor/core facility language, special samples, and rendered sample table.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="../data/rescue_69_sample_strategy.tsv" class="crossref">data/rescue_69_sample_strategy.tsv</a></td>
+                                        <td>Machine-readable 69-row per-sample strategy table with barcode, position, status, partners, evidence, and recommended assay.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="../data/rescue_96snp_panel_candidates.tsv" class="crossref">data/rescue_96snp_panel_candidates.tsv</a></td>
+                                        <td>Draft 96-SNP candidate list for custom targeted genotyping; vendor assayability still needs confirmation.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- 10. OPEN ITEMS -->
+                <div class="section">
+                    <h2 class="section-header">10. Open Items</h2>
                     <div class="section-content">
                         <ul class="checklist">
                             <li><span class="check-icon">⬜</span> <strong>BAF verification of 3 contaminated samples</strong> — check GenomeStudio BAF plots for 5-band pattern (08-495, 08-25, 08-701)</li>
-                            <li><span class="check-icon">⬜</span> <strong>SNP fingerprinting for identity resolution</strong> — 96-SNP panel on ~69 original DNA tubes to resolve the 55 unexpected identical pairs (see <a href="../sample_investigation_v2.html" class="crossref">dashboard Section 17</a>)</li>
+                            <li><span class="check-icon">⬜</span> <strong>SNP fingerprinting for identity resolution</strong> — 96-SNP panel on 69 original DNA tubes to resolve identity labels before deciding which tubes need full GSA regenotyping (see <a href="../sample_investigation_v2.html" class="crossref">dashboard Section 17</a> and the rescue plan above)</li>
                             <li><span class="check-icon">⬜</span> <strong>Request original plate-loading manifest</strong> from the lab (physical tube-to-well mapping) to help resolve identity mismatches</li>
                             <li><span class="check-icon">⬜</span> <strong>7-sample discrepancy</strong> — Step 1 in production removed 92 samples instead of the correct 99. All downstream steps (2–15) used 1,155 → 1,098 cascade instead of 1,148 → corrected value. Re-execution needed for publication-quality results.</li>
                             <li><span class="check-icon">⬜</span> <strong>Scanner QC results</strong> — raw IDAT control probe analysis for the 4 bad chips (see <a href="../sample_investigation_v2.html" class="crossref">dashboard Section 13</a>)</li>
