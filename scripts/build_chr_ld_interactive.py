@@ -1,346 +1,687 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Generate simplified LD visualization HTML for chr15 and chr9.
-Uses: decay.tsv, summary.json from ld_cmp/results/chr{15,9}/
-Shows: decay curves, population comparison (EUR vs UZB)
-Status: Interim visualization — full dense regional LD matrices pending DRAGEN extraction.
+Build interim chr9/chr15 LD pages from available chromosome-level summaries.
+
+Inputs in ld_cmp/results/chr*/:
+- decay.tsv: binned LD decay columns (bin_kb_start, r2_uzb, n_uzb, r2_eur, n_eur)
+- uzb_heat.tsv / eur_heat.tsv: coarse chromosome-bin pair summaries (bin_i, bin_j, mean_r2, n_pairs)
+
+These pages are intentionally labeled as binned previews. They do not replace the
+chr18-style dense SNP-level LD block, which requires regional matrix extraction.
 """
+from __future__ import annotations
+
 import json
+from html import escape
 from pathlib import Path
+from string import Template
 
-def load_decay_data(chr_num):
-    """Load LD decay and summary data from local ld_cmp directory."""
-    base = Path(f'ld_cmp/results/chr{chr_num}')
-    
-    data = {}
-    
-    # Load decay.tsv (distance, eur_r2, uzb_r2, pair_count)
-    decay = []
-    with open(base / 'decay.tsv') as f:
-        next(f)  # skip header: distance_kb | eur_r2 | uzb_r2 | eur_npairs | uzb_npairs
-        for line in f:
-            parts = line.strip().split('\t')
-            try:
-                decay.append({
-                    'distance_kb': int(float(parts[0]) // 1000),
-                    'eur_r2': float(parts[1]) if parts[1] != 'null' else None,
-                    'uzb_r2': float(parts[2]) if parts[2] != 'null' else None,
-                })
-            except (ValueError, IndexError):
-                continue
-    data['decay'] = decay
-    
-    # Load summary.json
-    with open(base / 'summary.json') as f:
-        data['summary'] = json.load(f)
-    
-    return data
 
-def generate_decay_plot_html(chr_num, lead_snp, lead_pos, lead_p, lead_or):
-    """Generate simplified LD decay visualization HTML."""
-    
-    data = load_decay_data(chr_num)
-    decay = data['decay']
-    summary = data['summary']
-    
-    # Prepare decay data for JSON embed
-    decay_json = json.dumps(decay)
-    
-    html = f"""<!DOCTYPE html>
+ROOT = Path(__file__).resolve().parents[1]
+RESULTS = ROOT / "ld_cmp" / "results"
+OUT_DIR = ROOT / "steps"
+
+
+REGIONS = {
+    15: {
+        "lead_snp": "rs8027539",
+        "lead_pos": 31_340_603,
+        "lead_p": "3.29e-07",
+        "lead_or": "1.81",
+        "locus_label": "chr15:31.3 Mb",
+        "subtitle": "Risk locus near the 31.33-31.36 Mb GWAS cluster",
+        "functional_page": "chr15_locus_functional.html",
+        "functional_label": "chr15 functional analysis",
+        "cluster_start": 31_333_129,
+        "cluster_end": 31_360_032,
+        "track_start": 31_050_000,
+        "track_end": 31_650_000,
+        "features": [
+            {"name": "upstream candidate interval", "start": 31_120_000, "end": 31_260_000, "kind": "candidate", "strand": "-"},
+            {"name": "GWAS cluster", "start": 31_333_129, "end": 31_360_032, "kind": "cluster", "strand": "+"},
+            {"name": "downstream candidate interval", "start": 31_470_000, "end": 31_600_000, "kind": "candidate", "strand": "+"},
+        ],
+    },
+    9: {
+        "lead_snp": "rs28446251",
+        "lead_pos": 115_907_201,
+        "lead_p": "4.61e-07",
+        "lead_or": "2.19",
+        "locus_label": "chr9:115.9 Mb",
+        "subtitle": "Risk locus overlapping LINC00474 and upstream of PAPPA",
+        "functional_page": "chr9_locus_functional.html",
+        "functional_label": "chr9 functional analysis",
+        "cluster_start": 115_901_661,
+        "cluster_end": 115_907_201,
+        "track_start": 115_650_000,
+        "track_end": 116_450_000,
+        "features": [
+            {"name": "LINC00474", "start": 115_839_214, "end": 115_925_720, "kind": "lncRNA", "strand": "-"},
+            {"name": "GWAS cluster", "start": 115_901_661, "end": 115_907_201, "kind": "cluster", "strand": "+"},
+            {"name": "PAPPA", "start": 116_153_791, "end": 116_402_321, "kind": "gene", "strand": "+"},
+        ],
+    },
+}
+
+
+PAGE_TEMPLATE = Template(r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>chr{chr_num}:{lead_pos//1_000_000}.{(lead_pos%1_000_000)//100_000} Mb — LD Decay (RPL)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$title</title>
 <style>
-:root {{
-  --bg:#f4f6fb; --panel:#ffffff; --panel2:#eef1f8;
-  --border:#d4daea; --border2:#a8b4cc;
-  --fg:#1a2240; --muted:#5a6a90;
-  --eur:#1565c0; --coh:#2e7d32; --delta:#e65100;
-  --font-mono:'Courier New',monospace;
-}}
-*{{box-sizing:border-box;margin:0;padding:0}}
-body{{background:var(--bg);color:var(--fg);font-family:'Segoe UI',sans-serif;padding:24px;line-height:1.6}}
-
-.wrap{{max-width:1200px;margin:0 auto}}
-h1{{font-size:24px;margin:16px 0 8px;color:var(--fg)}}
-h2{{font-size:18px;margin:20px 0 12px;color:var(--fg)}}
-.sub{{color:var(--muted);margin:8px 0 24px;font-size:14px}}
-
-.card{{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0}}
-.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin:16px 0}}
-
-.stat-box{{background:var(--panel2);padding:16px;border-radius:6px;border-left:4px solid var(--eur)}}
-.stat-box h3{{font-size:13px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}}
-.stat-box .value{{font-size:18px;font-weight:700;color:var(--fg);font-family:var(--font-mono)}}
-
-canvas{{border:1px solid var(--border);background:#fff;border-radius:4px;width:100%;height:auto;display:block;margin:12px 0}}
-
-.legend{{background:var(--panel2);padding:12px;border-radius:4px;margin:12px 0;font-size:12px}}
-.legend-item{{display:inline-block;margin-right:24px;margin-bottom:8px}}
-.color-box{{display:inline-block;width:14px;height:14px;border-radius:2px;margin-right:6px;vertical-align:middle}}
-
-.note{{background:rgba(21,101,192,.08);border-left:4px solid var(--eur);padding:12px;border-radius:4px;margin:16px 0;font-size:13px}}
-.warn{{background:rgba(230,108,0,.08);border-left:4px solid var(--delta);padding:12px;border-radius:4px;margin:16px 0;font-size:13px}}
-
-ul{{margin-left:20px;margin-top:8px}}
-li{{margin:6px 0}}
-
-code{{background:var(--panel2);padding:2px 6px;border-radius:3px;font-family:var(--font-mono);font-size:12px}}
-
-.back-link{{color:var(--eur);text-decoration:none}}
-.back-link:hover{{text-decoration:underline}}
+:root {
+  --bg:#f5f7fb; --panel:#ffffff; --panel2:#edf2f7;
+  --border:#d4dce8; --border2:#aab7c8;
+  --fg:#172033; --muted:#5c6c82;
+  --blue:#1565c0; --green:#2e7d32; --orange:#d95f02; --red:#b8323f;
+  --mono:'Courier New',monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Segoe UI',Arial,sans-serif;line-height:1.55;padding:24px}
+.wrap{max-width:1240px;margin:0 auto}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+h1{font-size:25px;line-height:1.25;margin:16px 0 8px}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:14px;margin:0 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+p{margin:8px 0}
+ul,ol{margin:8px 0 0 20px;padding:0}
+li{margin:5px 0}
+code{font-family:var(--mono);font-size:12px;background:var(--panel2);border-radius:3px;padding:2px 5px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+.metric{background:var(--panel2);border-left:4px solid var(--blue);border-radius:6px;padding:14px}
+.metric .v{font:700 18px var(--mono);color:var(--fg)}
+.metric:nth-child(2){border-left-color:var(--green)}
+.metric:nth-child(3){border-left-color:var(--orange)}
+.metric:nth-child(4){border-left-color:var(--red)}
+.note{border-left:4px solid var(--blue);background:rgba(21,101,192,.08);border-radius:5px;padding:12px;margin:14px 0;font-size:13px}
+.warn{border-left:4px solid var(--orange);background:rgba(217,95,2,.09);border-radius:5px;padding:12px;margin:14px 0;font-size:13px}
+.canvas-wrap{overflow-x:auto;border:1px solid var(--border);background:#fff;border-radius:6px;padding:10px;margin:12px 0}
+canvas{display:block;width:100%;min-width:720px;height:auto;background:#fff}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{border:1px solid var(--border2);background:#fff;border-radius:6px;padding:7px 10px;cursor:pointer;color:var(--fg);font-weight:600}
+button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.small{font-size:12px;color:var(--muted)}
+.status-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
+.pill{font-size:12px;border:1px solid var(--border2);background:#fff;border-radius:999px;padding:4px 9px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+th,td{border:1px solid var(--border);padding:8px;text-align:left;vertical-align:top}
+th{background:var(--panel2)}
+@media (max-width:760px){body{padding:14px}h1{font-size:21px}.card{padding:14px}canvas{min-width:680px}}
 </style>
 </head>
 <body>
-
 <div class="wrap">
+  <a href="step16.html">&lt; Back to GWAS Results</a>
 
-<a href="../steps/step16.html" class="back-link">&lt; Back to GWAS Results</a>
-
-<h1>chr{chr_num}:{lead_pos//1_000_000}.{(lead_pos%1_000_000)//100_000} Mb — LD Decay & Regional Structure</h1>
-<div class="sub">Lead SNP: {lead_snp} | p={lead_p} | OR={lead_or}</div>
-
-<div class="card">
-  <h2>Summary</h2>
-  <strong>LD Decay Analysis (genome-wide patterns):</strong>
-  <ul>
-    <li><strong>Chromosome:</strong> chr{chr_num}</li>
-    <li><strong>SNPs analyzed:</strong> {summary.get('n_maf_common', 'N/A')} common (MAF≥0.05)</li>
-    <li><strong>EUR sample size:</strong> ~503 (1000G phase 3 European)</li>
-    <li><strong>UZB sample size:</strong> ~1090 (ALSU cohort post-imputation)</li>
-    <li><strong>Analysis window:</strong> {summary.get('window_kb', 500)} kb</li>
-  </ul>
-  <div class="note">
-    <strong>[Status]</strong> This is a simplified LD visualization showing genome-wide decay patterns from aggregated data. 
-    A full dense regional LD heatmap (like chr18 visualization) is pending extraction of SNP-specific LD matrices from DRAGEN. 
-    The decay curves below show how LD decays with distance between SNP pairs.
+  <h1>$locus_label - EUR/UZB LD Block Preview</h1>
+  <div class="sub">$subtitle | lead SNP $lead_snp | p=$lead_p | OR=$lead_or</div>
+  <div class="status-row">
+    <span class="pill">Corrected decay parser</span>
+    <span class="pill">Binned regional LD preview</span>
+    <span class="pill">Dense SNP-level matrix pending</span>
+    <span class="pill">Updated May 1, 2026</span>
   </div>
-</div>
 
-<div class="card">
-  <h2>LD Decay Analysis</h2>
-  <p>The plot shows how linkage disequilibrium (r²) decays with physical distance between SNP pairs in this chromosome.</p>
-  
-  <div class="legend">
-    <div class="legend-item">
-      <span class="color-box" style="background:#1565c0"></span> EUR (1000G European)
+  <div class="card">
+    <h2>What This Page Shows</h2>
+    <p>This page now renders two working views from the local LD comparison outputs: corrected LD decay curves and a coarse regional LD-block preview around the lead locus.</p>
+    <div class="warn">
+      <strong>Important limitation:</strong> the heatmap below is binned by chromosome-scale intervals from <code>ld_cmp/results/chr$chr_num/*_heat.tsv</code>. It is useful as a quick regional structure check, but it is not the dense SNP-by-SNP block used on the chr18 page. The chr18-equivalent chr$chr_num block still requires regional PLINK2 matrix extraction from the imputed genotypes.
     </div>
-    <div class="legend-item">
-      <span class="color-box" style="background:#2e7d32"></span> UZB (ALSU cohort)
+    <div class="grid">
+      <div class="metric"><h3>Common SNPs</h3><div class="v">$common_snps</div><div class="small">MAF >= 0.05 in both datasets</div></div>
+      <div class="metric"><h3>Pair Summaries</h3><div class="v">$pair_count</div><div class="small">common LD pairs in decay data</div></div>
+      <div class="metric"><h3>Heat Bin Size</h3><div class="v">$bin_kb kb</div><div class="small">coarse preview resolution</div></div>
+      <div class="metric"><h3>Displayed Window</h3><div class="v">$window_mb Mb</div><div class="small">centered on $lead_snp</div></div>
     </div>
   </div>
-  
-  <canvas id="decayCanvas" width="1000" height="400"></canvas>
-  
-  <div class="note">
-    <strong>Key observations:</strong>
-    <ul style="margin-top:8px">
-      <li><strong>Initial LD:</strong> At short distances (&lt;10 kb), r² is typically high (0.6−1.0)</li>
-      <li><strong>Decay pattern:</strong> Both EUR and UZB show rapid decay within 50 kb, then plateau</li>
-      <li><strong>Population differences:</strong> Genetic architecture differs slightly between populations; use population-specific LD for fine-mapping</li>
-      <li><strong>Lead SNP context:</strong> {lead_snp} likely connects to nearby variants within ~50−200 kb based on LD structure</li>
+
+  <div class="card">
+    <h2>Corrected LD Decay</h2>
+    <p>The prior page embedded the TSV columns incorrectly, so all x values collapsed to 0 and UZB pair counts were plotted as r<sup>2</sup>. This chart uses the correct columns.</p>
+    <div class="canvas-wrap"><canvas id="decayCanvas" width="1040" height="430"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>Regional LD Block Preview</h2>
+    <p>This is a coarse binned view around the lead locus. Blank cells mean the binned summary file has no pair summary for that bin pair at this resolution.</p>
+    <div class="controls" aria-label="LD heatmap mode">
+      <button type="button" class="active" data-mode="uzb">UZB cohort</button>
+      <button type="button" data-mode="eur">EUR 1000G</button>
+      <button type="button" data-mode="delta">Delta UZB-EUR</button>
+    </div>
+    <div class="canvas-wrap"><canvas id="heatCanvas" width="1040" height="620"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>Locus Context</h2>
+    <p>The track gives the lead SNP and nearby working annotation used for the locus page. Use it as a navigation schematic, not as a replacement for formal variant annotation.</p>
+    <div class="canvas-wrap"><canvas id="locusCanvas" width="1040" height="260"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>Dense LD Block Still Needed</h2>
+    <ol>
+      <li>Extract chr$chr_num regional genotypes around <code>$region_command</code> from the post-imputation BFILE.</li>
+      <li>Run PLINK2 pairwise LD with <code>--r2-phased</code> or a full square <code>--ld-matrix</code> output.</li>
+      <li>Embed SNP order, positions, GWAS p-values, and EUR/UZB matrices in an interactive page matching the chr18 heatmap.</li>
+      <li>Use this binned page only as an interim QA view until that dense matrix exists.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Related Files</h2>
+    <ul>
+      <li><a href="$functional_page">$functional_label</a></li>
+      <li><a href="step16.html">GWAS Step 16 summary</a></li>
+      <li><a href="../chr18/chr18_ld_eur_sas_uzb.html">chr18 dense LD reference page</a></li>
     </ul>
   </div>
 </div>
 
-<div class="grid">
-  <div class="stat-box">
-    <h3>EUR (1000G ph3)</h3>
-    <div class="value">503 samples</div>
-    <p style="color:var(--muted);margin-top:8px;font-size:12px">European superpopulation from 1000 Genomes</p>
-  </div>
-  
-  <div class="stat-box" style="border-left-color:var(--coh)">
-    <h3>UZB (ALSU)</h3>
-    <div class="value">~1090 samples</div>
-    <p style="color:var(--muted);margin-top:8px;font-size:12px">Uzbek cohort post-imputation genotypes</p>
-  </div>
-</div>
-
-<div class="card">
-  <h2>Interpretation for Region Selection</h2>
-  <p>
-    The LD decay shown above reflects <strong>genome-wide patterns</strong> across all SNP pairs on this chromosome. 
-    For the specific chr{chr_num}:{lead_pos//1_000_000}.{(lead_pos%1_000_000)//100_000} Mb locus:
-  </p>
-  <ul>
-    <li><strong>LD block span:</strong> Lead SNP {lead_snp} likely connects to nearby variants within ~50−200 kb</li>
-    <li><strong>Multi-allelic locus:</strong> Multiple SNPs in the region may show high LD to each other, requiring conditional/fine-mapping analysis</li>
-    <li><strong>Population specificity:</strong> UZB LD patterns differ from EUR in some regions — use local cohort data for optimal SNP selection</li>
-    <li><strong>Haplotype structure:</strong> Specific haplotypes at this locus may reflect different evolutionary pressures in Central Asia vs Europe</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h2>Next Steps: Full Regional LD Heatmap</h2>
-  <p><strong>To build a complete regional LD heatmap (visual matrix like chr18):</strong></p>
-  <ol style="margin-left:20px;margin-top:8px">
-    <li><strong>Extract genotypes:</strong> Get SNPs in ±50–100 kb window around {lead_snp} from UZB and EUR reference data</li>
-    <li><strong>Compute LD matrix:</strong> Calculate pairwise r² values between all SNPs in both populations</li>
-    <li><strong>Build interactive visualization:</strong> Generate HTML heatmap with toggle modes (EUR/UZB/delta), similar to <a href="../chr18/chr18_ld_eur_sas_uzb.html">chr18_ld_eur_sas_uzb.html</a></li>
-    <li><strong>Annotate functional elements:</strong> Add genes, regulatory marks, local GWAS peaks, and haplotype block boundaries</li>
-  </ol>
-  <div class="warn">
-    <strong>⚠️ Interim status:</strong> This LD decay plot is available now. Full heatmap HTML with SNP-level LD matrices will be generated 
-    once regional genotypes are extracted from the DRAGEN cluster. This enables finer-grain LD analysis and conditional association testing.
-  </div>
-</div>
-
-<div class="card" style="background:#f0f7ff">
-  <h2>Functional & Biological Context</h2>
-  <p>For detailed biological annotation and functional analysis of this locus, see:</p>
-  <ul>
-    <li><a href="../steps/chr{chr_num}_locus_functional.html">chr{chr_num}_locus_functional.html</a> — Comprehensive functional analysis document</li>
-    <li><a href="../FUNCTIONAL_LOCUS_ANALYSIS.md">FUNCTIONAL_LOCUS_ANALYSIS.md</a> — Three-locus comparison, pathway model, and validation priorities</li>
-    <li><a href="../steps/step16.html">GWAS Summary</a> — All-tier Manhattan plots and top hits</li>
-  </ul>
-</div>
-
-</div>
-
 <script>
-// ═════════════════════════════════════════════════════════════
-// LD Decay Plot — Canvas Rendering
-// ═════════════════════════════════════════════════════════════
+const PAGE = $page_json;
+let heatMode = 'uzb';
 
-const decayData = {decay_json};
+function fmtMb(bp) {
+  return (bp / 1e6).toFixed(2) + ' Mb';
+}
 
-function drawDecayPlot() {{
-  const canvas = document.getElementById('decayCanvas');
+function interpColor(stops, value) {
+  if (value === null || !Number.isFinite(value)) return '#f7f8fb';
+  const clamp = Math.max(stops[0][0], Math.min(stops[stops.length - 1][0], value));
+  let lo = stops[0], hi = stops[stops.length - 1];
+  for (let index = 0; index < stops.length - 1; index++) {
+    if (clamp >= stops[index][0] && clamp <= stops[index + 1][0]) {
+      lo = stops[index];
+      hi = stops[index + 1];
+      break;
+    }
+  }
+  const span = hi[0] - lo[0] || 1;
+  const t = (clamp - lo[0]) / span;
+  const color = [1, 2, 3].map(i => Math.round(lo[i] + (hi[i] - lo[i]) * t));
+  return 'rgb(' + color.join(',') + ')';
+}
+
+function r2Color(value) {
+  return interpColor([
+    [0.00, 248, 250, 252],
+    [0.02, 226, 236, 246],
+    [0.05, 180, 216, 214],
+    [0.10, 244, 209, 122],
+    [0.20, 230, 134, 74],
+    [0.40, 184, 50, 63],
+    [1.00, 102, 20, 43]
+  ], value);
+}
+
+function deltaColor(value) {
+  return interpColor([
+    [-0.30, 28, 94, 153],
+    [-0.08, 127, 179, 213],
+    [0.00, 248, 250, 252],
+    [0.08, 244, 172, 96],
+    [0.30, 166, 54, 3]
+  ], value);
+}
+
+function setupCanvas(canvas) {
   const ctx = canvas.getContext('2d');
-  
-  const PAD_L = 60, PAD_B = 50, PAD_T = 20, PAD_R = 20;
-  const W = canvas.width - PAD_L - PAD_R;
-  const H = canvas.height - PAD_B - PAD_T;
-  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Filter data (plot up to 500 kb)
-  const data = decayData.filter(d => d.distance_kb <= 500);
-  
-  // Scales
-  const maxDist = 500;
-  const maxR2 = 1.0;
-  
-  const xs = (d) => PAD_L + (d / maxDist) * W;
-  const ys = (r2) => PAD_T + H - (r2 / maxR2) * H;
-  
-  // Grid lines
-  ctx.strokeStyle = '#e0e0e0';
-  ctx.lineWidth = 0.5;
-  for (let r2 = 0; r2 <= 1.0; r2 += 0.2) {{
-    const y = ys(r2);
+  return ctx;
+}
+
+function drawLine(ctx, values, color, xScale, yScale) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  let started = false;
+  for (const row of values) {
+    const yValue = row.value;
+    if (yValue === null || !Number.isFinite(yValue)) continue;
+    const x = xScale(row.distance_kb);
+    const y = yScale(yValue);
+    if (!started) {
+      ctx.moveTo(x, y);
+      started = true;
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+  ctx.stroke();
+}
+
+function drawDecayPlot() {
+  const canvas = document.getElementById('decayCanvas');
+  const ctx = setupCanvas(canvas);
+  const left = 70, right = 24, top = 28, bottom = 62;
+  const width = canvas.width - left - right;
+  const height = canvas.height - top - bottom;
+  const data = PAGE.decay.filter(row => row.distance_kb <= 500);
+  const maxDist = Math.max(...data.map(row => row.distance_kb));
+  const maxR2Raw = Math.max(...data.flatMap(row => [row.uzb_r2 || 0, row.eur_r2 || 0]));
+  const maxR2 = Math.max(0.1, Math.ceil(maxR2Raw * 10) / 10);
+  const xScale = distance => left + (distance / maxDist) * width;
+  const yScale = r2 => top + height - (r2 / maxR2) * height;
+
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
+  for (let tick = 0; tick <= maxR2 + 0.0001; tick += maxR2 / 5) {
+    const y = yScale(tick);
     ctx.beginPath();
-    ctx.moveTo(PAD_L, y);
-    ctx.lineTo(PAD_L + W, y);
+    ctx.moveTo(left, y);
+    ctx.lineTo(left + width, y);
     ctx.stroke();
-  }}
-  for (let d = 0; d <= maxDist; d += 100) {{
-    const x = xs(d);
+  }
+  for (let distance = 0; distance <= maxDist; distance += 100) {
+    const x = xScale(distance);
     ctx.beginPath();
-    ctx.moveTo(x, PAD_T);
-    ctx.lineTo(x, PAD_T + H);
+    ctx.moveTo(x, top);
+    ctx.lineTo(x, top + height);
     ctx.stroke();
-  }}
-  
-  // Plot EUR line
-  ctx.strokeStyle = '#1565c0';
-  ctx.lineWidth = 2.5;
+  }
+
+  drawLine(ctx, data.map(row => ({distance_kb: row.distance_kb, value: row.eur_r2})), '#1565c0', xScale, yScale);
+  drawLine(ctx, data.map(row => ({distance_kb: row.distance_kb, value: row.uzb_r2})), '#2e7d32', xScale, yScale);
+
+  ctx.strokeStyle = '#172033';
+  ctx.lineWidth = 1.4;
   ctx.beginPath();
-  let first = true;
-  for (const d of data) {{
-    if (d.eur_r2 !== null) {{
-      const x = xs(d.distance_kb);
-      const y = ys(d.eur_r2);
-      if (first) {{ ctx.moveTo(x, y); first = false; }}
-      else {{ ctx.lineTo(x, y); }}
-    }}
-  }}
+  ctx.moveTo(left, top);
+  ctx.lineTo(left, top + height);
+  ctx.lineTo(left + width, top + height);
   ctx.stroke();
-  
-  // Plot UZB line
-  ctx.strokeStyle = '#2e7d32';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  first = true;
-  for (const d of data) {{
-    if (d.uzb_r2 !== null) {{
-      const x = xs(d.distance_kb);
-      const y = ys(d.uzb_r2);
-      if (first) {{ ctx.moveTo(x, y); first = false; }}
-      else {{ ctx.lineTo(x, y); }}
-    }}
-  }}
-  ctx.stroke();
-  
-  // Axes
-  ctx.strokeStyle = '#333';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(PAD_L, PAD_T);
-  ctx.lineTo(PAD_L, PAD_T + H);
-  ctx.lineTo(PAD_L + W, PAD_T + H);
-  ctx.stroke();
-  
-  // X-axis labels (distance)
-  ctx.fillStyle = '#333';
-  ctx.font = '12px Arial';
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '12px Segoe UI, Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  for (let d = 0; d <= maxDist; d += 100) {{
-    const x = xs(d);
-    ctx.fillText(d, x, PAD_T + H + 8);
-  }}
-  
-  // Y-axis labels (r2)
+  for (let distance = 0; distance <= maxDist; distance += 100) {
+    ctx.fillText(String(distance), xScale(distance), top + height + 10);
+  }
+  ctx.fillText('Distance between SNP pairs (kb)', left + width / 2, canvas.height - 20);
+
   ctx.textAlign = 'right';
   ctx.textBaseline = 'middle';
-  for (let r2 = 0; r2 <= 1.0; r2 += 0.2) {{
-    const y = ys(r2);
-    ctx.fillText(r2.toFixed(1), PAD_L - 10, y);
-  }}
-  
-  // Axis titles
+  for (let tick = 0; tick <= maxR2 + 0.0001; tick += maxR2 / 5) {
+    ctx.fillText(tick.toFixed(2), left - 10, yScale(tick));
+  }
+  ctx.save();
+  ctx.translate(18, top + height / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.fillText('mean r2', 0, 0);
+  ctx.restore();
+
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#1565c0';
+  ctx.fillRect(left + 16, top + 12, 18, 4);
+  ctx.fillStyle = '#172033';
+  ctx.fillText('EUR 1000G', left + 42, top + 14);
+  ctx.fillStyle = '#2e7d32';
+  ctx.fillRect(left + 150, top + 12, 18, 4);
+  ctx.fillStyle = '#172033';
+  ctx.fillText('UZB cohort', left + 176, top + 14);
+}
+
+function matrixValue(mode, rowIndex, colIndex) {
+  const uzb = PAGE.heat.uzb[rowIndex][colIndex];
+  const eur = PAGE.heat.eur[rowIndex][colIndex];
+  if (mode === 'uzb') return uzb;
+  if (mode === 'eur') return eur;
+  if (uzb === null || eur === null) return null;
+  return uzb - eur;
+}
+
+function drawHeatLegend(ctx, x, y, width, height, mode) {
+  const steps = 80;
+  for (let step = 0; step < steps; step++) {
+    const t = step / (steps - 1);
+    const value = mode === 'delta' ? -0.3 + t * 0.6 : t;
+    ctx.fillStyle = mode === 'delta' ? deltaColor(value) : r2Color(value);
+    ctx.fillRect(x + (step / steps) * width, y, width / steps + 1, height);
+  }
+  ctx.strokeStyle = '#aab7c8';
+  ctx.strokeRect(x, y, width, height);
+  ctx.fillStyle = '#172033';
+  ctx.font = '11px Segoe UI, Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText('Distance (kb)', PAD_L + W/2, canvas.height - 15);
-  
+  if (mode === 'delta') {
+    ctx.fillText('-0.30', x, y + height + 5);
+    ctx.fillText('0', x + width / 2, y + height + 5);
+    ctx.fillText('+0.30', x + width, y + height + 5);
+  } else {
+    ctx.fillText('0', x, y + height + 5);
+    ctx.fillText('0.5', x + width / 2, y + height + 5);
+    ctx.fillText('1.0', x + width, y + height + 5);
+  }
+}
+
+function drawHeatmap() {
+  const canvas = document.getElementById('heatCanvas');
+  const ctx = setupCanvas(canvas);
+  const bins = PAGE.heat.bins;
+  const n = bins.length;
+  const left = 92, top = 64, right = 36, bottom = 145;
+  const size = Math.min(canvas.width - left - right, canvas.height - top - bottom);
+  const cell = Math.floor(size / n);
+  const heatSize = cell * n;
+  const leadOffset = PAGE.heat.lead_bin - PAGE.heat.start_bin;
+  const title = heatMode === 'delta' ? 'Delta mean r2 (UZB - EUR)' : (heatMode === 'uzb' ? 'UZB mean r2' : 'EUR mean r2');
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '700 15px Segoe UI, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(title + ' | coarse bins around ' + PAGE.lead_snp, left, 28);
+  drawHeatLegend(ctx, canvas.width - 260, 22, 190, 12, heatMode);
+
+  for (let row = 0; row < n; row++) {
+    for (let col = 0; col < n; col++) {
+      const value = matrixValue(heatMode, row, col);
+      const x = left + col * cell;
+      const y = top + row * cell;
+      ctx.fillStyle = heatMode === 'delta' ? deltaColor(value) : r2Color(value);
+      ctx.fillRect(x, y, cell, cell);
+      if (value === null) {
+        ctx.strokeStyle = '#e5e7eb';
+        ctx.beginPath();
+        ctx.moveTo(x, y + cell);
+        ctx.lineTo(x + cell, y);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.strokeRect(x, y, cell, cell);
+    }
+  }
+
+  ctx.strokeStyle = '#c2185b';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(left + leadOffset * cell, top, cell, heatSize);
+  ctx.strokeRect(left, top + leadOffset * cell, heatSize, cell);
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '11px Segoe UI, Arial';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (let row = 0; row < n; row++) {
+    const label = bins[row].start_mb.toFixed(1);
+    ctx.fillText(label, left - 8, top + row * cell + cell / 2);
+  }
   ctx.save();
-  ctx.translate(15, PAD_T + H/2);
-  ctx.rotate(-Math.PI/2);
-  ctx.textAlign = 'center';
-  ctx.fillText('r² (linkage disequilibrium)', 0, 0);
+  ctx.translate(left, top + heatSize + 10);
+  ctx.rotate(Math.PI / 4);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  for (let col = 0; col < n; col++) {
+    ctx.fillText(bins[col].start_mb.toFixed(1), col * cell, 0);
+  }
   ctx.restore();
-}}
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '12px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('Genomic bin start (Mb)', left + heatSize / 2, canvas.height - 42);
+  ctx.save();
+  ctx.translate(22, top + heatSize / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Genomic bin start (Mb)', 0, 0);
+  ctx.restore();
+
+  ctx.fillStyle = '#c2185b';
+  ctx.font = '700 12px Segoe UI, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('lead bin: ' + PAGE.lead_snp + ' (' + fmtMb(PAGE.lead_pos) + ')', left, top + heatSize + 86);
+  ctx.fillStyle = '#5c6c82';
+  ctx.font = '12px Segoe UI, Arial';
+  ctx.fillText('Resolution: one displayed cell is about ' + PAGE.heat.bin_kb + ' kb; use dense PLINK2 extraction for SNP-level block boundaries.', left, top + heatSize + 106);
+}
+
+function drawLocusTrack() {
+  const canvas = document.getElementById('locusCanvas');
+  const ctx = setupCanvas(canvas);
+  const left = 72, right = 36, top = 58;
+  const width = canvas.width - left - right;
+  const axisY = 132;
+  const xScale = pos => left + ((pos - PAGE.track_start) / (PAGE.track_end - PAGE.track_start)) * width;
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '700 15px Segoe UI, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(PAGE.locus_label + ' working locus schematic', left, 30);
+
+  ctx.strokeStyle = '#172033';
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(left, axisY);
+  ctx.lineTo(left + width, axisY);
+  ctx.stroke();
+
+  const tickCount = 5;
+  ctx.fillStyle = '#172033';
+  ctx.font = '11px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  for (let index = 0; index <= tickCount; index++) {
+    const pos = PAGE.track_start + (index / tickCount) * (PAGE.track_end - PAGE.track_start);
+    const x = xScale(pos);
+    ctx.beginPath();
+    ctx.moveTo(x, axisY - 5);
+    ctx.lineTo(x, axisY + 5);
+    ctx.stroke();
+    ctx.fillText(fmtMb(pos), x, axisY + 12);
+  }
+
+  const colors = {gene:'#1565c0', lncRNA:'#7b3294', cluster:'#d95f02', candidate:'#2e7d32'};
+  PAGE.features.forEach((feature, index) => {
+    const x1 = xScale(feature.start);
+    const x2 = xScale(feature.end);
+    const y = top + 28 + index * 30;
+    const w = Math.max(8, x2 - x1);
+    ctx.fillStyle = colors[feature.kind] || '#5c6c82';
+    ctx.fillRect(x1, y, w, 12);
+    ctx.fillStyle = '#172033';
+    ctx.font = '12px Segoe UI, Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(feature.name + ' (' + feature.kind + ')', Math.min(x1 + w + 7, left + width - 230), y + 6);
+  });
+
+  const leadX = xScale(PAGE.lead_pos);
+  ctx.strokeStyle = '#c2185b';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(leadX, top + 14);
+  ctx.lineTo(leadX, axisY + 36);
+  ctx.stroke();
+  ctx.fillStyle = '#c2185b';
+  ctx.font = '700 12px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(PAGE.lead_snp, leadX, top + 2);
+}
+
+document.querySelectorAll('button[data-mode]').forEach(button => {
+  button.addEventListener('click', () => {
+    heatMode = button.dataset.mode;
+    document.querySelectorAll('button[data-mode]').forEach(item => item.classList.toggle('active', item === button));
+    drawHeatmap();
+  });
+});
 
 drawDecayPlot();
-console.log('✓ LD decay plot rendered for chr{chr_num}');
+drawHeatmap();
+drawLocusTrack();
+console.log('LD page rendered', PAGE.locus_label, PAGE.decay.length, PAGE.heat.bins.length);
 </script>
-
 </body>
-</html>"""
-    
-    return html
+</html>
+""")
 
-# Main
-if __name__ == '__main__':
-    regions = [
-        (15, 'rs8027539', 31340603, '3.29e-07', '1.81'),
-        (9, 'rs28446251', 115907201, '4.61e-07', '2.19'),
-    ]
-    
-    for chr_num, lead_snp, lead_pos, lead_p, lead_or in regions:
-        print(f'Generating LD visualization for chr{chr_num}...')
-        try:
-            html = generate_decay_plot_html(chr_num, lead_snp, lead_pos, lead_p, lead_or)
-            
-            out_file = f'steps/chr{chr_num}_ld_eur_uzb.html'
-            with open(out_file, 'w', encoding='utf-8') as f:
-                f.write(html)
-            
-            print(f'✓ Created {out_file}')
-        except Exception as e:
-            print(f'✗ Error generating chr{chr_num}: {e}')
+
+def fmt_int(value: int | float | None) -> str:
+    if value is None:
+        return "N/A"
+    return f"{int(value):,}"
+
+
+def load_summary(chr_num: int) -> dict:
+    with (RESULTS / f"chr{chr_num}" / "summary.json").open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def parse_float(value: str) -> float | None:
+    value = value.strip()
+    if not value or value.lower() == "null":
+        return None
+    return float(value)
+
+
+def load_decay(chr_num: int) -> list[dict]:
+    path = RESULTS / f"chr{chr_num}" / "decay.tsv"
+    with path.open(encoding="utf-8") as handle:
+        header = handle.readline().rstrip("\n").split("\t")
+        rows = []
+        for line in handle:
+            if not line.strip():
+                continue
+            parts = line.rstrip("\n").split("\t")
+            record = dict(zip(header, parts))
+            rows.append(
+                {
+                    "distance_kb": float(record["bin_kb_start"]),
+                    "uzb_r2": parse_float(record["r2_uzb"]),
+                    "eur_r2": parse_float(record["r2_eur"]),
+                    "n_uzb": int(float(record["n_uzb"])),
+                    "n_eur": int(float(record["n_eur"])),
+                }
+            )
+    return rows
+
+
+def load_heat_matrix(chr_num: int, population: str, summary: dict, lead_pos: int, flank_bins: int = 8) -> dict:
+    bin_bp = int(summary["heatmap_bin_bp"])
+    lead_bin = int(lead_pos // bin_bp)
+    start_bin = max(0, lead_bin - flank_bins)
+    end_bin = lead_bin + flank_bins
+    size = end_bin - start_bin + 1
+    matrix: list[list[float | None]] = [[None for _ in range(size)] for _ in range(size)]
+    counts: list[list[int]] = [[0 for _ in range(size)] for _ in range(size)]
+
+    path = RESULTS / f"chr{chr_num}" / f"{population}_heat.tsv"
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            parts = line.rstrip("\n").split("\t")
+            if len(parts) < 4:
+                continue
+            bin_i, bin_j = int(parts[0]), int(parts[1])
+            if not (start_bin <= bin_i <= end_bin and start_bin <= bin_j <= end_bin):
+                continue
+            r2_value = float(parts[2])
+            pair_count = int(float(parts[3]))
+            local_i = bin_i - start_bin
+            local_j = bin_j - start_bin
+            matrix[local_i][local_j] = r2_value
+            matrix[local_j][local_i] = r2_value
+            counts[local_i][local_j] = pair_count
+            counts[local_j][local_i] = pair_count
+
+    return {
+        "matrix": matrix,
+        "counts": counts,
+        "start_bin": start_bin,
+        "end_bin": end_bin,
+        "lead_bin": lead_bin,
+        "bin_bp": bin_bp,
+        "bin_kb": round(bin_bp / 1000),
+        "bins": [
+            {
+                "index": index,
+                "start": index * bin_bp,
+                "end": min((index + 1) * bin_bp, int(summary["chrom_max_bp"])),
+                "start_mb": (index * bin_bp) / 1_000_000,
+            }
+            for index in range(start_bin, end_bin + 1)
+        ],
+    }
+
+
+def count_non_null(matrix: list[list[float | None]]) -> int:
+    return sum(1 for row in matrix for value in row if value is not None)
+
+
+def build_page(chr_num: int) -> str:
+    region = REGIONS[chr_num]
+    summary = load_summary(chr_num)
+    decay = load_decay(chr_num)
+    uzb_heat = load_heat_matrix(chr_num, "uzb", summary, region["lead_pos"])
+    eur_heat = load_heat_matrix(chr_num, "eur", summary, region["lead_pos"])
+    heat = {
+        "uzb": uzb_heat["matrix"],
+        "eur": eur_heat["matrix"],
+        "counts": uzb_heat["counts"],
+        "bins": uzb_heat["bins"],
+        "start_bin": uzb_heat["start_bin"],
+        "end_bin": uzb_heat["end_bin"],
+        "lead_bin": uzb_heat["lead_bin"],
+        "bin_bp": uzb_heat["bin_bp"],
+        "bin_kb": uzb_heat["bin_kb"],
+        "non_null_uzb": count_non_null(uzb_heat["matrix"]),
+        "non_null_eur": count_non_null(eur_heat["matrix"]),
+    }
+    page_data = {
+        "chr": chr_num,
+        "locus_label": region["locus_label"],
+        "lead_snp": region["lead_snp"],
+        "lead_pos": region["lead_pos"],
+        "track_start": region["track_start"],
+        "track_end": region["track_end"],
+        "features": region["features"],
+        "decay": decay,
+        "heat": heat,
+    }
+    from_mb = (region["lead_pos"] - 100_000) / 1_000_000
+    to_mb = (region["lead_pos"] + 100_000) / 1_000_000
+    window_mb = (heat["bins"][-1]["end"] - heat["bins"][0]["start"]) / 1_000_000
+
+    return PAGE_TEMPLATE.substitute(
+        title=f"{region['locus_label']} - EUR/UZB LD Block Preview",
+        locus_label=escape(region["locus_label"]),
+        subtitle=escape(region["subtitle"]),
+        lead_snp=escape(region["lead_snp"]),
+        lead_p=escape(region["lead_p"]),
+        lead_or=escape(region["lead_or"]),
+        chr_num=chr_num,
+        common_snps=fmt_int(summary.get("n_maf_common")),
+        pair_count=fmt_int(summary.get("n_pairs_common")),
+        bin_kb=fmt_int(heat["bin_kb"]),
+        window_mb=f"{window_mb:.1f}",
+        region_command=f"--chr {chr_num} --from-mb {from_mb:.3f} --to-mb {to_mb:.3f}",
+        functional_page=escape(region["functional_page"]),
+        functional_label=escape(region["functional_label"]),
+        page_json=json.dumps(page_data, separators=(",", ":")),
+    )
+
+
+def main() -> None:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    for chr_num in sorted(REGIONS):
+        html = build_page(chr_num)
+        out_file = OUT_DIR / f"chr{chr_num}_ld_eur_uzb.html"
+        out_file.write_text(html, encoding="utf-8")
+        print(f"Created {out_file.relative_to(ROOT)}")
+
+
+if __name__ == "__main__":
+    main()

@@ -2,274 +2,460 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>chr9:115.9 Mb — LD Decay (RPL)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>chr9:115.9 Mb - EUR/UZB LD Block Preview</title>
 <style>
 :root {
-  --bg:#f4f6fb; --panel:#ffffff; --panel2:#eef1f8;
-  --border:#d4daea; --border2:#a8b4cc;
-  --fg:#1a2240; --muted:#5a6a90;
-  --eur:#1565c0; --coh:#2e7d32; --delta:#e65100;
-  --font-mono:'Courier New',monospace;
+  --bg:#f5f7fb; --panel:#ffffff; --panel2:#edf2f7;
+  --border:#d4dce8; --border2:#aab7c8;
+  --fg:#172033; --muted:#5c6c82;
+  --blue:#1565c0; --green:#2e7d32; --orange:#d95f02; --red:#b8323f;
+  --mono:'Courier New',monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:'Segoe UI',sans-serif;padding:24px;line-height:1.6}
-
-.wrap{max-width:1200px;margin:0 auto}
-h1{font-size:24px;margin:16px 0 8px;color:var(--fg)}
-h2{font-size:18px;margin:20px 0 12px;color:var(--fg)}
-.sub{color:var(--muted);margin:8px 0 24px;font-size:14px}
-
-.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin:16px 0}
-
-.stat-box{background:var(--panel2);padding:16px;border-radius:6px;border-left:4px solid var(--eur)}
-.stat-box h3{font-size:13px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-.stat-box .value{font-size:18px;font-weight:700;color:var(--fg);font-family:var(--font-mono)}
-
-canvas{border:1px solid var(--border);background:#fff;border-radius:4px;width:100%;height:auto;display:block;margin:12px 0}
-
-.legend{background:var(--panel2);padding:12px;border-radius:4px;margin:12px 0;font-size:12px}
-.legend-item{display:inline-block;margin-right:24px;margin-bottom:8px}
-.color-box{display:inline-block;width:14px;height:14px;border-radius:2px;margin-right:6px;vertical-align:middle}
-
-.note{background:rgba(21,101,192,.08);border-left:4px solid var(--eur);padding:12px;border-radius:4px;margin:16px 0;font-size:13px}
-.warn{background:rgba(230,108,0,.08);border-left:4px solid var(--delta);padding:12px;border-radius:4px;margin:16px 0;font-size:13px}
-
-ul{margin-left:20px;margin-top:8px}
-li{margin:6px 0}
-
-code{background:var(--panel2);padding:2px 6px;border-radius:3px;font-family:var(--font-mono);font-size:12px}
-
-.back-link{color:var(--eur);text-decoration:none}
-.back-link:hover{text-decoration:underline}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Segoe UI',Arial,sans-serif;line-height:1.55;padding:24px}
+.wrap{max-width:1240px;margin:0 auto}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+h1{font-size:25px;line-height:1.25;margin:16px 0 8px}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:14px;margin:0 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+p{margin:8px 0}
+ul,ol{margin:8px 0 0 20px;padding:0}
+li{margin:5px 0}
+code{font-family:var(--mono);font-size:12px;background:var(--panel2);border-radius:3px;padding:2px 5px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+.metric{background:var(--panel2);border-left:4px solid var(--blue);border-radius:6px;padding:14px}
+.metric .v{font:700 18px var(--mono);color:var(--fg)}
+.metric:nth-child(2){border-left-color:var(--green)}
+.metric:nth-child(3){border-left-color:var(--orange)}
+.metric:nth-child(4){border-left-color:var(--red)}
+.note{border-left:4px solid var(--blue);background:rgba(21,101,192,.08);border-radius:5px;padding:12px;margin:14px 0;font-size:13px}
+.warn{border-left:4px solid var(--orange);background:rgba(217,95,2,.09);border-radius:5px;padding:12px;margin:14px 0;font-size:13px}
+.canvas-wrap{overflow-x:auto;border:1px solid var(--border);background:#fff;border-radius:6px;padding:10px;margin:12px 0}
+canvas{display:block;width:100%;min-width:720px;height:auto;background:#fff}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{border:1px solid var(--border2);background:#fff;border-radius:6px;padding:7px 10px;cursor:pointer;color:var(--fg);font-weight:600}
+button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.small{font-size:12px;color:var(--muted)}
+.status-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
+.pill{font-size:12px;border:1px solid var(--border2);background:#fff;border-radius:999px;padding:4px 9px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+th,td{border:1px solid var(--border);padding:8px;text-align:left;vertical-align:top}
+th{background:var(--panel2)}
+@media (max-width:760px){body{padding:14px}h1{font-size:21px}.card{padding:14px}canvas{min-width:680px}}
 </style>
 </head>
 <body>
-
 <div class="wrap">
+  <a href="step16.html">&lt; Back to GWAS Results</a>
 
-<a href="../steps/step16.html" class="back-link">&lt; Back to GWAS Results</a>
-
-<h1>chr9:115.9 Mb — LD Decay & Regional Structure</h1>
-<div class="sub">Lead SNP: rs28446251 | p=4.61e-07 | OR=2.19</div>
-
-<div class="card">
-  <h2>Summary</h2>
-  <strong>LD Decay Analysis (genome-wide patterns):</strong>
-  <ul>
-    <li><strong>Chromosome:</strong> chr9</li>
-    <li><strong>SNPs analyzed:</strong> 225783 common (MAF≥0.05)</li>
-    <li><strong>EUR sample size:</strong> ~503 (1000G phase 3 European)</li>
-    <li><strong>UZB sample size:</strong> ~1090 (ALSU cohort post-imputation)</li>
-    <li><strong>Analysis window:</strong> 500 kb</li>
-  </ul>
-  <div class="note">
-    <strong>[Status]</strong> This is a simplified LD visualization showing genome-wide decay patterns from aggregated data. 
-    A full dense regional LD heatmap (like chr18 visualization) is pending extraction of SNP-specific LD matrices from DRAGEN. 
-    The decay curves below show how LD decays with distance between SNP pairs.
+  <h1>chr9:115.9 Mb - EUR/UZB LD Block Preview</h1>
+  <div class="sub">Risk locus overlapping LINC00474 and upstream of PAPPA | lead SNP rs28446251 | p=4.61e-07 | OR=2.19</div>
+  <div class="status-row">
+    <span class="pill">Corrected decay parser</span>
+    <span class="pill">Binned regional LD preview</span>
+    <span class="pill">Dense SNP-level matrix pending</span>
+    <span class="pill">Updated May 1, 2026</span>
   </div>
-</div>
 
-<div class="card">
-  <h2>LD Decay Analysis</h2>
-  <p>The plot shows how linkage disequilibrium (r²) decays with physical distance between SNP pairs in this chromosome.</p>
-  
-  <div class="legend">
-    <div class="legend-item">
-      <span class="color-box" style="background:#1565c0"></span> EUR (1000G European)
+  <div class="card">
+    <h2>What This Page Shows</h2>
+    <p>This page now renders two working views from the local LD comparison outputs: corrected LD decay curves and a coarse regional LD-block preview around the lead locus.</p>
+    <div class="warn">
+      <strong>Important limitation:</strong> the heatmap below is binned by chromosome-scale intervals from <code>ld_cmp/results/chr9/*_heat.tsv</code>. It is useful as a quick regional structure check, but it is not the dense SNP-by-SNP block used on the chr18 page. The chr18-equivalent chr9 block still requires regional PLINK2 matrix extraction from the imputed genotypes.
     </div>
-    <div class="legend-item">
-      <span class="color-box" style="background:#2e7d32"></span> UZB (ALSU cohort)
+    <div class="grid">
+      <div class="metric"><h3>Common SNPs</h3><div class="v">225,783</div><div class="small">MAF >= 0.05 in both datasets</div></div>
+      <div class="metric"><h3>Pair Summaries</h3><div class="v">1,207,109</div><div class="small">common LD pairs in decay data</div></div>
+      <div class="metric"><h3>Heat Bin Size</h3><div class="v">691 kb</div><div class="small">coarse preview resolution</div></div>
+      <div class="metric"><h3>Displayed Window</h3><div class="v">11.7 Mb</div><div class="small">centered on rs28446251</div></div>
     </div>
   </div>
-  
-  <canvas id="decayCanvas" width="1000" height="400"></canvas>
-  
-  <div class="note">
-    <strong>Key observations:</strong>
-    <ul style="margin-top:8px">
-      <li><strong>Initial LD:</strong> At short distances (&lt;10 kb), r² is typically high (0.6−1.0)</li>
-      <li><strong>Decay pattern:</strong> Both EUR and UZB show rapid decay within 50 kb, then plateau</li>
-      <li><strong>Population differences:</strong> Genetic architecture differs slightly between populations; use population-specific LD for fine-mapping</li>
-      <li><strong>Lead SNP context:</strong> rs28446251 likely connects to nearby variants within ~50−200 kb based on LD structure</li>
+
+  <div class="card">
+    <h2>Corrected LD Decay</h2>
+    <p>The prior page embedded the TSV columns incorrectly, so all x values collapsed to 0 and UZB pair counts were plotted as r<sup>2</sup>. This chart uses the correct columns.</p>
+    <div class="canvas-wrap"><canvas id="decayCanvas" width="1040" height="430"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>Regional LD Block Preview</h2>
+    <p>This is a coarse binned view around the lead locus. Blank cells mean the binned summary file has no pair summary for that bin pair at this resolution.</p>
+    <div class="controls" aria-label="LD heatmap mode">
+      <button type="button" class="active" data-mode="uzb">UZB cohort</button>
+      <button type="button" data-mode="eur">EUR 1000G</button>
+      <button type="button" data-mode="delta">Delta UZB-EUR</button>
+    </div>
+    <div class="canvas-wrap"><canvas id="heatCanvas" width="1040" height="620"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>Locus Context</h2>
+    <p>The track gives the lead SNP and nearby working annotation used for the locus page. Use it as a navigation schematic, not as a replacement for formal variant annotation.</p>
+    <div class="canvas-wrap"><canvas id="locusCanvas" width="1040" height="260"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>Dense LD Block Still Needed</h2>
+    <ol>
+      <li>Extract chr9 regional genotypes around <code>--chr 9 --from-mb 115.807 --to-mb 116.007</code> from the post-imputation BFILE.</li>
+      <li>Run PLINK2 pairwise LD with <code>--r2-phased</code> or a full square <code>--ld-matrix</code> output.</li>
+      <li>Embed SNP order, positions, GWAS p-values, and EUR/UZB matrices in an interactive page matching the chr18 heatmap.</li>
+      <li>Use this binned page only as an interim QA view until that dense matrix exists.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Related Files</h2>
+    <ul>
+      <li><a href="chr9_locus_functional.html">chr9 functional analysis</a></li>
+      <li><a href="step16.html">GWAS Step 16 summary</a></li>
+      <li><a href="../chr18/chr18_ld_eur_sas_uzb.html">chr18 dense LD reference page</a></li>
     </ul>
   </div>
 </div>
 
-<div class="grid">
-  <div class="stat-box">
-    <h3>EUR (1000G ph3)</h3>
-    <div class="value">503 samples</div>
-    <p style="color:var(--muted);margin-top:8px;font-size:12px">European superpopulation from 1000 Genomes</p>
-  </div>
-  
-  <div class="stat-box" style="border-left-color:var(--coh)">
-    <h3>UZB (ALSU)</h3>
-    <div class="value">~1090 samples</div>
-    <p style="color:var(--muted);margin-top:8px;font-size:12px">Uzbek cohort post-imputation genotypes</p>
-  </div>
-</div>
-
-<div class="card">
-  <h2>Interpretation for Region Selection</h2>
-  <p>
-    The LD decay shown above reflects <strong>genome-wide patterns</strong> across all SNP pairs on this chromosome. 
-    For the specific chr9:115.9 Mb locus:
-  </p>
-  <ul>
-    <li><strong>LD block span:</strong> Lead SNP rs28446251 likely connects to nearby variants within ~50−200 kb</li>
-    <li><strong>Multi-allelic locus:</strong> Multiple SNPs in the region may show high LD to each other, requiring conditional/fine-mapping analysis</li>
-    <li><strong>Population specificity:</strong> UZB LD patterns differ from EUR in some regions — use local cohort data for optimal SNP selection</li>
-    <li><strong>Haplotype structure:</strong> Specific haplotypes at this locus may reflect different evolutionary pressures in Central Asia vs Europe</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h2>Next Steps: Full Regional LD Heatmap</h2>
-  <p><strong>To build a complete regional LD heatmap (visual matrix like chr18):</strong></p>
-  <ol style="margin-left:20px;margin-top:8px">
-    <li><strong>Extract genotypes:</strong> Get SNPs in ±50–100 kb window around rs28446251 from UZB and EUR reference data</li>
-    <li><strong>Compute LD matrix:</strong> Calculate pairwise r² values between all SNPs in both populations</li>
-    <li><strong>Build interactive visualization:</strong> Generate HTML heatmap with toggle modes (EUR/UZB/delta), similar to <a href="../chr18/chr18_ld_eur_sas_uzb.html">chr18_ld_eur_sas_uzb.html</a></li>
-    <li><strong>Annotate functional elements:</strong> Add genes, regulatory marks, local GWAS peaks, and haplotype block boundaries</li>
-  </ol>
-  <div class="warn">
-    <strong>⚠️ Interim status:</strong> This LD decay plot is available now. Full heatmap HTML with SNP-level LD matrices will be generated 
-    once regional genotypes are extracted from the DRAGEN cluster. This enables finer-grain LD analysis and conditional association testing.
-  </div>
-</div>
-
-<div class="card" style="background:#f0f7ff">
-  <h2>Functional & Biological Context</h2>
-  <p>For detailed biological annotation and functional analysis of this locus, see:</p>
-  <ul>
-    <li><a href="../steps/chr9_locus_functional.html">chr9_locus_functional.html</a> — Comprehensive functional analysis document</li>
-    <li><a href="../FUNCTIONAL_LOCUS_ANALYSIS.md">FUNCTIONAL_LOCUS_ANALYSIS.md</a> — Three-locus comparison, pathway model, and validation priorities</li>
-    <li><a href="../steps/step16.html">GWAS Summary</a> — All-tier Manhattan plots and top hits</li>
-  </ul>
-</div>
-
-</div>
-
 <script>
-// ═════════════════════════════════════════════════════════════
-// LD Decay Plot — Canvas Rendering
-// ═════════════════════════════════════════════════════════════
+const PAGE = {"chr":9,"locus_label":"chr9:115.9 Mb","lead_snp":"rs28446251","lead_pos":115907201,"track_start":115650000,"track_end":116450000,"features":[{"name":"LINC00474","start":115839214,"end":115925720,"kind":"lncRNA","strand":"-"},{"name":"GWAS cluster","start":115901661,"end":115907201,"kind":"cluster","strand":"+"},{"name":"PAPPA","start":116153791,"end":116402321,"kind":"gene","strand":"+"}],"decay":[{"distance_kb":0.0,"uzb_r2":0.370364,"eur_r2":0.36939,"n_uzb":31093,"n_eur":31093},{"distance_kb":10.0,"uzb_r2":0.246541,"eur_r2":0.244921,"n_uzb":30437,"n_eur":30437},{"distance_kb":20.0,"uzb_r2":0.185755,"eur_r2":0.185552,"n_uzb":29736,"n_eur":29736},{"distance_kb":30.0,"uzb_r2":0.146117,"eur_r2":0.147671,"n_uzb":28977,"n_eur":28977},{"distance_kb":40.0,"uzb_r2":0.11986,"eur_r2":0.122906,"n_uzb":28449,"n_eur":28449},{"distance_kb":50.0,"uzb_r2":0.0993356,"eur_r2":0.103345,"n_uzb":28065,"n_eur":28065},{"distance_kb":60.0,"uzb_r2":0.0856801,"eur_r2":0.0892227,"n_uzb":27435,"n_eur":27435},{"distance_kb":70.0,"uzb_r2":0.0751296,"eur_r2":0.0781526,"n_uzb":26962,"n_eur":26962},{"distance_kb":80.0,"uzb_r2":0.0624366,"eur_r2":0.0653035,"n_uzb":27110,"n_eur":27110},{"distance_kb":90.0,"uzb_r2":0.0578073,"eur_r2":0.0600189,"n_uzb":26376,"n_eur":26376},{"distance_kb":100.0,"uzb_r2":0.0518321,"eur_r2":0.0545597,"n_uzb":25791,"n_eur":25791},{"distance_kb":110.0,"uzb_r2":0.046257,"eur_r2":0.0485186,"n_uzb":25991,"n_eur":25991},{"distance_kb":120.0,"uzb_r2":0.0404854,"eur_r2":0.0432657,"n_uzb":25740,"n_eur":25740},{"distance_kb":130.0,"uzb_r2":0.034569,"eur_r2":0.0370754,"n_uzb":25590,"n_eur":25590},{"distance_kb":140.0,"uzb_r2":0.0314651,"eur_r2":0.0336566,"n_uzb":25446,"n_eur":25446},{"distance_kb":150.0,"uzb_r2":0.0281935,"eur_r2":0.0304986,"n_uzb":25365,"n_eur":25365},{"distance_kb":160.0,"uzb_r2":0.0251013,"eur_r2":0.0274648,"n_uzb":25108,"n_eur":25108},{"distance_kb":170.0,"uzb_r2":0.0234481,"eur_r2":0.0259136,"n_uzb":24623,"n_eur":24623},{"distance_kb":180.0,"uzb_r2":0.0215632,"eur_r2":0.0236883,"n_uzb":24530,"n_eur":24530},{"distance_kb":190.0,"uzb_r2":0.0192275,"eur_r2":0.0212017,"n_uzb":24203,"n_eur":24203},{"distance_kb":200.0,"uzb_r2":0.0184416,"eur_r2":0.0204172,"n_uzb":24502,"n_eur":24502},{"distance_kb":210.0,"uzb_r2":0.0164367,"eur_r2":0.0183968,"n_uzb":24174,"n_eur":24174},{"distance_kb":220.0,"uzb_r2":0.0144537,"eur_r2":0.0163082,"n_uzb":23784,"n_eur":23784},{"distance_kb":230.0,"uzb_r2":0.014397,"eur_r2":0.0161217,"n_uzb":24059,"n_eur":24059},{"distance_kb":240.0,"uzb_r2":0.0131912,"eur_r2":0.014964,"n_uzb":23780,"n_eur":23780},{"distance_kb":250.0,"uzb_r2":0.0119477,"eur_r2":0.0133951,"n_uzb":23743,"n_eur":23743},{"distance_kb":260.0,"uzb_r2":0.0114978,"eur_r2":0.0125767,"n_uzb":23947,"n_eur":23947},{"distance_kb":270.0,"uzb_r2":0.0108509,"eur_r2":0.0120097,"n_uzb":23230,"n_eur":23230},{"distance_kb":280.0,"uzb_r2":0.0100278,"eur_r2":0.0107989,"n_uzb":23272,"n_eur":23272},{"distance_kb":290.0,"uzb_r2":0.00963052,"eur_r2":0.0105875,"n_uzb":23515,"n_eur":23515},{"distance_kb":300.0,"uzb_r2":0.00898039,"eur_r2":0.0101125,"n_uzb":22669,"n_eur":22669},{"distance_kb":310.0,"uzb_r2":0.00840901,"eur_r2":0.00928273,"n_uzb":22884,"n_eur":22884},{"distance_kb":320.0,"uzb_r2":0.00855265,"eur_r2":0.00913126,"n_uzb":22750,"n_eur":22750},{"distance_kb":330.0,"uzb_r2":0.00794583,"eur_r2":0.00862908,"n_uzb":22501,"n_eur":22501},{"distance_kb":340.0,"uzb_r2":0.00760029,"eur_r2":0.00838915,"n_uzb":22321,"n_eur":22321},{"distance_kb":350.0,"uzb_r2":0.00752893,"eur_r2":0.00810281,"n_uzb":22118,"n_eur":22118},{"distance_kb":360.0,"uzb_r2":0.0069278,"eur_r2":0.00762154,"n_uzb":22229,"n_eur":22229},{"distance_kb":370.0,"uzb_r2":0.00648483,"eur_r2":0.00712341,"n_uzb":22047,"n_eur":22047},{"distance_kb":380.0,"uzb_r2":0.00638228,"eur_r2":0.00676003,"n_uzb":21608,"n_eur":21608},{"distance_kb":390.0,"uzb_r2":0.00609671,"eur_r2":0.00621749,"n_uzb":21682,"n_eur":21682},{"distance_kb":400.0,"uzb_r2":0.00562294,"eur_r2":0.00574639,"n_uzb":21863,"n_eur":21863},{"distance_kb":410.0,"uzb_r2":0.00516981,"eur_r2":0.00541872,"n_uzb":21545,"n_eur":21545},{"distance_kb":420.0,"uzb_r2":0.00512275,"eur_r2":0.0052561,"n_uzb":21022,"n_eur":21022},{"distance_kb":430.0,"uzb_r2":0.00467102,"eur_r2":0.00489261,"n_uzb":20925,"n_eur":20925},{"distance_kb":440.0,"uzb_r2":0.00498702,"eur_r2":0.00500571,"n_uzb":20685,"n_eur":20685},{"distance_kb":450.0,"uzb_r2":0.00457474,"eur_r2":0.00463235,"n_uzb":20899,"n_eur":20899},{"distance_kb":460.0,"uzb_r2":0.00441349,"eur_r2":0.00447552,"n_uzb":20702,"n_eur":20702},{"distance_kb":470.0,"uzb_r2":0.00436204,"eur_r2":0.00440862,"n_uzb":20280,"n_eur":20280},{"distance_kb":480.0,"uzb_r2":0.00417492,"eur_r2":0.00425177,"n_uzb":20534,"n_eur":20534},{"distance_kb":490.0,"uzb_r2":0.00380413,"eur_r2":0.00409955,"n_uzb":20811,"n_eur":20811}],"heat":{"uzb":[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,0.240045,0.0426188,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,0.0426188,0.0285575,0.0188768,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,0.0188768,0.0457393,0.00459192,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,0.00459192,0.0678059,0.0165221,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,0.0165221,0.0440584,0.0113459,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,0.0113459,0.0808848,0.00359649,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,0.00359649,0.133664,0.0104655,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,0.0104655,0.0336317,0.00370204,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,0.00370204,0.0624573,0.013382,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,0.013382,0.0620538,0.00607884,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,0.00607884,0.0806942,0.00620466,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,0.00620466,0.0586966,0.0155555,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0155555,0.131013,0.0301269],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0301269,0.136649]],"eur":[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,0.224489,0.0425179,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,0.0425179,0.0395798,0.0180976,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,0.0180976,0.0456615,0.00293813,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,0.00293813,0.0689491,0.0207552,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,0.0207552,0.0551778,0.0152132,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,0.0152132,0.0833371,0.00281236,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,0.00281236,0.145496,0.0175327,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,0.0175327,0.0394183,0.00693643,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,0.00693643,0.0629511,0.0145151,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,0.0145151,0.0610666,0.00526241,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,0.00526241,0.0877027,0.00696852,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,0.00696852,0.0579119,0.0132699,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0132699,0.13726,0.0282192],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0282192,0.156639]],"counts":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,36,79,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,79,173,100,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,100,95,76,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,76,2066,5162,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,5162,15611,16202,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,16202,22331,2133,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,2133,9325,12650,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,12650,16875,7265,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,7265,20526,7368,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,7368,13235,6398,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,6398,7877,4770,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,4770,6493,1814,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1814,2403,2997],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2997,9332]],"bins":[{"index":159,"start":109807626,"end":110498240,"start_mb":109.807626},{"index":160,"start":110498240,"end":111188854,"start_mb":110.49824},{"index":161,"start":111188854,"end":111879468,"start_mb":111.188854},{"index":162,"start":111879468,"end":112570082,"start_mb":111.879468},{"index":163,"start":112570082,"end":113260696,"start_mb":112.570082},{"index":164,"start":113260696,"end":113951310,"start_mb":113.260696},{"index":165,"start":113951310,"end":114641924,"start_mb":113.95131},{"index":166,"start":114641924,"end":115332538,"start_mb":114.641924},{"index":167,"start":115332538,"end":116023152,"start_mb":115.332538},{"index":168,"start":116023152,"end":116713766,"start_mb":116.023152},{"index":169,"start":116713766,"end":117404380,"start_mb":116.713766},{"index":170,"start":117404380,"end":118094994,"start_mb":117.40438},{"index":171,"start":118094994,"end":118785608,"start_mb":118.094994},{"index":172,"start":118785608,"end":119476222,"start_mb":118.785608},{"index":173,"start":119476222,"end":120166836,"start_mb":119.476222},{"index":174,"start":120166836,"end":120857450,"start_mb":120.166836},{"index":175,"start":120857450,"end":121548064,"start_mb":120.85745}],"start_bin":159,"end_bin":175,"lead_bin":167,"bin_bp":690614,"bin_kb":691,"non_null_uzb":40,"non_null_eur":40}};
+let heatMode = 'uzb';
 
-const decayData = [{"distance_kb": 0, "eur_r2": 0.370364, "uzb_r2": 31093.0}, {"distance_kb": 0, "eur_r2": 0.246541, "uzb_r2": 30437.0}, {"distance_kb": 0, "eur_r2": 0.185755, "uzb_r2": 29736.0}, {"distance_kb": 0, "eur_r2": 0.146117, "uzb_r2": 28977.0}, {"distance_kb": 0, "eur_r2": 0.11986, "uzb_r2": 28449.0}, {"distance_kb": 0, "eur_r2": 0.0993356, "uzb_r2": 28065.0}, {"distance_kb": 0, "eur_r2": 0.0856801, "uzb_r2": 27435.0}, {"distance_kb": 0, "eur_r2": 0.0751296, "uzb_r2": 26962.0}, {"distance_kb": 0, "eur_r2": 0.0624366, "uzb_r2": 27110.0}, {"distance_kb": 0, "eur_r2": 0.0578073, "uzb_r2": 26376.0}, {"distance_kb": 0, "eur_r2": 0.0518321, "uzb_r2": 25791.0}, {"distance_kb": 0, "eur_r2": 0.046257, "uzb_r2": 25991.0}, {"distance_kb": 0, "eur_r2": 0.0404854, "uzb_r2": 25740.0}, {"distance_kb": 0, "eur_r2": 0.034569, "uzb_r2": 25590.0}, {"distance_kb": 0, "eur_r2": 0.0314651, "uzb_r2": 25446.0}, {"distance_kb": 0, "eur_r2": 0.0281935, "uzb_r2": 25365.0}, {"distance_kb": 0, "eur_r2": 0.0251013, "uzb_r2": 25108.0}, {"distance_kb": 0, "eur_r2": 0.0234481, "uzb_r2": 24623.0}, {"distance_kb": 0, "eur_r2": 0.0215632, "uzb_r2": 24530.0}, {"distance_kb": 0, "eur_r2": 0.0192275, "uzb_r2": 24203.0}, {"distance_kb": 0, "eur_r2": 0.0184416, "uzb_r2": 24502.0}, {"distance_kb": 0, "eur_r2": 0.0164367, "uzb_r2": 24174.0}, {"distance_kb": 0, "eur_r2": 0.0144537, "uzb_r2": 23784.0}, {"distance_kb": 0, "eur_r2": 0.014397, "uzb_r2": 24059.0}, {"distance_kb": 0, "eur_r2": 0.0131912, "uzb_r2": 23780.0}, {"distance_kb": 0, "eur_r2": 0.0119477, "uzb_r2": 23743.0}, {"distance_kb": 0, "eur_r2": 0.0114978, "uzb_r2": 23947.0}, {"distance_kb": 0, "eur_r2": 0.0108509, "uzb_r2": 23230.0}, {"distance_kb": 0, "eur_r2": 0.0100278, "uzb_r2": 23272.0}, {"distance_kb": 0, "eur_r2": 0.00963052, "uzb_r2": 23515.0}, {"distance_kb": 0, "eur_r2": 0.00898039, "uzb_r2": 22669.0}, {"distance_kb": 0, "eur_r2": 0.00840901, "uzb_r2": 22884.0}, {"distance_kb": 0, "eur_r2": 0.00855265, "uzb_r2": 22750.0}, {"distance_kb": 0, "eur_r2": 0.00794583, "uzb_r2": 22501.0}, {"distance_kb": 0, "eur_r2": 0.00760029, "uzb_r2": 22321.0}, {"distance_kb": 0, "eur_r2": 0.00752893, "uzb_r2": 22118.0}, {"distance_kb": 0, "eur_r2": 0.0069278, "uzb_r2": 22229.0}, {"distance_kb": 0, "eur_r2": 0.00648483, "uzb_r2": 22047.0}, {"distance_kb": 0, "eur_r2": 0.00638228, "uzb_r2": 21608.0}, {"distance_kb": 0, "eur_r2": 0.00609671, "uzb_r2": 21682.0}, {"distance_kb": 0, "eur_r2": 0.00562294, "uzb_r2": 21863.0}, {"distance_kb": 0, "eur_r2": 0.00516981, "uzb_r2": 21545.0}, {"distance_kb": 0, "eur_r2": 0.00512275, "uzb_r2": 21022.0}, {"distance_kb": 0, "eur_r2": 0.00467102, "uzb_r2": 20925.0}, {"distance_kb": 0, "eur_r2": 0.00498702, "uzb_r2": 20685.0}, {"distance_kb": 0, "eur_r2": 0.00457474, "uzb_r2": 20899.0}, {"distance_kb": 0, "eur_r2": 0.00441349, "uzb_r2": 20702.0}, {"distance_kb": 0, "eur_r2": 0.00436204, "uzb_r2": 20280.0}, {"distance_kb": 0, "eur_r2": 0.00417492, "uzb_r2": 20534.0}, {"distance_kb": 0, "eur_r2": 0.00380413, "uzb_r2": 20811.0}];
+function fmtMb(bp) {
+  return (bp / 1e6).toFixed(2) + ' Mb';
+}
+
+function interpColor(stops, value) {
+  if (value === null || !Number.isFinite(value)) return '#f7f8fb';
+  const clamp = Math.max(stops[0][0], Math.min(stops[stops.length - 1][0], value));
+  let lo = stops[0], hi = stops[stops.length - 1];
+  for (let index = 0; index < stops.length - 1; index++) {
+    if (clamp >= stops[index][0] && clamp <= stops[index + 1][0]) {
+      lo = stops[index];
+      hi = stops[index + 1];
+      break;
+    }
+  }
+  const span = hi[0] - lo[0] || 1;
+  const t = (clamp - lo[0]) / span;
+  const color = [1, 2, 3].map(i => Math.round(lo[i] + (hi[i] - lo[i]) * t));
+  return 'rgb(' + color.join(',') + ')';
+}
+
+function r2Color(value) {
+  return interpColor([
+    [0.00, 248, 250, 252],
+    [0.02, 226, 236, 246],
+    [0.05, 180, 216, 214],
+    [0.10, 244, 209, 122],
+    [0.20, 230, 134, 74],
+    [0.40, 184, 50, 63],
+    [1.00, 102, 20, 43]
+  ], value);
+}
+
+function deltaColor(value) {
+  return interpColor([
+    [-0.30, 28, 94, 153],
+    [-0.08, 127, 179, 213],
+    [0.00, 248, 250, 252],
+    [0.08, 244, 172, 96],
+    [0.30, 166, 54, 3]
+  ], value);
+}
+
+function setupCanvas(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  return ctx;
+}
+
+function drawLine(ctx, values, color, xScale, yScale) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  let started = false;
+  for (const row of values) {
+    const yValue = row.value;
+    if (yValue === null || !Number.isFinite(yValue)) continue;
+    const x = xScale(row.distance_kb);
+    const y = yScale(yValue);
+    if (!started) {
+      ctx.moveTo(x, y);
+      started = true;
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+  ctx.stroke();
+}
 
 function drawDecayPlot() {
   const canvas = document.getElementById('decayCanvas');
-  const ctx = canvas.getContext('2d');
-  
-  const PAD_L = 60, PAD_B = 50, PAD_T = 20, PAD_R = 20;
-  const W = canvas.width - PAD_L - PAD_R;
-  const H = canvas.height - PAD_B - PAD_T;
-  
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Filter data (plot up to 500 kb)
-  const data = decayData.filter(d => d.distance_kb <= 500);
-  
-  // Scales
-  const maxDist = 500;
-  const maxR2 = 1.0;
-  
-  const xs = (d) => PAD_L + (d / maxDist) * W;
-  const ys = (r2) => PAD_T + H - (r2 / maxR2) * H;
-  
-  // Grid lines
-  ctx.strokeStyle = '#e0e0e0';
-  ctx.lineWidth = 0.5;
-  for (let r2 = 0; r2 <= 1.0; r2 += 0.2) {
-    const y = ys(r2);
+  const ctx = setupCanvas(canvas);
+  const left = 70, right = 24, top = 28, bottom = 62;
+  const width = canvas.width - left - right;
+  const height = canvas.height - top - bottom;
+  const data = PAGE.decay.filter(row => row.distance_kb <= 500);
+  const maxDist = Math.max(...data.map(row => row.distance_kb));
+  const maxR2Raw = Math.max(...data.flatMap(row => [row.uzb_r2 || 0, row.eur_r2 || 0]));
+  const maxR2 = Math.max(0.1, Math.ceil(maxR2Raw * 10) / 10);
+  const xScale = distance => left + (distance / maxDist) * width;
+  const yScale = r2 => top + height - (r2 / maxR2) * height;
+
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
+  for (let tick = 0; tick <= maxR2 + 0.0001; tick += maxR2 / 5) {
+    const y = yScale(tick);
     ctx.beginPath();
-    ctx.moveTo(PAD_L, y);
-    ctx.lineTo(PAD_L + W, y);
+    ctx.moveTo(left, y);
+    ctx.lineTo(left + width, y);
     ctx.stroke();
   }
-  for (let d = 0; d <= maxDist; d += 100) {
-    const x = xs(d);
+  for (let distance = 0; distance <= maxDist; distance += 100) {
+    const x = xScale(distance);
     ctx.beginPath();
-    ctx.moveTo(x, PAD_T);
-    ctx.lineTo(x, PAD_T + H);
+    ctx.moveTo(x, top);
+    ctx.lineTo(x, top + height);
     ctx.stroke();
   }
-  
-  // Plot EUR line
-  ctx.strokeStyle = '#1565c0';
-  ctx.lineWidth = 2.5;
+
+  drawLine(ctx, data.map(row => ({distance_kb: row.distance_kb, value: row.eur_r2})), '#1565c0', xScale, yScale);
+  drawLine(ctx, data.map(row => ({distance_kb: row.distance_kb, value: row.uzb_r2})), '#2e7d32', xScale, yScale);
+
+  ctx.strokeStyle = '#172033';
+  ctx.lineWidth = 1.4;
   ctx.beginPath();
-  let first = true;
-  for (const d of data) {
-    if (d.eur_r2 !== null) {
-      const x = xs(d.distance_kb);
-      const y = ys(d.eur_r2);
-      if (first) { ctx.moveTo(x, y); first = false; }
-      else { ctx.lineTo(x, y); }
-    }
-  }
+  ctx.moveTo(left, top);
+  ctx.lineTo(left, top + height);
+  ctx.lineTo(left + width, top + height);
   ctx.stroke();
-  
-  // Plot UZB line
-  ctx.strokeStyle = '#2e7d32';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  first = true;
-  for (const d of data) {
-    if (d.uzb_r2 !== null) {
-      const x = xs(d.distance_kb);
-      const y = ys(d.uzb_r2);
-      if (first) { ctx.moveTo(x, y); first = false; }
-      else { ctx.lineTo(x, y); }
-    }
-  }
-  ctx.stroke();
-  
-  // Axes
-  ctx.strokeStyle = '#333';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(PAD_L, PAD_T);
-  ctx.lineTo(PAD_L, PAD_T + H);
-  ctx.lineTo(PAD_L + W, PAD_T + H);
-  ctx.stroke();
-  
-  // X-axis labels (distance)
-  ctx.fillStyle = '#333';
-  ctx.font = '12px Arial';
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '12px Segoe UI, Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  for (let d = 0; d <= maxDist; d += 100) {
-    const x = xs(d);
-    ctx.fillText(d, x, PAD_T + H + 8);
+  for (let distance = 0; distance <= maxDist; distance += 100) {
+    ctx.fillText(String(distance), xScale(distance), top + height + 10);
   }
-  
-  // Y-axis labels (r2)
+  ctx.fillText('Distance between SNP pairs (kb)', left + width / 2, canvas.height - 20);
+
   ctx.textAlign = 'right';
   ctx.textBaseline = 'middle';
-  for (let r2 = 0; r2 <= 1.0; r2 += 0.2) {
-    const y = ys(r2);
-    ctx.fillText(r2.toFixed(1), PAD_L - 10, y);
+  for (let tick = 0; tick <= maxR2 + 0.0001; tick += maxR2 / 5) {
+    ctx.fillText(tick.toFixed(2), left - 10, yScale(tick));
   }
-  
-  // Axis titles
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-  ctx.fillText('Distance (kb)', PAD_L + W/2, canvas.height - 15);
-  
   ctx.save();
-  ctx.translate(15, PAD_T + H/2);
-  ctx.rotate(-Math.PI/2);
+  ctx.translate(18, top + height / 2);
+  ctx.rotate(-Math.PI / 2);
   ctx.textAlign = 'center';
-  ctx.fillText('r² (linkage disequilibrium)', 0, 0);
+  ctx.fillText('mean r2', 0, 0);
   ctx.restore();
+
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#1565c0';
+  ctx.fillRect(left + 16, top + 12, 18, 4);
+  ctx.fillStyle = '#172033';
+  ctx.fillText('EUR 1000G', left + 42, top + 14);
+  ctx.fillStyle = '#2e7d32';
+  ctx.fillRect(left + 150, top + 12, 18, 4);
+  ctx.fillStyle = '#172033';
+  ctx.fillText('UZB cohort', left + 176, top + 14);
 }
 
-drawDecayPlot();
-console.log('✓ LD decay plot rendered for chr9');
-</script>
+function matrixValue(mode, rowIndex, colIndex) {
+  const uzb = PAGE.heat.uzb[rowIndex][colIndex];
+  const eur = PAGE.heat.eur[rowIndex][colIndex];
+  if (mode === 'uzb') return uzb;
+  if (mode === 'eur') return eur;
+  if (uzb === null || eur === null) return null;
+  return uzb - eur;
+}
 
+function drawHeatLegend(ctx, x, y, width, height, mode) {
+  const steps = 80;
+  for (let step = 0; step < steps; step++) {
+    const t = step / (steps - 1);
+    const value = mode === 'delta' ? -0.3 + t * 0.6 : t;
+    ctx.fillStyle = mode === 'delta' ? deltaColor(value) : r2Color(value);
+    ctx.fillRect(x + (step / steps) * width, y, width / steps + 1, height);
+  }
+  ctx.strokeStyle = '#aab7c8';
+  ctx.strokeRect(x, y, width, height);
+  ctx.fillStyle = '#172033';
+  ctx.font = '11px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  if (mode === 'delta') {
+    ctx.fillText('-0.30', x, y + height + 5);
+    ctx.fillText('0', x + width / 2, y + height + 5);
+    ctx.fillText('+0.30', x + width, y + height + 5);
+  } else {
+    ctx.fillText('0', x, y + height + 5);
+    ctx.fillText('0.5', x + width / 2, y + height + 5);
+    ctx.fillText('1.0', x + width, y + height + 5);
+  }
+}
+
+function drawHeatmap() {
+  const canvas = document.getElementById('heatCanvas');
+  const ctx = setupCanvas(canvas);
+  const bins = PAGE.heat.bins;
+  const n = bins.length;
+  const left = 92, top = 64, right = 36, bottom = 145;
+  const size = Math.min(canvas.width - left - right, canvas.height - top - bottom);
+  const cell = Math.floor(size / n);
+  const heatSize = cell * n;
+  const leadOffset = PAGE.heat.lead_bin - PAGE.heat.start_bin;
+  const title = heatMode === 'delta' ? 'Delta mean r2 (UZB - EUR)' : (heatMode === 'uzb' ? 'UZB mean r2' : 'EUR mean r2');
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '700 15px Segoe UI, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(title + ' | coarse bins around ' + PAGE.lead_snp, left, 28);
+  drawHeatLegend(ctx, canvas.width - 260, 22, 190, 12, heatMode);
+
+  for (let row = 0; row < n; row++) {
+    for (let col = 0; col < n; col++) {
+      const value = matrixValue(heatMode, row, col);
+      const x = left + col * cell;
+      const y = top + row * cell;
+      ctx.fillStyle = heatMode === 'delta' ? deltaColor(value) : r2Color(value);
+      ctx.fillRect(x, y, cell, cell);
+      if (value === null) {
+        ctx.strokeStyle = '#e5e7eb';
+        ctx.beginPath();
+        ctx.moveTo(x, y + cell);
+        ctx.lineTo(x + cell, y);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.strokeRect(x, y, cell, cell);
+    }
+  }
+
+  ctx.strokeStyle = '#c2185b';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(left + leadOffset * cell, top, cell, heatSize);
+  ctx.strokeRect(left, top + leadOffset * cell, heatSize, cell);
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '11px Segoe UI, Arial';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (let row = 0; row < n; row++) {
+    const label = bins[row].start_mb.toFixed(1);
+    ctx.fillText(label, left - 8, top + row * cell + cell / 2);
+  }
+  ctx.save();
+  ctx.translate(left, top + heatSize + 10);
+  ctx.rotate(Math.PI / 4);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  for (let col = 0; col < n; col++) {
+    ctx.fillText(bins[col].start_mb.toFixed(1), col * cell, 0);
+  }
+  ctx.restore();
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '12px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('Genomic bin start (Mb)', left + heatSize / 2, canvas.height - 42);
+  ctx.save();
+  ctx.translate(22, top + heatSize / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Genomic bin start (Mb)', 0, 0);
+  ctx.restore();
+
+  ctx.fillStyle = '#c2185b';
+  ctx.font = '700 12px Segoe UI, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('lead bin: ' + PAGE.lead_snp + ' (' + fmtMb(PAGE.lead_pos) + ')', left, top + heatSize + 86);
+  ctx.fillStyle = '#5c6c82';
+  ctx.font = '12px Segoe UI, Arial';
+  ctx.fillText('Resolution: one displayed cell is about ' + PAGE.heat.bin_kb + ' kb; use dense PLINK2 extraction for SNP-level block boundaries.', left, top + heatSize + 106);
+}
+
+function drawLocusTrack() {
+  const canvas = document.getElementById('locusCanvas');
+  const ctx = setupCanvas(canvas);
+  const left = 72, right = 36, top = 58;
+  const width = canvas.width - left - right;
+  const axisY = 132;
+  const xScale = pos => left + ((pos - PAGE.track_start) / (PAGE.track_end - PAGE.track_start)) * width;
+
+  ctx.fillStyle = '#172033';
+  ctx.font = '700 15px Segoe UI, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(PAGE.locus_label + ' working locus schematic', left, 30);
+
+  ctx.strokeStyle = '#172033';
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(left, axisY);
+  ctx.lineTo(left + width, axisY);
+  ctx.stroke();
+
+  const tickCount = 5;
+  ctx.fillStyle = '#172033';
+  ctx.font = '11px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  for (let index = 0; index <= tickCount; index++) {
+    const pos = PAGE.track_start + (index / tickCount) * (PAGE.track_end - PAGE.track_start);
+    const x = xScale(pos);
+    ctx.beginPath();
+    ctx.moveTo(x, axisY - 5);
+    ctx.lineTo(x, axisY + 5);
+    ctx.stroke();
+    ctx.fillText(fmtMb(pos), x, axisY + 12);
+  }
+
+  const colors = {gene:'#1565c0', lncRNA:'#7b3294', cluster:'#d95f02', candidate:'#2e7d32'};
+  PAGE.features.forEach((feature, index) => {
+    const x1 = xScale(feature.start);
+    const x2 = xScale(feature.end);
+    const y = top + 28 + index * 30;
+    const w = Math.max(8, x2 - x1);
+    ctx.fillStyle = colors[feature.kind] || '#5c6c82';
+    ctx.fillRect(x1, y, w, 12);
+    ctx.fillStyle = '#172033';
+    ctx.font = '12px Segoe UI, Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(feature.name + ' (' + feature.kind + ')', Math.min(x1 + w + 7, left + width - 230), y + 6);
+  });
+
+  const leadX = xScale(PAGE.lead_pos);
+  ctx.strokeStyle = '#c2185b';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(leadX, top + 14);
+  ctx.lineTo(leadX, axisY + 36);
+  ctx.stroke();
+  ctx.fillStyle = '#c2185b';
+  ctx.font = '700 12px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(PAGE.lead_snp, leadX, top + 2);
+}
+
+document.querySelectorAll('button[data-mode]').forEach(button => {
+  button.addEventListener('click', () => {
+    heatMode = button.dataset.mode;
+    document.querySelectorAll('button[data-mode]').forEach(item => item.classList.toggle('active', item === button));
+    drawHeatmap();
+  });
+});
+
+drawDecayPlot();
+drawHeatmap();
+drawLocusTrack();
+console.log('LD page rendered', PAGE.locus_label, PAGE.decay.length, PAGE.heat.bins.length);
+</script>
 </body>
 </html>

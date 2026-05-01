@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next Steps: Planned Analyses - ALSU Pipeline</title>
+    <title>Next Steps: Critical Review and Roadmap - ALSU Pipeline</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -90,6 +90,8 @@
 
         .chart-container { position: relative; margin: 20px 0; }
         canvas { max-width: 100%; border: 1px solid #e0e0e0; border-radius: 4px; }
+        .status-table td:first-child { font-weight: 600; }
+        .compact-list li { margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -128,10 +130,11 @@
             
             <div class="header">
                 <a href="../index.html" class="back-link">&larr; Back to Main</a>
-                <h1>Next Steps: Planned Analyses</h1>
-                <p>Roadmap for Uzbek population genetics and pregnancy loss association study</p>
+                <h1>Next Steps: Critical Review &amp; Publication Roadmap</h1>
+                <p>Current decision log for the Uzbek population genetics and recurrent pregnancy loss GWAS programme</p>
                 <span class="step-badge">✓ Spring 2026 Pipeline</span>
-                <span class="step-badge step-badge-old">Updated: Mar 2026</span>
+                <span class="step-badge">✓ GWAS + sensitivity tiers complete</span>
+                <span class="step-badge step-badge-old">Updated: May 1, 2026</span>
             </div>
             
             <div class="content">
@@ -140,7 +143,7 @@
 <h2>1. Current Status Summary</h2>
 
 <div class="success">
-    <strong>Completed (Steps 1&ndash;15):</strong>
+    <strong>Completed core pipeline (Steps 1&ndash;16):</strong>
     <ul style="margin-top:8px;">
         <li>QC pipeline: missingness &rarr; IBD dedup &rarr; SNP filtering &rarr; imputation &rarr; normalization &rarr; final QC</li>
         <li>PCA: Uzbek-internal + global (1000 Genomes) &mdash; Uzbek sits on EUR&ndash;EAS cline</li>
@@ -149,15 +152,28 @@
         <li>PBS multi-population analysis: 8 Uzbek-specific variants, all with PBS &ge; 0.3. See <a href="step12.html">Step 12</a></li>
         <li>LD pruning: 5.41M &rarr; 88.7K independent SNPs for population genetics</li>
         <li><strong>ROH &amp; IBD:</strong> 36,702 ROH segments, median F<sub>ROH</sub>=0.015. 6,368 related pairs (PI_HAT &ge; 0.05), 428 related (PI_HAT &gt; 0.0884). See <a href="step15.html">Step 15</a></li>
+        <li><strong>RPL GWAS:</strong> primary run complete (273 cases / 509 controls, 9,920,024 SNPs, &lambda;<sub>GC</sub>=0.978, 0 genome-wide significant, 198 suggestive). See <a href="step16.html">Step 16</a></li>
+        <li><strong>Sensitivity GWAS:</strong> four alternate definitions complete (S1&ndash;S4), &lambda;<sub>GC</sub>=0.857&ndash;1.021; all-tier Manhattan/QQ page built. See <a href="step16_manhattan.html">interactive Manhattan</a></li>
+        <li><strong>Lead-locus deep dives:</strong> chr18 multi-population LD page published; chr15 and chr9 functional pages plus interim LD-decay pages are available from <a href="step16.html#sensitivity">Step 16</a></li>
     </ul>
 </div>
 
 <div class="tier-card">
-    <h4><span class="status-done">CORE COMPLETE</span> &mdash; Global ADMIXTURE complete; Evanno replicates running on DRAGEN</h4>
+    <h4><span class="status-done">CURRENT STATE</span> &mdash; analysis outputs exist; submission-readiness is now the critical path</h4>
     <ul>
-        <li><strong>Evanno &Delta;K</strong>: Replicate runs launched on DRAGEN: Global (3,595 &times; 77,111) + UZB-only (1,047 &times; 88,722), K=2&ndash;8 &times; 10 reps each. See <a href="step11.html">Step 11 &sect;3.1</a></li>
-        <li><strong>Global ADMIXTURE</strong> &mdash; <span class="status-done">COMPLETE</span>. K=5&ndash;8 plateau (CV=0.294). 3,595 samples (2,548 1000G + 1,047 UZB). See <a href="step11.html">Step 11</a></li>
-        <li><strong>sNMF validation</strong> &mdash; <span class="status-done">COMPLETE</span>. K=2 Uzbek-only (monotonic CE increase, 0.425). See <a href="step11.html">Step 11 &sect;3.2&ndash;3.3</a></li>
+        <li><strong>Population-genetics manuscript:</strong> largely analysis-complete; needs final figure selection, reproducibility package, and controlled language around ADMIXTURE / PBS interpretation.</li>
+        <li><strong>RPL GWAS manuscript:</strong> credible suggestive signals and excellent calibration, but no genome-wide-significant discovery; manuscript must be framed as Central Asian RPL GWAS with prioritized validation targets.</li>
+        <li><strong>Highest-value technical gap:</strong> run F<sub>ROH</sub> and mixed-model sensitivity checks, then finish chr15/chr9 dense regional LD heatmaps to match the published chr18 page.</li>
+    </ul>
+</div>
+
+<div class="warning">
+    <strong>Critical evaluation:</strong>
+    <ul style="margin-top:8px;">
+        <li>The page previously described phenotype mapping, case definition, and GWAS execution as future blockers. That is obsolete: those tasks are complete and documented in <a href="step16.html">Step 16</a>.</li>
+        <li>The GWAS result is <strong>well calibrated but underpowered for definitive discovery</strong>: there are no p&lt;5&times;10<sup>&minus;8</sup> hits. Use &ldquo;suggestive locus&rdquo; language for chr18, chr15, and chr9 unless replication/meta-analysis moves a signal across the threshold.</li>
+        <li>The primary model used AGE, BMI, PC1&ndash;PC3. Q1 was dropped for collinearity with PC1; F<sub>ROH</sub> was planned but not joined at run time. A v2 covariate rerun remains important before submission.</li>
+        <li>chr18 has a full multi-population heatmap. chr15 and chr9 currently have <strong>interim LD-decay visualizations</strong>; do not describe them as chr18-equivalent heatmaps until dense regional matrices are generated.</li>
     </ul>
 </div>
 
@@ -273,8 +289,8 @@
         IBD analysis (PLINK <code>--genome</code>, 1,047 post-QC samples) identified 6,368 related pairs (PI_HAT &ge; 0.05),
         of which 428 are related at PI_HAT &gt; 0.0884: 0 duplicates, 3 first-degree, 2 second-degree, and 423 third-degree relatives.
     </p>
-    <p><strong>Clinical relevance:</strong> F<sub>ROH</sub> will be used as a covariate in the pregnancy loss GWAS.
-    Mixed linear models (BOLT-LMM/SAIGE) are essential given the extensive cryptic relatedness.</p>
+    <p><strong>Clinical relevance:</strong> F<sub>ROH</sub> was not included in the completed primary GWAS because it was not joined to GWAS sample IDs at run time.
+    A v2 covariate rerun and a mixed-model sensitivity check (SAIGE / REGENIE / GCTA-LOCO) remain important because the cohort has extensive cryptic relatedness.</p>
 </div>
 
 
@@ -409,7 +425,7 @@
     <ul>
         <li>At K=2, this cohort&rsquo;s two components capture a <strong>geographic signal</strong> (birthplace) rather than ethnicity &mdash; consistent with a Silk Road admixture cline</li>
         <li>East Asian minorities (Korean, Chinese) do show higher Eastern ancestry, confirming the biological meaning of the Q2 component</li>
-        <li>Russians/Tajiks are <strong>not</strong> distinguishable from Uzbeks at K=2 &mdash; because most are long-term residents who have admixed into the local gradient. The <strong>global ADMIXTURE with 1000G references</strong> (running separately) should separate them much more clearly</li>
+        <li>Russians/Tajiks are <strong>not</strong> distinguishable from Uzbeks at K=2 &mdash; because most are long-term residents who have admixed into the local gradient. The completed <strong>global ADMIXTURE with 1000G references</strong> confirms that birthplace remains stronger than self-reported ethnicity for this cohort</li>
         <li>The strong geographic signal supports using <strong>birthplace as a covariate</strong> in the GWAS model alongside ancestry PCs</li>
     </ul>
 </div>
@@ -684,175 +700,101 @@ text(mds, labels=rownames(mds), pos=3)</div>
 
 
 <!-- ═══════════════════════════ TIER B: PREGNANCY LOSS ═══════════ -->
-<h2>4. Pregnancy Loss Association Study</h2>
+<h2>4. Recurrent Pregnancy Loss GWAS: Current Status</h2>
 
-<!-- ── 4.1 ID Mapping ── -->
-<h3>4.1. Phenotype&ndash;Genotype ID Mapping</h3>
+<h3>4.1. Executed GWAS Runs</h3>
 
 <div class="tier-card priority-high">
-    <h4><span class="status-next">IMMEDIATE BLOCKER</span></h4>
+    <h4><span class="status-done">COMPLETE</span> &mdash; phenotype mapping, case/control definitions, primary GWAS, and four sensitivity runs</h4>
     <p>
-        The phenotype CSV (1,815 rows &times; 246 columns, from the &ldquo;GWAS ot 27.08&rdquo; file) uses a different sample ID scheme than the genotype files. Before any association testing, we must:
+        The old blockers on this page have been resolved. The current association model is
+        <code>logit(RPL) ~ SNP + AGE + BMI + PC1 + PC2 + PC3</code>, run with PLINK2 Firth-hybrid logistic regression on the post-imputation BFILE.
+        Q1 ancestry was excluded because it was collinear with PC1; F<sub>ROH</sub> remains a planned v2 covariate.
     </p>
-    <ol>
-        <li>Map phenotype IDs &harr; genotype IDs (the genotype IDs are like <code>2_01-02</code>, <code>12_02-81</code>)</li>
-        <li>Verify and fix the reportedly <strong>inverted case/control labels</strong></li>
-        <li>Determine which of the 246 phenotype columns are relevant covariates</li>
-    </ol>
+    <table class="status-table">
+        <tr><th>Run</th><th>Cases / controls</th><th>&lambda;<sub>GC</sub></th><th>Suggestive hits</th><th>Top locus</th></tr>
+        <tr><td>Primary</td><td>273 / 509</td><td>0.978</td><td>198</td><td>chr18:70.49 Mb NETO1/SOCS6 region, rs4891860, OR&asymp;0.35, p=3.2&times;10<sup>&minus;7</sup></td></tr>
+        <tr><td>S1 strict &ge;3</td><td>97 / 509</td><td>0.857</td><td>123</td><td>chr11:88.22 Mb rs9666550, OR&asymp;2.8, p=5.7&times;10<sup>&minus;7</sup></td></tr>
+        <tr><td>S2 +REVIEW</td><td>337 / 509</td><td>1.003</td><td>66</td><td>chr1:109.15 Mb CELSR2/PSRC1/SORT1, rs594626, OR&asymp;2.0, p=4.18&times;10<sup>&minus;7</sup></td></tr>
+        <tr><td>S3 +GRAY</td><td>392 / 509</td><td>1.021</td><td>52</td><td>chr9:115.91 Mb LINC00474 / near PAPPA, rs28446251, OR&asymp;2.1, p=1.0&times;10<sup>&minus;7</sup></td></tr>
+        <tr><td>S4 +PROBABLE</td><td>291 / 512</td><td>0.984</td><td>95</td><td>chr1:109.15 Mb plus replicated chr18 protective cluster, rs4243323 p=2.9&times;10<sup>&minus;7</sup></td></tr>
+    </table>
+    <p>
+        Full results: <a href="step16.html">Step 16 GWAS hub</a> and
+        <a href="step16_manhattan.html">interactive all-tier Manhattan / QQ viewer</a>.
+    </p>
 </div>
 
+<h3>4.2. What the GWAS Supports</h3>
 
-<!-- ── 4.2 Case/Control ── -->
-<h3>4.2. Case/Control Definition</h3>
-
-<div class="tier-card priority-high">
-    <h4><span class="status-next">HIGH PRIORITY</span></h4>
-    <p>Preliminary criteria for separating cases from controls:</p>
-    <table>
-        <tr><th></th><th>Cases</th><th>Controls</th></tr>
-        <tr>
-            <td><strong>Primary criterion</strong></td>
-            <td>&ge;2 pregnancy losses (recurrent)</td>
-            <td>&ge;1 live birth, 0 losses</td>
-        </tr>
-        <tr>
-            <td><strong>Strict criterion</strong></td>
-            <td>&ge;3 consecutive losses (RPL by ESHRE definition)</td>
-            <td>&ge;2 live births, 0 losses</td>
-        </tr>
-    </table>
-    <p><strong>Sub-phenotypes to consider:</strong></p>
-    <ul>
-        <li><strong>Early loss</strong> (&lt;12 weeks) &mdash; most common, often chromosomal/hormonal</li>
-        <li><strong>Late loss</strong> (13&ndash;20 weeks) &mdash; often structural/immunological</li>
-        <li><strong>Stillbirth</strong> (&gt;20 weeks) &mdash; placental/vascular causes</li>
-        <li><strong>Recurrent early</strong> vs. <strong>single late</strong> &mdash; different genetic architectures</li>
+<div class="important">
+    <strong>Interpretation discipline:</strong>
+    <ul style="margin-top:8px;">
+        <li><strong>Do say:</strong> well-calibrated first Central Asian / Uzbek RPL GWAS with three prioritized suggestive loci and robust phenotype-sensitivity analysis.</li>
+        <li><strong>Do not say yet:</strong> definitive discovery loci. None of the five GWAS runs reaches p&lt;5&times;10<sup>&minus;8</sup>.</li>
+        <li><strong>Strongest current signal:</strong> chr18 protective cluster is robust in primary and S4; chr9 has the largest risk effect and a strong biological link to JAK/STAT / PAPPA biology; chr15 provides a multi-allelic immune-development candidate.</li>
+        <li><strong>Main statistical risk:</strong> modest case count, cryptic relatedness, and F<sub>ROH</sub> not yet included in the GWAS model.</li>
     </ul>
 </div>
 
+<h3>4.3. Lead-locus Workstreams</h3>
 
-<!-- ── 4.3 Covariates ── -->
-<h3>4.3. Covariates for Association Testing</h3>
+<table>
+    <tr><th>Locus</th><th>Status</th><th>Most important next action</th><th>Links</th></tr>
+    <tr>
+        <td><strong>chr18:70.5 Mb</strong><br>NETO1 / lncRNA / SOCS6 region</td>
+        <td>Protective cluster, primary + S4 robust; multi-population LD heatmap published</td>
+        <td>Conditional analysis and SOCS6/JAK-STAT functional plausibility check</td>
+        <td><a href="../chr18/chr18_ld_eur_sas_uzb.html">LD heatmap</a></td>
+    </tr>
+    <tr>
+        <td><strong>chr9:115.9 Mb</strong><br>LINC00474 / near PAPPA / JAK2 pathway</td>
+        <td>Strongest risk effect; S3-enriched; functional page and interim LD-decay view complete</td>
+        <td>Generate dense regional LD heatmap, confirm eQTL/Hi-C links, pursue external replication/meta-analysis</td>
+        <td><a href="chr9_locus_functional.html">Functional page</a> · <a href="chr9_ld_eur_uzb.html">LD block preview</a></td>
+    </tr>
+    <tr>
+        <td><strong>chr15:31.3 Mb</strong><br>CYLD / ARID3B</td>
+        <td>Risk signal across broader definitions; complex/multi-allelic interpretation</td>
+        <td>Conditional fine-mapping to separate protective vs risk alleles; generate dense LD heatmap</td>
+        <td><a href="chr15_locus_functional.html">Functional page</a> · <a href="chr15_ld_eur_uzb.html">LD block preview</a></td>
+    </tr>
+</table>
+
+<h3>4.4. Model Robustness Work Before Submission</h3>
 
 <div class="tier-card priority-high">
-    <h4><span class="status-next">HIGH PRIORITY</span> &mdash; Must include in GWAS model</h4>
-    <table>
-        <tr><th>Category</th><th>Covariate</th><th>Rationale</th></tr>
-        <tr>
-            <td rowspan="2"><strong>Population structure</strong></td>
-            <td>K=2 ancestry Q1 (continuous)</td>
-            <td>Primary admixture axis; prevents false positives from population stratification</td>
-        </tr>
-        <tr>
-            <td>PC1&ndash;PC3 from PCA</td>
-            <td>Captures residual structure not modeled by ADMIXTURE</td>
-        </tr>
-        <tr>
-            <td rowspan="3"><strong>Demographic</strong></td>
-            <td>Maternal age at loss/birth</td>
-            <td>Strong risk factor; aneuploidy risk increases exponentially after 35</td>
-        </tr>
-        <tr>
-            <td>BMI</td>
-            <td>Obesity associated with miscarriage (OR ~1.3&ndash;1.7)</td>
-        </tr>
-        <tr>
-            <td>Parity (gravidity)</td>
-            <td>More pregnancies = more opportunities for loss</td>
-        </tr>
-        <tr>
-            <td rowspan="3"><strong>Clinical</strong></td>
-            <td>Thrombophilia history</td>
-            <td>Factor V Leiden, antiphospholipid syndrome &rarr; placental thrombosis</td>
-        </tr>
-        <tr>
-            <td>Thyroid disorders</td>
-            <td>Both hypo- and hyperthyroidism increase loss risk</td>
-        </tr>
-        <tr>
-            <td>Diabetes (pre-existing or gestational)</td>
-            <td>Uncontrolled glucose &rarr; embryotoxic</td>
-        </tr>
-        <tr>
-            <td rowspan="2"><strong>Genetic</strong></td>
-            <td>F<sub>ROH</sub> (inbreeding coefficient)</td>
-            <td>Homozygosity burden &mdash; especially in a population with consanguinity</td>
-        </tr>
-        <tr>
-            <td>Total CNV burden</td>
-            <td>If available from SNP array intensity data</td>
-        </tr>
-    </table>
+    <h4><span class="status-next">HIGH PRIORITY</span> &mdash; protect against reviewer objections</h4>
+    <ul class="compact-list">
+        <li><strong>F<sub>ROH</sub> covariate rerun:</strong> join Step 15 F<sub>ROH</sub> to the GWAS covariate table and rerun the primary model plus the most informative sensitivity tier.</li>
+        <li><strong>Mixed-model sensitivity:</strong> run SAIGE or REGENIE on the primary phenotype to verify that chr18 / chr9 / chr15 effect directions survive relatedness-aware modelling.</li>
+        <li><strong>Conditional analyses:</strong> test whether chr18 is one signal and whether chr15 contains multiple independent allelic effects.</li>
+        <li><strong>Dense regional LD:</strong> finish chr15 and chr9 PLINK2 regional LD extraction; current pages are decay summaries, not full heatmaps.</li>
+        <li><strong>Replication strategy:</strong> external cohort or targeted genotyping is the single highest-impact path to elevating suggestive loci.</li>
+    </ul>
 </div>
 
-
-<!-- ── 4.4 Association Framework ── -->
-<h3>4.4. Association Testing Framework</h3>
+<h3>4.5. Known RPL Variant Screen</h3>
 
 <div class="tier-card">
-    <h4><span class="status-planned">AFTER ID MAPPING</span></h4>
-    <p><strong>Model:</strong></p>
-    <div class="formula">
-        logit(P[case]) = &beta;<sub>0</sub> + &beta;<sub>SNP</sub>&middot;genotype + &beta;<sub>Q1</sub>&middot;ancestry + &beta;<sub>age</sub>&middot;age + &beta;<sub>BMI</sub>&middot;BMI + &beta;<sub>PC1</sub>&middot;PC1 + &beta;<sub>PC2</sub>&middot;PC2 + &beta;<sub>PC3</sub>&middot;PC3
-    </div>
-
-    <p><strong>Two-tier testing strategy:</strong></p>
-    <table>
-        <tr><th>Tier</th><th>SNP set</th><th>Threshold</th><th>Rationale</th></tr>
-        <tr>
-            <td><strong>1. Targeted</strong></td>
-            <td>8 PBS candidates</td>
-            <td>p &lt; 0.00625 (Bonferroni for 8)</td>
-            <td>Hypothesis: population-specific variants may affect fitness-related phenotypes</td>
-        </tr>
-        <tr>
-            <td><strong>2. Genome-wide</strong></td>
-            <td>All QC&rsquo;d SNPs</td>
-            <td>p &lt; 5 &times; 10<sup>&minus;8</sup> (standard GWAS)</td>
-            <td>Hypothesis-free scan; requires large sample size for power</td>
-        </tr>
-    </table>
-
-    <p><strong>Command:</strong></p>
-    <div class="code-block">plink2 --bfile UZB_final_QC \
-    --pheno pregnancy_loss.pheno \
-    --covar covariates.txt \
-    --glm hide-covar cols=chrom,pos,ref,alt,a1freq,test,nobs,beta,se,p \
-    --out UZB_GWAS_results</div>
-</div>
-
-
-<!-- ── 4.5 Mendelian Screen ── -->
-<h3>4.5. Known Pregnancy Loss Gene Screen</h3>
-
-<div class="tier-card">
-    <h4><span class="status-planned">QUICK WIN</span> &mdash; Can be done immediately</h4>
-    <p>Check allele frequencies of known recurrent pregnancy loss (RPL) variants in the Uzbek cohort vs. published European frequencies:</p>
-    <table>
-        <tr><th>Gene</th><th>Variant</th><th>EUR frequency</th><th>RPL association</th></tr>
-        <tr><td>F5 (Factor V)</td><td>rs6025 (Leiden)</td><td>~3&ndash;5%</td><td>OR 2.0&ndash;3.5 for RPL</td></tr>
-        <tr><td>F2 (Prothrombin)</td><td>rs1799963 (G20210A)</td><td>~1&ndash;3%</td><td>OR 2.0&ndash;2.5</td></tr>
-        <tr><td>MTHFR</td><td>rs1801133 (C677T)</td><td>~25&ndash;35%</td><td>OR 1.2&ndash;1.5 (homozygous)</td></tr>
-        <tr><td>SERPINE1 (PAI-1)</td><td>rs1799889 (4G/5G)</td><td>~50%</td><td>OR 1.3&ndash;1.5</td></tr>
-        <tr><td>HLA-G</td><td>Various</td><td>Variable</td><td>Immune tolerance at maternal&ndash;fetal interface</td></tr>
-        <tr><td>SYCP3</td><td>Rare</td><td>&lt;1%</td><td>Meiotic segregation errors</td></tr>
-    </table>
-    <p><strong>What&rsquo;s unknown:</strong> The frequencies of these variants in Central Asian populations are poorly characterized. Even a simple frequency comparison is <strong>publication-worthy</strong>.</p>
-</div>
-
-
-<!-- ── 4.6 Ancestry-Specific ── -->
-<h3>4.6. Ancestry-Specific Risk Analysis</h3>
-
-<div class="tier-card">
-    <h4><span class="status-future">EXPLORATORY</span></h4>
+    <h4><span class="status-done">SCREENED FOR ASSOCIATION</span> &mdash; turn into a frequency supplement</h4>
     <p>
-        Tests unique to admixed populations:
+        The known thrombophilia/RPL variant check is no longer a quick-win blocker. Tested known variants did not explain the cohort-wide RPL signal
+        (for example: MTHFR rs1801133 p=0.66, Factor V Leiden rs6025 p=0.87, F2 rs1799963 p=0.66; SERPINE1/PAI-1 rs1799889 was not available in the dataset).
     </p>
+    <p>
+        The publishable use is now a <strong>Central Asian allele-frequency comparison table</strong> versus 1000G EUR/SAS/EAS, with careful caveats about imputation and variant availability.
+    </p>
+</div>
+
+<h3>4.6. Ancestry-specific Risk Analysis</h3>
+
+<div class="tier-card">
+    <h4><span class="status-future">EXPLORATORY</span> &mdash; after local ancestry or replication</h4>
     <ul>
-        <li><strong>Dose-response:</strong> Does more Eastern/Western ancestry proportion correlate with pregnancy loss risk?</li>
-        <li><strong>Interaction:</strong> Does a SNP&rsquo;s effect differ depending on the individual&rsquo;s global ancestry?</li>
-        <li><strong>Admixture mapping:</strong> Using local ancestry, test whether pregnancy loss cases have excess Western or Eastern ancestry at specific chromosomal regions</li>
+        <li><strong>Global ancestry dose-response:</strong> test RPL risk across ancestry PCs/Q-values, but avoid arbitrary discrete ancestry bins.</li>
+        <li><strong>Genotype-by-ancestry interaction:</strong> exploratory for chr18/chr9/chr15 only; genome-wide interaction testing is underpowered.</li>
+        <li><strong>Admixture mapping:</strong> requires local ancestry calls; not needed for the first submission unless a targeted locus story depends on it.</li>
     </ul>
 </div>
 
@@ -864,131 +806,72 @@ text(mds, labels=rownames(mds), pos=3)</div>
     <tr>
         <th>#</th>
         <th>Task</th>
-        <th>Priority</th>
-        <th>Depends on</th>
-        <th>Time estimate</th>
+        <th>Status</th>
+        <th>Why it matters</th>
+        <th>Output</th>
     </tr>
-    <tr style="background:#e8f5e9;">
+    <tr style="background:#fff3e0;">
         <td>1</td>
-        <td>Covariate validation of ADMIXTURE</td>
-        <td class="status-done">DONE</td>
-        <td>&mdash;</td>
-        <td>Complete</td>
+        <td>F<sub>ROH</sub> covariate rerun for primary GWAS</td>
+        <td class="status-next">NEXT</td>
+        <td>Addresses the largest remaining model-design caveat.</td>
+        <td>Primary + one sensitivity GWAS rerun; compare chr18/chr9/chr15 effect sizes.</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>2</td>
-        <td>Phenotype&ndash;genotype ID mapping</td>
-        <td class="status-next">IMMEDIATE</td>
-        <td>&mdash;</td>
-        <td>1&ndash;2 days</td>
+        <td>Mixed-model sensitivity check (SAIGE or REGENIE)</td>
+        <td class="status-next">HIGH</td>
+        <td>Cryptic relatedness is present; reviewers may not accept PC-only correction.</td>
+        <td>Relatedness-aware effect/p table for lead loci and genome-wide calibration.</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>3</td>
-        <td>Case/control definition</td>
-        <td class="status-next">IMMEDIATE</td>
-        <td>#2</td>
-        <td>1 day</td>
+        <td>chr15 and chr9 dense regional LD matrices</td>
+        <td class="status-next">HIGH</td>
+        <td>Current chr15/chr9 LD pages are decay summaries; chr18 has the publication-grade heatmap.</td>
+        <td>Full heatmap/schematic pages matching <a href="../chr18/chr18_ld_eur_sas_uzb.html">chr18</a>.</td>
     </tr>
-    <tr style="background:#e8f5e9;">
+    <tr style="background:#fff3e0;">
         <td>4</td>
-        <td>ROH analysis (F<sub>ROH</sub>)</td>
-        <td class="status-done">DONE</td>
-        <td>&mdash;</td>
-        <td>Complete (Step 15)</td>
+        <td>Conditional / fine-mapping analysis at chr18, chr15, chr9</td>
+        <td class="status-planned">HIGH</td>
+        <td>Separates single-block effects from independent signals, especially at chr15.</td>
+        <td>Conditional lead-SNP table and credible-set/fine-mapping notes if feasible.</td>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e3f2fd;">
         <td>5</td>
-        <td>Covariate preparation</td>
-        <td class="status-planned">HIGH</td>
-        <td>#2, #4</td>
-        <td>1 day</td>
+        <td>Manual functional validation of lead loci</td>
+        <td class="status-planned">MEDIUM</td>
+        <td>HTML functional pages contain database lookup targets; final manuscript needs verified claims.</td>
+        <td>GTEx/ENCODE/UCSC evidence table with tissue and regulatory annotation.</td>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e3f2fd;">
         <td>6</td>
-        <td>GWAS (targeted 8 PBS + genome-wide)</td>
-        <td class="status-planned">HIGH</td>
-        <td>#3, #5</td>
-        <td>1&ndash;2 days</td>
+        <td>Known RPL / thrombophilia allele-frequency supplement</td>
+        <td class="status-planned">MEDIUM</td>
+        <td>Association screen is negative; population-frequency novelty remains useful.</td>
+        <td>UZB vs EUR/SAS/EAS frequency table, with missing/imputed flags.</td>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e3f2fd;">
         <td>7</td>
-        <td>Known RPL variant screening</td>
-        <td class="status-planned">HIGH</td>
-        <td>&mdash;</td>
-        <td>2 hours</td>
+        <td>Replication or targeted genotyping plan</td>
+        <td class="status-planned">MEDIUM</td>
+        <td>Only external validation can convert suggestive loci into strong discovery claims.</td>
+        <td>Partner cohort request, candidate SNP panel, or fixed-effect meta-analysis plan.</td>
     </tr>
-    <tr style="background:#e3f2fd;">
+    <tr style="background:#e8f5e9;">
         <td>8</td>
-        <td>Gene annotation (Ensembl VEP)</td>
+        <td>Completed analyses to keep as supporting material</td>
         <td class="status-done">DONE</td>
-        <td>&mdash;</td>
-        <td>Complete (Step 12)</td>
-    </tr>
-    <tr style="background:#e8f5e9;">
-        <td>9</td>
-        <td>IBD stratified by ancestry</td>
-        <td class="status-done">DONE</td>
-        <td>&mdash;</td>
-        <td>Complete (Step 15)</td>
-    </tr>
-    <tr style="background:#e3f2fd;">
-        <td>10</td>
-        <td>DAPC analysis</td>
-        <td class="status-future">MEDIUM</td>
-        <td>&mdash;</td>
-        <td>0.5 day</td>
-    </tr>
-    <tr style="background:#fff3e0;">
-        <td>11</td>
-        <td>Evanno &Delta;K replicates (sNMF complete)</td>
-        <td class="status-next">IN PROGRESS</td>
-        <td>&mdash;</td>
-        <td>Replicates running on DRAGEN</td>
-    </tr>
-    <tr style="background:#e8f5e9;">
-        <td>12</td>
-        <td>Global ADMIXTURE with 1000G</td>
-        <td class="status-done">DONE</td>
-        <td>K=5&ndash;8 plateau (CV=0.294)</td>
-        <td>Complete</td>
-    </tr>
-    <tr style="background:#e8f5e9;">
-        <td>13</td>
-        <td>Local ancestry inference</td>
-        <td class="status-future">LATER</td>
-        <td>&mdash;</td>
-        <td>2&ndash;3 days</td>
-    </tr>
-    <tr style="background:#e8f5e9;">
-        <td>14</td>
-        <td>iHS/nSL selection scans</td>
-        <td class="status-future">LATER</td>
-        <td>&mdash;</td>
-        <td>1&ndash;2 days</td>
-    </tr>
-    <tr style="background:#e8f5e9;">
-        <td>15</td>
-        <td>F<sub>ST</sub> heatmap &amp; MDS visualization</td>
-        <td class="status-done">DONE</td>
-        <td>&mdash;</td>
-        <td>Complete (Step 14)</td>
-    </tr>
-    <tr style="background:#e8f5e9;">
-        <td>16</td>
-        <td>GWAS execution + 4 sensitivity runs</td>
-        <td class="status-done">DONE</td>
-        <td>#5,#6,#7</td>
-        <td>Complete (<a href="step16.html">Step 16</a>)</td>
+        <td>QC, PCA, F<sub>ST</sub>, ADMIXTURE, PBS, ROH/IBD, GWAS, sensitivity tiers, all-tier Manhattan, chr18 LD page.</td>
+        <td>Use existing Step 1&ndash;16 HTML pages and manuscripts as the audit trail.</td>
     </tr>
 </table>
 
 <div class="info" style="margin-top:14px;">
-    <strong>April 2026 status update:</strong> Items 4&ndash;9, 12, 15, and 16 are now complete.
-    The pipeline has produced calibrated genome-wide summary statistics (&lambda;<sub>GC</sub>=0.978),
-    a tier-1/2/3 results page, and four sensitivity analyses on alternate case definitions
-    (S1 strict ESHRE &ge;3, S2 +REVIEW, S3 +GRAY, S4 +PROBABLE). The remaining roadmap (items 10,
-    11 finalisation, 13, 14) is now sub-leading; the dominant outstanding work is the
-    <em>publication-readiness</em> programme described in Section 6.
+    <strong>May 2026 status update:</strong> the dominant outstanding work is no longer running the first GWAS.
+    It is making the result hard to criticize: robustness reruns, full LD schematics for secondary loci,
+    validated functional annotation, and a clean submission/reproducibility package.
 </div>
 
 
@@ -996,56 +879,63 @@ text(mds, labels=rownames(mds), pos=3)</div>
 <h2>6. Publication-readiness Roadmap</h2>
 
 <p>
-    The pipeline now contains everything needed for two publishable manuscripts (see
-    drafts: <a href="../manuscript_uzb.html">Manuscript &mdash; UZB Population Genomics</a> and
-    <a href="../manuscript_rpl.html">Manuscript &mdash; RPL GWAS</a>). The list below is
-    ordered by impact on submission readiness.
+    The pipeline now supports two manuscript tracks: <a href="../manuscript_uzb.html">Uzbek population genomics</a>
+    and <a href="../manuscript_rpl.html">RPL GWAS</a>. The key editorial decision is framing:
+    the population-genomics paper can be written as a cohort-resource and structure paper, while the RPL paper should be framed as a calibrated,
+    suggestive GWAS with prioritized validation loci rather than a definitive discovery GWAS.
 </p>
 
-<h3>6.1. Mandatory before submission (HIGH)</h3>
+<h3>6.1. Submission blockers (HIGH)</h3>
 <table>
-    <tr><th>#</th><th>Task</th><th>Rationale</th><th>Effort</th></tr>
+    <tr><th>#</th><th>Task</th><th>Status</th><th>Rationale</th><th>Effort</th></tr>
     <tr style="background:#fff3e0;">
         <td>P1</td>
-        <td>Compute &lambda;<sub>GC</sub> &amp; build QQ + Manhattan figures for all 5 GWAS runs (primary + S1&ndash;S4)</td>
-        <td>Required figure for any GWAS paper; demonstrates calibration.</td>
+        <td>F<sub>ROH</sub> covariate rerun and model comparison</td>
+        <td class="status-next">Pending</td>
+        <td>Current model is calibrated, but F<sub>ROH</sub> was planned and not included; reviewer-visible caveat.</td>
         <td>0.5 day</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>P2</td>
-        <td>Annotate top 50 hits per run with <code>VEP</code> &amp; nearest-gene + LD-clump (PLINK2 <code>--clump</code>)</td>
-        <td>Standard supplementary table; needed to discuss biology.</td>
-        <td>0.5 day</td>
+        <td>SAIGE / REGENIE relatedness-aware sensitivity run</td>
+        <td class="status-next">Pending</td>
+        <td>Addresses cryptic relatedness and confirms lead-locus directions under a mixed-model framework.</td>
+        <td>0.5&ndash;1 day</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>P3</td>
-        <td>Re-run primary GWAS with F<sub>ROH</sub> as an additional covariate (currently only AGE,BMI,PC1-3)</td>
-        <td>Step 15 already shows mean F<sub>ROH</sub>&asymp;0.045; small but principled correction.</td>
-        <td>2 hours</td>
+        <td>chr15 / chr9 dense LD heatmaps</td>
+        <td class="status-next">In progress / blocked by matrix extraction</td>
+        <td>Secondary loci need the same visual standard as chr18 before they are presented as equivalent locus analyses.</td>
+        <td>0.5&ndash;1 day once matrices exist</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>P4</td>
-        <td>Sex-check + heterozygosity outlier removal at QC stage (re-run KING, regenerate IBD report)</td>
-        <td>Already partly done; document explicitly.</td>
-        <td>2 hours</td>
+        <td>Formal top-hit supplement: top 50 per run, nearest gene, LD clump, effect direction, tier appearances</td>
+        <td class="status-planned">Partly complete</td>
+        <td>Top-hit expansion and locus pages exist; submission needs a single machine-readable supplementary table.</td>
+        <td>0.5 day</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>P5</td>
-        <td>Generate concordance table across 5 case definitions (top hits, OR direction, p)</td>
-        <td>Demonstrates robustness; expected by reviewers.</td>
-        <td>0.5 day</td>
+        <td>Power / limitation statement</td>
+        <td class="status-planned">Draft needed</td>
+        <td>Explains why no genome-wide-significant hit is expected with current case count; prevents overclaiming.</td>
+        <td>2 hours</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>P6</td>
-        <td>Allele-frequency table for known thrombophilia variants vs. EUR/SAS/EAS (1000G)</td>
-        <td>Headline novelty for the trans-ethnic angle.</td>
+        <td>Known RPL / thrombophilia frequency table vs 1000G EUR/SAS/EAS</td>
+        <td class="status-planned">Pending supplement</td>
+        <td>Association screen is negative; frequency context still supports the Central Asian novelty angle.</td>
         <td>0.5 day</td>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e8f5e9;">
         <td>P7</td>
-        <td>Power calculation appendix (Quanto / GAS power calculator) at observed N</td>
-        <td>Reviewers always ask.</td>
-        <td>2 hours</td>
+        <td>All-tier Manhattan / QQ visualization</td>
+        <td class="status-done">Done</td>
+        <td>Interactive page exists and should be cited from the report bundle.</td>
+        <td><a href="step16_manhattan.html">Available</a></td>
     </tr>
 </table>
 
@@ -1054,42 +944,36 @@ text(mds, labels=rownames(mds), pos=3)</div>
     <tr><th>#</th><th>Task</th><th>Rationale</th><th>Effort</th></tr>
     <tr style="background:#e3f2fd;">
         <td>P8</td>
-        <td>Replication: identify 1&ndash;2 partner cohorts for &ge;500-case extension</td>
-        <td>Turns suggestive locus into a publishable finding.</td>
+        <td>Replication: identify partner cohort or targeted genotyping panel</td>
+        <td>Most important upgrade for chr18/chr9/chr15; turns suggestive signals into credible findings.</td>
         <td>External &mdash; weeks</td>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>P9</td>
-        <td>Trans-ethnic LD score regression (&Delta;-LDSC) vs. UK Biobank RPL</td>
-        <td>Heritability + cross-population genetic correlation.</td>
-        <td>1 day (need EUR LD panel)</td>
+        <td>Manual evidence table for chr18 / chr9 / chr15</td>
+        <td>Converts functional pages into citable claims: GTEx, ENCODE, UCSC, PubMed, Hi-C where available.</td>
+        <td>0.5&ndash;1 day</td>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>P10</td>
-        <td>Polygenic Risk Score: build PRS from Kolte 2020 / Laisk 2020 weights, test in our cohort</td>
-        <td>Tests transferability of European RPL PRS to Central Asia.</td>
-        <td>1 day</td>
+        <td>Trans-ethnic LD score regression or PRS transferability check</td>
+        <td>Useful if comparable EUR RPL summary statistics are accessible; otherwise keep as future work.</td>
+        <td>1 day (need EUR LD panel)</td>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>P11</td>
-        <td>Co-localisation of NETO1 region with eQTL data (GTEx, eQTLGen)</td>
-        <td>Functional plausibility of suggestive hit.</td>
-        <td>0.5 day</td>
-    </tr>
-    <tr style="background:#e3f2fd;">
-        <td>P12</td>
         <td>WGS subset (10&ndash;30 cases): structural variants &amp; CNVs missed by SNP array</td>
-        <td>Adds modest novelty; relatively cheap if budget exists.</td>
+        <td>Good follow-up proposal, but not needed for the current HTML/GWAS submission package.</td>
         <td>External</td>
     </tr>
     <tr style="background:#e3f2fd;">
-        <td>P13</td>
+        <td>P12</td>
         <td>Bootstrap confidence intervals on PBS Tier-1 candidates (1000 resamples)</td>
-        <td>Selection scans without CIs are increasingly rejected.</td>
+        <td>Strengthens the population-genomics manuscript; less central to the RPL GWAS.</td>
         <td>0.5 day</td>
     </tr>
     <tr style="background:#e3f2fd;">
-        <td>P14</td>
+        <td>P13</td>
         <td>iHS / nSL haplotype-based selection scans (selscan)</td>
         <td>Complements PBS; orthogonal evidence for selection.</td>
         <td>1&ndash;2 days</td>
@@ -1140,7 +1024,7 @@ text(mds, labels=rownames(mds), pos=3)</div>
 <h3>6.4. Methodological "polish" (NICE TO HAVE)</h3>
 <ul>
     <li>Re-do PCA after dropping IBD-related pairs (PI_HAT&nbsp;&gt;&nbsp;0.185) and report with/without comparison.</li>
-    <li>Sensitivity analysis: GWAS with linear mixed model (GCTA-LOCO or REGENIE) to handle relatedness directly &mdash; useful for any reviewer who suspects population structure beyond PCs.</li>
+    <li>Secondary sensitivity: compare PLINK2 Firth, SAIGE/REGENIE, and F<sub>ROH</sub>-adjusted models for the three lead loci.</li>
     <li>Per-region (oblast) F<sub>ST</sub> matrix as supplementary; would let referees see internal sub-structure.</li>
     <li>X-chromosome GWAS (currently autosomal-only).</li>
     <li>Conditional analysis at NETO1 to test for independent secondary signals.</li>
@@ -1165,9 +1049,9 @@ text(mds, labels=rownames(mds), pos=3)</div>
 </table>
 
 <div class="important">
-    <strong>Critical-path summary:</strong> P1, P2, P3, P5, P6 (≈3 person-days) take the
-    project from "draft + raw GWAS output" to "submission-ready". P8 (replication cohort)
-    is the single biggest impact-multiplier for paper 2 if achievable.
+    <strong>Critical-path summary:</strong> The project is no longer blocked by missing GWAS execution.
+    The RPL paper becomes much harder to criticize after: (1) F<sub>ROH</sub> rerun, (2) mixed-model sensitivity,
+    (3) chr15/chr9 dense LD pages, and (4) a formal top-hit/functional supplement. External replication remains the biggest impact multiplier.
 </div>
 
 
@@ -1738,7 +1622,11 @@ text(mds, labels=rownames(mds), pos=3)</div>
         { title: 'Step 13: LD Analysis', url: 'step13.html', keywords: 'ld linkage disequilibrium clumping independent loci decay' },
         { title: 'Step 14: Fst Heatmap & MDS', url: 'step14.html', keywords: 'fst heatmap mds multidimensional scaling pairwise matrix' },
         { title: 'Step 15: ROH & IBD', url: 'step15.html', keywords: 'roh homozygosity ibd identity descent consanguinity froh inbreeding relatedness pihat kinship founder effect autozygosity' },
-        { title: 'Next Steps', url: 'next_steps.html', keywords: 'next steps roh dapc evanno gwas pregnancy loss covariates case control fst heatmap mds annotation ibs nsl covariate validation ethnicity birthplace admixture 1000g global' }
+        { title: 'Step 16: RPL GWAS', url: 'step16.html', keywords: 'gwas recurrent pregnancy loss rpl sensitivity lambda manhattan top hits chr18 chr15 chr9 firth plink2' },
+        { title: 'All-tier Manhattan', url: 'step16_manhattan.html', keywords: 'manhattan qq plot all sensitivity tiers lambda gwas primary s1 s2 s3 s4' },
+        { title: 'chr15 Functional Locus', url: 'chr15_locus_functional.html', keywords: 'chr15 cyld arid3b rs8027539 functional rpl locus' },
+        { title: 'chr9 Functional Locus', url: 'chr9_locus_functional.html', keywords: 'chr9 jak2 pappa linc00474 rs28446251 functional rpl locus' },
+        { title: 'Next Steps', url: 'next_steps.html', keywords: 'next steps critical review publication roadmap roh dapc evanno gwas pregnancy loss covariates case control fst heatmap mds annotation ibs nsl covariate validation ethnicity birthplace admixture 1000g global froh saige regenie replication' }
     ];
 
     function searchAllSteps() {
