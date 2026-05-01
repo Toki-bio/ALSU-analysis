@@ -651,7 +651,13 @@ Unmatched genotype: 36
 </div>
 
 <!-- Manhattan plot -->
-<h4>Manhattan Plot</h4>
+<h4>Manhattan Plot & Sensitivity Tiers</h4>
+<div class="info-box">
+  <strong>📊 Interactive visualization available:</strong> 
+  <a href="step16_manhattan.html" style="color:#0d47a1; font-weight:600;">Open interactive Manhattan plot with all case/control criteria tiers</a>
+  <br><span style="font-size:0.9em;margin-top:5px;display:inline-block;">Features: tier selector, responsive Plotly zoom/pan, QQ plot, comparison table, lambda GC across all 5 sensitivity definitions.</span>
+</div>
+<p style="color:#666;font-size:0.9em;margin:12px 0;">Static primary GWAS Manhattan plot below:</p>
 <div class="chart-container" style="position:relative;">
     <canvas id="manhattanCanvas" width="1100" height="400" style="max-width:100%;"></canvas>
     <div id="manhattanTooltip" style="display:none;position:absolute;background:rgba(0,0,0,0.85);color:#fff;padding:6px 10px;border-radius:4px;font-size:0.8em;pointer-events:none;z-index:10;"></div>
