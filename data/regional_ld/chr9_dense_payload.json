@@ -1,13 +1,14 @@
 {
   "chrom": 9,
-  "header": "chr9:115.80-116.05 Mb - RPL - LD Comparison",
-  "subtitle": "45 SNPs - 13 peak + 32 extension - LINC00474/PAPPA region - UZB LD from 1090 imputed samples",
+  "header": "chr9:115.855-115.915 Mb - RPL - LD Focused Comparison",
+  "subtitle": "Focused core view - 45 SNPs - 13 peak + 32 extension - LINC00474/PAPPA region - UZB LD from 1090 imputed samples - wide context available separately",
   "context": "Suggestive RPL association overlapping LINC00474 and upstream of PAPPA",
   "badges": [
     "lead: rs28446251 - p=4.61e-07 - OR=2.19",
     "No GWS - best p=4.61e-07",
     "SAIGE lead: rs10122577 - p=3.06e-07",
-    "EUR/SAS: 1000G phase 3"
+    "EUR/SAS: 1000G phase 3",
+    "focused figure: 115.855-115.915 Mb"
   ],
   "lead": {
     "id": "rs28446251",
@@ -20,8 +21,8 @@
     116050000
   ],
   "figure_window": [
-    115800000,
-    116050000
+    115855000,
+    115915000
   ],
   "display_window": [
     115750000,
@@ -13099,5 +13100,11 @@
     "peak_p": 1e-05,
     "extension_r2": 0.6,
     "reference_window_kb": 500
-  }
+  },
+  "view_mode": "focused",
+  "view_note": "The figure below is zoomed to 115.855-115.915 Mb so the selected SNPs fill the shared Manhattan, genomic-ruler, connector, and LD-block scale. The full regional GWAS input spans 115.750-116.420 Mb and remains summarized here for context.",
+  "figure_caption": "Focused core figure: regional Firth GWAS and gene track on top, then the matched multi-population LD block immediately underneath on the same genomic scale.",
+  "alternate_page": "chr9_ld_eur_sas_uzb_wide.html",
+  "alternate_text": "Wide version for surrounding SNP repertoire",
+  "alternate_label": "open chr9:115.800-116.050 Mb"
 }

@@ -13,6 +13,7 @@ import statistics
 import time
 import urllib.error
 import urllib.request
+from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -34,6 +35,8 @@ class LocusConfig:
     lead_pos: int
     start: int
     end: int
+    focus_start: int
+    focus_end: int
     display_start: int
     display_end: int
     label: str
@@ -42,6 +45,7 @@ class LocusConfig:
     functional_page: str
     canonical_page: str
     legacy_page: str
+    wide_page: str
 
 
 LOCI = [
@@ -51,6 +55,8 @@ LOCI = [
         lead_pos=115_907_201,
         start=115_800_000,
         end=116_050_000,
+        focus_start=115_855_000,
+        focus_end=115_915_000,
         display_start=115_750_000,
         display_end=116_420_000,
         label="chr9:115.80-116.05 Mb",
@@ -59,6 +65,7 @@ LOCI = [
         functional_page="chr9_locus_functional.html",
         canonical_page="chr9_ld_eur_sas_uzb.html",
         legacy_page="chr9_ld_eur_uzb.html",
+        wide_page="chr9_ld_eur_sas_uzb_wide.html",
     ),
     LocusConfig(
         chrom=15,
@@ -66,6 +73,8 @@ LOCI = [
         lead_pos=31_340_603,
         start=31_200_000,
         end=31_480_000,
+        focus_start=31_325_000,
+        focus_end=31_380_000,
         display_start=31_150_000,
         display_end=31_490_000,
         label="chr15:31.20-31.48 Mb",
@@ -74,6 +83,7 @@ LOCI = [
         functional_page="chr15_locus_functional.html",
         canonical_page="chr15_ld_eur_sas_uzb.html",
         legacy_page="chr15_ld_eur_uzb.html",
+        wide_page="chr15_ld_eur_sas_uzb_wide.html",
     ),
 ]
 
@@ -169,6 +179,7 @@ th{background:var(--soft)}
   <div class="card figure-card">
     <h2>Zoomed Regional Signal and LD Block</h2>
     <p class="figure-caption" id="figureCaption"></p>
+    <p class="small" id="viewSwitch"></p>
     <div class="controls" aria-label="LD heatmap mode">
       <button type="button" data-mode="eur">EUR 1000G</button>
       <button type="button" data-mode="sas">SAS 1000G</button>
@@ -276,6 +287,7 @@ function clamp(value, lo, hi) { return Math.max(lo, Math.min(hi, value)); }
 function figureWindow() { return DATA.figure_window || DATA.window || DATA.display_window; }
 function formatWindowMb(windowRange) { return fmtMb(windowRange[0]) + '-' + fmtMb(windowRange[1]); }
 function modeLabel() { return {eur:'EUR 1000G r2', sas:'SAS 1000G r2', uzb:'Uzbek cohort r2', eur_delta:'EUR - UZB r2', sas_delta:'SAS - UZB r2'}[heatMode]; }
+function linkHtml(href, text) { return '<a href="' + href + '">' + text + '</a>'; }
 
 function interpolate(stops, value) {
   if (value === null || value === undefined || !Number.isFinite(value)) return '#f0f3f8';
@@ -310,8 +322,9 @@ function setHeader() {
   byId('pageSub').textContent = DATA.subtitle;
   byId('summaryText').textContent = DATA.context;
   byId('regionalContextText').textContent = DATA.context + '. The full regional GWAS input spans ' + formatWindowMb(DATA.display_window) + ' and contains ' + DATA.counts.regional_gwas + ' Firth rows used for context and filtering.';
-  byId('regionalContextDetail').textContent = 'The figure below is deliberately zoomed to ' + formatWindowMb(figureWindow()) + ', the dense LD matrix window. Its Manhattan x-axis, heatmap genomic ruler, and SNP connector ticks use the same genomic scale.';
-  byId('figureCaption').textContent = 'Zoomed locus figure: regional Firth GWAS and gene track on top, then the matched multi-population LD block immediately underneath on the same genomic scale.';
+  byId('regionalContextDetail').textContent = DATA.view_note || ('The figure below is deliberately zoomed to ' + formatWindowMb(figureWindow()) + ', the dense LD matrix window. Its Manhattan x-axis, heatmap genomic ruler, and SNP connector ticks use the same genomic scale.');
+  byId('figureCaption').textContent = DATA.figure_caption || 'Zoomed locus figure: regional Firth GWAS and gene track on top, then the matched multi-population LD block immediately underneath on the same genomic scale.';
+  byId('viewSwitch').innerHTML = DATA.alternate_page ? (DATA.alternate_text + ': ' + linkHtml(DATA.alternate_page, DATA.alternate_label)) : '';
   byId('badges').innerHTML = DATA.badges.map((text, i) => '<span class="pill ' + (i === 0 ? 'strong' : '') + '">' + text + '</span>').join('');
   byId('legendLeadId').textContent = DATA.lead.id;
   byId('legendSelectedCount').textContent = DATA.selected.length;
@@ -458,7 +471,7 @@ function drawHeatmap() {
   const n = vars.length;
   const rulerLeft = 72, rulerRight = w - 30;
   const figure = figureWindow();
-  const cell = Math.min(17, Math.max(12, (w - 260) / n));
+  const cell = Math.min(20, Math.max(12, (w - 220) / n));
   const axisLen = n * cell;
   const axisLeft = Math.max(120, (w - axisLen) / 2);
   const axisTop = 148;
@@ -1071,15 +1084,78 @@ def build_payload(config: LocusConfig) -> dict[str, Any]:
     return payload
 
 
-def write_page(config: LocusConfig, payload: dict[str, Any]) -> None:
+def format_locus_label(chrom: int, start: int, end: int) -> str:
+    return f"chr{chrom}:{start / 1_000_000:.3f}-{end / 1_000_000:.3f} Mb"
+
+
+def format_range(start: int, end: int) -> str:
+    return f"{start / 1_000_000:.3f}-{end / 1_000_000:.3f} Mb"
+
+
+def payload_for_view(config: LocusConfig, base_payload: dict[str, Any], view: str) -> dict[str, Any]:
+    payload = deepcopy(base_payload)
+    focus_label = format_locus_label(config.chrom, config.focus_start, config.focus_end)
+    wide_label = format_locus_label(config.chrom, config.start, config.end)
+    if view == "focus":
+        payload["header"] = f"{focus_label} - RPL - LD Focused Comparison"
+        payload["subtitle"] = (
+            f"Focused core view - {base_payload['subtitle']} - "
+            f"wide context available separately"
+        )
+        payload["figure_window"] = [config.focus_start, config.focus_end]
+        payload["view_mode"] = "focused"
+        payload["view_note"] = (
+            f"The figure below is zoomed to {format_range(config.focus_start, config.focus_end)} so the selected SNPs fill the shared Manhattan, genomic-ruler, connector, and LD-block scale. "
+            f"The full regional GWAS input spans {format_range(config.display_start, config.display_end)} and remains summarized here for context."
+        )
+        payload["figure_caption"] = (
+            "Focused core figure: regional Firth GWAS and gene track on top, then the matched multi-population LD block immediately underneath on the same genomic scale."
+        )
+        payload["alternate_page"] = config.wide_page
+        payload["alternate_text"] = "Wide version for surrounding SNP repertoire"
+        payload["alternate_label"] = f"open {wide_label}"
+        payload["badges"] = payload["badges"] + [f"focused figure: {format_range(config.focus_start, config.focus_end)}"]
+        return payload
+    if view == "wide":
+        payload["header"] = f"{wide_label} - RPL - LD Wide Context"
+        payload["subtitle"] = (
+            f"Wide dense-window view - {base_payload['subtitle']} - "
+            f"focused core available separately"
+        )
+        payload["figure_window"] = [config.start, config.end]
+        payload["view_mode"] = "wide"
+        payload["view_note"] = (
+            f"This wide version preserves the full dense matrix window ({format_range(config.start, config.end)}) for distant and surrounding SNP context. "
+            f"The focused page zooms to {format_range(config.focus_start, config.focus_end)} for the main signal and expanded LD-block presentation."
+        )
+        payload["figure_caption"] = (
+            "Wide context figure: the same regional Firth GWAS, gene track, selected SNP set, and LD matrices are shown across the broader dense-window scale."
+        )
+        payload["alternate_page"] = config.canonical_page
+        payload["alternate_text"] = "Focused core version"
+        payload["alternate_label"] = f"open {focus_label}"
+        payload["badges"] = payload["badges"] + [f"wide figure: {format_range(config.start, config.end)}"]
+        return payload
+    raise ValueError(f"Unknown view: {view}")
+
+
+def write_html(page_name: str, payload: dict[str, Any]) -> Path:
     json_payload = json.dumps(payload, separators=(",", ":"), allow_nan=False).replace("</", "<\\/")
     html = HTML_TEMPLATE.replace("__TITLE__", payload["header"]).replace("__PAYLOAD__", json_payload)
-    canonical = OUT_DIR / config.canonical_page
-    canonical.write_text(html, encoding="utf-8")
-    alias = ALIAS_TEMPLATE.format(target=config.canonical_page, title=payload["header"])
+    path = OUT_DIR / page_name
+    path.write_text(html, encoding="utf-8")
+    return path
+
+
+def write_page(config: LocusConfig, base_payload: dict[str, Any]) -> None:
+    focused_payload = payload_for_view(config, base_payload, "focus")
+    wide_payload = payload_for_view(config, base_payload, "wide")
+    canonical = write_html(config.canonical_page, focused_payload)
+    wide = write_html(config.wide_page, wide_payload)
+    alias = ALIAS_TEMPLATE.format(target=config.canonical_page, title=focused_payload["header"])
     (OUT_DIR / config.legacy_page).write_text(alias, encoding="utf-8")
-    (DATA_DIR / f"chr{config.chrom}_dense_payload.json").write_text(json.dumps(payload, indent=2, allow_nan=False), encoding="utf-8")
-    print(f"Wrote {canonical.relative_to(ROOT)} and {config.legacy_page}")
+    (DATA_DIR / f"chr{config.chrom}_dense_payload.json").write_text(json.dumps(focused_payload, indent=2, allow_nan=False), encoding="utf-8")
+    print(f"Wrote {canonical.relative_to(ROOT)}, {wide.relative_to(ROOT)}, and {config.legacy_page}")
 
 
 def main() -> None:
