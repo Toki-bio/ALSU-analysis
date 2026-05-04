@@ -1,0 +1,86 @@
+[
+  {
+    "name": "lncRNA 115.58 Mb",
+    "biotype": "lncRNA",
+    "start": 115324932,
+    "end": 115844651,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 115.91 Mb",
+    "biotype": "lncRNA",
+    "start": 115743871,
+    "end": 116070240,
+    "strand": 1
+  },
+  {
+    "name": "LINC00474",
+    "biotype": "lncRNA",
+    "start": 115839214,
+    "end": 115925720,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 116.01 Mb",
+    "biotype": "lncRNA",
+    "start": 116012361,
+    "end": 116012965,
+    "strand": 1
+  },
+  {
+    "name": "lncRNA 116.04 Mb",
+    "biotype": "lncRNA",
+    "start": 116027507,
+    "end": 116060721,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 116.10 Mb",
+    "biotype": "lncRNA",
+    "start": 116101949,
+    "end": 116107348,
+    "strand": 1
+  },
+  {
+    "name": "lncRNA 116.15 Mb",
+    "biotype": "lncRNA",
+    "start": 116151516,
+    "end": 116155457,
+    "strand": -1
+  },
+  {
+    "name": "PAPPA",
+    "biotype": "protein_coding",
+    "start": 116153791,
+    "end": 116402321,
+    "strand": 1
+  },
+  {
+    "name": "lncRNA 116.15 Mb",
+    "biotype": "lncRNA",
+    "start": 116153796,
+    "end": 116154046,
+    "strand": -1
+  },
+  {
+    "name": "PAPPA-AS2",
+    "biotype": "lncRNA",
+    "start": 116285829,
+    "end": 116288769,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 116.30 Mb",
+    "biotype": "lncRNA",
+    "start": 116288618,
+    "end": 116318689,
+    "strand": -1
+  },
+  {
+    "name": "PAPPA-AS1",
+    "biotype": "lncRNA",
+    "start": 116398157,
+    "end": 116400606,
+    "strand": -1
+  }
+]

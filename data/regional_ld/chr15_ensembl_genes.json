@@ -1,0 +1,93 @@
+[
+  {
+    "name": "TRPM1",
+    "biotype": "protein_coding",
+    "start": 31001065,
+    "end": 31161160,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 31.16 Mb",
+    "biotype": "lncRNA",
+    "start": 31151903,
+    "end": 31159862,
+    "strand": 1
+  },
+  {
+    "name": "LINC03034",
+    "biotype": "lncRNA",
+    "start": 31202931,
+    "end": 31230886,
+    "strand": -1
+  },
+  {
+    "name": "LINC02352",
+    "biotype": "lncRNA",
+    "start": 31214784,
+    "end": 31225007,
+    "strand": 1
+  },
+  {
+    "name": "lncRNA 31.30 Mb",
+    "biotype": "lncRNA",
+    "start": 31292217,
+    "end": 31298838,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 31.33 Mb",
+    "biotype": "lncRNA",
+    "start": 31326227,
+    "end": 31326459,
+    "strand": -1
+  },
+  {
+    "name": "KLF13",
+    "biotype": "protein_coding",
+    "start": 31326706,
+    "end": 31435665,
+    "strand": 1
+  },
+  {
+    "name": "lncRNA 31.35 Mb",
+    "biotype": "lncRNA",
+    "start": 31345429,
+    "end": 31354888,
+    "strand": 1
+  },
+  {
+    "name": "UBE2CP4",
+    "biotype": "processed_pseudogene",
+    "start": 31420128,
+    "end": 31420662,
+    "strand": 1
+  },
+  {
+    "name": "processed pseudogene 31.45 Mb",
+    "biotype": "processed_pseudogene",
+    "start": 31453201,
+    "end": 31454139,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 31.46 Mb",
+    "biotype": "lncRNA",
+    "start": 31463975,
+    "end": 31465802,
+    "strand": -1
+  },
+  {
+    "name": "lncRNA 31.47 Mb",
+    "biotype": "lncRNA",
+    "start": 31465840,
+    "end": 31473438,
+    "strand": 1
+  },
+  {
+    "name": "OTUD7A",
+    "biotype": "protein_coding",
+    "start": 31475398,
+    "end": 31870789,
+    "strand": -1
+  }
+]
