@@ -67,7 +67,7 @@ th{background:var(--soft)}
   </div>
 
   <div class="card">
-    <h2>Multi-Population LD Matrix</h2>
+    <h2>Multi-Population LD Block</h2>
     <div class="controls" aria-label="LD heatmap mode">
       <button type="button" data-mode="eur">EUR 1000G</button>
       <button type="button" data-mode="sas">SAS 1000G</button>
@@ -277,39 +277,100 @@ function drawHeatmap() {
   ctx.clearRect(0, 0, w, h); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
   const vars = DATA.selected;
   const n = vars.length;
-  const left = 160, top = 52;
-  const size = Math.min(760, w - left - 30, h - top - 108);
-  const cell = size / n;
+  const rulerLeft = 72, rulerRight = w - 30;
+  const cell = Math.min(17, Math.max(12, (w - 260) / n));
+  const axisLen = n * cell;
+  const axisLeft = Math.max(120, (w - axisLen) / 2);
+  const axisTop = 148;
+  const diamondTop = axisTop + 7;
+  const heatHeight = Math.ceil(axisLen / 2) + cell;
+  const labelTop = 118;
+  const rulerY = 24;
+  const stemTopY = axisTop - 12;
   const mat = getMatrixForMode();
+  const modeLabel = {eur:'EUR 1000G r2', sas:'SAS 1000G r2', uzb:'Uzbek cohort r2', eur_delta:'EUR - UZB r2', sas_delta:'SAS - UZB r2'}[heatMode];
+  const xGenome = pos => rulerLeft + ((pos - DATA.display_window[0]) / (DATA.display_window[1] - DATA.display_window[0])) * (rulerRight - rulerLeft);
+  const colX = index => axisLeft + (index + 0.5) * cell;
+  const colorForVariant = v => v.role === 'lead' ? '#b8323f' : r2Color(v.r2_uzb_lead);
+
+  ctx.strokeStyle = '#3a4868'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(rulerLeft, rulerY); ctx.lineTo(rulerRight, rulerY); ctx.stroke();
+  ctx.fillStyle = '#5f6f84'; ctx.font = '11px "Courier New", monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  ctx.fillText('genomic position', rulerLeft - 7, rulerY);
+  const tickStep = Math.max(50_000, Math.round((DATA.display_window[1] - DATA.display_window[0]) / 5 / 10_000) * 10_000);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let tick = Math.ceil(DATA.display_window[0] / tickStep) * tickStep; tick <= DATA.display_window[1]; tick += tickStep) {
+    const x = xGenome(tick);
+    ctx.strokeStyle = '#7c8ba3';
+    ctx.beginPath(); ctx.moveTo(x, rulerY - 4); ctx.lineTo(x, rulerY + 5); ctx.stroke();
+    ctx.fillStyle = '#5f6f84'; ctx.fillText((tick / 1e6).toFixed(2), x, rulerY + 9);
+  }
+
+  vars.forEach((v, index) => {
+    const genomicX = xGenome(v.pos);
+    const columnX = colX(index);
+    const color = colorForVariant(v);
+    const isLead = v.id === DATA.lead.id;
+    ctx.strokeStyle = color; ctx.lineWidth = isLead ? 1.9 : 1;
+    ctx.beginPath(); ctx.moveTo(genomicX, rulerY - 6); ctx.lineTo(genomicX, rulerY + 6); ctx.stroke();
+    ctx.globalAlpha = isLead ? 1 : 0.55;
+    ctx.lineWidth = isLead ? 1.7 : 0.75;
+    ctx.beginPath();
+    ctx.moveTo(genomicX, rulerY + 7);
+    ctx.bezierCurveTo(genomicX, 70, columnX, 78, columnX, stemTopY);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = isLead ? 1.7 : 0.9;
+    ctx.beginPath(); ctx.moveTo(columnX, stemTopY); ctx.lineTo(columnX, axisTop - 2); ctx.stroke();
+    ctx.save();
+    ctx.translate(columnX, labelTop);
+    ctx.rotate(-Math.PI / 2);
+    ctx.font = isLead ? '700 9px "Courier New", monospace' : '8px "Courier New", monospace';
+    ctx.fillStyle = isLead ? '#b8323f' : (v.role === 'peak' ? '#1769aa' : '#4b5f78');
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(v.id, 0, 0);
+    ctx.restore();
+    if (isLead) {
+      ctx.fillStyle = '#b8323f';
+      ctx.beginPath();
+      ctx.moveTo(columnX, stemTopY - 6); ctx.lineTo(columnX - 5, stemTopY); ctx.lineTo(columnX, stemTopY + 5); ctx.lineTo(columnX + 5, stemTopY);
+      ctx.closePath(); ctx.fill();
+    }
+  });
+
+  ctx.strokeStyle = '#3a4868'; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(axisLeft, axisTop); ctx.lineTo(axisLeft + axisLen, axisTop); ctx.stroke();
+  ctx.fillStyle = '#5f6f84'; ctx.font = '11px "Courier New", monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  ctx.fillText('LD block columns', axisLeft - 8, axisTop);
+  for (let index = 0; index < n; index++) {
+    const x = colX(index);
+    ctx.strokeStyle = '#3a4868';
+    ctx.beginPath(); ctx.moveTo(x, axisTop - 4); ctx.lineTo(x, axisTop + 4); ctx.stroke();
+  }
+
   for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
+    for (let j = i; j < n; j++) {
+      const centerX = (colX(i) + colX(j)) / 2;
+      const centerY = diamondTop + (colX(j) - colX(i)) / 2;
+      const half = cell / 2;
       const value = mat[i][j];
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - half); ctx.lineTo(centerX + half, centerY); ctx.lineTo(centerX, centerY + half); ctx.lineTo(centerX - half, centerY);
+      ctx.closePath();
       ctx.fillStyle = heatMode.indexOf('delta') >= 0 ? deltaColor(value) : r2Color(value);
-      ctx.fillRect(left + j * cell, top + i * cell, Math.ceil(cell), Math.ceil(cell));
+      ctx.fill();
+      ctx.strokeStyle = (vars[i].id === DATA.lead.id || vars[j].id === DATA.lead.id) ? 'rgba(184,50,63,.45)' : 'rgba(23,32,51,.08)';
+      ctx.lineWidth = (vars[i].id === DATA.lead.id || vars[j].id === DATA.lead.id) ? 0.7 : 0.3;
+      ctx.stroke();
     }
   }
-  ctx.strokeStyle = '#172033'; ctx.lineWidth = 1.2; ctx.strokeRect(left, top, size, size);
-  const leadIndex = vars.findIndex(v => v.id === DATA.lead.id);
-  if (leadIndex >= 0) {
-    ctx.strokeStyle = '#111827'; ctx.lineWidth = 2;
-    ctx.strokeRect(left + leadIndex * cell, top, cell, size);
-    ctx.strokeRect(left, top + leadIndex * cell, size, cell);
-  }
-  ctx.font = '10px Segoe UI, Arial';
-  const step = n > 42 ? 4 : (n > 30 ? 3 : 2);
-  for (let i = 0; i < n; i += step) {
-    const v = vars[i];
-    const y = top + i * cell + cell * .7;
-    ctx.textAlign = 'right'; ctx.fillStyle = v.role === 'lead' ? '#b8323f' : '#4b5f78';
-    ctx.fillText(v.id, left - 7, y);
-    ctx.save(); ctx.translate(left + i * cell + cell * .7, top - 8); ctx.rotate(-Math.PI / 4);
-    ctx.textAlign = 'left'; ctx.fillText(v.id, 0, 0); ctx.restore();
-  }
-  ctx.textAlign = 'left'; ctx.font = '12px Segoe UI, Arial'; ctx.fillStyle = '#172033';
-  const modeLabel = {eur:'EUR 1000G r2', sas:'SAS 1000G r2', uzb:'Uzbek cohort r2', eur_delta:'EUR - UZB r2', sas_delta:'SAS - UZB r2'}[heatMode];
-  ctx.fillText(modeLabel, left, h - 46);
-  drawLegend(ctx, left + 130, h - 58, heatMode.indexOf('delta') >= 0);
-  byId('matrixCaption').textContent = modeLabel + ' across ' + n + ' highlighted variants in position order.';
+
+  const legendY = Math.min(h - 44, diamondTop + heatHeight + 38);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.font = '12px Segoe UI, Arial'; ctx.fillStyle = '#172033';
+  ctx.fillText(modeLabel + ' triangular LD block', axisLeft, legendY - 12);
+  drawLegend(ctx, axisLeft + 205, legendY - 25, heatMode.indexOf('delta') >= 0);
+  canvas._geo = {axisLeft, axisTop, diamondTop, heatHeight, cell, vars};
+  byId('matrixCaption').textContent = modeLabel + ' triangular LD block across ' + n + ' highlighted variants; top scale shows genomic position and curved connectors map SNP positions to evenly spaced matrix columns.';
 }
 function drawLegend(ctx, x, y, isDelta) {
   const w = 250, h = 14;
@@ -328,17 +389,30 @@ function drawLegend(ctx, x, y, isDelta) {
 
 function heatmapCellFromEvent(event) {
   const canvas = byId('heatmapCanvas');
+  const geo = canvas._geo;
+  if (!geo) return null;
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
   const x = (event.clientX - rect.left) * scaleX;
   const y = (event.clientY - rect.top) * scaleY;
-  const n = DATA.selected.length;
-  const left = 160, top = 52;
-  const size = Math.min(760, canvas.width - left - 30, canvas.height - top - 108);
-  if (x < left || x > left + size || y < top || y > top + size) return null;
-  const cell = size / n;
-  return {i: Math.floor((y - top) / cell), j: Math.floor((x - left) / cell)};
+  const n = geo.vars.length;
+  if (y < geo.axisTop || y > geo.diamondTop + geo.heatHeight) return null;
+  const colX = index => geo.axisLeft + (index + 0.5) * geo.cell;
+  let best = null;
+  let bestDistance = Infinity;
+  for (let i = 0; i < n; i++) {
+    for (let j = i; j < n; j++) {
+      const centerX = (colX(i) + colX(j)) / 2;
+      const centerY = geo.diamondTop + (colX(j) - colX(i)) / 2;
+      const distance = Math.abs(x - centerX) + Math.abs(y - centerY);
+      if (distance <= geo.cell / 2 + 1 && distance < bestDistance) {
+        bestDistance = distance;
+        best = {i, j};
+      }
+    }
+  }
+  return best;
 }
 function setupTooltip() {
   const canvas = byId('heatmapCanvas');
