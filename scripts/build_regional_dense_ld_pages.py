@@ -112,6 +112,14 @@ code{font-family:var(--mono);font-size:12px;background:var(--soft);border-radius
 .metric .v{font:700 18px var(--mono);color:var(--ink)}.metric .s{font-size:12px;color:var(--muted);margin-top:4px}
 .canvas-wrap{position:relative;overflow-x:auto;border:1px solid var(--border);background:#fff;border-radius:6px;padding:10px;margin:10px 0}
 canvas{display:block;width:100%;min-width:760px;height:auto;background:#fff}
+.figure-card{padding-bottom:18px}
+.figure-caption{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.figure-stack{border:1px solid var(--border);background:#fff;border-radius:6px;overflow-x:auto;margin-top:10px}
+.figure-stack .canvas-wrap{border:0;border-radius:0;margin:0;padding:8px 10px;overflow:visible;min-width:900px}
+.figure-stack .manhattan-wrap{border-bottom:1px solid var(--border);padding-bottom:0}
+.figure-stack .heatmap-wrap{padding-top:0}
+.figure-stack canvas{min-width:900px}
+#matrixCaption{margin:8px 10px 6px}
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 10px}
 button{border:1px solid #aab7c8;background:#fff;border-radius:6px;padding:7px 10px;cursor:pointer;color:var(--ink);font-weight:650}
 button.active{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -142,12 +150,13 @@ th{background:var(--soft)}
 
   <div class="card">
     <h2>Regional GWAS Context</h2>
-    <p class="small">Point color uses UZB r<sup>2</sup> to the Firth lead SNP. The gene track is drawn on a wider local context window when needed to show nearby genes.</p>
-    <div class="canvas-wrap"><canvas id="manhattanCanvas" width="1120" height="430"></canvas></div>
+    <p id="regionalContextText"></p>
+    <p class="small" id="regionalContextDetail"></p>
   </div>
 
-  <div class="card">
-    <h2>Multi-Population LD Block</h2>
+  <div class="card figure-card">
+    <h2>Zoomed Regional Signal and LD Block</h2>
+    <p class="figure-caption" id="figureCaption"></p>
     <div class="controls" aria-label="LD heatmap mode">
       <button type="button" data-mode="eur">EUR 1000G</button>
       <button type="button" data-mode="sas">SAS 1000G</button>
@@ -156,7 +165,10 @@ th{background:var(--soft)}
       <button type="button" data-mode="sas_delta">Delta SAS-UZB</button>
     </div>
     <p class="small" id="matrixCaption"></p>
-    <div class="canvas-wrap"><canvas id="heatmapCanvas" width="1120" height="760"></canvas></div>
+    <div class="figure-stack">
+      <div class="canvas-wrap manhattan-wrap"><canvas id="manhattanCanvas" width="1120" height="330"></canvas></div>
+      <div class="canvas-wrap heatmap-wrap"><canvas id="heatmapCanvas" width="1120" height="760"></canvas></div>
+    </div>
   </div>
 
   <div class="two-col">
@@ -206,6 +218,8 @@ function fmtNum(value, digits = 3) {
 }
 function minusLog10(value) { return value > 0 ? -Math.log10(value) : 0; }
 function clamp(value, lo, hi) { return Math.max(lo, Math.min(hi, value)); }
+function figureWindow() { return DATA.figure_window || DATA.window || DATA.display_window; }
+function formatWindowMb(windowRange) { return fmtMb(windowRange[0]) + '-' + fmtMb(windowRange[1]); }
 
 function interpolate(stops, value) {
   if (value === null || value === undefined || !Number.isFinite(value)) return '#f0f3f8';
@@ -239,6 +253,9 @@ function setHeader() {
   byId('pageTitle').textContent = DATA.header;
   byId('pageSub').textContent = DATA.subtitle;
   byId('summaryText').textContent = DATA.context;
+  byId('regionalContextText').textContent = DATA.context + '. The full regional GWAS input spans ' + formatWindowMb(DATA.display_window) + ' and contains ' + DATA.counts.regional_gwas + ' Firth rows used for context and filtering.';
+  byId('regionalContextDetail').textContent = 'The figure below is deliberately zoomed to ' + formatWindowMb(figureWindow()) + ', the dense LD matrix window. Its Manhattan x-axis, heatmap genomic ruler, and SNP connector ticks use the same genomic scale.';
+  byId('figureCaption').textContent = 'Zoomed locus figure: regional Firth GWAS and gene track on top, then the matched multi-population LD block immediately underneath on the same genomic scale.';
   byId('badges').innerHTML = DATA.badges.map((text, i) => '<span class="pill ' + (i === 0 ? 'strong' : '') + '">' + text + '</span>').join('');
   byId('metricsGrid').innerHTML = [
     metric('Highlighted SNPs', DATA.selected.length, DATA.counts.peak + ' peak + ' + DATA.counts.extension + ' extension'),
@@ -284,18 +301,29 @@ function drawManhattan() {
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
   ctx.clearRect(0, 0, w, h); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
-  const plot = {left:72, right:w - 30, top:28, bottom:262};
-  const x0 = DATA.display_window[0], x1 = DATA.display_window[1];
-  const maxY = Math.max(7.5, Math.ceil(Math.max(...DATA.gwas.map(d => minusLog10(d.p))) + 0.5));
+  const figure = figureWindow();
+  const x0 = figure[0], x1 = figure[1];
+  const plot = {left:72, right:w - 30, top:118, bottom:260};
+  const visibleRows = DATA.gwas.filter(row => row.pos >= x0 && row.pos <= x1);
+  const plotRows = visibleRows.length ? visibleRows : DATA.gwas;
+  const maxVisibleLogP = Math.max(...plotRows.map(d => minusLog10(d.p)), minusLog10(DATA.lead.p));
+  const maxY = Math.max(7.5, Math.ceil(maxVisibleLogP + 0.5));
   const x = pos => plot.left + ((pos - x0) / (x1 - x0)) * (plot.right - plot.left);
   const y = val => plot.bottom - (val / maxY) * (plot.bottom - plot.top);
   const ticks = [];
-  const step = Math.max(50_000, Math.round((x1 - x0) / 5 / 10_000) * 10_000);
+  const step = Math.max(25_000, Math.round((x1 - x0) / 5 / 5_000) * 5_000);
   for (let t = Math.ceil(x0 / step) * step; t <= x1; t += step) ticks.push(t);
-  drawAxes(ctx, x, y, plot, ticks, [0, 2, 4, 6, Math.floor(maxY)]);
+  ctx.fillStyle = '#172033'; ctx.font = '700 13px Segoe UI, Arial'; ctx.textAlign = 'left';
+  ctx.fillText('Zoomed regional GWAS and gene track', plot.left, 20);
+  ctx.fillStyle = '#5f6f84'; ctx.font = '12px Segoe UI, Arial';
+  ctx.fillText('Window ' + formatWindowMb(figure) + ' (GRCh38); this x-scale is reused by the LD ruler below.', plot.left, 39);
+  drawGeneTrack(ctx, x, 70, plot.left, plot.right);
+  const yTicks = Array.from(new Set([0, 2, 4, 6, Math.floor(maxY)].filter(t => t <= maxY)));
+  drawAxes(ctx, x, y, plot, ticks, yTicks);
   ctx.strokeStyle = '#b8323f'; ctx.setLineDash([5, 4]);
   ctx.beginPath(); ctx.moveTo(plot.left, y(5)); ctx.lineTo(plot.right, y(5)); ctx.stroke(); ctx.setLineDash([]);
-  DATA.gwas.forEach(row => {
+  plotRows.forEach(row => {
+    if (row.pos < x0 || row.pos > x1) return;
     const px = x(row.pos), py = y(minusLog10(row.p));
     const isSelected = row.selected;
     ctx.fillStyle = r2Color(row.r2_to_lead || 0);
@@ -305,7 +333,7 @@ function drawManhattan() {
   });
   ctx.strokeStyle = '#172033'; ctx.lineWidth = 1.3; ctx.setLineDash([3, 3]);
   const leadX = x(DATA.lead.pos); ctx.beginPath(); ctx.moveTo(leadX, plot.top); ctx.lineTo(leadX, plot.bottom + 84); ctx.stroke(); ctx.setLineDash([]);
-  const labels = DATA.selected.filter(v => v.role === 'lead' || v.p < 1e-6 || v.id === 'rs3037402').slice(0, 12);
+  const labels = DATA.selected.filter(v => v.pos >= x0 && v.pos <= x1 && (v.role === 'lead' || v.p < 1e-6 || v.id === 'rs3037402')).slice(0, 12);
   ctx.font = '11px Segoe UI, Arial'; ctx.fillStyle = '#172033'; ctx.textAlign = 'left';
   labels.forEach((v, i) => {
     const px = x(v.pos) + 5;
@@ -314,29 +342,38 @@ function drawManhattan() {
   });
   ctx.save(); ctx.translate(18, (plot.top + plot.bottom) / 2); ctx.rotate(-Math.PI / 2);
   ctx.fillStyle = '#5f6f84'; ctx.textAlign = 'center'; ctx.fillText('-log10(Firth p)', 0, 0); ctx.restore();
-  ctx.textAlign = 'center'; ctx.fillStyle = '#5f6f84'; ctx.fillText('Position', (plot.left + plot.right) / 2, plot.bottom + 42);
-  drawGeneTrack(ctx, x, plot.bottom + 72, plot.right - plot.left);
+  ctx.textAlign = 'center'; ctx.fillStyle = '#5f6f84'; ctx.fillText('Genomic position (Mb; shared with LD block below)', (plot.left + plot.right) / 2, plot.bottom + 42);
 }
 
-function drawGeneTrack(ctx, x, yBase) {
+function drawGeneTrack(ctx, x, yBase, left, right) {
+  const figure = figureWindow();
+  const genes = DATA.genes.filter(gene => gene.end >= figure[0] && gene.start <= figure[1]);
   ctx.font = '11px Segoe UI, Arial';
-  ctx.fillStyle = '#5f6f84'; ctx.textAlign = 'left'; ctx.fillText('Gene track', 72, yBase - 18);
+  ctx.fillStyle = '#5f6f84'; ctx.textAlign = 'left'; ctx.fillText('Genes / lncRNAs', left, yBase - 18);
+  if (!genes.length) {
+    ctx.fillText('No annotated genes overlap this zoom window', left, yBase + 2);
+    return;
+  }
   const colors = {protein_coding:'#2f7d32', lncRNA:'#6d4aa3', processed_pseudogene:'#9a6b26'};
-  DATA.genes.forEach((gene, i) => {
-    const lane = i % 3;
-    const y = yBase + lane * 25;
-    const xA = clamp(x(gene.start), 72, 1090);
-    const xB = clamp(x(gene.end), 72, 1090);
-    const left = Math.min(xA, xB), right = Math.max(xA, xB);
+  const laneEnds = [];
+  genes.forEach((gene) => {
+    const xA = clamp(x(gene.start), left, right);
+    const xB = clamp(x(gene.end), left, right);
+    const geneLeft = Math.min(xA, xB), geneRight = Math.max(xA, xB);
+    let lane = 0;
+    while (laneEnds[lane] && laneEnds[lane] > geneLeft - 28) lane++;
+    lane = Math.min(lane, 3);
+    laneEnds[lane] = Math.max(laneEnds[lane] || 0, geneRight);
+    const y = yBase + lane * 18;
     const color = colors[gene.biotype] || '#1769aa';
     ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(Math.max(left + 5, right), y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(geneLeft, y); ctx.lineTo(Math.max(geneLeft + 5, geneRight), y); ctx.stroke();
     ctx.beginPath();
-    if (gene.strand < 0) { ctx.moveTo(left, y); ctx.lineTo(left + 8, y - 4); ctx.lineTo(left + 8, y + 4); }
-    else { ctx.moveTo(right, y); ctx.lineTo(right - 8, y - 4); ctx.lineTo(right - 8, y + 4); }
+    if (gene.strand < 0) { ctx.moveTo(geneLeft, y); ctx.lineTo(geneLeft + 8, y - 4); ctx.lineTo(geneLeft + 8, y + 4); }
+    else { ctx.moveTo(geneRight, y); ctx.lineTo(geneRight - 8, y - 4); ctx.lineTo(geneRight - 8, y + 4); }
     ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#172033'; ctx.textAlign = 'left';
-    ctx.fillText(gene.name, Math.min(left + 3, 1030), y - 6);
+    ctx.fillText(gene.name, Math.min(geneLeft + 3, geneRight - 60), y - 6);
   });
 }
 
@@ -358,6 +395,7 @@ function drawHeatmap() {
   const vars = DATA.selected;
   const n = vars.length;
   const rulerLeft = 72, rulerRight = w - 30;
+  const figure = figureWindow();
   const cell = Math.min(17, Math.max(12, (w - 260) / n));
   const axisLen = n * cell;
   const axisLeft = Math.max(120, (w - axisLen) / 2);
@@ -369,17 +407,17 @@ function drawHeatmap() {
   const stemTopY = axisTop - 12;
   const mat = getMatrixForMode();
   const modeLabel = {eur:'EUR 1000G r2', sas:'SAS 1000G r2', uzb:'Uzbek cohort r2', eur_delta:'EUR - UZB r2', sas_delta:'SAS - UZB r2'}[heatMode];
-  const xGenome = pos => rulerLeft + ((pos - DATA.display_window[0]) / (DATA.display_window[1] - DATA.display_window[0])) * (rulerRight - rulerLeft);
+  const xGenome = pos => rulerLeft + ((pos - figure[0]) / (figure[1] - figure[0])) * (rulerRight - rulerLeft);
   const colX = index => axisLeft + (index + 0.5) * cell;
   const colorForVariant = v => v.role === 'lead' ? '#b8323f' : r2Color(v.r2_uzb_lead);
 
   ctx.strokeStyle = '#3a4868'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(rulerLeft, rulerY); ctx.lineTo(rulerRight, rulerY); ctx.stroke();
-  ctx.fillStyle = '#5f6f84'; ctx.font = '11px "Courier New", monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-  ctx.fillText('genomic position', rulerLeft - 7, rulerY);
-  const tickStep = Math.max(50_000, Math.round((DATA.display_window[1] - DATA.display_window[0]) / 5 / 10_000) * 10_000);
+  ctx.fillStyle = '#5f6f84'; ctx.font = '11px "Courier New", monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillText('genomic scale shared with Manhattan', rulerLeft, rulerY - 12);
+  const tickStep = Math.max(25_000, Math.round((figure[1] - figure[0]) / 5 / 5_000) * 5_000);
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-  for (let tick = Math.ceil(DATA.display_window[0] / tickStep) * tickStep; tick <= DATA.display_window[1]; tick += tickStep) {
+  for (let tick = Math.ceil(figure[0] / tickStep) * tickStep; tick <= figure[1]; tick += tickStep) {
     const x = xGenome(tick);
     ctx.strokeStyle = '#7c8ba3';
     ctx.beginPath(); ctx.moveTo(x, rulerY - 4); ctx.lineTo(x, rulerY + 5); ctx.stroke();
@@ -450,7 +488,7 @@ function drawHeatmap() {
   ctx.fillText(modeLabel + ' triangular LD block', axisLeft, legendY - 12);
   drawLegend(ctx, axisLeft + 205, legendY - 25, heatMode.indexOf('delta') >= 0);
   canvas._geo = {axisLeft, axisTop, diamondTop, heatHeight, cell, vars};
-  byId('matrixCaption').textContent = modeLabel + ' triangular LD block across ' + n + ' highlighted variants; top scale shows genomic position and curved connectors map SNP positions to evenly spaced matrix columns.';
+  byId('matrixCaption').textContent = modeLabel + ' triangular LD block across ' + n + ' highlighted variants; top scale uses the same ' + formatWindowMb(figure) + ' genomic window as the Manhattan plot above, and curved connectors map SNP positions to evenly spaced matrix columns.';
 }
 function drawLegend(ctx, x, y, isDelta) {
   const w = 250, h = 14;
@@ -914,6 +952,7 @@ def build_payload(config: LocusConfig) -> dict[str, Any]:
         ],
         "lead": {"id": config.lead_id, "pos": config.lead_pos, "p": lead_row["p"], "or": lead_row["or"]},
         "window": [config.start, config.end],
+        "figure_window": [config.start, config.end],
         "display_window": [config.display_start, config.display_end],
         "peak_span": [min(peak_positions), max(peak_positions)] if peak_positions else [config.lead_pos, config.lead_pos],
         "counts": {"peak": peak_count, "extension": extension_count, "regional_gwas": len(gwas_rows)},
