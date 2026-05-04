@@ -35,6 +35,7 @@
   "counts": {
     "peak": 24,
     "extension": 5,
+    "border": 0,
     "regional_gwas": 797
   },
   "selected": [
@@ -9778,6 +9779,8 @@
   "method": {
     "peak_p": 1e-05,
     "extension_r2": 0.6,
+    "border_p": null,
+    "border_r2": null,
     "reference_window_kb": 500
   },
   "view_mode": "focused",

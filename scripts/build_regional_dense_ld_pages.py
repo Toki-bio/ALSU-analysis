@@ -46,6 +46,8 @@ class LocusConfig:
     canonical_page: str
     legacy_page: str
     wide_page: str
+    border_p: float | None = None
+    border_r2: float | None = None
 
 
 LOCI = [
@@ -55,8 +57,8 @@ LOCI = [
         lead_pos=115_907_201,
         start=115_800_000,
         end=116_050_000,
-        focus_start=115_855_000,
-        focus_end=115_915_000,
+        focus_start=115_835_000,
+        focus_end=115_925_000,
         display_start=115_750_000,
         display_end=116_420_000,
         label="chr9:115.80-116.05 Mb",
@@ -66,6 +68,8 @@ LOCI = [
         canonical_page="chr9_ld_eur_sas_uzb.html",
         legacy_page="chr9_ld_eur_uzb.html",
         wide_page="chr9_ld_eur_sas_uzb_wide.html",
+        border_p=5e-5,
+        border_r2=0.45,
     ),
     LocusConfig(
         chrom=15,
@@ -217,7 +221,7 @@ th{background:var(--soft)}
           <span class="leg-title">Thresholds</span>
           <span class="leg-item"><span class="leg-line gws"></span> genome-wide 5e-8 (-log10 p=7.30)</span>
           <span class="leg-item"><span class="leg-line suggestive"></span> suggestive 1e-5 (-log10 p=5.00)</span>
-          <span class="leg-item">selected set: <b id="legendPeakCount"></b> peak + <b id="legendExtensionCount"></b> extension variants</span>
+          <span class="leg-item">selected set: <b id="legendPeakCount"></b> peak + <b id="legendExtensionCount"></b> extension<span id="legendBorderText"></span> variants</span>
         </div>
         <div class="legend-row">
           <span class="leg-title">Genes</span>
@@ -250,7 +254,7 @@ th{background:var(--soft)}
 
   <div class="card">
     <h2>Highlighted SNPs</h2>
-    <p class="small">Rows include all p&lt;1e-5 regional peak variants and extension variants with UZB r<sup>2</sup> to the lead at or above the extension threshold.</p>
+    <p class="small">Rows include all p&lt;1e-5 regional peak variants, extension variants with UZB r<sup>2</sup> to the lead at or above the extension threshold, and configured border variants used to show LD block edges.</p>
     <table id="variantTable"><thead><tr><th>SNP</th><th>Position</th><th>Role</th><th>Firth p</th><th>OR</th><th>UZB r2 to lead</th><th>EUR r2</th><th>SAS r2</th><th>SAIGE p</th></tr></thead><tbody></tbody></table>
   </div>
 
@@ -317,6 +321,10 @@ function deltaColor(value) {
 function metric(label, value, sub) {
   return '<div class="metric"><h3>' + label + '</h3><div class="v">' + value + '</div><div class="s">' + sub + '</div></div>';
 }
+function selectedBreakdown() {
+  const border = DATA.counts.border || 0;
+  return DATA.counts.peak + ' peak + ' + DATA.counts.extension + ' extension' + (border ? ' + ' + border + ' border' : '');
+}
 function setHeader() {
   byId('pageTitle').textContent = DATA.header;
   byId('pageSub').textContent = DATA.subtitle;
@@ -330,9 +338,10 @@ function setHeader() {
   byId('legendSelectedCount').textContent = DATA.selected.length;
   byId('legendPeakCount').textContent = DATA.counts.peak;
   byId('legendExtensionCount').textContent = DATA.counts.extension;
+  byId('legendBorderText').textContent = DATA.counts.border ? ' + ' + DATA.counts.border + ' border' : '';
   byId('legendDataCaveat').textContent = 'UZB LD: 1090 post-imputation samples with plink2 --r2-phased square. EUR/SAS LD: Ensembl REST 1000 Genomes phase 3; blank heatmap cells mean unavailable reference or cohort pairs, and delta modes are blank when either source is missing.';
   byId('metricsGrid').innerHTML = [
-    metric('Highlighted SNPs', DATA.selected.length, DATA.counts.peak + ' peak + ' + DATA.counts.extension + ' extension'),
+    metric('Highlighted SNPs', DATA.selected.length, selectedBreakdown()),
     metric('Lead p / OR', fmtP(DATA.lead.p) + ' / ' + fmtNum(DATA.lead.or, 2), DATA.lead.id + ' at ' + fmtBp(DATA.lead.pos)),
     metric('UZB mean r2', fmtNum(DATA.stats.uzb.mean_pair_r2, 3), DATA.stats.uzb.coverage + ' observed pair cells'),
     metric('EUR vs UZB', fmtNum(DATA.comparisons.eur_uzb.pearson, 3), 'mean |delta| ' + fmtNum(DATA.comparisons.eur_uzb.mean_abs_delta, 3)),
@@ -785,9 +794,18 @@ def select_variants(config: LocusConfig, gwas_rows: list[dict[str, Any]], vars_o
             continue
         is_peak = row["p"] < PEAK_P
         is_extension = row["p"] >= PEAK_P and row["r2_to_lead"] is not None and row["r2_to_lead"] >= EXTENSION_R2
+        is_border = (
+            row["p"] >= PEAK_P
+            and not is_extension
+            and config.border_p is not None
+            and config.border_r2 is not None
+            and row["p"] < config.border_p
+            and row["r2_to_lead"] is not None
+            and row["r2_to_lead"] >= config.border_r2
+        )
         is_lead = row["id"] == config.lead_id
-        if is_peak or is_extension or is_lead:
-            role = "lead" if is_lead else ("peak" if is_peak else "extension")
+        if is_peak or is_extension or is_border or is_lead:
+            role = "lead" if is_lead else ("peak" if is_peak else ("extension" if is_extension else "border"))
             item = dict(row)
             item["role"] = role
             selected.append(item)
@@ -988,6 +1006,7 @@ def build_payload(config: LocusConfig) -> dict[str, Any]:
     saige_by_id = read_saige(config)
     peak_count = sum(1 for row in selected if row["role"] in {"lead", "peak"})
     extension_count = sum(1 for row in selected if row["role"] == "extension")
+    border_count = sum(1 for row in selected if row["role"] == "border")
     lead_row = next(row for row in selected if row["id"] == config.lead_id)
     peak_positions = [row["pos"] for row in selected if row["role"] in {"lead", "peak"}]
     lead_index = selected_ids.index(config.lead_id)
@@ -1022,7 +1041,8 @@ def build_payload(config: LocusConfig) -> dict[str, Any]:
         "chrom": config.chrom,
         "header": f"{config.label} - RPL - LD Comparison",
         "subtitle": (
-            f"{len(selected)} SNPs - {peak_count} peak + {extension_count} extension - "
+          f"{len(selected)} SNPs - {peak_count} peak + {extension_count} extension"
+          f"{f' + {border_count} border' if border_count else ''} - "
             f"{config.subtitle} - UZB LD from 1090 imputed samples"
         ),
         "context": config.context,
@@ -1037,7 +1057,7 @@ def build_payload(config: LocusConfig) -> dict[str, Any]:
         "figure_window": [config.start, config.end],
         "display_window": [config.display_start, config.display_end],
         "peak_span": [min(peak_positions), max(peak_positions)] if peak_positions else [config.lead_pos, config.lead_pos],
-        "counts": {"peak": peak_count, "extension": extension_count, "regional_gwas": len(gwas_rows)},
+        "counts": {"peak": peak_count, "extension": extension_count, "border": border_count, "regional_gwas": len(gwas_rows)},
         "selected": [
             {
                 "id": row["id"],
@@ -1078,6 +1098,8 @@ def build_payload(config: LocusConfig) -> dict[str, Any]:
         "method": {
             "peak_p": PEAK_P,
             "extension_r2": EXTENSION_R2,
+            "border_p": config.border_p,
+            "border_r2": config.border_r2,
             "reference_window_kb": REFERENCE_WINDOW_KB,
         },
     }
