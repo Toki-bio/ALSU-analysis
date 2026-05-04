@@ -120,6 +120,18 @@ canvas{display:block;width:100%;min-width:760px;height:auto;background:#fff}
 .figure-stack .heatmap-wrap{padding-top:0}
 .figure-stack canvas{min-width:900px}
 #matrixCaption{margin:8px 10px 6px}
+.figure-legend{min-width:900px;background:var(--soft);border:1px solid var(--border);border-top:0;border-radius:0 0 6px 6px;padding:8px 12px 10px;font:11px var(--mono);display:flex;flex-direction:column;gap:6px}
+.legend-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.legend-row .sep{color:#aab7c8;font-size:14px;line-height:1}
+.leg-title{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.04em;min-width:122px}
+.leg-gradient{width:180px;height:13px;border-radius:2px;border:1px solid var(--border);background:linear-gradient(90deg,#f8fafc,#deebf7,#a0cebe,#f5c65c,#dd643e,#ae2442,#57142d)}
+.leg-gradient.delta{background:linear-gradient(90deg,#2c5493,#6fabcd,#ebf1f7,#f9f9f7,#fae2b3,#de803c,#972d12)}
+.leg-labels{display:flex;justify-content:space-between;width:180px;color:var(--muted);font-size:9px}
+.leg-item{display:flex;align-items:center;gap:4px;color:var(--ink)}
+.leg-sw{width:10px;height:10px;border-radius:2px;border:1px solid var(--border);display:inline-block;flex:0 0 auto}
+.leg-dot{width:14px;height:14px;vertical-align:middle;flex:0 0 auto}
+.leg-line{display:inline-block;width:20px;height:0;border-top:1.5px dashed #b8323f;vertical-align:middle}
+.leg-line.gws{border-top-color:#7f1d1d}.leg-line.suggestive{border-top-color:#c85f14}
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 10px}
 button{border:1px solid #aab7c8;background:#fff;border-radius:6px;padding:7px 10px;cursor:pointer;color:var(--ink);font-weight:650}
 button.active{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -168,6 +180,49 @@ th{background:var(--soft)}
     <div class="figure-stack">
       <div class="canvas-wrap manhattan-wrap"><canvas id="manhattanCanvas" width="1120" height="330"></canvas></div>
       <div class="canvas-wrap heatmap-wrap"><canvas id="heatmapCanvas" width="1120" height="760"></canvas></div>
+      <div class="figure-legend" id="figureLegend">
+        <div class="legend-row">
+          <span class="leg-title" id="legendHeatTitle">heatmap r2</span>
+          <span class="leg-gradient" id="legendGradient"></span>
+          <span class="leg-labels" id="legendHeatLabels"><span>0</span><span>0.25</span><span>0.5</span><span>0.75</span><span>1</span></span>
+          <span class="sep">|</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#f0f3f8"></span> n/a or missing pair</span>
+        </div>
+        <div class="legend-row">
+          <span class="leg-title">Manhattan dot color</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#57142d"></span> r2 to lead &ge;0.75</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#ae2442"></span> 0.50-0.75</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#dd643e"></span> 0.25-0.50</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#a0cebe"></span> 0.03-0.25</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#f8fafc"></span> &lt;0.03 / no r2</span>
+        </div>
+        <div class="legend-row">
+          <span class="leg-title">Manhattan dots</span>
+          <span class="leg-item"><svg class="leg-dot" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.2" fill="#b8323f" stroke="#172033" stroke-width="1.4"/></svg> lead <b id="legendLeadId"></b></span>
+          <span class="leg-item"><svg class="leg-dot" viewBox="0 0 14 14"><circle cx="7" cy="7" r="4" fill="#dd643e" stroke="#172033" stroke-width="1.6"/></svg> highlighted LD-set SNPs (<span id="legendSelectedCount"></span>)</span>
+          <span class="leg-item"><svg class="leg-dot" viewBox="0 0 14 14"><circle cx="7" cy="7" r="2.5" fill="#a0cebe" stroke="#ffffff" stroke-width=".8"/></svg> other regional GWAS rows</span>
+        </div>
+        <div class="legend-row">
+          <span class="leg-title">Thresholds</span>
+          <span class="leg-item"><span class="leg-line gws"></span> genome-wide 5e-8 (-log10 p=7.30)</span>
+          <span class="leg-item"><span class="leg-line suggestive"></span> suggestive 1e-5 (-log10 p=5.00)</span>
+          <span class="leg-item">selected set: <b id="legendPeakCount"></b> peak + <b id="legendExtensionCount"></b> extension variants</span>
+        </div>
+        <div class="legend-row">
+          <span class="leg-title">Genes</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#2f7d32"></span> protein-coding</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#6d4aa3"></span> lncRNA</span>
+          <span class="leg-item"><span class="leg-sw" style="background:#1769aa"></span> other annotation</span>
+          <span class="leg-item" style="color:var(--muted)">triangle at gene end = transcription strand</span>
+        </div>
+        <div class="legend-row">
+          <span class="leg-title">Connectors</span>
+          <span class="leg-item" style="color:var(--muted);font-size:10.5px">Top heatmap ticks mark each SNP's genomic position; curved connectors map those ticks to uniformly spaced LD matrix columns. These ticks align to the Manhattan x-axis above.</span>
+        </div>
+        <div class="legend-row" style="font-size:10px;color:var(--muted)">
+          <span class="leg-item" id="legendDataCaveat"></span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -220,6 +275,7 @@ function minusLog10(value) { return value > 0 ? -Math.log10(value) : 0; }
 function clamp(value, lo, hi) { return Math.max(lo, Math.min(hi, value)); }
 function figureWindow() { return DATA.figure_window || DATA.window || DATA.display_window; }
 function formatWindowMb(windowRange) { return fmtMb(windowRange[0]) + '-' + fmtMb(windowRange[1]); }
+function modeLabel() { return {eur:'EUR 1000G r2', sas:'SAS 1000G r2', uzb:'Uzbek cohort r2', eur_delta:'EUR - UZB r2', sas_delta:'SAS - UZB r2'}[heatMode]; }
 
 function interpolate(stops, value) {
   if (value === null || value === undefined || !Number.isFinite(value)) return '#f0f3f8';
@@ -257,6 +313,11 @@ function setHeader() {
   byId('regionalContextDetail').textContent = 'The figure below is deliberately zoomed to ' + formatWindowMb(figureWindow()) + ', the dense LD matrix window. Its Manhattan x-axis, heatmap genomic ruler, and SNP connector ticks use the same genomic scale.';
   byId('figureCaption').textContent = 'Zoomed locus figure: regional Firth GWAS and gene track on top, then the matched multi-population LD block immediately underneath on the same genomic scale.';
   byId('badges').innerHTML = DATA.badges.map((text, i) => '<span class="pill ' + (i === 0 ? 'strong' : '') + '">' + text + '</span>').join('');
+  byId('legendLeadId').textContent = DATA.lead.id;
+  byId('legendSelectedCount').textContent = DATA.selected.length;
+  byId('legendPeakCount').textContent = DATA.counts.peak;
+  byId('legendExtensionCount').textContent = DATA.counts.extension;
+  byId('legendDataCaveat').textContent = 'UZB LD: 1090 post-imputation samples with plink2 --r2-phased square. EUR/SAS LD: Ensembl REST 1000 Genomes phase 3; blank heatmap cells mean unavailable reference or cohort pairs, and delta modes are blank when either source is missing.';
   byId('metricsGrid').innerHTML = [
     metric('Highlighted SNPs', DATA.selected.length, DATA.counts.peak + ' peak + ' + DATA.counts.extension + ' extension'),
     metric('Lead p / OR', fmtP(DATA.lead.p) + ' / ' + fmtNum(DATA.lead.or, 2), DATA.lead.id + ' at ' + fmtBp(DATA.lead.pos)),
@@ -320,8 +381,9 @@ function drawManhattan() {
   drawGeneTrack(ctx, x, 70, plot.left, plot.right);
   const yTicks = Array.from(new Set([0, 2, 4, 6, Math.floor(maxY)].filter(t => t <= maxY)));
   drawAxes(ctx, x, y, plot, ticks, yTicks);
-  ctx.strokeStyle = '#b8323f'; ctx.setLineDash([5, 4]);
-  ctx.beginPath(); ctx.moveTo(plot.left, y(5)); ctx.lineTo(plot.right, y(5)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.setLineDash([5, 4]);
+  ctx.strokeStyle = '#7f1d1d'; ctx.beginPath(); ctx.moveTo(plot.left, y(-Math.log10(5e-8))); ctx.lineTo(plot.right, y(-Math.log10(5e-8))); ctx.stroke();
+  ctx.strokeStyle = '#c85f14'; ctx.beginPath(); ctx.moveTo(plot.left, y(5)); ctx.lineTo(plot.right, y(5)); ctx.stroke(); ctx.setLineDash([]);
   plotRows.forEach(row => {
     if (row.pos < x0 || row.pos > x1) return;
     const px = x(row.pos), py = y(minusLog10(row.p));
@@ -406,7 +468,7 @@ function drawHeatmap() {
   const rulerY = 24;
   const stemTopY = axisTop - 12;
   const mat = getMatrixForMode();
-  const modeLabel = {eur:'EUR 1000G r2', sas:'SAS 1000G r2', uzb:'Uzbek cohort r2', eur_delta:'EUR - UZB r2', sas_delta:'SAS - UZB r2'}[heatMode];
+  const label = modeLabel();
   const xGenome = pos => rulerLeft + ((pos - figure[0]) / (figure[1] - figure[0])) * (rulerRight - rulerLeft);
   const colX = index => axisLeft + (index + 0.5) * cell;
   const colorForVariant = v => v.role === 'lead' ? '#b8323f' : r2Color(v.r2_uzb_lead);
@@ -485,10 +547,17 @@ function drawHeatmap() {
 
   const legendY = Math.min(h - 44, diamondTop + heatHeight + 38);
   ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.font = '12px Segoe UI, Arial'; ctx.fillStyle = '#172033';
-  ctx.fillText(modeLabel + ' triangular LD block', axisLeft, legendY - 12);
+  ctx.fillText(label + ' triangular LD block', axisLeft, legendY - 12);
   drawLegend(ctx, axisLeft + 205, legendY - 25, heatMode.indexOf('delta') >= 0);
   canvas._geo = {axisLeft, axisTop, diamondTop, heatHeight, cell, vars};
-  byId('matrixCaption').textContent = modeLabel + ' triangular LD block across ' + n + ' highlighted variants; top scale uses the same ' + formatWindowMb(figure) + ' genomic window as the Manhattan plot above, and curved connectors map SNP positions to evenly spaced matrix columns.';
+  byId('matrixCaption').textContent = label + ' triangular LD block across ' + n + ' highlighted variants; top scale uses the same ' + formatWindowMb(figure) + ' genomic window as the Manhattan plot above, and curved connectors map SNP positions to evenly spaced matrix columns.';
+  updateFigureLegend();
+}
+function updateFigureLegend() {
+  const isDelta = heatMode.indexOf('delta') >= 0;
+  byId('legendHeatTitle').textContent = isDelta ? 'heatmap delta r2' : 'heatmap r2';
+  byId('legendGradient').classList.toggle('delta', isDelta);
+  byId('legendHeatLabels').innerHTML = isDelta ? '<span>-0.7</span><span>-0.25</span><span>0</span><span>+0.25</span><span>+0.7</span>' : '<span>0</span><span>0.25</span><span>0.5</span><span>0.75</span><span>1</span>';
 }
 function drawLegend(ctx, x, y, isDelta) {
   const w = 250, h = 14;
