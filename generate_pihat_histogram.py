@@ -1,144 +1,148 @@
 #!/usr/bin/env python3
 """
-Extract PI_HAT distribution from ConvSK_mind20.genome and generate JSON for interactive histogram.
-Uses SSH to fetch data from remote DRAGEN server.
+Generate the Step 2 sample-pair PI_HAT histogram JSON.
+
+This uses the Spring 2026 ConvSK_mind20 sample set. PI_HAT is a sample-to-sample
+relatedness estimate; markers are only the variants used to estimate that value.
 """
 
 import subprocess
 import json
 import sys
 
-def fetch_genome_file_via_ssh():
-    """Fetch and parse ConvSK_mind20.genome from DRAGEN server via SSH tunnel (port 2222)."""
-    
-    # Command to run on remote server: extract all pairs with their PI_HAT values
-    # Try post-imputation IBD first (has more pair data), then fall back to pre-imputation
-    remote_cmd = """
-# Try to find the best genome file (prefer post-imputation with more pairs)
-FILE=""
-for pattern in "UZB_v2_IBD.genome" "ConvSK_mind20_ibd.genome" "ConvSK_mind20.genome"; do
-  f=$(find /staging/ALSU-analysis -maxdepth 5 -name "$pattern" -type f 2>/dev/null | head -1)
-  if [ -f "$f" ]; then
-    FILE="$f"
-    echo "Using: $f" >&2
-    break
-  fi
-done
+BINS = [
+    ("0.00-0.05", "Very low PI_HAT"),
+    ("0.05-0.10", "Low relatedness"),
+    ("0.10-0.15", "Elevated relatedness"),
+    ("0.15-0.25", "Approximately third- to second-degree range"),
+    ("0.25-0.50", "Approximately second- to first-degree range"),
+    ("0.50-0.75", "First-degree / full-sibling range"),
+    ("0.75-0.90", "Very close relatives"),
+    ("0.90-0.98", "Near-identical candidate range"),
+    ("0.98-1.00", "Duplicate / technical replicate threshold"),
+]
 
-if [ -z "$FILE" ]; then
-  echo "ERROR: No genome file found" >&2
-  exit 1
+REMOTE_SCRIPT = r"""
+set -euo pipefail
+cd /staging/ALSU-analysis/spring2026
+
+if [ ! -s ConvSK_mind20_full.genome ]; then
+  plink --bfile ConvSK_mind20 --genome --out ConvSK_mind20_full
 fi
 
-awk 'NR>1{
+sample_count=$(wc -l < ConvSK_mind20.fam)
+marker_count_total=$(wc -l < ConvSK_mind20.bim)
+expected_sample_pairs=$((sample_count * (sample_count - 1) / 2))
+genome_line_count=$(wc -l < ConvSK_mind20_full.genome)
+actual_sample_pairs=$((genome_line_count - 1))
+excluded_non_autosomal=$(sed -n 's/^Excluding \([0-9][0-9]*\) variants.*/\1/p' ConvSK_mind20_full.log | tail -1)
+if [ -z "$excluded_non_autosomal" ]; then
+  excluded_non_autosomal=0
+fi
+marker_count_ibd=$((marker_count_total - excluded_non_autosomal))
+
+printf 'META\tsource\t%s\n' '/staging/ALSU-analysis/spring2026/ConvSK_mind20_full.genome'
+printf 'META\tsamples\t%s\n' "$sample_count"
+printf 'META\tsample_pair_count\t%s\n' "$actual_sample_pairs"
+printf 'META\texpected_sample_pair_count\t%s\n' "$expected_sample_pairs"
+printf 'META\tmarkers_total\t%s\n' "$marker_count_total"
+printf 'META\tmarkers_excluded_non_autosomal\t%s\n' "$excluded_non_autosomal"
+printf 'META\tmarkers_used_for_ibd\t%s\n' "$marker_count_ibd"
+
+awk 'NR>1 {
   p=$10+0
-  if(p<0.05) b["0.00-0.05"]++
-  else if(p<0.10) b["0.05-0.10"]++
-  else if(p<0.15) b["0.10-0.15"]++
-  else if(p<0.25) b["0.15-0.25"]++
-  else if(p<0.50) b["0.25-0.50"]++
-  else if(p<0.75) b["0.50-0.75"]++
-  else if(p<0.90) b["0.75-0.90"]++
-  else if(p<0.98) b["0.90-0.98"]++
-  else b["0.98-1.00"]++
-} END{for(k in b) print k, b[k]}' "$FILE"
+  if (p < 0.05) bins[1]++
+  else if (p < 0.10) bins[2]++
+  else if (p < 0.15) bins[3]++
+  else if (p < 0.25) bins[4]++
+  else if (p < 0.50) bins[5]++
+  else if (p < 0.75) bins[6]++
+  else if (p < 0.90) bins[7]++
+  else if (p < 0.98) bins[8]++
+  else bins[9]++
+}
+END {
+  labels[1]="0.00-0.05"; labels[2]="0.05-0.10"; labels[3]="0.10-0.15";
+  labels[4]="0.15-0.25"; labels[5]="0.25-0.50"; labels[6]="0.50-0.75";
+  labels[7]="0.75-0.90"; labels[8]="0.90-0.98"; labels[9]="0.98-1.00";
+    for (bin_index=1; bin_index<=9; bin_index++) printf "BIN\t%s\t%d\n", labels[bin_index], bins[bin_index]+0;
+}' ConvSK_mind20_full.genome
 """
-    
-    try:
-        # Execute via plink SSH tunnel (port 2222, copilot@127.0.0.1)
-        result = subprocess.run(
-            [
-                "plink.exe", "-batch",
-                "-i", "C:\\Users\\T\\.ssh\\id_ed25519.ppk",
-                "-P", "2222",
-                "copilot@127.0.0.1",
-                remote_cmd
-            ],
-            capture_output=True,
-            text=True,
-            timeout=30
+
+
+def run_remote_script():
+    """Run the remote extraction script through the DRAGEN SSH tunnel."""
+    remote_script_bytes = REMOTE_SCRIPT.replace("\r\n", "\n").replace("\r", "").encode("utf-8")
+    result = subprocess.run(
+        [
+            r"C:\Program Files\PuTTY\plink.exe",
+            "-batch",
+            "-i",
+            r"C:\Users\T\.ssh\id_ed25519.ppk",
+            "-P",
+            "2222",
+            "copilot@127.0.0.1",
+            "bash -s",
+        ],
+        input=remote_script_bytes,
+        capture_output=True,
+        timeout=120,
+    )
+
+    stdout = result.stdout.decode("utf-8", errors="replace")
+    stderr = result.stderr.decode("utf-8", errors="replace")
+
+    if result.returncode != 0:
+        print(stdout, file=sys.stderr)
+        print(stderr, file=sys.stderr)
+        raise RuntimeError("Remote PI_HAT extraction failed")
+
+    return stdout
+
+
+def parse_remote_output(output):
+    """Parse metadata and ordered bin counts from the remote script output."""
+    metadata = {}
+    counts_by_range = {bin_range: 0 for bin_range, _description in BINS}
+
+    for line in output.splitlines():
+        parts = line.rstrip("\n").split("\t")
+        if len(parts) == 3 and parts[0] == "META":
+            key = parts[1]
+            value = parts[2]
+            metadata[key] = int(value) if value.isdigit() else value
+        elif len(parts) == 3 and parts[0] == "BIN":
+            counts_by_range[parts[1]] = int(parts[2])
+
+    total_pairs = sum(counts_by_range.values())
+    histogram_data = []
+    for bin_range, description in BINS:
+        count = counts_by_range[bin_range]
+        histogram_data.append(
+            {
+                "range": bin_range,
+                "description": description,
+                "count": count,
+                "percent": (100 * count / total_pairs) if total_pairs else 0,
+            }
         )
-        
-        if result.returncode != 0:
-            print(f"SSH error: {result.stderr}", file=sys.stderr)
-            return None
-        
-        return result.stdout
-    except subprocess.TimeoutExpired:
-        print("SSH command timed out", file=sys.stderr)
-        return None
-    except Exception as e:
-        print(f"SSH connection error: {e}", file=sys.stderr)
-        return None
 
-def parse_distribution(output):
-    """Parse AWK output into histogram bins."""
-    bins_order = [
-        "0.00-0.05",
-        "0.05-0.10",
-        "0.10-0.15",
-        "0.15-0.25",
-        "0.25-0.50",
-        "0.50-0.75",
-        "0.75-0.90",
-        "0.90-0.98",
-        "0.98-1.00"
-    ]
-    
-    # Parse output, filtering out SSH banner/version info
-    distribution = {}
-    for line in output.strip().split('\n'):
-        if line.strip():
-            parts = line.strip().split()
-            if len(parts) >= 2:
-                try:
-                    # Try to parse as bin data
-                    bin_name = parts[0]
-                    count = int(parts[1])
-                    # Verify it's a valid bin
-                    if bin_name in bins_order:
-                        distribution[bin_name] = count
-                except (ValueError, IndexError):
-                    # Skip lines that don't match expected format (SSH banners, etc.)
-                    pass
-    
-    # Ensure all bins exist (fill with 0 if missing)
-    result = []
-    total = 0
-    for bin_name in bins_order:
-        count = distribution.get(bin_name, 0)
-        result.append({
-            "range": bin_name,
-            "count": count
-        })
-        total += count
-    
-    return result, total
+    metadata["sample_pair_count_from_bins"] = total_pairs
+    return metadata, histogram_data
 
-def generate_plotly_json(histogram_data, total_pairs):
+def generate_plotly_json(metadata, histogram_data):
     """Generate Plotly JSON for interactive histogram."""
-    
-    ranges = [d['range'] for d in histogram_data]
-    counts = [d['count'] for d in histogram_data]
-    
-    # Create descriptive labels for each range
-    range_descriptions = {
-        "0.00-0.05": "Unrelated",
-        "0.05-0.10": "Distant cousins",
-        "0.10-0.15": "Second cousins+",
-        "0.15-0.25": "First cousins+",
-        "0.25-0.50": "Half-siblings / First-degree relatives",
-        "0.50-0.75": "Full siblings (expected ~0.50)",
-        "0.75-0.90": "Very close relatives / MZ twins",
-        "0.90-0.98": "Near-identical / Duplicate candidates",
-        "0.98-1.00": "Duplicates / Technical replicates (removed)"
-    }
-    
+    ranges = [item["range"] for item in histogram_data]
+    counts = [item["count"] for item in histogram_data]
+    total_pairs = metadata["sample_pair_count_from_bins"]
+
     hover_texts = [
-        f"{ranges[i]}: {counts[i]:,} pairs<br>({counts[i]/total_pairs*100:.1f}%)<br>{range_descriptions.get(ranges[i], '')}"
-        for i in range(len(ranges))
+        f"{item['range']}: {item['count']:,} sample pairs<br>"
+        f"{item['percent']:.4f}% of {total_pairs:,} comparisons<br>"
+        f"{item['description']}"
+        for item in histogram_data
     ]
-    
+
     plotly_data = {
         "type": "bar",
         "x": ranges,
@@ -163,7 +167,9 @@ def generate_plotly_json(histogram_data, total_pairs):
     
     layout = {
         "title": {
-            "text": "Complete PI_HAT Distribution (All Sample Pairs)",
+            "text": "Sample PI_HAT Distribution",
+            "x": 0.02,
+            "xanchor": "left",
             "font": {"size": 16}
         },
         "xaxis": {
@@ -171,48 +177,42 @@ def generate_plotly_json(histogram_data, total_pairs):
             "tickangle": -45
         },
         "yaxis": {
-            "title": "Number of Pairs"
+            "title": "Number of Sample Pairs"
         },
         "hovermode": "closest",
         "showlegend": False,
         "height": 400,
-        "margin": {"b": 100, "t": 60}
+        "margin": {"b": 100, "t": 70}
     }
     
     return {
+        "metadata": metadata,
+        "bins": histogram_data,
         "data": [plotly_data],
         "layout": layout
     }
 
 def main():
-    print("Fetching PI_HAT distribution from remote server...")
-    output = fetch_genome_file_via_ssh()
-    
-    if output is None:
-        print("Failed to fetch data from remote server", file=sys.stderr)
-        sys.exit(1)
-    
-    print("Parsing distribution...")
-    histogram_data, total_pairs = parse_distribution(output)
-    
-    print(f"Total pairs: {total_pairs:,}")
+    print("Fetching Spring 2026 Step 2 sample-pair PI_HAT distribution...")
+    remote_output = run_remote_script()
+    metadata, histogram_data = parse_remote_output(remote_output)
+
+    total_pairs = metadata["sample_pair_count_from_bins"]
+    print(
+        f"Samples: {metadata['samples']:,}; sample pairs: {total_pairs:,}; "
+        f"markers used for IBD: {metadata['markers_used_for_ibd']:,}"
+    )
     for item in histogram_data:
-        pct = item['count'] / total_pairs * 100 if total_pairs > 0 else 0
-        print(f"  {item['range']}: {item['count']:6,} pairs ({pct:5.1f}%)")
-    
+        print(f"  {item['range']}: {item['count']:7,} sample pairs ({item['percent']:.4f}%)")
+
     print("\nGenerating Plotly JSON...")
-    plotly_json = generate_plotly_json(histogram_data, total_pairs)
-    
-    # Write to file
+    plotly_json = generate_plotly_json(metadata, histogram_data)
+
     output_file = "data/pihat_distribution_histogram.json"
     with open(output_file, 'w') as f:
         json.dump(plotly_json, f, indent=2)
-    
+
     print(f"✓ Saved to {output_file}")
-    
-    # Also print for inline embedding if needed
-    print("\nJSON (for inline embedding):")
-    print(json.dumps(plotly_json))
 
 if __name__ == "__main__":
     main()

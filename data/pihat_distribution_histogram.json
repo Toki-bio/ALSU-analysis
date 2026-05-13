@@ -1,4 +1,70 @@
 {
+  "metadata": {
+    "source": "/staging/ALSU-analysis/spring2026/ConvSK_mind20_full.genome",
+    "samples": 1148,
+    "sample_pair_count": 658378,
+    "expected_sample_pair_count": 658378,
+    "markers_total": 654027,
+    "markers_excluded_non_autosomal": 32447,
+    "markers_used_for_ibd": 621580,
+    "sample_pair_count_from_bins": 658378
+  },
+  "bins": [
+    {
+      "range": "0.00-0.05",
+      "description": "Very low PI_HAT",
+      "count": 151328,
+      "percent": 22.984972158850994
+    },
+    {
+      "range": "0.05-0.10",
+      "description": "Low relatedness",
+      "count": 454898,
+      "percent": 69.09374250050882
+    },
+    {
+      "range": "0.10-0.15",
+      "description": "Elevated relatedness",
+      "count": 43961,
+      "percent": 6.677167220046843
+    },
+    {
+      "range": "0.15-0.25",
+      "description": "Approximately third- to second-degree range",
+      "count": 3580,
+      "percent": 0.5437605752318577
+    },
+    {
+      "range": "0.25-0.50",
+      "description": "Approximately second- to first-degree range",
+      "count": 4530,
+      "percent": 0.6880545826257864
+    },
+    {
+      "range": "0.50-0.75",
+      "description": "First-degree / full-sibling range",
+      "count": 14,
+      "percent": 0.002126438003700002
+    },
+    {
+      "range": "0.75-0.90",
+      "description": "Very close relatives",
+      "count": 2,
+      "percent": 0.0003037768576714289
+    },
+    {
+      "range": "0.90-0.98",
+      "description": "Near-identical candidate range",
+      "count": 2,
+      "percent": 0.0003037768576714289
+    },
+    {
+      "range": "0.98-1.00",
+      "description": "Duplicate / technical replicate threshold",
+      "count": 63,
+      "percent": 0.00956897101665001
+    }
+  ],
   "data": [
     {
       "type": "bar",
@@ -14,26 +80,26 @@
         "0.98-1.00"
       ],
       "y": [
-        646771,
-        4846,
-        1875,
-        308,
-        4502,
-        8,
-        3,
-        0,
-        65
+        151328,
+        454898,
+        43961,
+        3580,
+        4530,
+        14,
+        2,
+        2,
+        63
       ],
       "hovertext": [
-        "0.00-0.05: 646,771 pairs<br>(98.2%)<br>Unrelated",
-        "0.05-0.10: 4,846 pairs<br>(0.7%)<br>Distant cousins",
-        "0.10-0.15: 1,875 pairs<br>(0.3%)<br>Second cousins+",
-        "0.15-0.25: 308 pairs<br>(0.0%)<br>First cousins+",
-        "0.25-0.50: 4,502 pairs<br>(0.7%)<br>Half-siblings / First-degree relatives",
-        "0.50-0.75: 8 pairs<br>(0.0%)<br>Full siblings (expected ~0.50)",
-        "0.75-0.90: 3 pairs<br>(0.0%)<br>Very close relatives / MZ twins",
-        "0.90-0.98: 0 pairs<br>(0.0%)<br>Near-identical / Duplicate candidates",
-        "0.98-1.00: 65 pairs<br>(0.0%)<br>Duplicates / Technical replicates (removed)"
+        "0.00-0.05: 151,328 sample pairs<br>22.9850% of 658,378 comparisons<br>Very low PI_HAT",
+        "0.05-0.10: 454,898 sample pairs<br>69.0937% of 658,378 comparisons<br>Low relatedness",
+        "0.10-0.15: 43,961 sample pairs<br>6.6772% of 658,378 comparisons<br>Elevated relatedness",
+        "0.15-0.25: 3,580 sample pairs<br>0.5438% of 658,378 comparisons<br>Approximately third- to second-degree range",
+        "0.25-0.50: 4,530 sample pairs<br>0.6881% of 658,378 comparisons<br>Approximately second- to first-degree range",
+        "0.50-0.75: 14 sample pairs<br>0.0021% of 658,378 comparisons<br>First-degree / full-sibling range",
+        "0.75-0.90: 2 sample pairs<br>0.0003% of 658,378 comparisons<br>Very close relatives",
+        "0.90-0.98: 2 sample pairs<br>0.0003% of 658,378 comparisons<br>Near-identical candidate range",
+        "0.98-1.00: 63 sample pairs<br>0.0096% of 658,378 comparisons<br>Duplicate / technical replicate threshold"
       ],
       "hoverinfo": "text",
       "marker": {
@@ -53,7 +119,9 @@
   ],
   "layout": {
     "title": {
-      "text": "Complete PI_HAT Distribution (All Sample Pairs)",
+      "text": "Sample PI_HAT Distribution",
+      "x": 0.02,
+      "xanchor": "left",
       "font": {
         "size": 16
       }
@@ -63,14 +131,14 @@
       "tickangle": -45
     },
     "yaxis": {
-      "title": "Number of Pairs"
+      "title": "Number of Sample Pairs"
     },
     "hovermode": "closest",
     "showlegend": false,
     "height": 400,
     "margin": {
       "b": 100,
-      "t": 60
+      "t": 70
     }
   }
 }

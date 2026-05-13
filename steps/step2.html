@@ -251,27 +251,31 @@
                             had different IID roots (same individual registered under different codes).
                         </p>
 
-                        <h3 style="margin-top: 30px; color: #333;">Complete PI_HAT Distribution (All Sample Pairs)</h3>
+                        <h3 style="margin-top: 30px; color: #333;">Sample-to-Sample PI_HAT Distribution</h3>
                         <p style="margin: 10px 0;">
-                            The chart below shows the complete distribution of PI_HAT values across all sample pairs
-                            in the full dataset (post-imputation). This reveals the overall relatedness structure of the
-                            cohort: the vast majority of pairs are unrelated, with smaller populations of distant
-                            relatives, and a tail of duplicates/technical replicates at PI_HAT &ge; 0.98.
+                            The chart below shows sample relatedness, not marker counts: 1,148 samples produce
+                            658,378 pairwise sample comparisons (1,148 &times; 1,147 / 2). PI_HAT was estimated from
+                            the marker set used by PLINK for IBD calculation: 621,580 autosomal variants
+                            (654,027 total variants loaded, 32,447 non-autosomal variants excluded).
+                        </p>
+                        <p style="margin: 10px 0;">
+                            Each bar counts sample pairs whose PI_HAT falls in that range. The 0.98&ndash;1.00 bin
+                            corresponds to the duplicate/technical-replicate threshold used for removal in this step.
                         </p>
                         <div style="margin-bottom: 10px;">
                             <label for="logScaleToggle" style="display: inline-block; margin-right: 15px; cursor: pointer; user-select: none;">
                                 <input type="checkbox" id="logScaleToggle" style="cursor: pointer; margin-right: 5px;">
                                 <strong style="color: #333;">Log Scale (Y-axis)</strong>
                             </label>
-                            <span style="color: #666; font-size: 0.9em;">Toggle to see smaller bins more clearly</span>
+                            <span style="color: #666; font-size: 0.9em;">Small high-PI_HAT bins are easier to compare on log scale.</span>
                         </div>
                         <div class="chart-container" id="pihat-full-container" style="min-height: 500px;">
-                            <div class="chart-title">Full PI_HAT Distribution (Interactive &amp; Zoomable)</div>
-                            <div class="chart-subtitle">All pairs from post-imputation IBD analysis &middot; hover for details &middot; click to zoom</div>
+                            <div class="chart-title">Sample PI_HAT Distribution</div>
+                            <div class="chart-subtitle">1,148 samples; 658,378 sample pairs; 621,580 autosomal IBD variants</div>
                             <div id="pihatFullChart" style="width: 100%; height: 450px;"></div>
                         </div>
                         <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
-                            <strong>How to interact:</strong> Hover over bars for exact counts and percentages. Click and drag to zoom into a region; double-click to reset zoom. Use the toolbar in the top-right corner for additional options (pan, reset axes, save as PNG, etc.).
+                            <strong>Source:</strong> <code>/staging/ALSU-analysis/spring2026/ConvSK_mind20_full.genome</code>, generated with <code>plink --bfile ConvSK_mind20 --genome --out ConvSK_mind20_full</code> without a <code>--min</code> filter.
                         </p>
                     </div>
                 </div>
@@ -852,10 +856,11 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
         var plotDiv = document.getElementById('pihatFullChart');
         if (!plotDiv) return;
 
-        /* Complete PI_HAT distribution data (all pairs) from post-imputation IBD analysis */
+        /* Complete sample-pair PI_HAT distribution from Spring 2026 Step 2.
+           Samples: 1,148; sample pairs: 658,378; markers used for IBD: 621,580 autosomal variants. */
         var pihatHistogramData = {
             x: ["0.00-0.05", "0.05-0.10", "0.10-0.15", "0.15-0.25", "0.25-0.50", "0.50-0.75", "0.75-0.90", "0.90-0.98", "0.98-1.00"],
-            y: [646771, 4846, 1875, 308, 4502, 8, 3, 0, 65],
+            y: [151328, 454898, 43961, 3580, 4530, 14, 2, 2, 63],
             type: 'bar',
             marker: {
                 color: [
@@ -871,28 +876,33 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
                 ]
             },
             text: [
-                '646,771 pairs (98.2%)<br>Unrelated',
-                '4,846 pairs (0.7%)<br>Distant cousins',
-                '1,875 pairs (0.3%)<br>Second cousins+',
-                '308 pairs (0.0%)<br>First cousins+',
-                '4,502 pairs (0.7%)<br>Half-siblings / First-degree',
-                '8 pairs (0.0%)<br>Full siblings (expected ~0.50)',
-                '3 pairs (0.0%)<br>Very close relatives / MZ twins',
-                '0 pairs (0.0%)<br>Near-identical candidates',
-                '65 pairs (0.0%)<br>Duplicates / Technical replicates (removed)'
+                '151,328 sample pairs (22.9850%)<br>Very low PI_HAT',
+                '454,898 sample pairs (69.0937%)<br>Low relatedness',
+                '43,961 sample pairs (6.6772%)<br>Elevated relatedness',
+                '3,580 sample pairs (0.5438%)<br>Approximately third- to second-degree range',
+                '4,530 sample pairs (0.6881%)<br>Approximately second- to first-degree range',
+                '14 sample pairs (0.0021%)<br>First-degree / full-sibling range',
+                '2 sample pairs (0.0003%)<br>Very close relatives',
+                '2 sample pairs (0.0003%)<br>Near-identical candidate range',
+                '63 sample pairs (0.0096%)<br>Duplicate / technical replicate threshold'
             ],
             hoverinfo: 'text',
             hovertemplate: '%{text}<extra></extra>'
         };
 
         var layout = {
-            title: 'Complete PI_HAT Distribution (Post-Imputation IBD Analysis)',
+            title: {
+                text: 'Sample PI_HAT Distribution',
+                x: 0.02,
+                xanchor: 'left',
+                font: { size: 16 }
+            },
             xaxis: {
                 title: 'PI_HAT Value Range',
                 tickangle: -45
             },
             yaxis: {
-                title: 'Number of Pairs',
+                title: 'Number of Sample Pairs',
                 type: 'linear'
             },
             plot_bgcolor: '#f9f9f9',
@@ -900,7 +910,7 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
             hovermode: 'closest',
             margin: {
                 b: 100,
-                t: 60,
+                t: 70,
                 l: 80,
                 r: 40
             }
@@ -908,7 +918,7 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
 
         var config = {
             responsive: true,
-            displayModeBar: true,
+            displayModeBar: 'hover',
             displaylogo: false,
             modeBarButtonsToRemove: ['lasso2d', 'select2d']
         };
