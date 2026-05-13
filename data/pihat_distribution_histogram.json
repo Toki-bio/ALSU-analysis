@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "type": "bar",
+      "x": [
+        "0.00-0.05",
+        "0.05-0.10",
+        "0.10-0.15",
+        "0.15-0.25",
+        "0.25-0.50",
+        "0.50-0.75",
+        "0.75-0.90",
+        "0.90-0.98",
+        "0.98-1.00"
+      ],
+      "y": [
+        646771,
+        4846,
+        1875,
+        308,
+        4502,
+        8,
+        3,
+        0,
+        65
+      ],
+      "hovertext": [
+        "0.00-0.05: 646,771 pairs<br>(98.2%)<br>Unrelated",
+        "0.05-0.10: 4,846 pairs<br>(0.7%)<br>Distant cousins",
+        "0.10-0.15: 1,875 pairs<br>(0.3%)<br>Second cousins+",
+        "0.15-0.25: 308 pairs<br>(0.0%)<br>First cousins+",
+        "0.25-0.50: 4,502 pairs<br>(0.7%)<br>Half-siblings / First-degree relatives",
+        "0.50-0.75: 8 pairs<br>(0.0%)<br>Full siblings (expected ~0.50)",
+        "0.75-0.90: 3 pairs<br>(0.0%)<br>Very close relatives / MZ twins",
+        "0.90-0.98: 0 pairs<br>(0.0%)<br>Near-identical / Duplicate candidates",
+        "0.98-1.00: 65 pairs<br>(0.0%)<br>Duplicates / Technical replicates (removed)"
+      ],
+      "hoverinfo": "text",
+      "marker": {
+        "color": [
+          "rgba(100,150,200,0.8)",
+          "rgba(120,160,210,0.8)",
+          "rgba(140,170,220,0.8)",
+          "rgba(180,200,230,0.8)",
+          "rgba(220,180,100,0.8)",
+          "rgba(230,150,80,0.8)",
+          "rgba(240,120,60,0.8)",
+          "rgba(255,100,40,0.8)",
+          "rgba(198,40,40,0.9)"
+        ]
+      }
+    }
+  ],
+  "layout": {
+    "title": {
+      "text": "Complete PI_HAT Distribution (All Sample Pairs)",
+      "font": {
+        "size": 16
+      }
+    },
+    "xaxis": {
+      "title": "PI_HAT Value Range",
+      "tickangle": -45
+    },
+    "yaxis": {
+      "title": "Number of Pairs"
+    },
+    "hovermode": "closest",
+    "showlegend": false,
+    "height": 400,
+    "margin": {
+      "b": 100,
+      "t": 60
+    }
+  }
+}
