@@ -90,6 +90,19 @@
         2,
         63
       ],
+      "text": [
+        "151,328",
+        "454,898",
+        "43,961",
+        "3,580",
+        "4,530",
+        "14",
+        "2",
+        "2",
+        "63"
+      ],
+      "textposition": "outside",
+      "cliponaxis": false,
       "hovertext": [
         "0.00-0.05: 151,328 sample pairs<br>22.9850% of 658,378 comparisons<br>Very low PI_HAT",
         "0.05-0.10: 454,898 sample pairs<br>69.0937% of 658,378 comparisons<br>Low relatedness",
@@ -102,6 +115,7 @@
         "0.98-1.00: 63 sample pairs<br>0.0096% of 658,378 comparisons<br>Duplicate / technical replicate threshold"
       ],
       "hoverinfo": "text",
+      "hovertemplate": "%{hovertext}<extra></extra>",
       "marker": {
         "color": [
           "rgba(100,150,200,0.8)",
@@ -118,27 +132,43 @@
     }
   ],
   "layout": {
-    "title": {
-      "text": "Sample PI_HAT Distribution",
-      "x": 0.02,
-      "xanchor": "left",
-      "font": {
-        "size": 16
-      }
-    },
     "xaxis": {
       "title": "PI_HAT Value Range",
       "tickangle": -45
     },
     "yaxis": {
-      "title": "Number of Sample Pairs"
+      "title": "Number of Sample Pairs",
+      "type": "log",
+      "tickmode": "array",
+      "tickvals": [
+        1,
+        10,
+        100,
+        1000,
+        10000,
+        100000,
+        1000000
+      ],
+      "ticktext": [
+        "1",
+        "10",
+        "100",
+        "1k",
+        "10k",
+        "100k",
+        "1M"
+      ],
+      "range": [
+        0,
+        6
+      ]
     },
     "hovermode": "closest",
     "showlegend": false,
     "height": 400,
     "margin": {
       "b": 100,
-      "t": 70
+      "t": 35
     }
   }
 }

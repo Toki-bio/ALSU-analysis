@@ -147,8 +147,12 @@ def generate_plotly_json(metadata, histogram_data):
         "type": "bar",
         "x": ranges,
         "y": counts,
+        "text": [f"{count:,}" for count in counts],
+        "textposition": "outside",
+        "cliponaxis": False,
         "hovertext": hover_texts,
         "hoverinfo": "text",
+        "hovertemplate": "%{hovertext}<extra></extra>",
         "marker": {
             "color": [
                 # Use different colors: cool colors for unrelated, warm for related, red for duplicates
@@ -166,23 +170,22 @@ def generate_plotly_json(metadata, histogram_data):
     }
     
     layout = {
-        "title": {
-            "text": "Sample PI_HAT Distribution",
-            "x": 0.02,
-            "xanchor": "left",
-            "font": {"size": 16}
-        },
         "xaxis": {
             "title": "PI_HAT Value Range",
             "tickangle": -45
         },
         "yaxis": {
-            "title": "Number of Sample Pairs"
+            "title": "Number of Sample Pairs",
+            "type": "log",
+            "tickmode": "array",
+            "tickvals": [1, 10, 100, 1000, 10000, 100000, 1000000],
+            "ticktext": ["1", "10", "100", "1k", "10k", "100k", "1M"],
+            "range": [0, 6]
         },
         "hovermode": "closest",
         "showlegend": False,
         "height": 400,
-        "margin": {"b": 100, "t": 70}
+        "margin": {"b": 100, "t": 35}
     }
     
     return {

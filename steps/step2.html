@@ -264,7 +264,7 @@
                         </p>
                         <div style="margin-bottom: 10px;">
                             <label for="logScaleToggle" style="display: inline-block; margin-right: 15px; cursor: pointer; user-select: none;">
-                                <input type="checkbox" id="logScaleToggle" style="cursor: pointer; margin-right: 5px;">
+                                <input type="checkbox" id="logScaleToggle" checked style="cursor: pointer; margin-right: 5px;">
                                 <strong style="color: #333;">Log Scale (Y-axis)</strong>
                             </label>
                             <span style="color: #666; font-size: 0.9em;">Small high-PI_HAT bins are easier to compare on log scale.</span>
@@ -277,6 +277,23 @@
                         <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
                             <strong>Source:</strong> <code>/staging/ALSU-analysis/spring2026/ConvSK_mind20_full.genome</code>, generated with <code>plink --bfile ConvSK_mind20 --genome --out ConvSK_mind20_full</code> without a <code>--min</code> filter.
                         </p>
+
+                        <h3 style="margin-top: 20px; color: #333;">PI_HAT Distribution Table</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="metric-table">
+                                <tr><th>PI_HAT Range</th><th>Sample Pairs</th><th>Percent of 658,378</th><th>Interpretation</th></tr>
+                                <tr><td>0.00&ndash;0.05</td><td>151,328</td><td>22.9850%</td><td>Very low PI_HAT</td></tr>
+                                <tr><td>0.05&ndash;0.10</td><td>454,898</td><td>69.0937%</td><td>Low relatedness</td></tr>
+                                <tr><td>0.10&ndash;0.15</td><td>43,961</td><td>6.6772%</td><td>Elevated relatedness</td></tr>
+                                <tr><td>0.15&ndash;0.25</td><td>3,580</td><td>0.5438%</td><td>Approximately third- to second-degree range</td></tr>
+                                <tr><td>0.25&ndash;0.50</td><td>4,530</td><td>0.6881%</td><td>Approximately second- to first-degree range</td></tr>
+                                <tr><td>0.50&ndash;0.75</td><td>14</td><td>0.0021%</td><td>First-degree / full-sibling range</td></tr>
+                                <tr><td>0.75&ndash;0.90</td><td>2</td><td>0.0003%</td><td>Very close relatives</td></tr>
+                                <tr><td>0.90&ndash;0.98</td><td>2</td><td>0.0003%</td><td>Near-identical candidate range</td></tr>
+                                <tr><td>0.98&ndash;1.00</td><td>63</td><td>0.0096%</td><td>Duplicate / technical replicate threshold</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>658,378</strong></td><td><strong>100.0000%</strong></td><td>All sample-to-sample comparisons</td></tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -861,6 +878,9 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
         var pihatHistogramData = {
             x: ["0.00-0.05", "0.05-0.10", "0.10-0.15", "0.15-0.25", "0.25-0.50", "0.50-0.75", "0.75-0.90", "0.90-0.98", "0.98-1.00"],
             y: [151328, 454898, 43961, 3580, 4530, 14, 2, 2, 63],
+            text: ["151,328", "454,898", "43,961", "3,580", "4,530", "14", "2", "2", "63"],
+            textposition: 'outside',
+            cliponaxis: false,
             type: 'bar',
             marker: {
                 color: [
@@ -875,7 +895,7 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
                     'rgba(198,40,40,0.9)'       /* 0.98-1.00: Duplicates (removed) */
                 ]
             },
-            text: [
+            hovertext: [
                 '151,328 sample pairs (22.9850%)<br>Very low PI_HAT',
                 '454,898 sample pairs (69.0937%)<br>Low relatedness',
                 '43,961 sample pairs (6.6772%)<br>Elevated relatedness',
@@ -887,30 +907,28 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
                 '63 sample pairs (0.0096%)<br>Duplicate / technical replicate threshold'
             ],
             hoverinfo: 'text',
-            hovertemplate: '%{text}<extra></extra>'
+            hovertemplate: '%{hovertext}<extra></extra>'
         };
 
         var layout = {
-            title: {
-                text: 'Sample PI_HAT Distribution',
-                x: 0.02,
-                xanchor: 'left',
-                font: { size: 16 }
-            },
             xaxis: {
                 title: 'PI_HAT Value Range',
                 tickangle: -45
             },
             yaxis: {
                 title: 'Number of Sample Pairs',
-                type: 'linear'
+                type: 'log',
+                tickmode: 'array',
+                tickvals: [1, 10, 100, 1000, 10000, 100000, 1000000],
+                ticktext: ['1', '10', '100', '1k', '10k', '100k', '1M'],
+                range: [0, 6]
             },
             plot_bgcolor: '#f9f9f9',
             paper_bgcolor: 'white',
             hovermode: 'closest',
             margin: {
                 b: 100,
-                t: 70,
+                t: 35,
                 l: 80,
                 r: 40
             }
@@ -930,7 +948,23 @@ wc -l ConvSK_mind20_dedup.fam ConvSK_mind20_dedup.bim
         if (logScaleToggle) {
             logScaleToggle.addEventListener('change', function() {
                 var newType = this.checked ? 'log' : 'linear';
-                Plotly.relayout(plotDiv, {'yaxis.type': newType});
+                if (newType === 'log') {
+                    Plotly.relayout(plotDiv, {
+                        'yaxis.type': 'log',
+                        'yaxis.tickmode': 'array',
+                        'yaxis.tickvals': [1, 10, 100, 1000, 10000, 100000, 1000000],
+                        'yaxis.ticktext': ['1', '10', '100', '1k', '10k', '100k', '1M'],
+                        'yaxis.range': [0, 6]
+                    });
+                } else {
+                    Plotly.relayout(plotDiv, {
+                        'yaxis.type': 'linear',
+                        'yaxis.tickmode': 'auto',
+                        'yaxis.tickvals': null,
+                        'yaxis.ticktext': null,
+                        'yaxis.range': null
+                    });
+                }
             });
         }
     })();
