@@ -63,6 +63,7 @@
             <button class="tab-btn" onclick="switchTab('steps', this)">All Steps</button>
             <button class="tab-btn" onclick="switchTab('daily', this)">Daily Logs</button>
             <button class="tab-btn" onclick="switchTab('pca', this)">PCA Viewer</button>
+            <button class="tab-btn" onclick="window.location.href='steps/admixture_aware_relatedness.html'" style="color:#00695c;font-weight:600">🧬 Admixture Relatedness</button>
             <button class="tab-btn" onclick="window.location.href='todo.html'" style="margin-left:auto;color:#3949ab;font-weight:600">✅ Todo</button>
         </div>
 
@@ -70,7 +71,7 @@
             <!-- ROADMAP TAB - DATA FLOW GRAPH -->
             <div id="roadmap" class="tab-content active">
                 <div class="roadmap-graph" style="overflow-y: auto; padding: 40px 20px;">
-                    <svg width="600" height="2720" style="display: block; margin: 0 auto;">
+                    <svg width="760" height="2720" style="display: block; margin: 0 auto;">
                         <!-- Full roadmap SVG (Steps 1-8) preserved -->
                         <!-- STEP 1 -->
                         <a href="steps/step1.html">
@@ -218,6 +219,16 @@
                             <text x="300" y="2250" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 15: ROH &amp; IBD</text>
                             <text x="300" y="2275" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB BED (1,047 × 5.41M SNPs)</text>
                             <text x="300" y="2295" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 36.7K ROH | F_ROH | IBD | Mar 2026</text>
+                        </a>
+
+                        <!-- Side branch: Admixture-Aware Relatedness Report -->
+                        <line x1="450" y1="2280" x2="510" y2="2280" stroke="#7b1fa2" stroke-width="2"/>
+                        <a href="steps/admixture_aware_relatedness.html">
+                            <rect x="510" y="2230" width="230" height="100" fill="#7b1fa2" stroke="#4a148c" stroke-width="2" rx="5" style="cursor:pointer;"/>
+                            <text x="625" y="2258" text-anchor="middle" fill="white" font-size="12" font-weight="bold" style="pointer-events:none;">Admixture-Aware</text>
+                            <text x="625" y="2275" text-anchor="middle" fill="white" font-size="12" font-weight="bold" style="pointer-events:none;">Relatedness</text>
+                            <text x="625" y="2295" text-anchor="middle" fill="white" font-size="10" style="pointer-events:none;">PC-Relate · RelateAdmix</text>
+                            <text x="625" y="2313" text-anchor="middle" fill="white" font-size="10" style="pointer-events:none;">K=5 Uzbekistan map</text>
                         </a>
 
                         <line x1="300" y1="2340" x2="300" y2="2380" stroke="#b71c1c" stroke-width="3"/>
@@ -455,6 +466,17 @@
                         <div class="step-description">First GWAS of recurrent pregnancy loss in Central Asia: 273 cases × 509 controls + 4 sensitivity runs (S1-S4); λ<sub>GC</sub>=0.978; suggestive NETO1 locus replicated under S4 case definition. Target: Hum Reprod / J Med Genet.</div>
                         <div class="step-status" style="color: #0d47a1;">📝 Draft v0.1</div>
                         <div class="view-details"><a href="manuscript_rpl.html" style="color: #0d47a1;">View Manuscript →</a></div>
+                    </div>
+
+                    <div class="step-card" onclick="window.location.href='steps/admixture_aware_relatedness.html'" style="border-left-color: #7b1fa2;">
+                        <div class="step-header">
+                            <span class="step-number" style="background: #7b1fa2;">A</span>
+                            <span class="step-title">Admixture-Aware Relatedness Report</span>
+                            <span class="step-date">May 2026</span>
+                        </div>
+                        <div class="step-description">Cross-method comparison: KING, PI_HAT, PC-AiR/PC-Relate, and RelateAdmix on 1,193 merged ALSU+GWAS2026 samples. 4,494 PI_HAT-only discordant pairs; only 1 supported by RelateAdmix. Includes Uzbekistan K=5 birthplace ADMIXTURE map.</div>
+                        <div class="step-status" style="color: #7b1fa2;">✓ Complete</div>
+                        <div class="view-details"><a href="steps/admixture_aware_relatedness.html" style="color: #7b1fa2;">View Report &rarr;</a></div>
                     </div>
 
                     <div class="step-card" onclick="window.location.href='steps/next_steps.html'" style="border-left-color: #9c27b0;">

@@ -99,7 +99,7 @@ def render_markdown(markdown: str) -> tuple[str, list[tuple[int, str, str]]]:
 
 
 def build_sidebar(headings: list[tuple[int, str, str]]) -> str:
-    links = ['<a href="step15.html">Step 15: ROH &amp; IBD</a>', '<a href="step11.html">Step 11: ADMIXTURE</a>']
+    links = ['<a href="../index.html">&#127968; Home / Roadmap</a>', '<a href="step15.html">Step 15: ROH &amp; IBD</a>', '<a href="step11.html">Step 11: ADMIXTURE</a>']
     for level, text, section_id in headings:
         if level == 2:
             links.append(f'<a href="#{section_id}">{html.escape(text)}</a>')

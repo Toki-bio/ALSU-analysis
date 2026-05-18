@@ -8,6 +8,32 @@ The working question was whether recent-relatedness estimates in the Uzbek GSA d
 
 The analysis below is intentionally conservative. It does not assume that one method is automatically correct. Instead, it measures discordance among KING, PLINK PI_HAT, PCA distance, and Step 11 ADMIXTURE K=5 ancestry distances, then validates the discordant calls with PC-AiR/PC-Relate and RelateAdmix.
 
+## Theoretical Background
+
+### 1. Overview of the Problem
+
+Estimating pairwise relatedness from genetic data is fundamental to genome-wide association studies (GWAS), quantitative genetics, and population genomics. Accurate relatedness inference is necessary to correct for family structure that can inflate false-positive rates, to identify cryptic relatives, and to avoid sample duplicates. However, the problem becomes challenging when cohorts include individuals from recently admixed populations or from multiple ancestries. Simple metrics, such as the proportion of allele mismatches, are confounded by population structure because baseline genetic similarity varies with ancestry. Thus, robust methods have been developed to disentangle recent familial relatedness from background genetic similarity due to shared ancestry or admixture.
+
+### 2. PLINK PI_HAT
+
+PLINK's PI_HAT is a classic estimator based on identity-by-descent (IBD) probabilities. It uses the fraction of the genome sharing 0, 1, or 2 alleles identical by descent (Z0, Z1, Z2) calculated from observed genotype patterns. PI_HAT = 0.5×Z1 + Z2, giving 1.0 for monozygotic twins or duplicate samples, 0.5 for parent-offspring or full siblings, and 0.25 for half-siblings. While widely used, PI_HAT is sensitive to allele frequency misspecification and population stratification. In admixed cohorts, unrelated individuals from different ancestral backgrounds can appear to share fewer alleles, deflating PI_HAT, while within-population relatives may be misclassified if reference allele frequencies do not match the target population. Consequently, modern pipelines often treat PI_HAT as a diagnostic rather than a primary estimator.
+
+### 3. KING (Kinship INference from GWAS)
+
+KING addresses the limitations of simple mismatch rates by using a method-of-moments estimator that is robust to population structure under panmictic conditions. The robust estimator (KING-robust) is based on the proportion of SNPs where both individuals are homozygous for opposite alleles, a quantity that is nearly zero for unrelated individuals but increases systematically for relatives. KING does not require prior allele frequencies and is "sample-invariant", making it a default choice for many GWAS QC pipelines. However, recent work has shown that KING-robust can produce biased estimates in recently admixed populations, generating negative kinship coefficients for inter-population pairs and overestimating relatedness for intra-population pairs with complex ancestry. Thus, while excellent for homogeneous cohorts, KING alone is insufficient for highly structured or admixed samples.
+
+### 4. RelateAdmix
+
+RelateAdmix was specifically developed to estimate relatedness in admixed populations. It is a maximum-likelihood method that uses global ancestry proportions (e.g., from ADMIXTURE or RFMix) to model the expected allele sharing for each relationship category. By conditioning on individual-specific ancestry, RelateAdmix disentangles recent family relatedness from shared ancestry due to population admixture. Simulations show it outperforms KING and PLINK for detecting second- and third-degree relatives in admixed cohorts, with substantially lower false-positive rates. The main requirement is accurate ancestry proportion estimates for each individual, which can be obtained from the same genotype data. RelateAdmix is particularly valuable for studies of cosmopolitan or recently admixed groups, such as Latin American, Central Asian, or African diaspora populations.
+
+### 5. PC-Relate
+
+PC-Relate, implemented in the GENESIS R package, offers another robust approach that leverages principal components (PCs) to model population structure. Rather than requiring explicit ancestry proportion estimates, PC-Relate uses the top genetic PCs as covariates to adjust kinship calculations. The method first uses PC-AiR to compute ancestry-representative PCs that are not driven by close relatives, then these PCs are incorporated into the kinship estimation to correct for structure. PC-Relate is computationally efficient, works with large cohorts, and provides unbiased kinship estimates even when ancestry is continuous (e.g., clinal variation). It does not need external reference panels or ancestry labels, making it a convenient and powerful choice for many structured populations.
+
+### 6. Comparison and Conclusion
+
+Each method occupies a different niche. PI_HAT is simple but outdated for structured populations. KING remains an excellent first pass for homogeneous samples or duplicate detection but can fail in admixed cohorts. RelateAdmix is the most theoretically justified for recently admixed groups, provided high-quality ancestry proportions are available. PC-Relate offers a practical balance, requiring only PCs and handling continuous structure without admixture labels. In practice, a tiered approach is recommended: use KING to flag duplicates and very close relatives (kinship > 0.354), then apply PC-Relate or RelateAdmix for remaining samples to infer distant relatedness in structured populations. For the Uzbek cohort analysed here — which lies on a European–East Asian cline — KING alone is likely insufficient; switching to an admixture-aware method is essential for accurate relatedness estimation and downstream GWAS correction.
+
 ## Verified Datasets and Files
 
 ### Local Step 11 report

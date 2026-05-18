@@ -32,13 +32,13 @@ NATURAL_EARTH_ADMIN1_URL = (
 )
 
 # Raw Step 11 Spring 2026 K=5 order, verified against 1000G superpopulation means:
-# Q1=East Asian, Q2=AMR-like, Q3=South Asian, Q4=European/West Eurasian, Q5=African.
+# Q1=East Asian, Q2=AMR-like/Other, Q3=South Asian, Q4=European/West Eurasian, Q5=African.
 PLOT_COMPONENTS = [
-    ("European / West Eurasian", 3, "#7e57c2"),
-    ("East Asian", 0, "#42a5f5"),
-    ("South Asian", 2, "#26a69a"),
-    ("AMR-like", 1, "#ffb74d"),
-    ("African", 4, "#81c784"),
+    ("European / West Eurasian", 3, "#3f7fc1"),  # strong blue
+    ("East Asian",               0, "#f9c03f"),  # golden-yellow
+    ("South Asian",              2, "#57a059"),  # green
+    ("Others",                   1, "#9e9e9e"),  # neutral grey
+    ("African",                  4, "#e53935"),  # red
 ]
 
 REGION_TO_ISO = {
@@ -285,7 +285,7 @@ def build_map(rows: list[dict[str, object]], counters: dict[str, int]) -> None:
 
     ax.set_xlim(55.0, 74.2)
     ax.set_ylim(37.0, 46.3)
-    ax.set_aspect(1.0 / math.cos(math.radians(41.0)))
+    ax.set_aspect('equal')
     ax.set_xticks([])
     ax.set_yticks([])
     for spine in ax.spines.values():
