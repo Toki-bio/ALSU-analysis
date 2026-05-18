@@ -266,7 +266,13 @@
                         <details id="list-chip-208993030112"><summary>208993030112 — samples</summary><div class="detail-content" id="list-chip-208993030112-body">Loading…</div></details>
                         <details id="list-chip-208993030109"><summary>208993030109 — samples</summary><div class="detail-content" id="list-chip-208993030109-body">Loading…</div></details>
 
-                        <!-- TODO: chip numbers above are from the investigation dashboard. If exact values differ, update from server data. -->
+                        <div class="success-box" style="margin-top:14px;">
+                            <strong>🔄 Rescan batch received (2026-05-18):</strong> 48 samples from the failed chips were re-hybridised on
+                            2 new GSA-24v3 chips (<code>209422280005</code>, <code>209422280032</code>) and IDAT files are available at
+                            <code>/staging/GWAS2026/48redone/</code>.  QC pipeline scripts are ready:
+                            <code>scripts/run_48redone_qc.sh</code> → <code>scripts/integrate_48redone_spring2026.sh</code>.
+                            The remaining 51 high-missingness samples (not in this batch) are permanently excluded.
+                        </div>
                     </div>
                 </div>
 
@@ -525,6 +531,10 @@
                     <h2 class="section-header">9. Open Items</h2>
                     <div class="section-content">
                         <ul class="checklist">
+                            <li><span class="check-icon">✅</span> <strong>48-sample rescan data received (2026-05-18)</strong> — IDATs on chips 209422280005 / 209422280032 at <code>/staging/GWAS2026/48redone/</code>. QC + integration scripts written and ready to execute.</li>
+                            <li><span class="check-icon">⬜</span> <strong>Run 48-sample DRAGEN QC</strong> — execute <code>scripts/run_48redone_qc.sh</code> on DRAGEN server. Expected output: <code>gwas48redone_varqc.bed</code>.</li>
+                            <li><span class="check-icon">⬜</span> <strong>Integrate 48 rescanned samples into spring2026 pipeline</strong> — execute <code>scripts/integrate_48redone_spring2026.sh</code>. Re-runs PCA + ADMIXTURE setup with ~48 additional samples.</li>
+                            <li><span class="check-icon">⬜</span> <strong>Decide on re-imputation scope</strong> — adding the 48 to the Michigan Imputation Server submission to enable GWAS inclusion. Currently deferred.</li>
                             <li><span class="check-icon">⬜</span> <strong>BAF verification of 3 contaminated samples</strong> — check GenomeStudio BAF plots for 5-band pattern (08-495, 08-25, 08-701)</li>
                             <li><span class="check-icon">⬜</span> <strong>SNP fingerprinting for identity resolution</strong> — 96-SNP panel on ~69 original DNA tubes to resolve the 55 unexpected identical pairs (see <a href="../sample_investigation_v2.html" class="crossref">dashboard Section 17</a>)</li>
                             <li><span class="check-icon">⬜</span> <strong>Request original plate-loading manifest</strong> from the lab (physical tube-to-well mapping) to help resolve identity mismatches</li>
