@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admixture-Aware Relatedness — ALSU Analysis</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f3f5f4;color:#263238}.page{display:flex;gap:22px;max-width:1480px;margin:0 auto;padding:22px}.sidebar{width:260px;flex:0 0 260px;background:#fff;border:1px solid #dfe6e2;border-radius:8px;padding:18px;height:calc(100vh - 44px);position:sticky;top:22px;overflow:auto}.sidebar h3{margin:0 0 12px;color:#263238;font-size:1rem;border-bottom:2px solid #00695c;padding-bottom:8px}.sidebar a{display:block;text-decoration:none;color:#37474f;background:#f7faf8;border-left:4px solid transparent;border-radius:5px;padding:8px 10px;margin:5px 0;font-size:.88rem}.sidebar a:hover{border-left-color:#00695c;background:#eef6f2}main{flex:1;background:#fff;border:1px solid #dfe6e2;border-radius:8px;overflow:hidden}.hero{background:linear-gradient(135deg,#004d40,#263238);color:#fff;padding:32px 38px}.hero a{color:#c8e6c9;text-decoration:none}.hero h1{font-size:2rem;margin:8px 0 8px}.hero p{margin:0;max-width:980px;line-height:1.6;color:#e0f2f1}.content{padding:34px 42px}h1{font-size:1.9rem;margin:0 0 16px}h2{font-size:1.35rem;color:#263238;margin:32px 0 14px;padding-bottom:8px;border-bottom:2px solid #e0e6e3}h3{font-size:1.08rem;color:#37474f;margin:22px 0 10px}h4{font-size:1rem;color:#37474f;margin:18px 0 8px}p,li{line-height:1.68;color:#4f5b62}ul,ol{padding-left:24px}code{background:#eef3f1;border:1px solid #dbe5e0;border-radius:4px;padding:1px 5px;font-family:Consolas,'Courier New',monospace;font-size:.9em}pre{background:#172124;color:#d9ece5;border-radius:8px;padding:16px 18px;overflow:auto;line-height:1.55}pre code{background:transparent;border:0;color:inherit;padding:0}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:22px 0}.card{background:#f7faf8;border:1px solid #dfe6e2;border-radius:8px;padding:16px}.card strong{display:block;font-size:1.65rem;color:#00695c;margin-bottom:4px}.callout{background:#e0f2f1;border-left:5px solid #00695c;border-radius:8px;padding:16px 18px;margin:20px 0;color:#004d40}.figure{margin:28px 0;background:#f7faf8;border:1px solid #dfe6e2;border-radius:8px;padding:14px}.figure img{display:block;width:100%;height:auto;border-radius:6px}.caption{font-size:.86rem;color:#607d6f;margin:8px 4px 0}table{border-collapse:collapse;width:100%;margin:16px 0;font-size:.9rem}th,td{border-bottom:1px solid #e3e8e5;padding:9px 10px;text-align:left}th{background:#eef3f1;color:#263238}@media(max-width:900px){.page{display:block;padding:12px}.sidebar{position:relative;width:auto;height:auto;margin-bottom:14px}.content{padding:24px 20px}}
+</style>
+</head>
+<body>
+<div class="page">
+<aside class="sidebar"><h3>Report Links</h3><a href="step15.html">Step 15: ROH &amp; IBD</a>
+<a href="step11.html">Step 11: ADMIXTURE</a>
+<a href="#objective">Objective</a>
+<a href="#verified-datasets-and-files">Verified Datasets and Files</a>
+<a href="#commands-and-scripts-run">Commands and Scripts Run</a>
+<a href="#methodological-details">Methodological Details</a>
+<a href="#main-results">Main Results</a>
+<a href="#applicability-of-admixture-aware-tools">Applicability of Admixture-Aware Tools</a>
+<a href="#draft-discussion">Draft Discussion</a>
+<a href="#current-open-items">Current Open Items</a></aside>
+<main>
+<div class="hero"><a href="../index.html">Back to Home</a><h1>Admixture-Aware Relatedness</h1><p>Cross-method assessment of PI_HAT, KING, Step 11 ADMIXTURE distances, PC-AiR/PC-Relate, and RelateAdmix for the merged ALSU + GWAS2026 Uzbek GSA datasets.</p></div>
+<div class="content">
+<div class="cards">
+  <div class="card"><strong>6,228</strong>PI_HAT &ge; 0.185 pairs</div>
+  <div class="card"><strong>4,494</strong>PI_HAT-only discordant pairs</div>
+  <div class="card"><strong>5</strong>PI_HAT-only pairs supported by PC-Relate</div>
+    <div class="card"><strong>1</strong>PI_HAT-only pair supported by RelateAdmix</div>
+  <div class="card"><strong>992</strong>Step 11 samples mapped by birthplace</div>
+</div>
+<div class="callout"><strong>Current recommendation:</strong> keep KING as the conservative operational screen, use PC-Relate and RelateAdmix as ancestry-aware validation layers, and do not remove samples solely on PI_HAT-only calls in this admixed merged dataset.</div>
+<div class="figure"><img src="../images/alsu_uzbekistan_k5_birthplace_map.png" alt="ALSU K=5 ADMIXTURE by Uzbekistan birthplace region"><div class="caption">Birthplace-region map generated from the verified Step 11 K=5 ADMIXTURE source files and the GWAS survey geography fields.</div></div>
+<p>Draft date: 2026-05-18</p>
+<h2 id="objective">Objective</h2>
+<p>The working question was whether recent-relatedness estimates in the Uzbek GSA data are affected by the strong admixture structure of the population represented by two datasets: ALSU and the new GWAS2026 array set. The practical aim was to inspect the existing ALSU admixture results, quantify where relatedness methods disagree, investigate admixture-aware approaches such as RelateAdmix and PC-AiR/PC-Relate, and prepare the results for discussion.</p>
+<p>The analysis below is intentionally conservative. It does not assume that one method is automatically correct. Instead, it measures discordance among KING, PLINK PI_HAT, PCA distance, and Step 11 ADMIXTURE K=5 ancestry distances, then validates the discordant calls with PC-AiR/PC-Relate and RelateAdmix.</p>
+<h2 id="verified-datasets-and-files">Verified Datasets and Files</h2>
+<h3 id="local-step-11-report">Local Step 11 report</h3>
+<ul>
+<li>Local file: <code>steps/step11.html</code></li>
+<li>Published page reviewed by the user: <code>https://toki-bio.github.io/ALSU-analysis/steps/step11.html</code></li>
+<li>Relevant embedded Step 11 display data:</li>
+<li>Populations: AFR, EUR, SAS, EAS, AMR, UZB.</li>
+<li>UZB sample count in displayed K summaries: 1,047.</li>
+<li>K=5 display labels: <code>E.Asian</code>, <code>African</code>, <code>Americas</code>, <code>S.Asian</code>, <code>European</code>.</li>
+<li>UZB K=5 display vector: <code>0.2884, 0.0026, 0.0290, 0.1916, 0.4884</code>.</li>
+<li>Interpretation in the page: K=5 is the most parsimonious model; Uzbeks show approximately 48.8% European / West Eurasian, 28.8% East Asian, 19.2% South Asian, and 2.9% AMR-like ancestry.</li>
+<li>K=8 is described as the nominal CV minimum, but only marginally better than K=7 and less interpretable.</li>
+</ul>
+<h3 id="dragen-step-11-admixture-source-files">DRAGEN Step 11 / ADMIXTURE source files</h3>
+<p>Remote source files used for direct ancestry matching:</p>
+<ul>
+<li><code>/staging/ALSU-analysis/spring2026/admixture/global_for_admixture.fam</code></li>
+<li><code>/staging/ALSU-analysis/spring2026/admixture/global_for_admixture.5.Q</code></li>
+</ul>
+<p>Remote reference panel used to infer ADMIXTURE component labels:</p>
+<ul>
+<li><code>/staging/ALSU-analysis/Fst_analysis/1000G_data/integrated_call_samples_v3.20130502.ALL.panel</code></li>
+</ul>
+<p>The Spring 2026 ADMIXTURE files were checked directly. The <code>.fam</code> and <code>.5.Q</code> files have 3,595 rows. The cross-cohort ALSU sample map contains 1,098 ALSU samples; 1,020 matched the Spring 2026 ADMIXTURE <code>.fam</code> exactly, and 1,022 matched after unique normalized ID matching. Four normalized IDs were ambiguous and skipped.</p>
+<h3 id="alsu-plus-gwas2026-relatedness-dataset">ALSU plus GWAS2026 relatedness dataset</h3>
+<p>Merged cross-cohort base path:</p>
+<ul>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/cross_gwas2026_alsu_winter</code></li>
+</ul>
+<p>Core files:</p>
+<ul>
+<li><code>merged.{bed,bim,fam}</code></li>
+<li><code>cross_prune.prune.in</code></li>
+<li><code>cross_king_00884.kin0</code></li>
+<li><code>cross_ibd_pihat_0125.genome</code></li>
+<li><code>sample_map.tsv</code></li>
+<li><code>cross_pca10.eigenvec</code></li>
+<li><code>cross_pca10.eigenval</code></li>
+<li><code>admixture_king_pihat_pairs.tsv</code></li>
+<li><code>admixture_king_pihat_summary.txt</code></li>
+</ul>
+<p>Verified counts:</p>
+<ul>
+<li>Merged samples: 1,193 total.</li>
+<li>Cohorts in sample map: 1,098 ALSU and 95 GWAS2026.</li>
+<li>Merged SNPs: 237,062.</li>
+<li>LD-pruned SNPs used for relatedness and PCA: 104,411.</li>
+</ul>
+<p>The merge was built earlier from:</p>
+<ul>
+<li>ALSU typed-array source bfile: <code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_mind20_dedup_snpqc</code></li>
+<li>GWAS2026 source bfile: <code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/gwas2026/plink/gwas2026_raw</code></li>
+</ul>
+<p>PLINK IDs were cohort-prefixed during the merge, and original IDs were preserved in <code>sample_map.tsv</code>.</p>
+<h3 id="uzbekistan-birthplace-map-inputs">Uzbekistan birthplace map inputs</h3>
+<p>The geographic visualization uses the same Step 11 Spring 2026 global K=5 <code>.fam</code> and <code>.Q</code> files, copied locally for reproducible rendering:</p>
+<ul>
+<li><code>data/step11_global_for_admixture.fam</code></li>
+<li><code>data/step11_global_for_admixture.5.Q</code></li>
+</ul>
+<p>Geographic metadata came from <code>GWAS от 27.08 - For_Plink.csv</code>. The copy in the project folder was checked against <code>C:\work\alsu\GWAS от 27.08 - For_Plink.csv</code> and was byte-identical. The CSV has 1,815 rows and 246 columns, including coded fields for participant birthplace, participant residence, and birthplace fields for grandparents and partners. The map uses participant birthplace only.</p>
+<p>The rendered artifacts are:</p>
+<ul>
+<li><code>images/alsu_uzbekistan_k5_birthplace_map.png</code></li>
+<li><code>data/alsu_uzbekistan_k5_birthplace_summary.tsv</code></li>
+<li><code>data/natural_earth_uzb_admin1.geojson</code></li>
+</ul>
+<p>The map joins Step 11 ADMIXTURE sample IDs directly to the CSV <code>Sample Number</code> field. It maps 992 Uzbekistan-born Step 11 samples to 14 Uzbekistan first-level regions. The remaining Step 11 rows are either 1000 Genomes reference samples, missing from the GWAS survey CSV, or have non-Uzbekistan/missing birthplace codes.</p>
+<h2 id="commands-and-scripts-run">Commands and Scripts Run</h2>
+<h3 id="remote-inventory">Remote inventory</h3>
+<p>Script:</p>
+<pre><code class="language-bash">scripts/remote_admix_relatedness_inventory.sh</code></pre>
+<p>Execution pattern from Windows PowerShell:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_admix_relatedness_inventory.sh&quot; copilot@100.104.25.22</code></pre>
+<p>Purpose:</p>
+<ul>
+<li>Inventory global and Spring 2026 ADMIXTURE outputs on DRAGEN.</li>
+<li>Verify cross-relatedness files and merged bfile counts.</li>
+<li>Inspect candidate <code>.fam</code> and <code>.Q</code> files before using them.</li>
+</ul>
+<h3 id="spring-2026-admixture-overlap-check">Spring 2026 ADMIXTURE overlap check</h3>
+<p>Script:</p>
+<pre><code class="language-bash">scripts/remote_spring_admix_overlap_check.sh</code></pre>
+<p>Execution pattern:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_spring_admix_overlap_check.sh&quot; copilot@100.104.25.22</code></pre>
+<p>Purpose:</p>
+<ul>
+<li>Verify byte-level formatting of <code>global_for_admixture.fam</code> and <code>global_for_admixture.5.Q</code>.</li>
+<li>Count Spring 2026 ADMIXTURE rows.</li>
+<li>Count exact and normalized overlap between cross-cohort ALSU sample IDs and Step 11 ADMIXTURE sample IDs.</li>
+</ul>
+<p>Key verified output:</p>
+<ul>
+<li><code>FAM_ROWS 3595</code></li>
+<li><code>CROSS_ALSU_N 1098</code></li>
+<li><code>EXACT_OVERLAP 1020</code></li>
+<li><code>NORMALIZED_OVERLAP 1022</code></li>
+<li><code>AMBIGUOUS_NORMALIZED 4</code></li>
+</ul>
+<h3 id="main-king-pi-hat-pca-admixture-distance-analysis">Main KING / PI_HAT / PCA / ADMIXTURE-distance analysis</h3>
+<p>Script:</p>
+<pre><code class="language-bash">scripts/remote_admix_kinship_eval.sh</code></pre>
+<p>Execution pattern:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_admix_kinship_eval.sh&quot; copilot@100.104.25.22</code></pre>
+<p>PCA command inside the script:</p>
+<pre><code class="language-bash">/staging/conda/envs/bioinfo/bin/plink2 \
+  --bfile &quot;$BASE/merged&quot; \
+  --extract &quot;$BASE/cross_prune.prune.in&quot; \
+  --pca 10 approx \
+  --threads 16 \
+  --out &quot;$BASE/cross_pca10&quot;</code></pre>
+<p>Primary comparison thresholds:</p>
+<ul>
+<li>KING report threshold: kinship &ge; 0.0884, using <code>cross_king_00884.kin0</code>.</li>
+<li>PLINK relatedness screen: PI_HAT &ge; 0.185, selected from <code>cross_ibd_pihat_0125.genome</code>.</li>
+<li>PI_HAT file itself was generated with <code>--genome --min 0.125</code>; the stricter PI_HAT &ge; 0.185 threshold was used for this discordance analysis.</li>
+</ul>
+<p>The script writes:</p>
+<ul>
+<li>Pair-level table: <code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/cross_gwas2026_alsu_winter/admixture_king_pihat_pairs.tsv</code></li>
+<li>Summary table: <code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/cross_gwas2026_alsu_winter/admixture_king_pihat_summary.txt</code></li>
+</ul>
+<h3 id="pc-relate-environment-preparation">PC-Relate environment preparation</h3>
+<p>Script:</p>
+<pre><code class="language-bash">scripts/remote_pcrelate_env_prepare.sh</code></pre>
+<p>Execution pattern:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_pcrelate_env_prepare.sh&quot; copilot@100.104.25.22</code></pre>
+<p>Purpose:</p>
+<ul>
+<li>Create an isolated R library at <code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/Rlib</code>.</li>
+<li>Install or verify <code>BiocManager</code>, <code>gdsfmt</code>, <code>SNPRelate</code>, <code>GWASTools</code>, and <code>GENESIS</code>.</li>
+</ul>
+<p>R version on DRAGEN:</p>
+<ul>
+<li><code>/usr/bin/Rscript</code></li>
+<li>R version <code>4.5.1</code></li>
+</ul>
+<p>Current status check script:</p>
+<pre><code class="language-bash">scripts/remote_pcrelate_status.sh</code></pre>
+<p>Execution pattern:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_pcrelate_status.sh&quot; copilot@100.104.25.22</code></pre>
+<p>The PC-Relate R/Bioconductor environment is now ready. The first install attempt failed because <code>igraph.so</code> linked against ICU 75 and could not load <code>libicui18n.so.75</code>. Compatible ICU 75 libraries were then verified under <code>/staging/miniconda3/lib</code> and <code>/staging/conda/envs/bioinfo/lib</code>; the PC-Relate scripts were patched to export those directories on <code>LD_LIBRARY_PATH</code>. After rerunning the installer, <code>igraph</code> and <code>GENESIS</code> installed successfully. The latest status check showed <code>gdsfmt</code>, <code>SNPRelate</code>, <code>GWASTools</code>, <code>GENESIS</code>, <code>igraph</code>, and <code>BiocParallel</code> all loadable from the isolated library.</p>
+<p>Guarded PC-Relate execution script:</p>
+<pre><code class="language-bash">scripts/remote_pcrelate_run.sh</code></pre>
+<p>Execution pattern:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_pcrelate_run.sh&quot; copilot@100.104.25.22</code></pre>
+<p>This script checks required R packages before running any analysis. After the <code>LD_LIBRARY_PATH</code> fix described above, the readiness gate passed and the script ran the PC-AiR/PC-Relate workflow.</p>
+<p>Files generated by the PC-Relate run:</p>
+<ul>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/run/merged_pruned.{bed,bim,fam}</code></li>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/run/merged_pruned.gds</code></li>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/run/pcrelate_kinBtwn.tsv</code></li>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/run/pcrelate_comparison_summary.txt</code></li>
+</ul>
+<p>PC-Relate comparison script:</p>
+<pre><code class="language-bash">scripts/remote_pcrelate_compare.sh</code></pre>
+<p>Execution pattern:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_pcrelate_compare.sh&quot; copilot@100.104.25.22</code></pre>
+<p>Files generated by the comparison script:</p>
+<ul>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/run/pcrelate_vs_king_pihat_admix.tsv</code></li>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/run/pcrelate_vs_king_pihat_admix_summary.tsv</code></li>
+</ul>
+<h3 id="relateadmix-installation-run-and-comparison">RelateAdmix installation, run, and comparison</h3>
+<p>Script:</p>
+<pre><code class="language-bash">scripts/remote_relateadmix_run.sh</code></pre>
+<p>Execution pattern:</p>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\PuTTY\plink.exe&quot; -batch -i &quot;C:\Users\T\.ssh\id_ed25519.ppk&quot; -m &quot;C:\work\Surface\work\ALSU-analysis\scripts\remote_relateadmix_run.sh&quot; copilot@100.104.25.22</code></pre>
+<p>Purpose:</p>
+<ul>
+<li>Clone and build RelateAdmix from the official source repository.</li>
+<li>Reuse the same LD-pruned merged PLINK bfile used for PC-Relate (<code>merged_pruned</code>, 1,193 samples and 104,411 SNPs).</li>
+<li>Run ADMIXTURE K=5 on that exact pruned bfile to generate matching <code>.P</code> and <code>.Q</code> inputs for RelateAdmix.</li>
+<li>Run RelateAdmix on all unordered sample pairs.</li>
+<li>Convert RelateAdmix <code>k0/k1/k2</code> output to a kinship-equivalent value and compare against PI_HAT, KING, and PC-Relate.</li>
+</ul>
+<p>Verified RelateAdmix source:</p>
+<ul>
+<li>Documentation: <code>https://www.popgen.dk/software/index.php/RelateAdmix</code></li>
+<li>Source repository: <code>https://github.com/aalbrechtsen/relateAdmix</code></li>
+<li>Commit built on DRAGEN: <code>dea1c987e4fa9be0967faffcfd67ba843d3666d9</code></li>
+<li>Binary: <code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/relateadmix_env/relateAdmix/src/relateAdmix</code></li>
+</ul>
+<p>Build command inside the script:</p>
+<pre><code class="language-bash">git clone https://github.com/aalbrechtsen/relateAdmix.git &quot;$SRC&quot;
+make -C &quot;$SRC/src&quot; -f CPP_Makefile</code></pre>
+<p>ADMIXTURE prerequisite command inside the script:</p>
+<pre><code class="language-bash">(cd &quot;$RUN&quot; &amp;&amp; &quot;$ADMIXTURE&quot; -j&quot;$THREADS&quot; merged_pruned.bed 5 | tee admixture_k5_for_relateadmix.log)</code></pre>
+<p>The ADMIXTURE prerequisite completed in 53 QN/block iterations and wrote matching inputs:</p>
+<ul>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/relateadmix_env/run/merged_pruned.5.Q</code>: 1,193 rows.</li>
+<li><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/relateadmix_env/run/merged_pruned.5.P</code>: 104,411 rows.</li>
+</ul>
+<p>RelateAdmix command inside the script:</p>
+<pre><code class="language-bash">&quot;$RELATEADMIX_BIN&quot; \
+  -plink &quot;$RUN/merged_pruned&quot; \
+  -f &quot;$RUN/merged_pruned.5.P&quot; \
+  -q &quot;$RUN/merged_pruned.5.Q&quot; \
+  -o &quot;$RUN/relateadmix_merged_pruned_k5&quot; \
+  -P &quot;$THREADS&quot;</code></pre>
+<p>RelateAdmix generated 711,028 all-pair estimates plus a header line. Output columns are <code>ind1</code>, <code>ind2</code>, <code>k0</code>, <code>k1</code>, <code>k2</code>, and <code>nIter</code>, with zero-based sample indices. For comparison to kinship thresholds, the script computes:</p>
+<pre><code class="language-text">RelateAdmix PI_HAT-equivalent = k2 + 0.5 * k1
+RelateAdmix kinship-equivalent = (k2 + 0.5 * k1) / 2</code></pre>
+<p>Local summary copies:</p>
+<ul>
+<li><code>data/relateadmix_vs_king_pihat_pcrelate_summary.tsv</code></li>
+<li><code>data/relateadmix_allpairs_summary.tsv</code></li>
+<li><code>data/relateadmix_top_pairs.tsv</code></li>
+</ul>
+<h2 id="methodological-details">Methodological Details</h2>
+<h3 id="why-k-5-was-used">Why K=5 was used</h3>
+<p>Step 11 presents K=5 as the most parsimonious global ADMIXTURE resolution: all major continental components are resolved, while higher K values add finer structure with smaller interpretability gains. K=8 has a nominally lower CV error but is described as only marginally better than K=7. For relatedness diagnostics, K=5 is therefore a better operational ancestry space than a higher, less stable K.</p>
+<h3 id="why-raw-admixture-columns-were-relabeled">Why raw ADMIXTURE columns were relabeled</h3>
+<p>ADMIXTURE component columns are arbitrary. The local Step 11 HTML display labels are not assumed to be the same as the raw <code>.5.Q</code> column order on DRAGEN. The analysis script inferred raw K=5 component labels by matching 1000 Genomes reference samples in the ADMIXTURE <code>.fam</code> against the 1000G superpopulation panel and computing superpopulation means for each raw Q column.</p>
+<p>The inferred raw Spring 2026 K=5 labels were:</p>
+<ul>
+<li>Q1: EAS</li>
+<li>Q2: AMR</li>
+<li>Q3: SAS</li>
+<li>Q4: EUR</li>
+<li>Q5: AFR</li>
+</ul>
+<p>The matched ALSU samples in the cross-cohort dataset had mean K=5 components:</p>
+<ul>
+<li>East Asian Q1: 0.286384</li>
+<li>AMR-like Q2: 0.036304</li>
+<li>South Asian Q3: 0.200567</li>
+<li>European / West Eurasian Q4: 0.471304</li>
+<li>African Q5: 0.005440</li>
+</ul>
+<p>This agrees with the Step 11 page-level biological interpretation of Uzbek ancestry as a West Eurasian, East Asian, and South Asian mixture.</p>
+<h3 id="pca-distance-analysis">PCA distance analysis</h3>
+<p>The first test used PC10 Euclidean distance as a broad ancestry proxy. The merged bfile was LD-pruned to 104,411 SNPs, and PLINK2 PCA was run on the pruned SNPs.</p>
+<p>For every pair with PI_HAT &ge; 0.185, the script classified the pair as:</p>
+<ul>
+<li><code>concordant_king_pihat</code>: present in KING output at kinship &ge; 0.0884.</li>
+<li><code>discordant_pihat_only</code>: PI_HAT &ge; 0.185 but absent from the KING file, meaning KING kinship &lt; 0.0884 or not reported.</li>
+</ul>
+<p>Then the PC10 Euclidean distance was compared between concordant and discordant groups.</p>
+<h3 id="direct-k-5-admixture-distance-analysis">Direct K=5 ADMIXTURE distance analysis</h3>
+<p>The second, stronger test used Step 11 Spring 2026 K=5 Q vectors directly. This was possible only for matched ALSU samples, because GWAS2026 samples were not part of the Spring 2026 Step 11 ADMIXTURE run. Therefore, K=5 Q-distance summaries are directly interpretable mainly for ALSU+ALSU pairs; ALSU+GWAS2026 and GWAS2026+GWAS2026 pairs are mostly <code>NA</code> for Q-distance.</p>
+<p>For each pair with PI_HAT &ge; 0.185, the script computed:</p>
+<ul>
+<li>Euclidean K=5 Q-vector distance.</li>
+<li>Absolute East Asian component difference.</li>
+<li>Absolute South Asian component difference.</li>
+<li>Absolute European / West Eurasian component difference.</li>
+<li>Q-distance tertile bin: low, mid, high.</li>
+<li>East Asian ancestry tertile combination.</li>
+</ul>
+<h3 id="pc-air-pc-relate-validation">PC-AiR / PC-Relate validation</h3>
+<p>The merged bfile was reduced to the same LD-pruned SNP list used for PCA:</p>
+<pre><code class="language-bash">/staging/conda/envs/bioinfo/bin/plink2 \
+  --bfile &quot;$BASE/merged&quot; \
+  --extract &quot;$BASE/cross_prune.prune.in&quot; \
+  --make-bed \
+  --out &quot;$RUN/merged_pruned&quot; \
+  --threads 16</code></pre>
+<p>This produced 1,193 samples and 104,411 LD-pruned variants. The pruned PLINK data were converted to GDS with <code>SNPRelate::snpgdsBED2GDS</code>. <code>SNPRelate::snpgdsIBDKING</code> was then run with <code>type = &quot;KING-robust&quot;</code>, <code>useMatrix = TRUE</code>, and <code>missing.rate = 0.01</code>. This retained 61,791 high-call pruned SNPs after removing monomorphic or higher-missingness SNPs.</p>
+<p>The SNPRelate KING matrix was used as both the kinship and divergence input for <code>GENESIS::pcair</code>, with thresholds <code>kin.thresh = 2^(-9/2)</code> and <code>div.thresh = -2^(-9/2)</code>. PC-AiR partitioned the dataset into 1,153 unrelated samples and 40 related samples, then produced ancestry PCs. PC-Relate was run with the first 10 PCs, the PC-AiR unrelated set as the training set, and the same 61,791 SNPs. It produced 711,028 pairwise kinship estimates, exactly the complete set of unordered pairs for 1,193 samples.</p>
+<h2 id="main-results">Main Results</h2>
+<h3 id="overall-king-vs-pi-hat-discordance">Overall KING vs PI_HAT discordance</h3>
+<p>Among all pairs with PI_HAT &ge; 0.185:</p>
+<ul>
+<li>Total pairs: 6,228.</li>
+<li>Concordant with KING at kinship &ge; 0.0884: 1,734.</li>
+<li>PI_HAT-only discordant: 4,494.</li>
+<li>Discordance rate: 0.7216.</li>
+<li>Mean PI_HAT overall: 0.3162.</li>
+<li>Mean KING kinship among concordant pairs: 0.108142.</li>
+</ul>
+<p>This shows that PLINK PI_HAT and KING are not interchangeable in this merged Uzbek GSA context. A large number of pairs look related by PI_HAT but do not pass the KING kinship threshold.</p>
+<h3 id="pc10-distance-did-not-explain-discordance-by-itself">PC10 distance did not explain discordance by itself</h3>
+<p>Mean PC10 distance:</p>
+<ul>
+<li>KING+PI_HAT concordant pairs: 0.077975.</li>
+<li>PI_HAT-only discordant pairs: 0.074798.</li>
+</ul>
+<p>This was not the expected direction if broad PCA distance alone were the main driver. PC10 distance is therefore too blunt a proxy for the specific ancestry differences affecting PI_HAT/KING discordance.</p>
+<h3 id="direct-step-11-k-5-distance-did-explain-discordance">Direct Step 11 K=5 distance did explain discordance</h3>
+<p>Mean K=5 Q-vector distance:</p>
+<ul>
+<li>KING+PI_HAT concordant pairs: 0.130331.</li>
+<li>PI_HAT-only discordant pairs: 0.160305.</li>
+</ul>
+<p>Mean East Asian absolute component difference:</p>
+<ul>
+<li>KING+PI_HAT concordant pairs: 0.070235.</li>
+<li>PI_HAT-only discordant pairs: 0.088074.</li>
+</ul>
+<p>Discordance also increased across Q-distance tertiles:</p>
+<ul>
+<li>Low Q-distance: 394 pairs, 66 concordant, 328 discordant, discordance rate 0.8325.</li>
+<li>Mid Q-distance: 393 pairs, 39 concordant, 354 discordant, discordance rate 0.9008.</li>
+<li>High Q-distance: 394 pairs, 29 concordant, 365 discordant, discordance rate 0.9264.</li>
+<li>Unmatched Q-distance: 5,047 pairs, 1,600 concordant, 3,447 discordant, discordance rate 0.6830.</li>
+</ul>
+<p>The important result is not just that discordance is common. It is that, within pairs where Step 11 K=5 ancestry could be assigned, PI_HAT-only discordant pairs are more ancestry-divergent than KING+PI_HAT concordant pairs. This supports the concern that allele-frequency assumptions and population structure can inflate or distort PI_HAT-style IBD estimates in this admixed Uzbek dataset.</p>
+<h3 id="pair-type-differences">Pair-type differences</h3>
+<p>Discordance by pair type:</p>
+<ul>
+<li>ALSU+ALSU: 4,583 pairs, 1,041 concordant, 3,542 discordant, discordance rate 0.7729.</li>
+<li>ALSU+GWAS2026: 1,519 pairs, 590 concordant, 929 discordant, discordance rate 0.6116.</li>
+<li>GWAS2026+GWAS2026: 126 pairs, 103 concordant, 23 discordant, discordance rate 0.1825.</li>
+</ul>
+<p>The within-GWAS2026 discordance rate is much lower than ALSU+ALSU and ALSU+GWAS2026, suggesting that the merged Uzbek data structure and the broader ALSU ancestry spectrum are important contributors to method disagreement.</p>
+<h3 id="pc-relate-validation-of-the-pi-hat-only-pairs">PC-Relate validation of the PI_HAT-only pairs</h3>
+<p>PC-Relate produced 711,028 pairwise kinship estimates across all 1,193 merged samples. Across all PC-Relate pairs, 48 pairs had PC-Relate kinship &ge; 0.0884. All 48 of those pairs were already present among the PI_HAT &ge; 0.185 pairs, so PC-Relate did not reveal an additional high-confidence related pair outside the PLINK PI_HAT screen.</p>
+<p>Among the 6,228 pairs with PI_HAT &ge; 0.185:</p>
+<ul>
+<li>PC-Relate kinship &ge; 0.0884: 48 pairs.</li>
+<li>PC-Relate kinship &ge; 0.177: 33 pairs.</li>
+<li>PC-Relate kinship &ge; 0.354: 15 pairs.</li>
+<li>Mean PC-Relate kinship overall: 0.002633.</li>
+</ul>
+<p>By KING/PI_HAT status:</p>
+<ul>
+<li>KING+PI_HAT concordant pairs: 1,734 total; 43 had PC-Relate kinship &ge; 0.0884, 30 had PC-Relate kinship &ge; 0.177, and 12 had PC-Relate kinship &ge; 0.354. Mean PC-Relate kinship was 0.008176.</li>
+<li>PI_HAT-only discordant pairs: 4,494 total; only 5 had PC-Relate kinship &ge; 0.0884, 3 had PC-Relate kinship &ge; 0.177, and 3 had PC-Relate kinship &ge; 0.354. Mean PC-Relate kinship was 0.000495.</li>
+</ul>
+<p>The five PI_HAT-only pairs still supported by PC-Relate at kinship &ge; 0.0884 were all ALSU+ALSU pairs:</p>
+<ul>
+<li><code>ALSU_0407</code> / <code>ALSU_0832</code>: PI_HAT 0.5000, PC-Relate kinship 0.795545, Q-distance unavailable.</li>
+<li><code>ALSU_0808</code> / <code>ALSU_0832</code>: PI_HAT 0.5000, PC-Relate kinship 0.575325, Q-distance unavailable.</li>
+<li><code>ALSU_0787</code> / <code>ALSU_0832</code>: PI_HAT 0.5000, PC-Relate kinship 0.543498, Q-distance unavailable.</li>
+<li><code>ALSU_0832</code> / <code>ALSU_0855</code>: PI_HAT 0.5000, PC-Relate kinship 0.157009, Q-distance unavailable.</li>
+<li><code>ALSU_0218</code> / <code>ALSU_0242</code>: PI_HAT 0.5361, PC-Relate kinship 0.153170, Q-distance 0.078084, mid Q-distance bin.</li>
+</ul>
+<p>Thus, PC-Relate validates only a very small subset of the PI_HAT-only discordant calls. For the main question, this strongly supports treating the bulk of PI_HAT-only relatedness calls as ancestry-structure or allele-frequency artifacts rather than as robust recent relatedness.</p>
+<h3 id="relateadmix-validation">RelateAdmix validation</h3>
+<p>RelateAdmix produced 711,028 all-pair estimates for the same 1,193-sample LD-pruned dataset. Across all pairs:</p>
+<ul>
+<li>RelateAdmix kinship-equivalent &ge; 0.0884: 27 pairs.</li>
+<li>RelateAdmix kinship-equivalent &ge; 0.177: 21 pairs.</li>
+<li>RelateAdmix kinship-equivalent &ge; 0.354: 3 pairs.</li>
+<li>RelateAdmix kinship-equivalent &ge; 0.0884 outside the PI_HAT &ge; 0.185 screen: 0 pairs.</li>
+</ul>
+<p>Among the 6,228 PI_HAT-screened pairs:</p>
+<ul>
+<li>Mean RelateAdmix kinship-equivalent: 0.001870.</li>
+<li>Median RelateAdmix kinship-equivalent: 0.000373.</li>
+<li>RelateAdmix kinship-equivalent &ge; 0.0884: 27 pairs.</li>
+<li>RelateAdmix kinship-equivalent &ge; 0.177: 21 pairs.</li>
+<li>RelateAdmix kinship-equivalent &ge; 0.354: 3 pairs.</li>
+</ul>
+<p>By KING/PI_HAT status:</p>
+<ul>
+<li>KING+PI_HAT concordant pairs: 1,734 total; 26 had RelateAdmix kinship-equivalent &ge; 0.0884, 20 had &ge; 0.177, and 3 had &ge; 0.354. Mean RelateAdmix kinship-equivalent was 0.004569.</li>
+<li>PI_HAT-only discordant pairs: 4,494 total; only 1 had RelateAdmix kinship-equivalent &ge; 0.0884, and that same pair was the only one &ge; 0.177. None reached &ge; 0.354. Mean RelateAdmix kinship-equivalent was 0.000829.</li>
+</ul>
+<p>The single PI_HAT-only discordant pair supported by RelateAdmix was:</p>
+<ul>
+<li><code>ALSU_0218</code> / <code>ALSU_0242</code>: PI_HAT 0.5361, KING not reported at kinship &ge; 0.0884, PC-Relate kinship 0.153169, RelateAdmix kinship-equivalent 0.232894, K=5 Q-distance 0.078084, mid Q-distance bin.</li>
+</ul>
+<p>By pair type, RelateAdmix kinship-equivalent &ge; 0.0884 was seen in 11 ALSU+ALSU pairs, 0 ALSU+GWAS2026 pairs, and 16 GWAS2026+GWAS2026 pairs. As with PC-Relate, RelateAdmix does not support the broad PI_HAT-only signal. It gives an even stricter result for PI_HAT-only discordant pairs: 1 of 4,494 remains supported at the third-degree kinship threshold.</p>
+<h2 id="applicability-of-admixture-aware-tools">Applicability of Admixture-Aware Tools</h2>
+<h3 id="relateadmix">RelateAdmix</h3>
+<p>RelateAdmix is conceptually relevant because it is designed for relatedness in admixed populations. It was installed from the official GitHub source, built successfully on DRAGEN, and run on the merged ALSU+GWAS2026 LD-pruned dataset after generating matching ADMIXTURE K=5 <code>.P</code> and <code>.Q</code> inputs from the exact same PLINK bfile.</p>
+<p>The implementation is suitable as an additional admixture-aware validation layer for this dataset. Its output agrees with the PC-Relate conclusion: the overwhelming majority of PI_HAT-only pairs are not supported as recent relatedness after ancestry-aware modelling.</p>
+<h3 id="pc-air-and-pc-relate">PC-AiR and PC-Relate</h3>
+<p>PC-AiR and PC-Relate, as implemented in the Bioconductor GENESIS ecosystem, are suitable for this problem because they model ancestry structure through PCs and estimate kinship while accounting for population structure. They were applied as the main PC-based validation method for this dataset.</p>
+<p>The GENESIS workflow verified from the Bioconductor vignette is:</p>
+<ol>
+<li>Convert PLINK BED/BIM/FAM to GDS with <code>SNPRelate::snpgdsBED2GDS</code>.</li>
+<li>Create a <code>GWASTools::GdsGenotypeReader</code> and <code>GWASTools::GenotypeData</code> object.</li>
+<li>Use KING-robust estimates or SNPRelate KING estimates as kinship and ancestry-divergence matrices for <code>GENESIS::pcair</code>.</li>
+<li>Run <code>GENESIS::pcrelate</code> on a <code>GenotypeBlockIterator</code>, using PC-AiR PCs and the PC-AiR unrelated training set where available.</li>
+<li>Export <code>pcrelate$kinBtwn</code> and compare PC-Relate kinship to KING and PI_HAT in the same pair strata used above.</li>
+</ol>
+<p>Current implementation status:</p>
+<ul>
+<li>System R is available on DRAGEN.</li>
+<li>System-level <code>GENESIS</code> and <code>SNPRelate</code> were not available.</li>
+<li>An isolated R library was created under <code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/pcrelate_env/Rlib</code>.</li>
+<li>The isolated R library is ready. <code>gdsfmt</code>, <code>SNPRelate</code>, <code>GWASTools</code>, <code>GENESIS</code>, <code>igraph</code>, and <code>BiocParallel</code> are loadable.</li>
+<li>The earlier <code>igraph</code> build step failed to load because <code>libicui18n.so.75</code> was not on the runtime loader path. This was resolved by exporting <code>/staging/miniconda3/lib:/staging/conda/envs/bioinfo/lib</code> on <code>LD_LIBRARY_PATH</code> in the environment, status, and run scripts.</li>
+<li>PC-AiR/PC-Relate was applied successfully to the LD-pruned merged ALSU+GWAS2026 dataset.</li>
+</ul>
+<p>The practical result is clear: PC-Relate supports only 5 of 4,494 PI_HAT-only discordant pairs at kinship &ge; 0.0884. Therefore PC-Relate is suitable here and strengthens the conclusion that PI_HAT-only calls should not drive sample removal in this admixed dataset.</p>
+<h2 id="draft-discussion">Draft Discussion</h2>
+<p>The Step 11 admixture analysis confirms that Uzbek samples in ALSU are strongly admixed, with a major European / West Eurasian component, a large East Asian component, and a substantial South Asian component. This is not a minor nuisance variable; it is a central feature of the cohort. Relatedness estimation methods that assume a relatively homogeneous allele-frequency background can therefore behave differently across pairs with different ancestry profiles.</p>
+<p>The current results show a large discordance between PLINK PI_HAT and KING in the merged ALSU+GWAS2026 GSA dataset. Among 6,228 pairs with PI_HAT &ge; 0.185, only 1,734 were also reported by KING at kinship &ge; 0.0884, leaving 4,494 PI_HAT-only discordant pairs. The direct Step 11 K=5 analysis gives evidence that ancestry divergence contributes to this discordance: PI_HAT-only discordant pairs have higher mean K=5 Q-vector distance than KING+PI_HAT concordant pairs, and the discordance rate rises across K=5 Q-distance strata.</p>
+<p>The PCA-only result is more nuanced. PC10 Euclidean distance was not higher in PI_HAT-only discordant pairs. This suggests that the relevant ancestry effect is not captured well by a simple distance in the first ten PCs, at least not in this merged dataset. Direct supervised interpretation of K=5 ADMIXTURE components was more informative. This also argues against using a single PCA distance cutoff as the only correction for relatedness estimation.</p>
+<p>The most defensible interpretation is that PI_HAT is inflated or unstable for many pairs in the admixed Uzbek context, especially across ALSU samples with different Step 11 K=5 ancestry profiles. KING is more conservative than PI_HAT, and both PC-Relate and RelateAdmix are more conservative still after ancestry adjustment. This does not mean every KING call is wrong; it means the broad PI_HAT-only signal is not robust when ancestry-aware kinship is applied.</p>
+<p>PC-Relate and RelateAdmix give the key validation layers. Only 5 of 4,494 PI_HAT-only discordant pairs reach PC-Relate kinship &ge; 0.0884, and only 1 of 4,494 reaches RelateAdmix kinship-equivalent &ge; 0.0884. No PC-Relate-supported or RelateAdmix-supported pair at that threshold was absent from the PI_HAT &ge; 0.185 screen. The five PI_HAT-only but PC-Relate-supported pairs should be handled as special relatedness candidates, not as representative of the whole discordant class. The strongest PC-Relate-supported PI_HAT-only pairs involve the same ALSU sample cluster around <code>ALSU_0832</code>, whereas the single RelateAdmix-supported PI_HAT-only pair is <code>ALSU_0218</code> / <code>ALSU_0242</code>.</p>
+<p>For downstream QC and presentation, the current recommendation is:</p>
+<ol>
+<li>Use KING as the primary immediate relatedness screen.</li>
+<li>Do not remove samples solely because of PI_HAT-only relatedness in this admixed merged dataset.</li>
+<li>Annotate high-PI_HAT discordant pairs by Step 11 K=5 ancestry distance, especially East Asian and West Eurasian component differences.</li>
+<li>Use PC-Relate and RelateAdmix as admixture-aware validation layers for ambiguous or high-impact relatedness decisions.</li>
+<li>Present PI_HAT as a sensitivity/diagnostic method rather than as the final relationship caller.</li>
+<li>Manually review the five PI_HAT-only but PC-Relate-supported ALSU+ALSU pairs before sample removal, with special attention to <code>ALSU_0218</code> / <code>ALSU_0242</code>, because it is the only PI_HAT-only pair supported by both PC-Relate and RelateAdmix.</li>
+</ol>
+<h2 id="current-open-items">Current Open Items</h2>
+<ul>
+<li>Manually review the five PI_HAT-only but PC-Relate-supported ALSU+ALSU pairs, especially the cluster involving <code>ALSU_0832</code>.</li>
+<li>Decide whether the project should adopt PC-Relate as a formal validation step for all future relatedness filtering or reserve it for discordant/high-impact cases.</li>
+<li>Manually review <code>ALSU_0218</code> / <code>ALSU_0242</code> as the single PI_HAT-only discordant pair supported by both PC-Relate and RelateAdmix.</li>
+</ul>
+</div>
+</main>
+</div>
+</body>
+</html>
