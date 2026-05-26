@@ -418,6 +418,24 @@ canvas{display:block;margin:0 auto;max-width:100%}
   kinship filtering is unlikely to be necessary.
 </div>
 
+<div class="callout callout-method">
+  <strong>Cross-method admixture-aware validation (May 2026):</strong>
+  The merged ALSU+GWAS2026 dataset (1,193 samples, 104,411 LD-pruned SNPs) was analysed with
+  four independent relatedness methods. Key results:
+  <ul style="margin:10px 0 6px 20px; line-height:1.7">
+    <li><strong>6,228 pairs</strong> with PI_HAT &ge; 0.185; <strong>4,494 were PI_HAT-only discordant</strong>
+        (absent from KING at kinship &ge; 0.0884 &mdash; discordance rate 72%).</li>
+    <li>PI_HAT-only discordant pairs showed <strong>higher Step&nbsp;11 K=5 Q-vector distances</strong>
+        (mean 0.160 vs. 0.130 for concordant pairs), consistent with ancestry-structure inflation of PI_HAT.</li>
+    <li><strong>PC-Relate</strong> supported only <strong>5 of 4,494</strong> PI_HAT-only pairs (kinship &ge; 0.0884).</li>
+    <li><strong>RelateAdmix</strong> supported only <strong>1 of 4,494</strong> PI_HAT-only pairs.</li>
+    <li><strong>Recommendation:</strong> use KING as the primary operational screen; treat PI_HAT alone as a
+        diagnostic, not as grounds for sample removal in this admixed dataset.</li>
+  </ul>
+  &rarr; <a href="admixture_aware_relatedness.html">Full admixture-aware relatedness report</a>
+  (theoretical background, all scripts, per-pair tables, and draft discussion for manuscript).
+</div>
+
 <!-- ════════════════════ 7. ADMIXTURE × ROH ════════════════════ -->
 <hr class="section-divider">
 <h2 id="admix-roh">7. ADMIXTURE × ROH Cross-Reference</h2>
