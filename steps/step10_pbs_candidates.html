@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBS Tier 1 Candidates</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#f7f7f7;padding:32px;color:#222}
+h1{font-size:1.3em;font-weight:600;margin-bottom:4px}
+.sub{font-size:.85em;color:#888;margin-bottom:24px}
+
+.stats{display:flex;gap:12px;margin-bottom:28px}
+.stat{background:#fff;border:1px solid #e4e4e4;border-radius:6px;padding:12px 18px;text-align:center;min-width:90px}
+.stat .n{font-size:1.8em;font-weight:700;line-height:1}
+.stat .l{font-size:.72em;color:#888;margin-top:3px}
+.stat.hi .n{color:#1565c0}
+.stat.ok .n{color:#2e7d32}
+.stat.dim .n{color:#999}
+
+.legend{display:flex;gap:14px;margin-bottom:18px;align-items:center}
+.legend span{font-size:.75em;color:#666;display:flex;align-items:center;gap:4px}
+.dot{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0}
+
+.tier{margin-bottom:22px}
+.tier-label{display:inline-flex;align-items:center;gap:8px;margin-bottom:10px}
+.pill{font-size:.7em;font-weight:700;padding:2px 10px;border-radius:10px;letter-spacing:.03em}
+.pA{background:#e8f5e9;color:#1b5e20}
+.pB{background:#fff3e0;color:#bf360c}
+.pC{background:#f0f0f0;color:#666}
+.tier-desc{font-size:.78em;color:#999;font-style:italic}
+
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:2px solid #ddd}
+th{font-size:.68em;text-transform:uppercase;letter-spacing:.06em;color:#aaa;font-weight:600;padding:0 8px 6px 0;text-align:left}
+th.r{text-align:right}
+td{padding:7px 8px 7px 0;vertical-align:middle;border-bottom:1px solid #f0f0f0}
+tr:last-child td{border-bottom:none}
+tr.pri td{background:#f0f6ff}
+tr.pri{border-radius:6px}
+
+.snp{font-family:Consolas,monospace;font-size:.8em;white-space:nowrap}
+.badge{display:inline-block;background:#1565c0;color:#fff;font-size:.6em;padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:middle;font-family:'Segoe UI',sans-serif;white-space:nowrap}
+.pbs{font-size:.95em;font-weight:700;text-align:right;white-space:nowrap}
+.pbs.dim{color:#bbb;font-weight:400}
+
+.bars{display:flex;align-items:flex-end;gap:3px;height:40px}
+.pc{display:flex;flex-direction:column;align-items:center;gap:2px}
+.pl{font-size:8px;color:#bbb;text-transform:uppercase;letter-spacing:.03em}
+.bg{width:28px;height:30px;background:#eee;border-radius:2px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.b{width:100%;border-radius:1px 1px 0 0}
+.uzb{background:#5c6bc0}.eur{background:#26a69a}.eas{background:#ffa726}.sas{background:#ef5350}.afr{background:#78909c}
+.pv{font-size:8px;font-weight:600;color:#777}
+
+.note{font-size:.75em;color:#666;line-height:1.35;padding-left:2px}
+.note b{color:#333}
+.note.dim{color:#bbb}
+</style>
+</head>
+<body>
+
+<h1>PBS Tier 1 Candidates</h1>
+<p class="sub">All 8 SNPs with PBS<sub>UZB</sub> &ge; 0.3 &nbsp;&middot;&nbsp; 79,767 tested &nbsp;&middot;&nbsp; 0 rsIDs in dbSNP</p>
+
+<div class="stats">
+  <div class="stat hi"><div class="n">8</div><div class="l">Tier 1</div></div>
+  <div class="stat ok"><div class="n">1</div><div class="l">Tier 1+2</div></div>
+  <div class="stat dim"><div class="n">0</div><div class="l">in dbSNP</div></div>
+</div>
+
+<div class="legend">
+  <span><i class="dot uzb"></i>UZB</span>
+  <span><i class="dot eur"></i>EUR</span>
+  <span><i class="dot eas"></i>EAS</span>
+  <span><i class="dot sas"></i>SAS</span>
+  <span><i class="dot afr"></i>AFR</span>
+  <span style="margin-left:6px;font-style:italic;color:#bbb">bar height = allele freq, scale max 49%</span>
+</div>
+
+<!-- TIER A -->
+<div class="tier">
+  <div class="tier-label">
+    <span class="pill pA">Tier A</span>
+    <span class="tier-desc">Uzbek-enriched &middot; biologically informative</span>
+  </div>
+  <table>
+    <thead><tr>
+      <th>SNP</th><th class="r">PBS</th><th>Allele frequency</th><th>Pattern</th>
+    </tr></thead>
+    <tbody>
+      <tr class="pri">
+        <td><span class="snp">11:207698 C&rarr;T</span><span class="badge">&#9733; T1+T2</span></td>
+        <td class="pbs" style="color:#1565c0">0.38</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:98%"></div></div><div class="pv">48%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:18%"></div></div><div class="pv">9%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:6%"></div></div><div class="pv">3%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:24%"></div></div><div class="pv">12%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:3%"></div></div><div class="pv">2%</div></div>
+        </div></td>
+        <td><div class="note"><b>Uniquely Uzbek.</b> No parallel in any ref pop. &Delta;AF&nbsp;=&nbsp;36%.</div></td>
+      </tr>
+      <tr>
+        <td><span class="snp">5:53879140 C&rarr;A</span></td>
+        <td class="pbs">0.53</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:100%"></div></div><div class="pv">49%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:2%"></div></div><div class="pv">1%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:5%"></div></div><div class="pv">3%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:94%"></div></div><div class="pv">46%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:68%"></div></div><div class="pv">33%</div></div>
+        </div></td>
+        <td><div class="note">Shared UZB + SAS signal. Absent EUR &amp; EAS.</div></td>
+      </tr>
+      <tr>
+        <td><span class="snp">3:133749168 A&rarr;G</span></td>
+        <td class="pbs">0.49</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:98%"></div></div><div class="pv">48%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:2%"></div></div><div class="pv">1%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:4%"></div></div><div class="pv">2%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:79%"></div></div><div class="pv">39%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:33%"></div></div><div class="pv">16%</div></div>
+        </div></td>
+        <td><div class="note">Shared UZB + SAS signal.</div></td>
+      </tr>
+      <tr>
+        <td><span class="snp">10:8512594 G&rarr;A</span></td>
+        <td class="pbs">0.32</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:99%"></div></div><div class="pv">48%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:25%"></div></div><div class="pv">12%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:13%"></div></div><div class="pv">6%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:33%"></div></div><div class="pv">16%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:66%"></div></div><div class="pv">32%</div></div>
+        </div></td>
+        <td><div class="note">Moderate Uzbek enrichment.</div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TIER B -->
+<div class="tier">
+  <div class="tier-label">
+    <span class="pill pB">Tier B</span>
+    <span class="tier-desc">Inverted &mdash; UZB has lost a common allele</span>
+  </div>
+  <table>
+    <tbody>
+      <tr>
+        <td><span class="snp">11:20665570 T&rarr;G</span></td>
+        <td class="pbs">1.14</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:3%"></div></div><div class="pv">2%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:100%"></div></div><div class="pv">49%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:44%"></div></div><div class="pv">22%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:33%"></div></div><div class="pv">16%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:34%"></div></div><div class="pv">17%</div></div>
+        </div></td>
+        <td><div class="note">UZB 2% vs EUR 49%. Possible founder effect. Chr11p13.</div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TIER C -->
+<div class="tier">
+  <div class="tier-label">
+    <span class="pill pC">Tier C</span>
+    <span class="tier-desc">Chr12 cluster &middot; PBS inflated by out-of-Africa split &middot; not Uzbek-specific</span>
+  </div>
+  <table>
+    <tbody>
+      <tr>
+        <td><span class="snp">12:22967890 G&rarr;T</span></td>
+        <td class="pbs dim">2.99</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:4%"></div></div><div class="pv">2%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:6%"></div></div><div class="pv">3%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:8%"></div></div><div class="pv">4%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:45%"></div></div><div class="pv">22%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
+        </div></td>
+        <td><div class="note dim">UZB &asymp; EUR &asymp; EAS &asymp; 2&ndash;4%. AFR ancestral retention artefact.</div></td>
+      </tr>
+      <tr>
+        <td><span class="snp">12:125520190 C&rarr;T</span></td>
+        <td class="pbs dim">2.69</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:7%"></div></div><div class="pv">3%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:6%"></div></div><div class="pv">3%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:8%"></div></div><div class="pv">4%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:47%"></div></div><div class="pv">23%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
+        </div></td>
+        <td><div class="note dim">Same pattern. Likely in LD with above.</div></td>
+      </tr>
+      <tr>
+        <td><span class="snp">12:5664803 T&rarr;G</span></td>
+        <td class="pbs dim">2.67</td>
+        <td><div class="bars">
+          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:7%"></div></div><div class="pv">3%</div></div>
+          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:6%"></div></div><div class="pv">3%</div></div>
+          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:8%"></div></div><div class="pv">4%</div></div>
+          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:50%"></div></div><div class="pv">24%</div></div>
+          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
+        </div></td>
+        <td><div class="note dim">Same pattern. Likely in LD with above.</div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
