@@ -1,371 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step Pre: Array Processing &amp; GenomeStudio - ALSU Pipeline</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.6;background:#0d1117;color:#c9d1d9;display:flex;min-height:100vh}
-.sidebar{width:220px;min-width:220px;background:#161b22;border-right:1px solid #30363d;padding:16px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
-.sidebar .brand{padding:0 14px 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6e7681;border-bottom:1px solid #30363d;margin-bottom:8px}
-.sidebar a{display:block;padding:4px 14px;font-size:12px;color:#6e7681;text-decoration:none;border-left:2px solid transparent;transition:all .15s}
-.sidebar a:hover{color:#c9d1d9;background:#21262d}
-.sidebar a.active{color:#58a6ff;border-left-color:#58a6ff;background:rgba(88,166,255,.06)}
-.sidebar hr{border:none;border-top:1px solid #30363d;margin:8px 14px}
-main{flex:1;max-width:920px;padding:40px 48px 80px}
-.back-link{display:inline-block;color:#58a6ff;text-decoration:none;font-size:12px;margin-bottom:28px}
-.back-link:hover{text-decoration:underline}
-.page-tag{font-size:11px;color:#d29922;font-family:monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-h1{font-size:24px;font-weight:700;color:#e6edf3;line-height:1.3;margin-bottom:4px}
-.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
-.status{display:inline-flex;align-items:center;gap:6px;background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);color:#d29922;font-size:12px;padding:4px 10px;border-radius:20px;margin-bottom:24px}
-.alert{display:flex;gap:12px;padding:12px 16px;border-radius:6px;border:1px solid;margin-bottom:16px;font-size:13px;line-height:1.55}
-.alert.warn{background:rgba(210,153,34,.08);border-color:rgba(210,153,34,.35)}
-.alert.info{background:rgba(88,166,255,.07);border-color:rgba(88,166,255,.3)}
-.alert.ok{background:rgba(63,185,80,.07);border-color:rgba(63,185,80,.3)}
-.alert .ico{font-size:16px;flex-shrink:0;margin-top:1px}
-.alert div{color:#c9d1d9}.alert strong{color:#e6edf3}.alert a{color:#58a6ff}
-h2{font-size:16px;font-weight:700;color:#e6edf3;margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid #30363d}
-h2 .sec-n{font-family:monospace;font-size:11px;background:rgba(88,166,255,.12);color:#58a6ff;padding:2px 7px;border-radius:4px;margin-right:6px}
-h3{font-size:13px;font-weight:700;color:#c9d1d9;margin:20px 0 8px}
-p{margin-bottom:12px;color:#c9d1d9;font-size:13px}
-a{color:#58a6ff}
-.tbl-wrap{overflow-x:auto;margin:10px 0 18px}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
-thead th{background:#21262d;color:#6e7681;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;padding:7px 12px;text-align:left;border-bottom:1px solid #30363d}
-tbody td{padding:7px 12px;border-bottom:1px solid #21262d;vertical-align:top}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:rgba(255,255,255,.02)}
-td.mono,code{font-family:'JetBrains Mono','Fira Mono',Consolas,monospace;font-size:11.5px;color:#79c0ff}
-td.ok{color:#3fb950}td.bad{color:#f85149}td.warn{color:#d29922}td.muted{color:#6e7681;font-size:11px}
-pre{background:#161b22;border:1px solid #30363d;border-left:3px solid #58a6ff;border-radius:6px;padding:14px 16px;font-family:'JetBrains Mono','Fira Mono',Consolas,monospace;font-size:12px;color:#79c0ff;overflow-x:auto;margin:10px 0 16px;line-height:1.65}
-pre .cm{color:#6e7681}pre .out{color:#3fb950}
-code.inline{font-family:'JetBrains Mono','Fira Mono',Consolas,monospace;font-size:11.5px;color:#79c0ff;background:rgba(110,118,129,.15);padding:1px 5px;border-radius:3px}
-
-/* Pipeline flow */
-.pipeline{display:flex;flex-direction:column;margin:16px 0 24px;gap:0}
-.pipe-step{display:flex;gap:0}
-.pipe-gutter{display:flex;flex-direction:column;align-items:center;width:36px;flex-shrink:0}
-.pipe-dot{width:14px;height:14px;border-radius:50%;background:#58a6ff;margin-top:18px;flex-shrink:0;z-index:1}
-.pipe-dot.dim{background:#30363d}
-.pipe-dot.ok{background:#3fb950}
-.pipe-line{width:2px;flex:1;background:#30363d;min-height:10px}
-.pipe-step:last-child .pipe-line{background:transparent}
-.pipe-body{flex:1;padding:14px 0 14px 12px;border-bottom:1px solid #21262d}
-.pipe-step:last-child .pipe-body{border-bottom:none}
-.pipe-body .pt{font-weight:700;color:#e6edf3;font-size:13px;margin-bottom:3px}
-.pipe-body .ps{color:#6e7681;font-size:12px;margin-bottom:4px}
-.pipe-body .pf{font-family:monospace;font-size:11.5px;color:#3fb950}
-
-/* Comparison table */
-.compare{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0 20px}
-.compare th{background:#21262d;color:#6e7681;text-transform:uppercase;font-size:10px;letter-spacing:.07em;padding:8px 12px;border-bottom:1px solid #30363d;text-align:left}
-.compare td{padding:8px 12px;border-bottom:1px solid #21262d;vertical-align:top}
-.compare tr:last-child td{border-bottom:none}
-.compare .tool{font-weight:700;color:#e6edf3}
-.compare .check{color:#3fb950;font-size:14px}
-.compare .cross{color:#f85149;font-size:14px}
-
-/* Open items */
-.open-item{display:flex;gap:12px;padding:11px 14px;border:1px solid #30363d;border-radius:6px;margin-bottom:8px;background:#161b22;font-size:12.5px;align-items:flex-start}
-.open-item .sev{font-family:monospace;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:2px}
-.open-item .sev.crit{background:rgba(248,81,73,.15);color:#f85149}
-.open-item .sev.imp{background:rgba(210,153,34,.15);color:#d29922}
-.open-item .sev.rec{background:rgba(88,166,255,.12);color:#58a6ff}
-.open-item p{margin:0;color:#c9d1d9}
-footer{margin-top:60px;padding-top:18px;border-top:1px solid #30363d;color:#6e7681;font-size:11.5px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step Pre: Array Processing &amp; GenomeStudio - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%); min-height: 100vh; padding: 20px;}
+        .page-wrapper {display: flex; gap: 20px; max-width: 1400px; margin: 0 auto;}
+        .sidebar {width: 250px; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; height: fit-content; position: sticky; top: 20px;}
+        .sidebar h3 {font-size: 1em; color: #333; margin-bottom: 15px; border-bottom: 2px solid #888; padding-bottom: 10px;}
+        .roadmap-mini {display: flex; flex-direction: column; gap: 8px;}
+        .roadmap-mini a {padding: 10px 12px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 5px; border-left: 4px solid transparent; transition: all 0.3s ease; font-size: 0.9em;}
+        .roadmap-mini a:hover {background: #f0f0f0; border-left-color: #666;}
+        .roadmap-mini a.current {background: #555; color: white; border-left-color: #333; font-weight: 600;}
+        .main-content {flex: 1; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .search-bar {background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd;}
+        .search-bar input {width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em;}
+        .search-bar input:focus {outline: none; border-color: #888;}
+        .search-results {display: none; padding: 20px 30px; background: #f5f5f5; border-bottom: 1px solid #ddd;}
+        .search-results.active {display: block;}
+        .header {background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%); color: white; padding: 30px;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block;}
+        .back-link:hover {color: white;}
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        .header p {opacity: 0.9;}
+        .step-badge {display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px;}
+        .content {padding: 30px;}
+        .section {margin-bottom: 40px;}
+        .section-header {color: #333; font-size: 1.5em; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #999;}
+        .section-content {line-height: 1.8; color: #555;}
+        .metric-table {width: 100%; border-collapse: collapse; margin: 10px 0; background: white; border-radius: 5px; overflow: hidden; border: 1px solid #ddd;}
+        .metric-table th {background: #f5f5f5; color: #333; padding: 8px; text-align: left; font-weight: 600; font-size: 0.95em; border-bottom: 2px solid #ddd;}
+        .metric-table td {padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 0.9em; line-height: 1.3;}
+        .metric-table tr:last-child td {border-bottom: none;}
+        .metric-table tr:hover {background: #f9f9f9;}
+        .code-block {background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;}
+        .code-block-wrapper {position: relative;}
+        .copy-btn {position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 3px 10px; font-size: 0.75em; cursor: pointer; transition: all 0.2s; z-index: 2; line-height: 1.4;}
+        .copy-btn:hover {background: rgba(255,255,255,0.25); color: white;}
+        .copy-btn.copied {background: rgba(76,175,80,0.4); color: #c8e6c9; border-color: rgba(76,175,80,0.5);}
+        .info-box {background: #f0f0f0; border-left: 4px solid #666; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .warning-box {background: #fff8e1; border-left: 4px solid #f9a825; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .success-box {background: #f5f5f5; border-left: 4px solid #555; padding: 15px; margin: 15px 0; border-radius: 3px;}
+        .stats-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;}
+        .stat-card {background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%); color: white; padding: 12px; border-radius: 5px; text-align: center;}
+        .stat-value {font-size: 1.3em; font-weight: bold;}
+        .stat-label {font-size: 0.75em; opacity: 0.9; margin-top: 3px;}
+        .chart-container {background: #fafafa; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0;}
+        .chart-title {font-size: 1.1em; color: #333; font-weight: 600; margin-bottom: 10px; text-align: center;}
+        .chart-subtitle {font-size: 0.85em; color: #777; text-align: center; margin-bottom: 15px;}
+        canvas {display: block; margin: 0 auto;}
+        .param-table {width: 100%; border-collapse: collapse; margin: 15px 0;}
+        .param-table th {background: #444; color: white; padding: 10px; text-align: left; font-size: 0.9em;}
+        .param-table td {padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 0.9em; vertical-align: top;}
+        .param-table tr:hover {background: #f9f9f9;}
+        .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
+        @media (max-width: 1024px) {.page-wrapper {flex-direction: column;} .sidebar {width: 100%; position: relative; top: 0;}}
+    </style>
 </head>
 <body>
+    <div class="page-wrapper">
+        <aside class="sidebar">
+            <h3>Pipeline Steps</h3>
+            <div class="roadmap-mini">
+                <a href="step_pre.html" class="current">Step Pre: Array &amp; GS</a>
+                <a href="step0.html">Step 0: Investigation</a>
+                <a href="step1.html">Step 1: Missingness</a>
+                <a href="step2.html">Step 2: IBD Dedup</a>
+                <a href="step3.html">Step 3: SNP QC</a>
+                <a href="step4.html">Step 4: Imputation</a>
+                <a href="step5.html">Step 5: ID Normalize</a>
+                <a href="step6.html">Step 6: Final QC</a>
+                <a href="step7.html">Step 7: PCA Analysis</a>
+                <a href="step8.html">Step 8: Global PCA</a>
+                <a href="step9.html">Step 9: Fst Analysis</a>
+                <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+                <a href="step11.html">Step 11: ADMIXTURE</a>
+                <a href="step12.html">Step 12: Annotation</a>
+                <a href="step13.html">Step 13: LD Analysis</a>
+                <a href="step14.html">Step 14: Fst &amp; MDS</a>
+                <a href="step15.html">Step 15: ROH &amp; IBD</a>
+                <a href="step16.html">Step 16: GWAS</a>
+                <a href="next_steps.html">Next Steps</a>
+                <a href="admixture_aware_relatedness.html">Admixture Relatedness</a>
+            </div>
+        </aside>
+        <div class="main-content">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search across all steps..." onkeyup="searchAllSteps()">
+            </div>
+            <div class="search-results" id="searchResults"></div>
+            <div class="header">
+                <a href="../index.html" class="back-link">&#8592; Back to Roadmap</a>
+                <h1>Step Pre: Array Processing &amp; GenomeStudio Export</h1>
+                <p>Illumina iScan &#8594; IDAT &#8594; Genotype calls &#8594; PLINK binary files</p>
+                <span class="step-badge">&#9888; Partially documented &#8212; open items remain</span>
+            </div>
 
-<nav class="sidebar">
-  <div class="brand">ALSU Pipeline</div>
-  <a href="../index.html">← Roadmap</a>
-  <hr>
-  <a href="step_pre.html" class="active">Step Pre: Array &amp; GS</a>
-  <a href="step0.html">Step 0: Investigation</a>
-  <a href="step1.html">Step 1: Missingness</a>
-  <a href="step2.html">Step 2: IBD Dedup</a>
-  <a href="step3.html">Step 3: SNP QC</a>
-  <a href="step4.html">Step 4: Imputation</a>
-  <a href="step5.html">Step 5: ID Normalize</a>
-  <a href="step6.html">Step 6: Final QC</a>
-  <hr>
-  <a href="step7.html">Step 7: PCA Analysis</a>
-  <a href="step8.html">Step 8: Global PCA</a>
-  <a href="step9.html">Step 9: Fst Analysis</a>
-  <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
-  <a href="step11.html">Step 11: ADMIXTURE</a>
-  <a href="step12.html">Step 12: Annotation</a>
-  <a href="step13.html">Step 13: LD Analysis</a>
-  <a href="step14.html">Step 14: Fst &amp; MDS</a>
-  <a href="step15.html">Step 15: ROH &amp; IBD</a>
-  <a href="step16.html">Step 16: GWAS</a>
-  <a href="next_steps.html">Next Steps</a>
-  <a href="admixture_aware_relatedness.html">Admixture Relatedness</a>
-</nav>
+            <div class="content">
 
-<main>
-  <a class="back-link" href="../index.html">← Back to Roadmap</a>
+                <div class="section">
+                    <h2 class="section-header">1. Overview</h2>
+                    <div class="section-content">
+                        <p>Raw Illumina array data passes through two processing stages before entering the PLINK pipeline.
+                        This page documents both stages, what is confirmed from files on Biotech2024, and what remains to be recovered.</p>
+                        <p style="margin-top:10px"><strong>Output:</strong> <code>ConvSK_raw</code> &#8212;
+                        654,027 variants &#215; 1,247 samples, GRCh37/hg19, Illumina GSA-24v3-0_A2.
+                        Verified on Biotech2024: <code>wc -l ConvSK_raw.fam &#8594; 1247</code>, <code>wc -l ConvSK_raw.bim &#8594; 654027</code>.</p>
+                        <div class="warning-box" style="margin-top:15px">
+                            <strong>This step was completed before systematic documentation began.</strong>
+                            The output is verified and immutable. Several upstream parameters must be recovered
+                            from the original Windows project files. Open items listed in Section 6.
+                        </div>
+                        <h3 style="margin-top:20px; color:#333">Pipeline flow</h3>
+                        <table class="metric-table">
+                            <tr><th>Stage</th><th>Tool</th><th>Input</th><th>Output</th><th>Where</th></tr>
+                            <tr><td>1. Scanning</td><td>Illumina iScan</td><td>Hybridised BeadChips</td><td>*_Red.idat + *_Grn.idat per position</td><td>Scanner (hardware)</td></tr>
+                            <tr><td>2. Genotype calling &amp; QC</td><td><strong>GenomeStudio</strong></td><td>IDAT + sample sheet + cluster file</td><td>ConvSK.ped + ConvSK.map</td><td>Windows (D:\perenos\...)</td></tr>
+                            <tr><td>3. Binary conversion</td><td>PLINK 1.04</td><td>ConvSK.ped + ConvSK.map</td><td>ConvSK_raw.bed/.bim/.fam</td><td>Windows &#8594; copied to Biotech2024</td></tr>
+                        </table>
+                    </div>
+                </div>
 
-  <div class="page-tag">Step Pre — Upstream of PLINK</div>
-  <h1>Array Processing &amp; GenomeStudio Export</h1>
-  <p class="page-sub">Illumina iScan → IDAT → Genotype calls → PLINK binary files</p>
-  <div class="status">⚠ Partially documented — open items remain</div>
+                <div class="section">
+                    <h2 class="section-header">2. GenomeStudio vs DRAGEN Array &#8212; Tool Selection</h2>
+                    <div class="section-content">
+                        <p>Two tools can convert Illumina IDAT files into genotype calls. This project used GenomeStudio.
+                        DRAGEN Array (versions 4.4.4 and 4.5.4, confirmed on Biotech2024) was available but not used for this dataset.</p>
+                        <table class="param-table">
+                            <tr><th>Criterion</th><th>GenomeStudio (used here)</th><th>DRAGEN Array (available, not used)</th></tr>
+                            <tr><td><strong>Function</strong></td>
+                            <td>Full GUI: loads IDATsvia sample sheet, applies .egt cluster file, GenCall algorithm for AA/AB/BB assignment, BAF/LRR visualisation, manual operator review, PLINK/VCF export</td>
+                            <td>Command-line pipeline: IDAT &#8594; VCF/GTC/PLINK via same GenCall algorithm. Batch processing on DRAGEN hardware accelerator. No interactive review.</td></tr>
+                            <tr><td><strong>Operator review</strong></td><td>&#10003; Per-sample QC, BAF/LRR tracks, manual chip failure flagging</td><td>&#10007; Fully automated, no visualisation</td></tr>
+                            <tr><td><strong>d/t replicates</strong></td><td>&#10003; Operator assigns d/t suffixes in project before export</td><td>&#10007; No concept of d/t; must be post-processed</td></tr>
+                            <tr><td><strong>Failed chip detection</strong></td><td>&#10003; Visual per-chip call rate and BAF inspection</td><td>Per-sample call rate metrics only; no chip-level view</td></tr>
+                            <tr><td><strong>Throughput</strong></td><td>&#10007; GUI-based, Windows only, slow for large batches</td><td>&#10003; Linux-native, hardware-accelerated, scriptable</td></tr>
+                            <tr><td><strong>Reproducibility</strong></td><td>Operator decisions not auto-logged; must recover from .gtProject</td><td>&#10003; Fully scriptable; complete command-line audit trail</td></tr>
+                            <tr><td><strong>When to use</strong></td><td>First-pass analysis requiring operator review; contamination/failed chip/d/t detection</td><td>Re-analysis with fixed parameters; high-throughput production; when audit trail required</td></tr>
+                        </table>
+                        <div class="info-box" style="margin-top:15px">
+                            <strong>Why GenomeStudio was used.</strong>
+                            The ALSU dataset required operator decisions before export: 48 duplicate-ID samples needed d/t suffix assignment;
+                            4 failed chips needed visual confirmation via BAF/LRR; 3 contaminated samples needed flagging.
+                            All require interactive review. For a future re-analysis with fixed parameters, DRAGEN Array
+                            would be preferable for reproducibility and speed.
+                        </div>
+                    </div>
+                </div>
 
-  <div class="alert warn">
-    <span class="ico">⚠</span>
-    <div><strong>This step was completed before systematic documentation began.</strong>
-    The output — <code class="inline">ConvSK_raw.bed/.bim/.fam</code> — is verified on Biotech2024
-    and is the immutable starting point for all downstream steps.
-    Several upstream parameters need to be recovered from the original project files.
-    Open items are listed in <a href="#open">Section 6</a>.</div>
-  </div>
+                <div class="section">
+                    <h2 class="section-header">3. Data Confirmed on Biotech2024</h2>
+                    <div class="section-content">
+                        <p>Verified by direct inspection of Biotech2024 (<code>copilot@100.104.25.22</code>, Tailscale, June 2026).</p>
+                        <table class="metric-table">
+                            <tr><th>Item</th><th>Location / value</th><th>Status</th></tr>
+                            <tr><td>IDAT files</td><td><code>/staging/ALSU-analysis/Conversion/OUTPUT/&lt;barcode&gt;/</code> &#8212; 56 chip directories; Red.idat + Grn.idat + scan XML/JPG per position</td><td>&#10003; Confirmed</td></tr>
+                            <tr><td>GSA manifest (.bpm)</td><td><code>/staging/ALSU-analysis/Conversion/GSA-24v3-0_A2.bpm</code> (109 MB)</td><td>&#10003; Confirmed</td></tr>
+                            <tr><td>Sample sheet</td><td><code>/staging/ALSU-analysis/Conversion/1248_merged_sample_sheet_12022025.csv.csv</code> &#8212; 1,248 rows; date 12/02/2025; PI: Rakhmatullaev &amp; Esonova</td><td>&#10003; Confirmed</td></tr>
+                            <tr><td>ConvSK_raw.bed/bim/fam</td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code> &#8212; 1,247 samples, 654,027 variants</td><td>&#10003; Confirmed (wc -l)</td></tr>
+                            <tr><td>ConvSK.ped / ConvSK.map</td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td><td>&#10003; Present</td></tr>
+                            <tr><td>FullDataTable.txt</td><td><code>/staging/ALSU-analysis/winter2025/1_GenomeStudio_qc/</code> &#8212; 654,028 lines (header + 654,027 SNPs). Contains per-probe GenCall scores and BAF/LRR.</td><td>&#10003; Present</td></tr>
+                            <tr><td>DRAGEN Array</td><td>4.4.4 (2025-07-22) and 4.5.4 (2026-05-20) installed on Biotech2024</td><td>&#10003; Confirmed (not used for this dataset)</td></tr>
+                            <tr><td>Failed chip barcodes</td><td>208993030034, 208993030080, 208993030109, 208993030112 &#8212; 24 Red.idat files each (confirmed by direct count)</td><td>&#10003; Confirmed</td></tr>
+                            <tr><td>Cluster file (.egt)</td><td>Not found on Biotech2024. Project ran on Windows.</td><td>&#10007; Missing from server</td></tr>
+                            <tr><td>GenomeStudio project (.gtProject)</td><td>Not found on Biotech2024. Project path: <code>D:\perenos\ALSU-analysis\...</code> (from ConvSK.bat)</td><td>&#10007; Missing from server</td></tr>
+                        </table>
+                        <div class="info-box" style="margin-top:15px">
+                            <strong>4 bad chips &#215; 24 IDAT positions = 96 physical positions.</strong>
+                            This resolves the 84 vs 98 chip_failure discrepancy between Step 1 and Step 0:
+                            Step 0 counts positions on bad chips across all removal categories (some are also d/t replicates, counted as <code>dt_artifact</code>);
+                            Step 1 removes only the 84 non-d/t entries exceeding F_MISS &gt; 0.20.
+                            No sample on a failed chip survives past Step 2.
+                        </div>
+                    </div>
+                </div>
 
-  <!-- 1. What this step produces -->
-  <h2><span class="sec-n">1</span> Overview</h2>
-  <p>Raw Illumina array data passes through two processing stages before entering the PLINK pipeline.
-  The first converts scanner output into per-sample genotype calls; the second assembles those calls,
-  performs operator-level QC, and exports a PLINK dataset. This page documents both stages,
-  what is confirmed from files on Biotech2024, and what remains to be recovered.</p>
-  <p><strong>Output of this step:</strong> <code class="inline">ConvSK_raw</code> — 654,027 variants × 1,247 samples,
-  GRCh37 (hg19), Illumina GSA-24v3-0_A2.
-  Verified by direct file count on Biotech2024:
-  <code class="inline">wc -l ConvSK_raw.fam → 1247</code> and
-  <code class="inline">wc -l ConvSK_raw.bim → 654027</code>.</p>
+                <div class="section">
+                    <h2 class="section-header">4. GenomeStudio Operations (Reconstructed)</h2>
+                    <div class="section-content">
+                        <h3 style="color:#333; margin-bottom:10px">4.1 Sample sheet and d/t assignment</h3>
+                        <p>The sample sheet (1,248 rows, 1,200 unique Sample_IDs) maps chip barcodes and row/column positions to sample IDs.
+                        48 rows have duplicate IDs (replicate experiments). The operator assigned <code>d</code> and <code>t</code> suffixes
+                        to disambiguate these in GenomeStudio before export.</p>
 
-  <!-- Pipeline flow -->
-  <div class="pipeline">
-    <div class="pipe-step">
-      <div class="pipe-gutter"><div class="pipe-dot dim"></div><div class="pipe-line"></div></div>
-      <div class="pipe-body">
-        <div class="pt">1. Illumina iScan — raw intensity scanning</div>
-        <div class="ps">Hybridised BeadChips scanned at two wavelengths. Produces Red.idat + Grn.idat per sample position. 56 chip directories confirmed on Biotech2024 (including 4 failed chips).</div>
-        <div class="pf">Location: /staging/ALSU-analysis/Conversion/OUTPUT/&lt;barcode&gt;/ · &lt;barcode&gt;_R##C##_Grn.idat / _Red.idat</div>
-      </div>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-gutter"><div class="pipe-dot"></div><div class="pipe-line"></div></div>
-      <div class="pipe-body">
-        <div class="pt">2. GenomeStudio — genotype calling &amp; QC</div>
-        <div class="ps">Loads all IDAT files + sample sheet. Applies cluster file (.egt) to assign AA/AB/BB genotypes via GenCall algorithm. Operator reviews call rates, BAF/LRR tracks, assigns d/t suffixes to replicate IDs. Exports PLINK files. <strong>Run on Windows</strong> (project path: D:\perenos\ALSU-analysis\...), not on Biotech2024.</div>
-        <div class="pf">Output: ConvSK.ped + ConvSK.map → converted to ConvSK_raw.bed/.bim/.fam</div>
-      </div>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-gutter"><div class="pipe-dot ok"></div><div class="pipe-line" style="background:transparent"></div></div>
-      <div class="pipe-body">
-        <div class="pt">3. ConvSK_raw — pipeline entry point</div>
-        <div class="ps">PLINK binary dataset. Verified on Biotech2024. Immutable — all downstream steps use symlinks.</div>
-        <div class="pf">/staging/ALSU-analysis/winter2025/PLINK_301125_0312/ConvSK_raw.{bed,bim,fam}</div>
-      </div>
-    </div>
-  </div>
+                        <h3 style="color:#333; margin-top:20px; margin-bottom:10px">4.2 Cluster file and GenCall</h3>
+                        <p>GenomeStudio applies a cluster file (<code>.egt</code>) defining expected signal distributions for AA/AB/BB clusters at each probe.
+                        Each call is scored 0&#8211;1 (GenCall score); calls below the threshold (default 0.15, value used here unknown) are coded as missing.
+                        <strong>The cluster file is not on Biotech2024 and must be recovered</strong> &#8212; it determines F_MISS values directly.</p>
 
-  <!-- 2. GenomeStudio vs DRAGEN Array -->
-  <h2><span class="sec-n">2</span> GenomeStudio vs DRAGEN Array — Tool Selection</h2>
-  <p>Two tools can convert Illumina IDAT files into genotype calls. This project used GenomeStudio.
-  DRAGEN Array is also installed on Biotech2024 (versions 4.4.4 and 4.5.4 confirmed) and can perform
-  the same conversion, but was not used for this dataset. The table below explains both tools
-  and the criteria for choosing between them.</p>
+                        <h3 style="color:#333; margin-top:20px; margin-bottom:10px">4.3 PLINK export &#8212; confirmed settings</h3>
+                        <table class="metric-table">
+                            <tr><td><strong>Genome build</strong></td><td>GRCh37 / hg19 (confirmed from .bim coordinates)</td></tr>
+                            <tr><td><strong>Samples</strong></td><td>1,247</td></tr>
+                            <tr><td><strong>Variants</strong></td><td>654,027</td></tr>
+                            <tr><td><strong>Strand convention</strong></td><td>Unknown &#8212; must confirm from manifest comparison</td></tr>
+                            <tr><td><strong>Format</strong></td><td>PED/MAP &#8594; converted to BED/BIM/FAM via plink --make-bed</td></tr>
+                        </table>
 
-  <table class="compare">
-    <thead>
-      <tr>
-        <th>Criterion</th>
-        <th>GenomeStudio (used here)</th>
-        <th>DRAGEN Array (available, not used)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>What it does</strong></td>
-        <td>Full GUI workflow: loads IDATsvia sample sheet, clusters probes using a .egt cluster file, assigns genotype calls (GenCall score), displays BAF/LRR tracks, allows manual review and operator intervention, exports to PLINK/VCF/CSV</td>
-        <td>Command-line pipeline: converts IDAT → VCF (or GTC/PLINK) via the same GenCall algorithm, optimised for batch processing. No graphical review. Runs on the DRAGEN accelerator hardware.</td>
-      </tr>
-      <tr>
-        <td><strong>Operator review</strong></td>
-        <td class="ok">✓ Manual per-sample and per-probe QC; BAF/LRR visualisation; d/t suffix assignment by operator</td>
-        <td class="bad">✗ Fully automated; no interactive review</td>
-      </tr>
-      <tr>
-        <td><strong>Cluster file</strong></td>
-        <td>Uses supplied .egt cluster file. Can recluster on the loaded sample set for improved accuracy.</td>
-        <td>Uses the same .egt cluster file. No interactive reclustering.</td>
-      </tr>
-      <tr>
-        <td><strong>d/t replicate handling</strong></td>
-        <td class="ok">✓ Operator assigns d/t suffixes directly in GenomeStudio during project setup</td>
-        <td class="bad">✗ No concept of d/t; must be handled in post-processing</td>
-      </tr>
-      <tr>
-        <td><strong>Failed chip identification</strong></td>
-        <td class="ok">✓ Visual inspection of call rates and BAF plots per chip; operator can flag chips</td>
-        <td>Automated: per-sample call rate metrics in output VCF/report; no chip-level visualisation</td>
-      </tr>
-      <tr>
-        <td><strong>Throughput</strong></td>
-        <td class="bad">✗ GUI-based; slower for large batches; Windows only</td>
-        <td class="ok">✓ Command-line batch; DRAGEN hardware acceleration; Linux-native on Biotech2024</td>
-      </tr>
-      <tr>
-        <td><strong>Reproducibility</strong></td>
-        <td>Operator decisions (cluster review, manual exclusions) are not automatically logged; must inspect .gtProject file</td>
-        <td class="ok">✓ Fully scriptable; all parameters in command line; complete audit trail in logs</td>
-      </tr>
-      <tr>
-        <td><strong>Output format</strong></td>
-        <td>PLINK PED/MAP (used here), VCF, CSV final report</td>
-        <td>VCF (primary), GTC, PLINK (via post-processing)</td>
-      </tr>
-      <tr>
-        <td><strong>When to use</strong></td>
-        <td>First-pass analysis where operator review is important; clinical cohorts; datasets with known QC issues (contamination, d/t replicates, failed chips) requiring visual inspection</td>
-        <td>High-throughput production genotyping; re-analysis of large cohorts where parameters are fixed; when full reproducibility logging is required</td>
-      </tr>
-    </tbody>
-  </table>
+                        <h3 style="color:#333; margin-top:20px; margin-bottom:10px">4.4 Original export command (recovered from ConvSK.bat on Biotech2024)</h3>
+                        <pre class="code-block">"C:\plink\plink-1.04-dos\plink.exe" --script D:\perenos\ALSU-analysis\Conversion\OUTPUT\ConvSK\PLINK_301125_0312\ConvSK.script
 
-  <div class="alert info">
-    <span class="ico">ℹ</span>
-    <div><strong>Why GenomeStudio was used for this project.</strong>
-    The ALSU dataset required operator-level decisions: 48 duplicate-ID samples needed d/t suffix
-    assignment to distinguish replicate experiments before export; potential failed chips needed visual
-    confirmation via BAF/LRR tracks; contamination suspects needed to be flagged.
-    These decisions require interactive review, which GenomeStudio provides and DRAGEN Array does not.
-    For a future re-analysis with fixed parameters, DRAGEN Array would be the better choice for
-    reproducibility and speed.</div>
-  </div>
-
-  <!-- 3. Data confirmed on Biotech2024 -->
-  <h2><span class="sec-n">3</span> Data Confirmed on Biotech2024</h2>
-  <p>The following files and facts were verified by direct inspection of Biotech2024
-  (<code class="inline">copilot@100.104.25.22</code>, Tailscale) during re-analysis preparation.</p>
-
-  <div class="tbl-wrap"><table>
-    <thead><tr><th>Item</th><th>Location / value</th><th>Status</th></tr></thead>
-    <tbody>
-      <tr><td>IDAT files</td><td><code class="inline">/staging/ALSU-analysis/Conversion/OUTPUT/&lt;barcode&gt;/</code> — 56 chip directories; each contains Red.idat + Grn.idat per position plus scan XML and JPG files</td><td class="ok">✓ Confirmed</td></tr>
-      <tr><td>GSA manifest (.bpm)</td><td><code class="inline">/staging/ALSU-analysis/Conversion/GSA-24v3-0_A2.bpm</code> (109 MB)</td><td class="ok">✓ Confirmed</td></tr>
-      <tr><td>Sample sheet</td><td><code class="inline">/staging/ALSU-analysis/Conversion/1248_merged_sample_sheet_12022025.csv.csv</code> — 1,248 rows; project dated 12/02/2025; investigator: Abdushukur Rakhmatullaev &amp; Gulnoza Esonova</td><td class="ok">✓ Confirmed</td></tr>
-      <tr><td>GSA CSV annotation</td><td><code class="inline">/staging/ALSU-analysis/Conversion/GSA-24v3-0_A2.csv</code></td><td class="ok">✓ Confirmed</td></tr>
-      <tr><td>ConvSK_raw.bed/bim/fam</td><td><code class="inline">/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code> — 1,247 samples, 654,027 variants</td><td class="ok">✓ Confirmed (wc -l)</td></tr>
-      <tr><td>ConvSK.ped / ConvSK.map</td><td><code class="inline">/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code> — original PED/MAP export from GenomeStudio</td><td class="ok">✓ Confirmed (present)</td></tr>
-      <tr><td>GenomeStudio QC output</td><td><code class="inline">/staging/ALSU-analysis/winter2025/1_GenomeStudio_qc/FullDataTable.txt</code> (654,028 lines = header + 654,027 SNPs)</td><td class="ok">✓ Confirmed</td></tr>
-      <tr><td>DRAGEN Array version</td><td>4.4.4 (installed 2025-07-22) and 4.5.4 (installed 2026-05-20) — confirmed from <code class="inline">dragen --version</code> on Biotech2024</td><td class="ok">✓ Confirmed (not used for this dataset)</td></tr>
-      <tr><td>Cluster file (.egt)</td><td>Not found on Biotech2024. GenomeStudio ran on Windows; .egt likely on the Windows machine.</td><td class="bad">✗ Not on server</td></tr>
-      <tr><td>GenomeStudio project (.gtProject)</td><td>Not found on Biotech2024. Project ran on Windows (D:\perenos\... path confirmed from ConvSK.bat).</td><td class="bad">✗ Not on server</td></tr>
-      <tr><td>Failed chip barcodes</td><td>208993030034, 208993030080, 208993030109, 208993030112 — each has 24 IDAT positions confirmed by <code class="inline">ls *_Red.idat | wc -l</code></td><td class="ok">✓ Confirmed</td></tr>
-    </tbody>
-  </table></div>
-
-  <div class="alert ok">
-    <span class="ico">✓</span>
-    <div><strong>Key finding: 4 bad chips × 24 positions = 96 physical IDAT positions.</strong>
-    The IDAT directories for all 4 failed chips contain exactly 24 Red.idat files each (confirmed on Biotech2024).
-    This resolves the apparent discrepancy between "96 positions" and Step 0's "98 chip_failure" count:
-    the Step 0 count of 98 reflects how samples on failed chips are categorised across multiple removal criteria
-    (e.g. some are also d/t replicates). Step 1's 84 represents the subset that actually exceed
-    F_MISS &gt; 0.20 and are not removed for other reasons first. No sample on a failed chip survives past Step 2.</div>
-  </div>
-
-  <!-- 4. GenomeStudio operations -->
-  <h2><span class="sec-n">4</span> GenomeStudio Operations (Reconstructed)</h2>
-  <p>GenomeStudio was run on a Windows machine. The following describes the operations performed,
-  reconstructed from the output files and the PLINK export command in
-  <code class="inline">ConvSK.bat</code> on Biotech2024.</p>
-
-  <h3>4.1 Sample sheet loading</h3>
-  <p>The sample sheet (<code class="inline">1248_merged_sample_sheet_12022025.csv.csv</code>, 1,248 rows)
-  maps chip barcodes and row/column positions to sample IDs. 1,200 unique Sample_IDs are present;
-  48 rows have duplicate IDs corresponding to d/t replicate experiments on different physical chips.
-  The operator assigned <code class="inline">d</code> and <code class="inline">t</code> suffixes to
-  disambiguate these within GenomeStudio before export.</p>
-
-  <h3>4.2 Cluster file and GenCall</h3>
-  <p>GenomeStudio applies a cluster file (<code class="inline">.egt</code>) to define the expected
-  signal distributions for the three genotype clusters (AA, AB, BB) at each probe.
-  Each call is assigned a GenCall score (0–1); calls below the GenCall threshold
-  (default 0.15, value used here unknown) are coded as missing.
-  <strong>The specific cluster file used is not on Biotech2024 and must be recovered</strong> —
-  it determines call rates and F_MISS values directly.</p>
-
-  <h3>4.3 PLINK export</h3>
-  <p>The PLINK Report Plug-in exported the dataset as PED/MAP format
-  (<code class="inline">ConvSK.ped</code>, <code class="inline">ConvSK.map</code>),
-  subsequently converted to binary BED format. Export settings confirmed from files:</p>
-  <ul style="font-size:13px;color:#c9d1d9;padding-left:20px;margin-bottom:12px">
-    <li>Genome build: <strong>GRCh37 / hg19</strong> (confirmed from .bim chromosomal coordinates)</li>
-    <li>Sample count: <strong>1,247</strong> (1,200 unique IDs + 47 d/t entries — one triplet counted differently)</li>
-    <li>Variant count: <strong>654,027</strong> (confirmed from .bim)</li>
-    <li>Strand convention: <strong>unknown</strong> — must be confirmed from manifest comparison</li>
-  </ul>
-
-  <pre><span class="cm"># ConvSK.bat — the original export command (recovered from Biotech2024):</span>
-"C:\plink\plink-1.04-dos\plink.exe" --script D:\perenos\ALSU-analysis\Conversion\OUTPUT\ConvSK\PLINK_301125_0312\ConvSK.script
-<span class="cm"># ConvSK.script contents:</span>
+# ConvSK.script contents:
 --noweb
---ped D:\perenos\ALSU-analysis\Conversion\OUTPUT\ConvSK\PLINK_301125_0312\ConvSK.ped
---map D:\perenos\ALSU-analysis\Conversion\OUTPUT\ConvSK\PLINK_301125_0312\ConvSK.map
---out D:\perenos\ALSU-analysis\Conversion\OUTPUT\ConvSK\PLINK_301125_0312\ConvSK.out
---assoc --pfilter 1e-4 --adjust --cm</pre>
-  <p>Note: the <code class="inline">--assoc</code> flag in the original script is from the initial QC run,
-  not the binary conversion. The BED files on Biotech2024 were produced by a subsequent
-  <code class="inline">plink --make-bed</code> call.</p>
+--ped D:\perenos\...\ConvSK.ped
+--map D:\perenos\...\ConvSK.map
+--out D:\perenos\...\ConvSK.out
+--assoc --pfilter 1e-4 --adjust --cm
+# Note: --assoc flag is from initial QC run; BED conversion done separately via plink --make-bed</pre>
+                    </div>
+                </div>
 
-  <!-- 5. Files -->
-  <h2><span class="sec-n">5</span> Key Files</h2>
-  <div class="tbl-wrap"><table>
-    <thead><tr><th>File</th><th>Location on Biotech2024</th><th>Description</th><th>Status</th></tr></thead>
-    <tbody>
-      <tr><td class="mono">ConvSK_raw.bed/bim/fam</td><td class="mono">/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</td><td>Pipeline entry point. 654,027 × 1,247. Immutable.</td><td class="ok">✓ Verified</td></tr>
-      <tr><td class="mono">ConvSK.ped / ConvSK.map</td><td class="mono">/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</td><td>Original GenomeStudio PED/MAP export</td><td class="ok">✓ Present</td></tr>
-      <tr><td class="mono">FullDataTable.txt</td><td class="mono">/staging/ALSU-analysis/winter2025/1_GenomeStudio_qc/</td><td>GenomeStudio full data table export (654,028 lines). Contains per-probe, per-sample metrics including GenCall scores and BAF/LRR.</td><td class="ok">✓ Present</td></tr>
-      <tr><td class="mono">GSA-24v3-0_A2.bpm</td><td class="mono">/staging/ALSU-analysis/Conversion/</td><td>Illumina BeadPool Manifest — probe coordinates and sequences (109 MB)</td><td class="ok">✓ Present</td></tr>
-      <tr><td class="mono">1248_merged_sample_sheet_12022025.csv.csv</td><td class="mono">/staging/ALSU-analysis/Conversion/</td><td>Sample sheet — 1,248 rows mapping chip positions to Sample_IDs</td><td class="ok">✓ Present</td></tr>
-      <tr><td class="mono">*.egt (cluster file)</td><td>Not on Biotech2024 — was on Windows machine</td><td>GenCall cluster file — required to reproduce genotype calling</td><td class="bad">✗ Missing</td></tr>
-      <tr><td class="mono">*.gtProject</td><td>Not on Biotech2024 — was on Windows machine</td><td>GenomeStudio project — contains all operator settings, GenCall threshold, cluster file reference</td><td class="bad">✗ Missing</td></tr>
-    </tbody>
-  </table></div>
+                <div class="section">
+                    <h2 class="section-header">5. Key Files</h2>
+                    <div class="section-content">
+                        <table class="metric-table">
+                            <tr><th>File</th><th>Location on Biotech2024</th><th>Description</th><th>Status</th></tr>
+                            <tr><td><code>ConvSK_raw.bed/bim/fam</code></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td><td>Pipeline entry point. 654,027 &#215; 1,247. Immutable.</td><td>&#10003; Verified</td></tr>
+                            <tr><td><code>ConvSK.ped / .map</code></td><td><code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/</code></td><td>Original PED/MAP export from GenomeStudio</td><td>&#10003; Present</td></tr>
+                            <tr><td><code>FullDataTable.txt</code></td><td><code>/staging/ALSU-analysis/winter2025/1_GenomeStudio_qc/</code></td><td>654,028 lines. Per-probe/per-sample GenCall scores and BAF/LRR values.</td><td>&#10003; Present</td></tr>
+                            <tr><td><code>GSA-24v3-0_A2.bpm</code></td><td><code>/staging/ALSU-analysis/Conversion/</code></td><td>Illumina BeadPool Manifest (109 MB)</td><td>&#10003; Present</td></tr>
+                            <tr><td><code>Sample sheet (.csv)</code></td><td><code>/staging/ALSU-analysis/Conversion/</code></td><td>1,248-row sample manifest</td><td>&#10003; Present</td></tr>
+                            <tr><td><code>*.egt</code> (cluster file)</td><td>Not on server &#8212; was on Windows machine</td><td>GenCall cluster file. Required to reproduce genotype calling.</td><td>&#10007; Missing</td></tr>
+                            <tr><td><code>*.gtProject</code></td><td>Not on server &#8212; was on Windows machine</td><td>GenomeStudio project. All operator settings, GenCall threshold, cluster file reference.</td><td>&#10007; Missing</td></tr>
+                        </table>
+                    </div>
+                </div>
 
-  <!-- 6. Open items -->
-  <h2 id="open"><span class="sec-n">6</span> Open Items</h2>
+                <div class="section">
+                    <h2 class="section-header">6. Open Items</h2>
+                    <div class="section-content">
+                        <div class="warning-box">
+                            <strong>CRITICAL &#8212; Cluster file (.egt).</strong> Must be recovered from the Windows machine (<code>D:\perenos\ALSU-analysis\</code>).
+                            Without it, genotype calling cannot be reproduced. It defines all cluster positions and directly controls F_MISS values.
+                        </div>
+                        <div class="warning-box">
+                            <strong>CRITICAL &#8212; GenomeStudio project (.gtProject).</strong> Contains the cluster file reference, GenCall threshold,
+                            sample sheet path, and all operator decisions. Essential for methods section and audit trail.
+                        </div>
+                        <div class="info-box">
+                            <strong>IMPORTANT &#8212; GenCall score threshold.</strong> Default is 0.15 but any non-default value must be documented.
+                            Found in GenomeStudio project settings. This threshold directly determines which calls are coded as missing (F_MISS values).
+                        </div>
+                        <div class="info-box">
+                            <strong>IMPORTANT &#8212; Strand convention.</strong> TOP/BOT vs Forward/Reverse. Affects allele coding in downstream
+                            association tests and imputation. Verify by comparing a known probe in <code>ConvSK_raw.bim</code> against the .bpm manifest.
+                        </div>
+                        <div class="info-box">
+                            <strong>IMPORTANT &#8212; BAF verification for 3 contaminated samples</strong> (08-25, 08-495, 08-701).
+                            Contaminated samples show 5-band BAF pattern (&#8776; 0, 0.25, 0.50, 0.75, 1.0) vs normal 3-band.
+                            <code>FullDataTable.txt</code> on Biotech2024 contains BAF values and can be used without the GUI.
+                        </div>
+                        <div class="success-box">
+                            <strong>RECOMMENDED &#8212; GenomeStudio and Genotyping Module versions.</strong>
+                            Recoverable from .gtProject file header. Required for publication methods section.
+                        </div>
+                    </div>
+                </div>
 
-  <div class="open-item">
-    <span class="sev crit">CRITICAL</span>
-    <div><p><strong>Recover the cluster file (.egt)</strong> from the Windows machine where GenomeStudio ran. Without this, genotype calling cannot be reproduced. The .egt file defines all cluster positions and directly determines F_MISS values. Check the Windows project directory at <code class="inline">D:\perenos\ALSU-analysis\</code>.</p></div>
-  </div>
-  <div class="open-item">
-    <span class="sev crit">CRITICAL</span>
-    <div><p><strong>Recover the GenomeStudio project file (.gtProject)</strong> from the Windows machine. It records the cluster file used, GenCall threshold, sample sheet, and all operator decisions (manual exclusions, d/t suffix assignments). Essential for a complete audit trail.</p></div>
-  </div>
-  <div class="open-item">
-    <span class="sev imp">IMPORTANT</span>
-    <div><p><strong>Confirm the GenCall score threshold.</strong> Default is 0.15 but any non-default value must be documented. Found in GenomeStudio project settings or operator notes. This threshold directly controls what is coded as missing and therefore determines F_MISS values.</p></div>
-  </div>
-  <div class="open-item">
-    <span class="sev imp">IMPORTANT</span>
-    <div><p><strong>Confirm the strand convention</strong> (TOP/BOT vs Forward/Reverse) used in the PLINK export. This affects allele coding in downstream association tests and imputation. Verify by comparing a known probe's alleles in <code class="inline">ConvSK_raw.bim</code> against the GSA-24v3-0_A2.bpm manifest.</p></div>
-  </div>
-  <div class="open-item">
-    <span class="sev imp">IMPORTANT</span>
-    <div><p><strong>Verify BAF plots for 3 contaminated samples</strong> (08-25, 08-495, 08-701) in GenomeStudio. A contaminated sample shows a 5-band BAF pattern (≈ 0, 0.25, 0.50, 0.75, 1.0) instead of the normal 3-band pattern. The <code class="inline">FullDataTable.txt</code> on Biotech2024 contains BAF values and can be used for this check without the GUI.</p></div>
-  </div>
-  <div class="open-item">
-    <span class="sev rec">RECOMMENDED</span>
-    <div><p><strong>Confirm GenomeStudio and Genotyping Module versions</strong> from the .gtProject file header. Required for the methods section of any publication.</p></div>
-  </div>
-  <div class="open-item">
-    <span class="sev rec">RECOMMENDED</span>
-    <div><p><strong>Confirm scan date and scanner model</strong> from IDAT file metadata. IDAT files store scan parameters in a binary header; <code class="inline">FullDataTable.txt</code> may also contain this information in the header rows.</p></div>
-  </div>
-
-  <footer>
-    <a href="../index.html">🏠 Back to Home</a> |
-    Next: <a href="step0.html">Step 0: Pre-QC Investigation →</a> |
-    Last updated: Spring 2026
-  </footer>
-</main>
+            </div>
+            <div class="footer">
+                <a href="../index.html" style="color:#333; text-decoration:none; font-weight:500">&#127968; Back to Home</a> |
+                Next: <a href="step0.html" style="color:#333">Step 0: Pre-QC Investigation &#8594;</a> |
+                Last updated: Spring 2026
+            </div>
+        </div>
+    </div>
+    <script>
+    function searchAllSteps() {
+        var query = document.getElementById('searchInput').value.toLowerCase();
+        var resultsDiv = document.getElementById('searchResults');
+        if (!query) { resultsDiv.classList.remove('active'); return; }
+        var content = document.body.innerText.toLowerCase();
+        resultsDiv.innerHTML = content.includes(query) ? 'Found: "' + query + '" in this page' : 'No results for "' + query + '"';
+        resultsDiv.classList.add('active');
+    }
+    </script>
+    <script>
+    (function() {
+        document.querySelectorAll('.code-block').forEach(function(block) {
+            if (block.parentElement.classList.contains('code-block-wrapper')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            var btn = document.createElement('button');
+            btn.className = 'copy-btn'; btn.textContent = 'Copy';
+            btn.addEventListener('click', function() {
+                navigator.clipboard.writeText(block.textContent).then(function() {
+                    btn.textContent = 'Copied!'; btn.classList.add('copied');
+                    setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+                });
+            });
+            wrapper.appendChild(btn);
+        });
+    })();
+    </script>
 </body>
 </html>
