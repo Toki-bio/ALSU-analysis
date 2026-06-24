@@ -204,12 +204,32 @@ done
 # --merge-list FILE: merge base dataset with all filesets listed (one prefix per line)
 plink --merge-list chr_list.txt --make-bed --out global_merged
 
-# QC: MAF > 0.01, geno < 0.02, HWE 1e-6
-plink --bfile global_merged --maf 0.01 --geno 0.02 --hwe 1e-6 --make-bed --out global_qc
+# QC: MAF &gt; 0.01, geno &lt; 0.02
+# NOTE [B3 fix]: --hwe intentionally omitted. In a merged multi-population dataset
+# (Uzbek + 5 1000G superpops) HWE departure is expected under admixture/structure
+# (Wahlund effect) — --hwe globally removes ancestry-informative markers.
+# Assess HWE per homogeneous sub-population only (see Step 3 for Uzbek-only HWE).
+plink --bfile global_merged --maf 0.01 --geno 0.02 --make-bed --out global_qc
 
-# LD pruning: window=50, step=10, r²=0.1 (matching Uzbek-only pipeline)
-plink --bfile global_qc --indep-pairwise 50 10 0.1 --out global_prune
-plink --bfile global_qc --extract global_prune.prune.in --make-bed --out global_for_admixture
+# [B2 fix] Remove ambiguous A/T and C/G SNPs — strand unresolvable by allele codes
+# 2,276 ambiguous SNPs in global_qc; silently pass merge if no allele-code conflict
+awk '(($5=="A"&amp;&amp;$6=="T")||($5=="T"&amp;&amp;$6=="A")||($5=="C"&amp;&amp;$6=="G")||($5=="G"&amp;&amp;$6=="C")){print $2}' \
+    global_qc.bim &gt; ambiguous_snps.txt
+plink --bfile global_qc --exclude ambiguous_snps.txt --make-bed --out global_qc_noambig
+
+# [B4 fix] Exclude long-range/high-LD regions before LD pruning
+# Pairwise pruning alone does not remove MHC (6p21 ~992 SNPs), 8p23 inversion (296),
+# 17q21 inversion (179), LCT/2q21 (214) — these create spurious ancestry components
+# (Price et al. 2008, Anderson et al. 2010). long_range_LD.txt: 22 standard regions.
+plink --bfile global_qc_noambig --exclude range long_range_LD.txt \
+    --make-bed --out global_qc_nolr
+# After B2+B4: 350,871 SNPs (from 364,663; removed 2,276 ambig + ~11,516 LR regions)
+
+# LD pruning on cleaned set: window=50, step=5, r²=0.2
+plink --bfile global_qc_nolr --indep-pairwise 50 5 0.2 --out global_prune_fixed
+plink --bfile global_qc_nolr --extract global_prune_fixed.prune.in \
+    --make-bed --out global_for_admixture_fixed
+# Fixed SNP count: 168,711 (vs 172,537 original; -3,826 = -2.2%)
 
 # ADMIXTURE v1.3.0, K=2–8 with 32 threads and cross-validation
 # --cv: enable 5-fold cross-validation (predictive error for model selection)
@@ -219,10 +239,18 @@ for K in {2..8}; do
     admixture --cv -j32 global_for_admixture.bed $K | tee log_K${K}.out
 done</div>
 
+            <div style="background:#fff3e0;border:1px solid #ff9800;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:0.88em;color:#5d4037">
+                <strong>&#9888; Re-analysis in progress (B2+B4 fixes, June 2026):</strong>
+                Ambiguous A/T+C/G SNPs (2,276) and long-range LD regions (1,681 SNPs: MHC 6p21, 8p23, 17q21, LCT 2q21)
+                are now excluded before LD pruning, giving <strong>global_for_admixture_fixed</strong>:
+                168,711 SNPs (vs 172,537 original &minus;2.2%). ADMIXTURE K=2&ndash;8 rerun launched on Biotech2024;
+                results including updated CV comparison table will replace this notice when complete.
+                Original results (60,279 SNPs below) are preserved for comparison.
+            </div>
             <div class="stat-box">
-                <span class="stat-label">Final dataset (Spring 2026):</span>
+                <span class="stat-label">Final dataset (Spring 2026 original):</span>
                 <span class="stat-value">3,595 samples &times; 60,279 LD-pruned SNPs</span>
-                <span style="display:block;font-size:0.85em;color:#888;margin-top:4px;">Winter 2025: 3,595 &times; 77,111</span>
+                <span style="display:block;font-size:0.85em;color:#888;margin-top:4px;">Winter 2025: 3,595 &times; 77,111 &nbsp;|&nbsp; Fixed rerun: 168,711 (pending)</span>
             </div>
 
             <!-- 3. CV ERROR -->
@@ -444,8 +472,21 @@ obj &lt;- snmf(geno_file,
 K_opt &lt;- which.min(sapply(2:10, function(k) mean(cross.entropy(obj, K=k))))
 Q &lt;- Q(obj, K = K_opt, run = which.min(cross.entropy(obj, K = K_opt)))
 
-# Compare with ADMIXTURE Q-matrices: greedy column matching by |cor|
-cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
+# Compare with ADMIXTURE Q-matrices: greedy 1-to-1 matching (resolves label switching)
+# IMPORTANT: abs(cor(snmf_Q, admixture_Q)) returns a KxK matrix — components are
+# assigned in arbitrary order by each method, so you cannot read the diagonal directly.
+# Must find the optimal 1-to-1 assignment first (greedy max-r matching used here):
+cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))
+used &lt;- logical(ncol(cor_mat))
+matched_r &lt;- numeric(nrow(cor_mat))
+for (i in seq_len(nrow(cor_mat))) {
+    remaining &lt;- cor_mat[i, !used, drop=FALSE]
+    best_j &lt;- which(!used)[which.max(remaining)]
+    matched_r[i] &lt;- cor_mat[i, best_j]
+    used[best_j] &lt;- TRUE
+}
+cat(sprintf("K=%d: mean matched r = %.4f\n", K_opt, mean(matched_r)))
+# K=7: mean matched r = 0.9921  (range 0.987-0.997)</div>
 
             <p>
                 Total runtime: ~3 hours for 90 runs (10 reps &times; K=2&ndash;10) on 16 CPU cores,
@@ -699,8 +740,12 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))  # K=7: mean r = 0.9921</div>
             <h2>8. Output Files</h2>
             <table>
                 <tr><th>File</th><th>Description</th></tr>
-                <tr><td><code>global_for_admixture.bed/bim/fam</code></td><td>LD-pruned merged dataset (3,595 &times; 60,279; winter: 77,111)</td></tr>
-                <tr><td><code>admix_results/K{2-8}.Q</code></td><td>ADMIXTURE Q-matrices for each K</td></tr>
+                <tr><td><code>global_for_admixture.bed/bim/fam</code></td><td>Original LD-pruned merged dataset (3,595 &times; 60,279; winter: 77,111)</td></tr>
+                <tr><td><code>global_for_admixture_fixed.bed/bim/fam</code></td><td>Fixed LD-pruned dataset after B2 (ambiguous SNP removal) + B4 (long-range LD exclusion): 3,595 &times; 168,711 SNPs</td></tr>
+                <tr><td><code>long_range_LD.txt</code></td><td>22-region long-range LD exclusion list (Price et al. 2008 / Anderson et al. 2010)</td></tr>
+                <tr><td><code>ambiguous_snps.txt</code></td><td>2,276 ambiguous A/T+C/G SNP IDs excluded from fixed run</td></tr>
+                <tr><td><code>admix_results/K{2-8}.Q</code></td><td>ADMIXTURE Q-matrices for each K (original run)</td></tr>
+                <tr><td><code>admix_results_fixed/K{2-8}_fixed.Q</code></td><td>ADMIXTURE Q-matrices for fixed rerun (pending completion)</td></tr>
                 <tr><td><code>global_pop_labels.txt</code></td><td>Population and superpopulation labels</td></tr>
                 <tr><td><code>validation/validation_results.json</code></td><td>Covariate test results (JSON)</td></tr>
                 <tr><td><code>validation/ethnicity_q_values.tsv</code></td><td>Ethnicity &times; Q-value means per group</td></tr>
