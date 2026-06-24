@@ -363,17 +363,31 @@ comm -12 uzbek_chr22_pos.txt 1000G_chr22_pos.txt > positions_chr22.txt
 plink --bfile uzbek_chr22_renamed --extract positions_chr22.txt --make-bed --out uzbek_chr22_matched
 plink --bfile 1000G_EUR_chr22_newnames --extract positions_chr22.txt --make-bed --out 1000G_EUR_chr22_matched
 
-# [6/7] Merge (with strand-flip handling)
-# --bmerge PREFIX: merge current --bfile dataset with a second PLINK fileset
-#   PLINK auto-flips strand for A/T↔T/A, C/G↔G/C; writes .missnp for 3+ allele conflicts
+# [6/7] Merge (with strand-flip handling) — 3-pass recommended workflow
+# Pass 1: attempt merge; PLINK auto-flips complement pairs (A/T↔T/A, C/G↔G/C)
+# and writes .missnp for residual 3-allele conflicts it cannot resolve.
 plink --bfile uzbek_chr22_matched --bmerge 1000G_EUR_chr22_matched \
     --make-bed --out merged_chr22_temp
 
-# If 3+ allele conflicts arise, exclude problematic SNPs and re-merge:
-plink --bfile uzbek_chr22_matched --exclude merged_chr22_temp-merge.missnp \
+# Pass 2 (if .missnp generated): flip strands in the cohort file and re-attempt merge
+# --flip: complement allele codes (A↔T, C↔G) for SNPs that were mis-coded on one strand
+# This recovers SNPs that failed due to strand inconsistency between array and 1000G VCF
+plink --bfile uzbek_chr22_matched --flip merged_chr22_temp-merge.missnp \
+    --make-bed --out uzbek_chr22_flip
+plink --bfile uzbek_chr22_flip --bmerge 1000G_EUR_chr22_matched \
+    --make-bed --out merged_chr22_temp2
+
+# Pass 3: exclude any remaining residual conflicts (true triallelic / unfixable)
+plink --bfile uzbek_chr22_flip --exclude merged_chr22_temp2-merge.missnp \
     --make-bed --out uzbek_chr22_clean
-plink --bfile 1000G_EUR_chr22_matched --exclude merged_chr22_temp-merge.missnp \
+plink --bfile 1000G_EUR_chr22_matched --exclude merged_chr22_temp2-merge.missnp \
     --make-bed --out 1000G_EUR_chr22_clean
+
+# NOTE: The pilot in this step used --exclude-only (pass 1 + pass 3, skipping flip).
+# This is conservative (drops all conflicts including recoverable strand flips)
+# but does not introduce incorrect genotypes. The full global merge pipeline
+# (see Step 11) uses chr:pos renaming to avoid allele-code strand conflicts.
+# For any future re-merge, use the 3-pass approach above.
 
 # [7/7] Final merge
 plink --bfile uzbek_chr22_clean --bmerge 1000G_EUR_chr22_clean \
@@ -479,7 +493,12 @@ for chr in {1..22}; do
           --out merged_chr${chr}_temp \
           --silent 2>&1 | grep -q "3+ alleles" && {
         echo "    Merge conflicts detected, excluding problem SNPs..."
+        # Pass 2: flip unresolved strand conflicts, then re-merge (see pilot above)
         plink --bfile uzbek_chr${chr}_matched \
+              --flip merged_chr${chr}_temp-merge.missnp \
+              --make-bed --out uzbek_chr${chr}_flip
+        # Pass 3: exclude any remaining residual conflicts after flip attempt
+        plink --bfile uzbek_chr${chr}_flip \
               --exclude merged_chr${chr}_temp-merge.missnp \
               --make-bed \
               --out uzbek_chr${chr}_clean \
