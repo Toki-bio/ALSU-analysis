@@ -82,6 +82,90 @@
     </style>
 </head>
 <body>
+<!--
+=================================================================================
+TECHNICAL PROVENANCE NOTES (not rendered - for future maintainers/auditors)
+Investigation and correction history for this page, August 2026.
+=================================================================================
+
+WHAT WAS WRONG, ORIGINALLY:
+The site had a pending "B2+B4 fixes" re-analysis noted as in-progress. On inspection,
+the actual completed run on disk (/staging/ALSU-analysis/admixture_analysis/global_admixture/)
+had used the WRONG input panel: a stale 2,095-sample merge from Feb 19 2026 (only
+10 of the 26 available 1000 Genomes populations, ~1,017 reference samples), not the
+documented, correct 3,595-sample spring2026 panel (1,047 Uzbek + 2,548 1000G across
+all 26 populations / 5 superpopulations) used everywhere else on the site. This was
+found by directly comparing sample/variant counts and file dates against the site's
+own documented pipeline recipe, not assumed.
+
+THE FIX:
+Relaunched the B2 (strand-ambiguous SNP removal: A/T, C/G) + B4 (long-range LD
+exclusion: MHC 6p21, 8p23 inversion, 17q21 inversion, LCT 2q21, 17 others) correction
+starting from the CORRECT spring2026 panel. Script: rerun_global_fixed_v2.sh, output
+in /staging/ALSU-analysis/admixture_analysis/global_admixture_v2/. Verified at every
+stage against actual file contents/counts on the DRAGEN server (Biotech2024), not
+just log text. Ran into two unplanned server reboots mid-run (cause never fully
+identified - SEL/audit logs were silent at the reboot times; a separate, unrelated
+PSU power-supply flapping event was found later but doesn't explain these reboots);
+the run script was made resumable per-K to survive this.
+
+VERIFICATION LAYERS APPLIED (in order of when they were done):
+1. Direct DRAGEN file verification at every pipeline stage (sample/marker counts,
+   not log text) - see the marker-cleanup table in Section 2 above.
+2. Full K=2-8 single-seed sweep, then 4 additional independent replicate seeds
+   (5 seeds total) to check K-selection stability. Result: K=5, 6, 7 reproduce to
+   within 0.00003 across all 5 seeds; K=2 and K=8 show real run-to-run spread
+   (K=8's "best score" is the least trustworthy of the bunch on this basis).
+3. sNMF (a completely different statistical method from ADMIXTURE) rerun on the
+   same corrected marker set as an independent cross-check. Near-perfect agreement
+   with ADMIXTURE at K=3 and K=5 (r>0.996 every component); agreement collapses at
+   K=7 (one component down to r=0.27) - the two methods stop describing the same
+   structure past K=5.
+4. Population-mean sanity check: recomputed the K=5 means directly from the
+   corrected Q-matrix and compared to the original (unfixed) run - every value
+   changed by <0.6 percentage points. The B2/B4 corrections were real and worth
+   doing, but did not meaningfully change the substantive ancestry conclusions.
+
+WHY K=5 IS THE WORKING NUMBER (not the technically-lowest-scoring K=8):
+Three independent lines of evidence, not just one: (a) K=5 is the number of known
+external reference groups (AFR/EUR/SAS/EAS/AMR) this study anchors to, and all 5
+components map cleanly 1:1 onto those groups with no ambiguity; (b) it's one of the
+most stable choices across the 5 replicate runs; (c) it's where ADMIXTURE and sNMF
+(independent methods) still agree almost perfectly - that agreement breaks down at
+higher K. The raw cross-validation/cross-entropy scores never produce a clean
+"elbow" on their own - expected when real population history is a continuous
+gradient rather than a small number of discrete founding groups (see the "limits
+of discrete-K models" note in Section 3.3).
+
+A GENUINE, UNRESOLVED FINDING (not explained away, flagged honestly):
+At K=6, a component appears that is enriched specifically within the Uzbek cohort
+(~55% mean) and barely present (<5%) in any of the 5 reference groups - i.e., not a
+split of an existing continental group, but a distinct signal. This is real and was
+already present in the ORIGINAL (pre-correction) April 2026 data too - it was simply
+never investigated in detail before, because the site's own analysis stopped at K=5
+early on. It is documented in Section 5 but not further explained; a real open
+question for future investigation, most plausibly a genuine Central-Asian-specific
+signal not captured by any of the five external reference populations.
+
+CROSS-REFERENCE BUG FOUND AND FIXED SEPARATELY:
+The page's own Overview previously misattributed the "Uzbek-only ADMIXTURE / West-
+East cline" finding to "Step 10" with a link to step10.html - but Step 10 is
+"Multi-Population PBS Analysis" and contains no such content. The actual finding
+lives in this page's own Section 3.3. Fixed to link to #uzbek-only-validation on
+this page instead.
+
+STILL OUTSTANDING (as of this writing):
+- Section 4's interactive chart and Section 4.1's individual-level chart are both
+  built from real K=5 data now, but the underlying qData for K=2-8 in the
+  interactive chart, while real, uses ADMIXTURE's raw column order per K, which is
+  NOT guaranteed consistent between runs (the "label switching" problem) - treat
+  the Qn numbering as descriptive per-K, not as a stable identity across K values.
+- Whether the ~44-sample discrepancy between this site's 2,548-sample 1000G
+  reference panel and the standard "2,504 unrelated" Phase 3 release reflects a
+  different upstream panel version was investigated but not conclusively resolved;
+  ruled out relatedness as the cause (checked against the official 1000G pedigree
+  file - none of the 45 extra/1 missing samples are flagged as related).
+-->
 <div class="page-wrapper">
     <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
