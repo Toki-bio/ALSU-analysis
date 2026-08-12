@@ -122,10 +122,10 @@
         </div>
         <table>
             <tr><th>Item</th><th>Detail</th></tr>
-            <tr><td>Sample IDs present</td><td>96</td></tr>
-            <tr><td>Already have prior genotype (GTC) files</td><td>95 of 96</td></tr>
-            <tr><td>Likely nature</td><td>Mostly <strong>rescans of existing cohort members</strong> (recovering previously QC-failed samples), not a new expansion cohort &mdash; based on the near-total overlap with existing sample IDs. Not confirmed with the study team.</td></tr>
-            <tr><td>Processing so far</td><td>Merged VCF (~420&nbsp;MB) and an independent QC/PCA pass already run, standalone &mdash; not merged into the main 1,047-sample pipeline</td></tr>
+            <tr><td>Sample sheet</td><td>96 samples, project name "GSA-24v3-GWAS2026-2-96_samples" (same genotyping chip type as the original cohort)</td></tr>
+            <tr><td>Genotype calling</td><td>Done fresh from raw iScan chip scan data (.idat) in this run &mdash; 95 of 96 samples produced a valid GTC file, 1 failed calling</td></tr>
+            <tr><td>Likely nature</td><td>Most likely <strong>95 newly-genotyped individuals</strong> &mdash; the "GWAS2026-2" naming suggests a second recruitment wave of the GWAS2026 study, and genotype calling was run fresh from raw scans rather than reusing older data. (An early read of this data mistakenly assumed these were mostly rescans of the original cohort, based on a file named "existing_gtc_ids" &mdash; that file turned out to just mark samples that already had a GTC from an earlier, interrupted attempt at processing this same batch, not from the original cohort. Corrected here.) True overlap with the original 1,047-person cohort has not been conclusively ruled out: the two sample sets use different ID naming conventions (e.g. "35-SN" here vs. "01-01" in the original cohort) and no crosswalk between them has been found.</td></tr>
+            <tr><td>Processing so far</td><td>Merged VCF (~420&nbsp;MB) and an independent QC pass (heterozygosity, KING relatedness, IBD) already run standalone &mdash; not merged into the main 1,047-sample pipeline</td></tr>
         </table>
         <p>
             Fully incorporating this data would mean re-running QC, merge, imputation, PCA, F<sub>ST</sub>,
