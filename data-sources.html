@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Sources - ALSU Pipeline</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%); min-height: 100vh; padding: 20px;}
+        .container {max-width: 1100px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;}
+        .header {background: linear-gradient(135deg, #b45309 0%, #78350f 100%); color: white; padding: 30px;}
+        .back-link {color: rgba(255,255,255,0.8); text-decoration: none; margin-bottom: 15px; display: inline-block;}
+        .back-link:hover {color: white;}
+        .header h1 {font-size: 2em; margin-bottom: 10px;}
+        .header p {opacity: 0.9;}
+        .content {padding: 30px;}
+        h2 {color: #333; font-size: 1.4em; margin: 35px 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid #999;}
+        h2:first-child {margin-top: 0;}
+        h3 {color: #555; margin: 20px 0 10px 0; font-size: 1.1em;}
+        p, li {color: #555; line-height: 1.7; margin-bottom: 10px;}
+        ul {margin-left: 22px;}
+        table {width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.93em;}
+        th, td {padding: 9px 12px; text-align: left; border-bottom: 1px solid #ddd;}
+        th {background: #f5f5f5; font-weight: 600; color: #333;}
+        tr:hover {background: #fafafa;}
+        code {background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; font-size: 0.9em;}
+        .info-box {background: #fff7ed; border-left: 4px solid #b45309; padding: 14px 18px; margin: 16px 0; border-radius: 4px;}
+        .pending-box {background: #fef2f2; border-left: 4px solid #dc2626; padding: 14px 18px; margin: 16px 0; border-radius: 4px;}
+        .ok-box {background: #f0fdf4; border-left: 4px solid #16a34a; padding: 14px 18px; margin: 16px 0; border-radius: 4px;}
+        .flow-step {display: flex; align-items: flex-start; gap: 14px; margin: 12px 0; padding: 12px 16px; background: #fafafa; border-radius: 6px; border-left: 3px solid #b45309;}
+        .flow-num {flex-shrink: 0; width: 28px; height: 28px; background: #b45309; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85em;}
+        .footer {background: #f5f5f5; padding: 18px 30px; text-align: center; color: #777; font-size: 0.85em; border-top: 1px solid #ddd;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <a href="index.html" class="back-link">&larr; Back to Roadmap</a>
+        <h1>Data Sources</h1>
+        <p>Where every dataset used across this site comes from, and its current status</p>
+    </div>
+
+    <div class="content">
+        <p>
+            This page did not exist before August 2026 despite being referenced from
+            <code>frequencies/uzb_freq.html</code> as if it did &mdash; it was a broken link to a page
+            that was never written. This is that page, built from verified project records rather
+            than reconstructed from memory.
+        </p>
+
+        <h2>1. The Uzbek Cohort (Raw Genotyping)</h2>
+        <table>
+            <tr><th>Item</th><th>Detail</th></tr>
+            <tr><td>Genotyping chip</td><td>Illumina Infinium Global Screening Array-24 v3.0 (several hundred thousand markers per sample)</td></tr>
+            <tr><td>Chip reading / genotype calling</td><td>Illumina GenomeStudio</td></tr>
+            <tr><td>Samples enrolled</td><td>1,247 participants</td></tr>
+            <tr><td>Samples in final analysis cohort</td><td>1,047 (after the full QC pipeline &mdash; see <a href="steps/step0.html">Step 0</a> through <a href="steps/step6.html">Step 6</a>)</td></tr>
+            <tr><td>Study design</td><td>Case/control for recurrent pregnancy loss (RPL), plus population-genetics characterization using the same cohort</td></tr>
+        </table>
+
+        <h2>2. Imputation</h2>
+        <table>
+            <tr><th>Item</th><th>Detail</th></tr>
+            <tr><td>Service</td><td>Michigan Imputation Server (external, not run on local/DRAGEN compute)</td></tr>
+            <tr><td>Reference panel</td><td>1000 Genomes Project (Phase 3)</td></tr>
+            <tr><td>Output</td><td>~10.8 million imputed variants per sample (see <a href="steps/step4.html">Step 4</a>)</td></tr>
+            <tr><td>Detailed QC report</td><td><a href="data/michigan_results/quality-control.html">Michigan Imputation Server's own QC report</a> (auto-generated)</td></tr>
+        </table>
+        <div class="info-box">
+            <strong>DRAGEN clarification:</strong> Compute for this study runs on a server (Biotech2024)
+            that also has Illumina DRAGEN installed, but DRAGEN's FPGA-accelerated pipeline was
+            <strong>not</strong> used for this SNP-array-based study &mdash; that hardware is built for
+            sequencing data analysis. Imputation was done entirely by the external Michigan service;
+            downstream analysis (PLINK/PLINK2, ADMIXTURE, sNMF, SAIGE) ran on ordinary CPU compute on
+            the same server.
+        </div>
+
+        <h2>3. 1000 Genomes Reference Panel</h2>
+        <p>Used throughout the global ancestry analyses (PCA, F<sub>ST</sub>, PBS, ADMIXTURE) as the external comparison population.</p>
+        <table>
+            <tr><th>Superpopulation</th><th>Populations included</th><th>N</th></tr>
+            <tr><td>African (AFR)</td><td>YRI, LWK, GWD, MSL, ESN, ACB, ASW</td><td>671</td></tr>
+            <tr><td>European (EUR)</td><td>CEU, GBR, FIN, IBS, TSI</td><td>522</td></tr>
+            <tr><td>South Asian (SAS)</td><td>GIH, PJL, BEB, STU, ITU</td><td>492</td></tr>
+            <tr><td>East Asian (EAS)</td><td>CHB, JPT, CHS, CDX, KHV</td><td>515</td></tr>
+            <tr><td>Americas (AMR)</td><td>MXL, PUR, CLM, PEL</td><td>348</td></tr>
+            <tr style="font-weight:600;background:#f5f5f5;"><td colspan="2">Total (all 26 populations)</td><td>2,548</td></tr>
+        </table>
+        <p style="font-size:0.9em;color:#888;">
+            Genome build: GRCh38 (matches the Uzbek cohort's build; verified directly against the
+            reference panel's own file paths on the DRAGEN server). Note: this panel differs by 45
+            samples from the commonly-cited "2,504 unrelated" Phase 3 release &mdash; investigated and
+            confirmed those 45 samples are not flagged as related to anyone in 1000 Genomes' own
+            pedigree records, so this is not a relatedness contamination issue, just a different
+            source-panel version. See <a href="STEP11_ADMIXTURE_CORRECTION_NOTES.md">the ADMIXTURE
+            correction notes</a> for the full verification.
+        </p>
+
+        <h2>4. Compute Infrastructure</h2>
+        <ul>
+            <li><strong>Server:</strong> Biotech2024 (Illumina DRAGEN 4.5.4 / 4.4.4 installed; accessed via SSH tunnel)</li>
+            <li><strong>Analysis tools:</strong> PLINK / PLINK2, ADMIXTURE v1.3.0, sNMF (R package LEA), SAIGE, VEP/Ensembl for annotation</li>
+            <li><strong>Bulk data location:</strong> <code>/staging/ALSU-analysis/</code> on the DRAGEN server</li>
+        </ul>
+
+        <h2>5. Uzbek-Specific Allele Frequency Database</h2>
+        <p>
+            Underlies the "ALSU Variant Frequency Explorer" (<code>uzb_freq.html</code>) &mdash; not
+            currently part of this GitHub repository, so not linked here; it exists only in the local
+            project working copy.
+        </p>
+        <table>
+            <tr><th>Item</th><th>Detail</th></tr>
+            <tr><td>Server location</td><td><code>/staging/ALSU-analysis/admixture_analysis/uzb_freq/</code> on Biotech2024</td></tr>
+        </table>
+
+        <h2>6. New Genotyping Data &mdash; Not Yet Integrated</h2>
+        <div class="pending-box">
+            <strong>&#9888; Pending, found but not incorporated into any published result on this site.</strong>
+            A separate, later genotyping batch exists on the DRAGEN server at
+            <code>/staging/GWAS2026-2</code> (dated July 31, 2026):
+        </div>
+        <table>
+            <tr><th>Item</th><th>Detail</th></tr>
+            <tr><td>Sample IDs present</td><td>96</td></tr>
+            <tr><td>Already have prior genotype (GTC) files</td><td>95 of 96</td></tr>
+            <tr><td>Likely nature</td><td>Mostly <strong>rescans of existing cohort members</strong> (recovering previously QC-failed samples), not a new expansion cohort &mdash; based on the near-total overlap with existing sample IDs. Not confirmed with the study team.</td></tr>
+            <tr><td>Processing so far</td><td>Merged VCF (~420&nbsp;MB) and an independent QC/PCA pass already run, standalone &mdash; not merged into the main 1,047-sample pipeline</td></tr>
+        </table>
+        <p>
+            Fully incorporating this data would mean re-running QC, merge, imputation, PCA, F<sub>ST</sub>,
+            PBS, ADMIXTURE, and GWAS for the whole study &mdash; touching every published number on this
+            site. That has deliberately not been started without explicit sign-off from the study team,
+            given the scope and the fact it would change previously-published results.
+        </p>
+
+        <h2>7. Data Flow Summary</h2>
+        <div class="flow-step"><div class="flow-num">1</div><div>Raw chip scan (Illumina iScan hardware) &rarr; GenomeStudio genotype calling</div></div>
+        <div class="flow-step"><div class="flow-num">2</div><div>Sample &amp; SNP QC (missingness, IBD dedup, chip-level checks) &mdash; <a href="steps/step0.html">Step 0</a>&ndash;<a href="steps/step3.html">3</a></div></div>
+        <div class="flow-step"><div class="flow-num">3</div><div>Imputation via Michigan Imputation Server (1000 Genomes Phase 3 reference) &mdash; <a href="steps/step4.html">Step 4</a></div></div>
+        <div class="flow-step"><div class="flow-num">4</div><div>ID normalization &amp; final QC &mdash; <a href="steps/step5.html">Step 5</a>&ndash;<a href="steps/step6.html">6</a>: 1,047 samples, 5.4M variants</div></div>
+        <div class="flow-step"><div class="flow-num">5</div><div>Population genetics: local &amp; global PCA, F<sub>ST</sub>, PBS, ADMIXTURE (merged with the 1000 Genomes reference panel above) &mdash; <a href="steps/step7.html">Steps 7</a>&ndash;<a href="steps/step14.html">14</a></div></div>
+        <div class="flow-step"><div class="flow-num">6</div><div>ROH/IBD relatedness &amp; RPL GWAS &mdash; <a href="steps/step15.html">Step 15</a>&ndash;<a href="steps/step16.html">16</a></div></div>
+
+        <div class="ok-box" style="margin-top:30px;">
+            For the detailed methods behind any single result, follow the links above to the specific
+            step page &mdash; each one documents its own exact input files, tool versions, and parameters.
+        </div>
+    </div>
+
+    <div class="footer">ALSU Pipeline &mdash; Data Sources reference page, added August 2026</div>
+</div>
+</body>
+</html>
