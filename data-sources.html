@@ -117,22 +117,34 @@
         <h2>6. New Genotyping Data &mdash; Not Yet Integrated</h2>
         <div class="pending-box">
             <strong>&#9888; Pending, found but not incorporated into any published result on this site.</strong>
-            A separate, later genotyping batch exists on the DRAGEN server at
-            <code>/staging/GWAS2026-2</code> (dated July 31, 2026):
+            There are <strong>two separate new-recruitment genotyping batches</strong> on the DRAGEN server,
+            neither folded into the published 1,047-sample pipeline. They are genuinely different people
+            (zero sample-ID overlap, different physical chips, 2.5 months apart) &mdash; not the same batch
+            processed twice.
         </div>
         <table>
-            <tr><th>Item</th><th>Detail</th></tr>
-            <tr><td>Sample sheet</td><td>96 samples, project name "GSA-24v3-GWAS2026-2-96_samples" (same genotyping chip type as the original cohort)</td></tr>
-            <tr><td>Genotype calling</td><td>Done fresh from raw iScan chip scan data (.idat) in this run &mdash; 95 of 96 samples produced a valid GTC file, 1 failed calling</td></tr>
-            <tr><td>Likely nature</td><td>Most likely <strong>95 newly-genotyped individuals</strong> &mdash; the "GWAS2026-2" naming suggests a second recruitment wave of the GWAS2026 study, and genotype calling was run fresh from raw scans rather than reusing older data. (An early read of this data mistakenly assumed these were mostly rescans of the original cohort, based on a file named "existing_gtc_ids" &mdash; that file turned out to just mark samples that already had a GTC from an earlier, interrupted attempt at processing this same batch, not from the original cohort. Corrected here.) True overlap with the original 1,047-person cohort has not been conclusively ruled out: the two sample sets use different ID naming conventions (e.g. "35-SN" here vs. "01-01" in the original cohort) and no crosswalk between them has been found.</td></tr>
-            <tr><td>Processing so far</td><td>Merged VCF (~420&nbsp;MB) and an independent QC pass (heterozygosity, KING relatedness, IBD) already run standalone &mdash; not merged into the main 1,047-sample pipeline</td></tr>
+            <tr><th>Item</th><th>GWAS2026 (wave&nbsp;1)</th><th>GWAS2026-2 (wave&nbsp;2)</th></tr>
+            <tr><td>DRAGEN path</td><td><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/gwas2026/</code></td><td><code>/staging/GWAS2026-2/</code></td></tr>
+            <tr><td>Date genotyped</td><td>2026-05-13</td><td>2026-07-31</td></tr>
+            <tr><td>Chip barcodes / plate</td><td>208993030058&#8230; / WG2300782-DNA</td><td>209422280026&#8230; / WG2300791-DNA</td></tr>
+            <tr><td>Samples</td><td>95</td><td>95 of 96 attempted (1 failed calling)</td></tr>
+            <tr><td>Manifest / investigator</td><td colspan="2">Both: GSA-24v3-0_A2, Abdushukur Rakhmatullaev &mdash; same array and lab as the original cohort</td></tr>
+            <tr><td>What it actually is</td><td>96 genuinely new samples (per sample sheet <code>GWAS2026_dragen_sample_sheet_95_existing_idats.csv</code>, 95 rows), <code>Sample_Group</code> column labels each row <strong>case</strong> or <strong>control</strong> &mdash; a distinct case/control study. IDs use a third naming scheme (e.g. <code>190-TS</code>, <code>CAT-180-EN</code>) matching neither the original cohort nor GWAS2026-2. <strong>What disease/phenotype "case"/"control" refers to is not stated anywhere and is currently unknown</strong> &mdash; confirmed with the study owner (2026-08-12) that this is genuinely new data, not a chip-failure rescan (an earlier external tracker's claim that it "replaces 2 failed ALSU chips" was a fabrication with no basis in the sample sheet &mdash; see <a href="https://github.com/Toki-bio/uzbek-variant-frequency-explorer">uzbek-variant-frequency-explorer</a> data-sources page, now corrected). <strong>Parked: not merged into any pipeline until its purpose is known.</strong></td><td>Identity-verified this session: genuinely distinct from the original 1,047-person cohort (no PI_HAT&nbsp;&asymp;&nbsp;1.0 matches, only plausible family relationships up to 0.634). Confirmed with the study owner (2026-08-12) to be population-genetics reference data, <strong>not part of the RPL (pregnancy-loss) cohort</strong> &mdash; it will feed the popgen track (Steps 7&ndash;14: PCA, F<sub>ST</sub>, PBS, ADMIXTURE, ROH/IBD) only, never Step 16's RPL GWAS. A properly strand-aligned merge against the current <em>spring2026</em> cohort was built and QC'd (mind 0.20 &rarr; PI_HAT&#8805;0.98 dedup &rarr; geno 0.10, matching the original pipeline's own thresholds): <strong>1,186 samples, 257,315 SNPs</strong>, at <code>/staging/ALSU-analysis/spring2026/expanded_cohort/ConvSK_v2_expanded</code>. Not yet imputed or pushed through downstream steps.</td></tr>
         </table>
         <p>
-            Fully incorporating this data would mean re-running QC, merge, imputation, PCA, F<sub>ST</sub>,
-            PBS, ADMIXTURE, and GWAS for the whole study &mdash; touching every published number on this
-            site. That has deliberately not been started without explicit sign-off from the study team,
-            given the scope and the fact it would change previously-published results.
+            Fully incorporating GWAS2026-2 into the popgen track means re-running QC, merge, imputation, PCA,
+            F<sub>ST</sub>, PBS, ADMIXTURE, and ROH/IBD for the whole popgen side of the study &mdash; touching
+            every published popgen number on this site, but never Step 16 (RPL GWAS), which stays scoped to the
+            original cohort's phenotype data. That work is in progress with explicit sign-off. GWAS2026 (wave 1)
+            stays out of scope entirely until its case/control purpose is known.
         </p>
+        <div class="pending-box" style="margin-top:14px;">
+            <strong>Note on completeness:</strong> <code>/staging</code> on the DRAGEN server is execute-only
+            for the pipeline account &mdash; its top level cannot be listed or searched (<code>ls</code>/<code>find</code>
+            both fail with permission errors). Every dataset on this page was found by following a specific
+            reference in another file, not by an exhaustive scan. Treat this section as "everything found so far,"
+            not "everything that exists."
+        </div>
 
         <h2>7. Data Flow Summary</h2>
         <div class="flow-step"><div class="flow-num">1</div><div>Raw chip scan (Illumina iScan hardware) &rarr; GenomeStudio genotype calling</div></div>
