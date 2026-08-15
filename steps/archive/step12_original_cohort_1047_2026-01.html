@@ -94,83 +94,17 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 12: PBS Functional Annotation</h1>
             <p>Annotate PBS candidate SNPs using Ensembl VEP, GWAS Catalog, ClinVar, and GTEx</p>
-            <span class="step-badge" style="background:#28a745;color:white;">&#9989; Expanded cohort — August 2026 (5 candidates)</span>
-            <span class="step-badge step-badge-old">Original cohort (8 candidates) — March 2026</span>
-            <a href="archive/step12_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:8px;color:rgba(255,255,255,0.8);font-size:0.85em;text-decoration:underline;">&#8592; View original 8-candidate annotation (archived)</a>
+            <span class="step-badge">Completed &mdash; March 2026</span>
         </div>
 
         <div class="content">
 
-            <!-- ═══════ EXPANDED COHORT RESULTS (Aug 2026) ═══════ -->
-            <h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
-
-            <div class="info-box">
-                <strong>Methodology note:</strong> DRAGEN (Biotech2024) has no outbound internet access, so this
-                round was run directly from the local machine via <code>curl</code> against the same four APIs
-                the original <code>annotate_uzb_snps.py</code> script uses (Ensembl VEP, GWAS Catalog, ClinVar,
-                NCBI eutils), rather than porting the script itself — only 5 candidates this round, so a full
-                script run wasn't necessary. Only 5 candidates because Step 10's population-mislabeling bug fix
-                dropped Tier-1 from 8 to 5 SNPs (see <a href="step10.html">Step 10</a>).
-            </div>
-
-            <div class="success">
-                <strong>Notable finding:</strong> <code>11:207698:C:T</code> (rs56186913, BET1L/RIC8A 5&prime; UTR
-                region) is genome-wide significant (p&nbsp;=&nbsp;6&times;10<sup>&minus;14</sup>) for
-                <strong>uterine leiomyoma and age at menarche</strong> in a large 2024 cross-trait GWAS
-                (Xiao et al., <em>Am J Obstet Gynecol</em>, PMID
-                <a href="https://pubmed.ncbi.nlm.nih.gov/38191017/">38191017</a>, 35,474 cases / 267,505 controls).
-                Directly relevant to this study's reproductive-genetics focus &mdash; this SNP has UZB MAF 47.8%
-                vs &le;9.1% in every 1000G reference population (see <a href="step10.html">Step 10</a>), making it
-                the most biologically interesting of the 5 candidates, not just the highest-PBS ones.
-            </div>
-
-            <table>
-                <thead>
-                    <tr><th>SNP</th><th>rsID</th><th>Gene</th><th>Consequence</th><th>GWAS Catalog</th><th>ClinVar</th><th>GTEx eQTL</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>12:125520190:C:T</td><td>rs34013262</td><td>TMEM132B</td><td>intron_variant</td>
-                        <td>None</td><td>None</td><td>None (Whole Blood checked)</td>
-                    </tr>
-                    <tr>
-                        <td>12:5664803:T:G</td><td>rs55643000</td><td>ANO2</td><td>intron_variant</td>
-                        <td>None</td><td>None</td><td>None (Whole Blood checked)</td>
-                    </tr>
-                    <tr>
-                        <td>5:53879140:C:A</td><td>rs786934</td><td>ARL15 (4.8kb downstream)</td><td>downstream_gene_variant</td>
-                        <td>None</td><td>None</td><td>None (Whole Blood checked)</td>
-                    </tr>
-                    <tr>
-                        <td>13:104524666:T:C</td><td>rs72660963</td><td>&mdash; (intergenic)</td><td>intergenic_variant</td>
-                        <td>None</td><td>None</td><td>None (Whole Blood checked)</td>
-                    </tr>
-                    <tr style="background:#e8f5e9;font-weight:600;">
-                        <td>11:207698:C:T</td><td>rs56186913</td><td>BET1L / RIC8A</td><td>5_prime_UTR_variant</td>
-                        <td><strong>Uterine leiomyoma; age at menarche (p=6e-14)</strong></td><td>None</td>
-                        <td>None (6 tissues incl. Uterus, Ovary checked)</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="important">
-                <strong>Coverage caveats, stated plainly:</strong> ClinVar and GWAS Catalog lookups are
-                comprehensive (whole-database queries by rsID) &mdash; the "None" results there are real absence
-                of records, not incomplete search. GTEx is <strong>not</strong> comprehensive: only Whole Blood
-                was checked for all 5 SNPs, plus 5 additional tissues (Uterus, Ovary, Liver, Artery Aorta,
-                Adipose, Brain Frontal Cortex) for the one SNP with a GWAS hit. GTEx v8 has 49 tissues total —
-                a "None" GTEx result here means "no eQTL found in the ~6 tissues checked," not "no eQTL exists."
-            </div>
-
             <h2>1. Overview</h2>
             <p>
-                The 8 PBS candidate SNPs identified in <a href="step10.html">Step 10</a> (original cohort) are annotated using
+                The 8 PBS candidate SNPs identified in <a href="step10.html">Step 10</a> are annotated using
                 four complementary resources to assess their functional significance: Ensembl VEP for variant
                 consequence prediction, GWAS Catalog for known disease associations, ClinVar for clinical
                 pathogenicity, and GTEx for tissue-specific expression effects (eQTL).
-                <strong>Section 0 above documents the expanded cohort's 5-candidate reannotation; the rest of
-                this page (Sections 1&ndash;6) is the original cohort's 8-candidate results, preserved for
-                comparison.</strong>
             </p>
 
             <div class="info-box">
@@ -184,7 +118,7 @@
                 <tr>
                     <td><code>pbs_candidates.json</code></td>
                     <td><a href="step10.html">Step 10</a></td>
-                    <td>8 candidate SNPs with PBS scores, MAF, and tier classification (original cohort)</td>
+                    <td>8 candidate SNPs with PBS scores, MAF, and tier classification</td>
                 </tr>
             </table>
 
