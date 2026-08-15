@@ -171,15 +171,8 @@
                 <a href="../pca_viewer_enhanced.html" style="display:inline-block;margin-left:12px;padding:6px 14px;background:#1976d2;color:white;border-radius:4px;text-decoration:none;font-size:0.9em;font-weight:600;">&#128269; Open Interactive PCA Viewer</a>
                 <h1>Step 8: Global PCA with 1000 Genomes Reference</h1>
                 <p>Establish ancestry context and compare Uzbek cohort to global populations</p>
-                <span class="step-badge">✓ Expanded cohort — August 2026 (1,256 Uzbek samples)</span>
-                <span class="step-badge step-badge-old">Spring 2026 (1,047 samples) — April 11, 2026</span>
-                <a href="archive/step8_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
-            </div>
-            <div class="info-box" style="margin:20px 30px 0;">
-                <strong>Cohort expansion (August 2026):</strong> This page now reflects the expanded cohort (original
-                1,047 Uzbek + 48redone + GWAS2026 wave 1 + GWAS2026-2 = 1,256 samples total). See
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">cohort expansion integration notes</a>
-                for full methodology. Original cohort results preserved at the archive link above.
+                <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
+                <span class="step-badge step-badge-old">Winter 2025 — Jan 3, 2026</span>
             </div>
         
             <div class="content">
@@ -190,18 +183,18 @@
                             To contextualize the ancestry of the Uzbek samples within global populations, we merge our imputed dataset with the 1000 Genomes Phase 3 reference (GRCh38), then perform global PCA. This step reveals the position of the Uzbek cohort relative to major continental ancestry groups and identifies any potential admixture patterns.
                         </p>
 
-                        <h3 style="margin-top: 20px; color: #333;">Expanded Cohort — August 2026</h3>
+                        <h3 style="margin-top: 20px; color: #333;">Spring 2026</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-value">3,804</div>
+                                <div class="stat-value">3,595</div>
                                 <div class="stat-label">Merged Samples</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">83,091</div>
-                                <div class="stat-label">Common SNPs (PCA)</div>
+                                <div class="stat-value">79,767</div>
+                                <div class="stat-label">Common SNPs</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">1,256</div>
+                                <div class="stat-value">1,047</div>
                                 <div class="stat-label">Uzbek Samples</div>
                             </div>
                             <div class="stat-card">
@@ -210,11 +203,9 @@
                             </div>
                         </div>
                         <div class="info-box">
-                            <strong>Expanded cohort (verified from DRAGEN log, Aug 13 2026):</strong> UZB unique variants: 5,358,770.
-                            KG_reference_final: 83,091 variants. Merged: 1,256 UZB + 2,548 1KG = 3,804 samples;
-                            raw merge (UZB_1kG_merged) has 5,358,904 variants, of which all 83,091 KG_reference_final
-                            sites survive the merge (full retention — no loss during --bmerge, unlike the original run).
-                            <strong>Eigenvalues (PC1&ndash;10):</strong> 173.204, 74.9542, 24.8793, 19.7144, 7.91934, 6.40141, 5.1391, 3.54475, 2.41906, 2.41284.
+                            <strong>Spring 2026:</strong> UZB unique variants: 5,400,328. Common with 1KG (83,664 variants): 79,767 SNPs.
+                            Merged: 1,047 UZB + 2,548 1KG = 3,595 samples × 79,767 variants (genotyping rate 0.9945).
+                            <strong>Eigenvalues (PC1–10):</strong> 170.88, 74.69, 24.92, 19.68, 6.56, 5.18, 3.55, 2.60, 2.42, 2.40.
                         </div>
                     </div>
                 </div>
@@ -231,7 +222,7 @@
                     <tr>
                         <td>Uzbek Data</td>
                         <td><code>UZB_imputed_HQ_unique.{bed,bim,fam}</code></td>
-                        <td>1,256 Uzbek samples, 5.36M variants (unique IDs)</td>
+                        <td>1,047 Uzbek samples, 5.41M variants (unique IDs)</td>
                     </tr>
                     <tr>
                         <td>1000G Reference</td>
@@ -247,7 +238,7 @@
                 
                 <h2>Step 1: Extract Target SNPs from 1000G</h2>
                 <p>
-                    The 1000 Genomes reference contains ~80M variants. To make the merge computationally tractable and ensure proper overlap with our imputed dataset, we extract only the SNPs present in our LD-pruned list (87.6K independent variants, expanded cohort). Because this list changes with the Uzbek cohort's own sample composition, the 1000G extraction is rebuilt fresh for each cohort version — it is not reused verbatim from the original run.
+                    The 1000 Genomes reference contains ~80M variants. To make the merge computationally tractable and ensure proper overlap with our imputed dataset, we extract only the SNPs present in our LD-pruned list (88.7K independent variants).
                 </p>
                 
                 <h3>Prepare Position-Based Extraction</h3>
@@ -301,7 +292,7 @@ plink2 --vcf chr${chr}_subset.vcf.gz \
                 
                 <div class="stat-box">
                     <span class="stat-label">Total 1000G Variants Extracted:</span>
-                    <span class="stat-value"><strong>83,091</strong> (matching expanded-cohort Uzbek LD-pruned set; differs from original run's 83,664 because the LD-pruned set itself differs)</span><br><br>
+                    <span class="stat-value"><strong>83,664</strong> (matching Uzbek LD-pruned set)</span><br><br>
                     <span class="stat-label">1000G Samples:</span>
                     <span class="stat-value"><strong>2,548</strong> (split across 5 superpopulations)</span>
                 </div>
@@ -320,15 +311,15 @@ plink --bfile chr1_ref --merge-list merge_list.txt --make-bed --out KG_reference
                 </div>
                 
                 <div class="command-output">
-Performing single-pass merge (2548 people, 83091 variants).
+Performing single-pass merge (2548 people, 83664 variants).
 Merged fileset written to KG_reference_final-merge.bed + .bim + .fam.
-83091 variants and 2548 people pass filters and QC.
+83664 variants and 2548 people pass filters and QC.
 Note: No phenotypes present.
 --make-bed to KG_reference_final.bed + KG_reference_final.bim + KG_reference_final.fam ... done.
                 </div>
-
+                
                 <div class="success">
-                    <strong>Reference Dataset Ready:</strong> 2,548 1000G samples × 83,091 common variants (expanded cohort)
+                    <strong>Reference Dataset Ready:</strong> 2,548 1000G samples × 83,664 common variants
                 </div>
                 
                 <h2>Step 3: Merge Uzbek Data with 1000G Reference</h2>
@@ -344,38 +335,38 @@ plink --bfile UZB_imputed_HQ_unique --bmerge KG_reference_final \
                 
                 <div class="stat-box">
                     <span class="stat-label">Combined Dataset:</span>
-                    <span class="stat-value">3,804 samples (1,256 UZB + 2,548 1000G)</span><br><br>
-                    <span class="stat-label">Raw Merge Variants:</span>
-                    <span class="stat-value">5,358,904 (UZB_1kG_merged, before intersection)</span><br><br>
+                    <span class="stat-value">3,595 samples (1,047 UZB + 2,548 1000G)</span><br><br>
+                    <span class="stat-label">Common Variants:</span>
+                    <span class="stat-value">77,111 (intersection of LD-pruned set and 1000G reference)</span><br><br>
                     <span class="stat-label">Variants Used for Global PCA:</span>
-                    <span class="stat-value">83,091 (full retention of KG_reference_final sites — unlike the original run, no variants were lost extracting from the merge)</span>
+                    <span class="stat-value">77,111 (common variant intersection)</span>
                 </div>
-
+                
                 <h2>Step 4: Global PCA</h2>
                 <p>
-                    Perform PCA on the merged dataset using the 83.1K common variants. This reveals how the Uzbek samples cluster relative to the five 1000 Genomes superpopulations (AFR, AMR, EAS, EUR, SAS).
+                    Perform PCA on the merged dataset using only the 77.1K common variants. This reveals how the Uzbek samples cluster relative to the five 1000 Genomes superpopulations (AFR, AMR, EAS, EUR, SAS).
                 </p>
-
+                
                 <div class="code-block">
 plink2 --bfile UZB_1kG_merged \
   --extract KG_reference_final.bim \
   --pca 10 \
   --out GLOBAL_PCA \
-  --threads 16
+  --threads 8
                 </div>
-
+                
                 <div class="command-output">
-Start time: Thu Aug 13 01:50:37 2026
-3804 samples (0 females, 0 males, 3804 ambiguous; 3804 founders) loaded from UZB_1kG_merged.fam.
-5358904 variants loaded from UZB_1kG_merged.bim.
---extract: 83091 variants remaining.
+Start time: Sat Jan  3 18:54:11 2026
+3595 samples (0 females, 0 males, 3595 ambiguous; 3595 founders) loaded.
+77111 variants loaded from UZB_1kG_v2_merged.bim.
+77111 variants remaining after main filters.
 Calculating allele frequencies... done.
-83091 variants remaining after main filters.
+77111 variants remaining after main filters.
 Constructing GRM: done.
 Correcting for missingness... done.
 Extracting eigenvalues and eigenvectors... done.
 --pca: Eigenvectors written to GLOBAL_PCA.eigenvec, eigenvalues to GLOBAL_PCA.eigenval.
-End time: Thu Aug 13 01:50:52 2026
+End time: Sat Jan  3 18:54:30 2026
                 </div>
                 
                 <h2>Step 5: Create Population Mapping &amp; Visualization</h2>
@@ -384,44 +375,44 @@ End time: Thu Aug 13 01:50:52 2026
                 </p>
                 
                 <div class="code-block">
-# Expanded cohort: reuse Step 10's already-corrected population mapping
-# (clusters_fixed.txt) instead of rebuilding from the 1000G panel file directly —
-# it already resolves the known 45-sample panel-vs-VCF discrepancy (see Step 10).
-# Format: FID IID POP (UZB/AFR/EUR/EAS/SAS/AMR), 3,759 of 3,804 merged samples
-# mapped (45 unmapped 1000G samples correctly excluded, not defaulted to UZB).
-cp /staging/ALSU-analysis/spring2026/full_expanded_cohort/step10_pbs/clusters_fixed.txt \
-   pop_mapping_expanded.txt
+# Extract population mapping from 1000G panel
+awk 'NR>1 {print $1 "\t" $3}' 1000g_panel.txt > pop_mapping.txt
+
+# Add Uzbek samples labeled as 'UZB'
+awk '{print $2 "\tUZB"}' UZB_imputed_HQ_unique.fam >> pop_mapping.txt
                 </div>
                 
                 <div class="code-block">
+cat << 'EOF' > plot_global_pca.R
 library(ggplot2)
 
+# Load PCA results and population labels
 eigenvec <- read.table("GLOBAL_PCA.eigenvec", header = TRUE, comment.char = "")
-colnames(eigenvec)[1:2] <- c("FID", "IID")
-mapping <- read.table(".../step10_pbs/clusters_fixed.txt",
-                       header = FALSE, col.names = c("FID", "IID", "Group"))
+colnames(eigenvec)[1:2] <- c("Sample", "IID")
+mapping <- read.table("pop_mapping.txt", header = FALSE, col.names = c("Sample", "Group"))
 
-data <- merge(eigenvec, mapping, by = c("FID", "IID"))
-# Merged rows: 3759 of 3804 eigenvec rows (45 unmapped 1000G samples excluded)
+# Merge data
+data <- merge(eigenvec, mapping, by = "Sample")
 
+# Define colors for each superpopulation
 colors <- c("AFR" = "#E41A1C", "AMR" = "#377EB8", "EAS" = "#4DAF4A",
             "EUR" = "#984EA3", "SAS" = "#FF7F00", "UZB" = "black")
 
-eigenval <- read.table("GLOBAL_PCA.eigenval", header = FALSE)
-pve <- (eigenval$V1 / sum(eigenval$V1)) * 100
-
+# Create plot
 ggplot(data, aes(x = PC1, y = PC2, color = Group)) +
   geom_point(alpha = 0.5, size = 1.2) +
   scale_color_manual(values = colors) +
   theme_minimal() +
-  labs(title = "Global PCA: Uzbek Samples vs 1000 Genomes (Expanded Cohort)",
+  labs(title = "Global PCA: Uzbek Samples vs 1000 Genomes",
        subtitle = "Ancestry context (PC1 vs PC2)",
-       x = paste0("PC1 (", round(pve[1], 2), "%)"),
-       y = paste0("PC2 (", round(pve[2], 2), "%)")) +
+       x = "Principal Component 1",
+       y = "Principal Component 2") +
   guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
 
-ggsave("Global_PCA_UZB_expanded.png", width = 10, height = 7, dpi = 300)
-# Output: PC1 54.03%, PC2 23.38%
+ggsave("Global_PCA_UZB.png", width = 10, height = 7, dpi = 300)
+EOF
+
+Rscript plot_global_pca.R
                 </div>
                 
                 <div class="success">
@@ -441,19 +432,13 @@ ggsave("Global_PCA_UZB_expanded.png", width = 10, height = 7, dpi = 300)
                 </div>
                 
                 <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0;">
-                    <img src="../images/Global_PCA_UZB_Expanded.png" alt="Global PCA: Uzbek vs 1000 Genomes (Expanded Cohort)" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
-                    <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Global ancestry analysis showing expanded Uzbek cohort (black, N=1,256) against 1000 Genomes reference populations. Superpopulations: AFR=African, AMR=American, EAS=East Asian, EUR=European, SAS=South Asian. <a href="archive/step8_original_cohort_1047_2026-01.html">View original 1,047-sample plot &rarr;</a></p>
+                    <img src="../images/Global_PCA_UZB.png" alt="Global PCA: Uzbek vs 1000 Genomes" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                    <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Global ancestry analysis showing Uzbek cohort (black) against 1000 Genomes reference populations. Superpopulations: AFR=African, AMR=American, EAS=East Asian, EUR=European, SAS=South Asian</p>
                 </div>
 
                 <h3 style="margin-top: 30px; color: #555;">Detailed PC Combinations</h3>
-                <div class="important">
-                    <strong>Note:</strong> The PC1-PC2 plot above has been regenerated for the expanded cohort. The
-                    5 additional PC-combination plots below (PC1-PC3 through PC4-PC5) have not yet been regenerated
-                    and still show the original 1,047-sample cohort — flagged here rather than silently left
-                    inconsistent with the page's current numbers.
-                </div>
                 <p style="color: #666; margin: 15px 0;">Below are additional PC combinations (PC1-PC2, PC1-PC3, PC2-PC3, PC3-PC4, PC4-PC5) that capture different dimensions of genetic variation and provide a comprehensive view of population structure within the Uzbek cohort.</p>
-
+                
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px; margin: 25px 0;">
                     <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
                         <img src="pca/Global_PCA_UZB_PC1_PC2.png" alt="Global PCA: PC1 vs PC2" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
@@ -517,11 +502,11 @@ ggsave("Global_PCA_UZB_expanded.png", width = 10, height = 7, dpi = 300)
                     </tr>
                     <tr>
                         <td><code>KG_reference_final.{bed,bim,fam}</code></td>
-                        <td>1000G reference (83,091 variants, expanded cohort)</td>
+                        <td>1000G reference (83.6K variants, 77.1K common)</td>
                     </tr>
                     <tr>
                         <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>
-                        <td>Merged Uzbek + 1000G dataset (3,804 samples, 5,358,904 variants)</td>
+                        <td>Merged Uzbek + 1000G dataset</td>
                     </tr>
                     <tr>
                         <td><code>GLOBAL_PCA.eigenvec</code></td>
@@ -532,12 +517,12 @@ ggsave("Global_PCA_UZB_expanded.png", width = 10, height = 7, dpi = 300)
                         <td>PCA eigenvalues</td>
                     </tr>
                     <tr>
-                        <td><code>Global_PCA_UZB_expanded.png</code></td>
-                        <td>Publication-ready plot (PC1 vs PC2 only; other PC combinations not yet regenerated)</td>
+                        <td><code>Global_PCA_UZB.png</code></td>
+                        <td>Publication-ready plot</td>
                     </tr>
                     <tr>
-                        <td><code>step10_pbs/clusters_fixed.txt</code></td>
-                        <td>Sample-to-population mapping (reused from Step 10, already bug-fixed)</td>
+                        <td><code>pop_mapping.txt</code></td>
+                        <td>Sample-to-population mapping</td>
                     </tr>
                 </table>
                     </div>

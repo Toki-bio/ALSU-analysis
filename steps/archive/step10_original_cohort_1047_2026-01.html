@@ -95,19 +95,8 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 10: Multi-Population PBS Analysis</h1>
             <p>Population Branch Statistic to identify Uzbek-specific allele frequency shifts</p>
-            <span class="step-badge">✓ Expanded cohort — August 2026 (1,256 samples)</span>
-            <span class="step-badge step-badge-old">Spring 2026 (1,047 samples) — April 11, 2026</span>
-            <a href="archive/step10_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
-        </div>
-        <div class="info-box" style="margin:20px 30px 0;">
-            <strong>Cohort expansion (August 2026):</strong> This page reflects the expanded cohort (1,256 Uzbek
-            samples). A real bug was also found and fixed this round: the cluster-building script's fallback logic
-            silently classified 45 unmapped 1000G samples as "UZB" rather than excluding them, inflating the UZB
-            group. Fixed with an explicit membership check (excluded entirely, never defaulted). See
-            <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">integration notes</a> for details. Numbers
-            below are the corrected values, verified directly against DRAGEN's actual keep-list/frequency files
-            (not just script log text — one downstream summary file was found to have a stale hardcoded population
-            count left over from before the fix; the underlying computed statistics were confirmed correct).
+            <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
+            <span class="step-badge step-badge-old">Prev. run — Apr 2026</span>
         </div>
 
         <div class="content">
@@ -121,24 +110,25 @@
                 genetic drift.
             </p>
 
-            <h3 style="margin-top: 20px; color: #333;">Expanded Cohort PBS Results (GRCh38)</h3>
+            <h3 style="margin-top: 20px; color: #333;">Spring 2026 PBS Results</h3>
             <div class="info-box">
-                <strong>83,091 SNPs analyzed</strong> (vs 79,767 for the original cohort). Pop sizes (verified directly
-                from keep-list files): UZB=1,256, EUR=503, EAS=504, SAS=489, AFR=660.
+                <strong>79,767 SNPs analyzed</strong> (vs 77,111 in winter). Pop sizes: UZB=1,047, EUR=522, EAS=515, SAS=492, AFR=671.
             </div>
             <table>
-                <tr><th>Metric</th><th>Expanded Cohort</th><th>Original Cohort</th></tr>
-                <tr><td>SNPs analyzed</td><td>83,091</td><td>79,767</td></tr>
-                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.01016</td><td>&minus;0.01001</td></tr>
-                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00605</td><td>&minus;0.00604</td></tr>
-                <tr><td>Max PBS<sub>UZB</sub></td><td>2.7862</td><td>3.01414</td></tr>
-                <tr><td>Tier 1 (PBS&ge;0.3)</td><td>5</td><td>8</td></tr>
+                <tr><th>Metric</th><th>Spring 2026</th><th>Winter 2025</th></tr>
+                <tr><td>SNPs analyzed</td><td>79,767</td><td>77,111</td></tr>
+                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.01001</td><td>&minus;0.00979</td></tr>
+                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00604</td><td>&minus;0.00601</td></tr>
+                <tr><td>Stdev</td><td>0.02677</td><td>0.02648</td></tr>
+                <tr><td>Tier 1 (PBS&ge;0.3)</td><td>8</td><td>8</td></tr>
+                <tr><td>Tier 2 (significant)</td><td>4,995</td><td>1</td></tr>
             </table>
             <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;">
-                <strong>Expanded vs original:</strong> Core PBS statistics (mean, median) are nearly identical after
-                cohort expansion. Tier 1 count dropped from 8 to 5 candidates — this is a genuine observation from the
-                corrected, expanded-cohort run, not yet further investigated; flagged here rather than explained away.
+                <strong>Spring vs Winter:</strong> Core PBS statistics are nearly identical. Same 8 Tier 1 SNPs detected.
+                Tier 2 difference reflects different tier criteria between runs (spring uses &Delta;AF&ge;0.3 threshold).
             </div>
+                genetic drift.
+            </p>
 
             <div class="info-box">
                 <strong>Goal:</strong> Identify SNPs with elevated PBS scores (Uzbek-specific allele frequency
@@ -152,41 +142,31 @@
                 <tr>
                     <td>Merged Dataset</td>
                     <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>
-                    <td>3,804 samples &times; 83,091 LD-pruned SNPs (from <a href="step8.html">Step 8</a>)</td>
+                    <td>3,595 samples &times; 79,767 LD-pruned SNPs (from <a href="step8.html">Step 8</a>)</td>
                 </tr>
                 <tr>
                     <td>Population Mapping</td>
-                    <td><code>clusters_fixed.txt</code></td>
-                    <td>Sample-to-superpopulation assignments, corrected (45 unmapped 1000G samples excluded, not defaulted to UZB)</td>
+                    <td><code>pop_mapping.txt</code></td>
+                    <td>Sample-to-superpopulation assignments (from <a href="step8.html">Step 8</a>)</td>
                 </tr>
             </table>
 
             <h3>Population Panel</h3>
             <table>
                 <tr><th>Population</th><th>Code</th><th>N</th><th>Source</th></tr>
-                <tr><td>Uzbek cohort</td><td><strong>UZB</strong></td><td>1,256</td><td>ALSU QC-passed set (expanded)</td></tr>
-                <tr><td>European</td><td><strong>EUR</strong></td><td>503</td><td>1000 Genomes Phase 3</td></tr>
-                <tr><td>East Asian</td><td><strong>EAS</strong></td><td>504</td><td>1000 Genomes Phase 3</td></tr>
-                <tr><td>South Asian</td><td><strong>SAS</strong></td><td>489</td><td>1000 Genomes Phase 3</td></tr>
-                <tr><td>African</td><td><strong>AFR</strong></td><td>660</td><td>1000 Genomes Phase 3</td></tr>
+                <tr><td>Uzbek cohort</td><td><strong>UZB</strong></td><td>1,047</td><td>ALSU QC-passed set</td></tr>
+                <tr><td>European</td><td><strong>EUR</strong></td><td>522</td><td>1000 Genomes Phase 3</td></tr>
+                <tr><td>East Asian</td><td><strong>EAS</strong></td><td>515</td><td>1000 Genomes Phase 3</td></tr>
+                <tr><td>South Asian</td><td><strong>SAS</strong></td><td>492</td><td>1000 Genomes Phase 3</td></tr>
+                <tr><td>African</td><td><strong>AFR</strong></td><td>671</td><td>1000 Genomes Phase 3</td></tr>
             </table>
 
             <h2>3. Pipeline</h2>
 
             <h3>3.1 Build Population Cluster File</h3>
             <p>Create PLINK cluster assignments from the population mapping and the merged FAM file:</p>
-            <div class="warning">
-                <strong>Bug found and fixed this round:</strong> the fallback branch below (<code>else p="UZB"</code>)
-                silently classified any 1000G sample not found in the population panel as "UZB" — 45 real 1000G
-                individuals were folded into the Uzbek group this way, inflating it from the correct 1,256 to 1,301.
-                Root cause: the GRCh38 1000G VCF has 2,548 samples but the classic v3 population panel only documents
-                2,504. Fixed with an explicit Python membership check (real-UZB-list match &rarr; UZB; else panel
-                match &rarr; that population; else &rarr; excluded entirely, never defaulted). The code block below is
-                shown for historical reference (as originally written); the corrected logic was used to build
-                <code>clusters_fixed.txt</code>, the actual input for the results on this page.
-            </div>
             <div class="code-block">
-# ORIGINAL (buggy) cluster-building logic — see warning above
+# Build PLINK cluster file: FID IID CLUSTER
 awk 'NR==FNR {pop[$1]=$2; next} {
   fid=$1; iid=$2;
   if (iid in pop) p=pop[iid];
@@ -196,16 +176,15 @@ awk 'NR==FNR {pop[$1]=$2; next} {
 }' pop_mapping.txt UZB_1kG_merged.fam > clusters.txt
 
 # Verify population counts
-awk '{print $3}' clusters_fixed.txt | sort | uniq -c | sort -rn</div>
+awk '{print $3}' clusters.txt | sort | uniq -c | sort -rn</div>
 
             <div class="command-output">
-   1256 UZB
-    660 AFR
-    504 EAS
-    503 EUR
-    489 SAS
-    347 AMR
-   (45 unmapped 1000G samples correctly excluded, not defaulted to UZB)</div>
+   1047 UZB
+    671 AFR
+    522 EUR
+    515 EAS
+    492 SAS
+    348 AMR</div>
 
             <h3>3.2 Extract Per-Population Sample Lists</h3>
             <div class="code-block">
@@ -289,60 +268,57 @@ tier3 = (maf_uzb >= 0.05 and              # Near-private: common in UZB,
 python3 02_calculate_pbs.py --outdir ./pbs_results
 
 Loading Fst data...
-  UZB-EUR: 83,091 SNPs
-  UZB-EAS: 83,091 SNPs
-  EUR-EAS: 83,091 SNPs
+  UZB-EUR: 79,767 SNPs
+  UZB-EAS: 79,767 SNPs
+  EUR-EAS: 79,767 SNPs
 Computing PBS...
-  Total SNPs analyzed: 83,091
+  Total SNPs analyzed: 79,767
 
-=== PBS SUMMARY (expanded cohort, verified against DRAGEN files) ===
-  n_snps: 83091
-  mean: -0.010155
-  median: -0.006045
-  max: 2.786152
-  95th percentile: 0.0048
-  99th percentile: 0.0135
-  99.9th percentile: 0.0304
-  n_pbs_ge_03 (Tier 1): 5
-  n_candidates: 5</div>
-            <div class="important">
-                Note: this script's own printed population-count summary (in <code>summary_stats.txt</code>) contains
-                a stale hardcoded label ("UZB n=1199") left over from before the clusters_fixed.txt bug fix above —
-                verified by diffing the actual <code>.frq</code> input files it read against the corrected versions
-                (byte-identical), confirming the <em>computed</em> statistics shown here are correct even though that
-                one printed label is not. Use the Population Panel table in Section 2 for the real counts (UZB=1,256).
-            </div>
+=== PBS SUMMARY ===
+  n_snps: 79767
+  mean: -0.010010
+  median: -0.006040
+  stdev: 0.026770
+  min: -0.419959
+  max: 3.014140
+  n_pbs_ge_03: 8
+  n_pbs_ge_01: 13
+  n_negative: 65539
+  n_tier1: 8
+  n_tier2: 4995
+  n_tier3: 0
+  n_candidates: 8</div>
 
             <h2>4. Results</h2>
 
             <h3>4.1 Pairwise F<sub>ST</sub> (Weighted)</h3>
             <table>
                 <tr><th>Comparison</th><th>Weighted F<sub>ST</sub></th><th>Mean F<sub>ST</sub></th></tr>
-                <tr><td>UZB vs EUR</td><td>0.01498</td><td>0.01028</td></tr>
-                <tr><td>UZB vs EAS</td><td>0.03963</td><td>0.02349</td></tr>
-                <tr><td>EUR vs EAS</td><td>0.08661</td><td>0.05086</td></tr>
-                <tr><td>UZB vs SAS</td><td>0.01445</td><td>0.00989</td></tr>
-                <tr><td>UZB vs AFR</td><td>0.12830</td><td>0.06114</td></tr>
+                <tr><td>UZB vs EUR</td><td>0.01468</td><td>0.01002</td></tr>
+                <tr><td>UZB vs EAS</td><td>0.04010</td><td>0.02393</td></tr>
+                <tr><td>EUR vs EAS</td><td>0.08631</td><td>0.05090</td></tr>
+                <tr><td>UZB vs SAS</td><td>0.01445</td><td>0.00988</td></tr>
+                <tr><td>UZB vs AFR</td><td>0.12907</td><td>0.06153</td></tr>
             </table>
 
             <div class="info-box">
-                <strong>Interpretation:</strong> UZB is genetically closest to EUR (F<sub>ST</sub>=0.0150) and SAS (F<sub>ST</sub>=0.0145),
-                moderately distant from EAS (0.0396), and most distant from AFR (0.1283). Consistent with the original
-                cohort (all values within 0.002) and with PCA positioning (<a href="step8.html">Step 8</a>) showing
-                Uzbeks intermediate between EUR and SAS.
+                <strong>Interpretation:</strong> UZB is genetically closest to EUR (F<sub>ST</sub>=0.014) and SAS (F<sub>ST</sub>=0.014),
+                moderately distant from EAS (0.039), and most distant from AFR (0.129). This is consistent with the PCA
+                positioning (<a href="step8.html">Step 8</a>) showing Uzbeks intermediate between EUR and SAS.
             </div>
 
             <h3>4.2 PBS Summary Statistics</h3>
             <table>
                 <tr><th>Metric</th><th>Value</th></tr>
-                <tr><td>SNPs analyzed</td><td>83,091</td></tr>
-                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.01016</td></tr>
-                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00605</td></tr>
-                <tr><td>Max</td><td>2.78615</td></tr>
-                <tr><td>95th percentile</td><td>0.0048</td></tr>
-                <tr><td>99th percentile</td><td>0.0135</td></tr>
-                <tr><td>99.9th percentile</td><td>0.0304</td></tr>
-                <tr><td>PBS &ge; 0.3 (Tier 1)</td><td>5 SNPs</td></tr>
+                <tr><td>SNPs analyzed</td><td>79,767</td></tr>
+                <tr><td>Mean PBS<sub>UZB</sub></td><td>&minus;0.01001</td></tr>
+                <tr><td>Median PBS<sub>UZB</sub></td><td>&minus;0.00604</td></tr>
+                <tr><td>Standard deviation</td><td>0.02677</td></tr>
+                <tr><td>Min</td><td>&minus;0.41996</td></tr>
+                <tr><td>Max</td><td>3.01414</td></tr>
+                <tr><td>PBS &ge; 0.3 (Tier 1)</td><td>8 SNPs</td></tr>
+                <tr><td>PBS &ge; 0.1</td><td>13 SNPs</td></tr>
+                <tr><td>Negative PBS</td><td>65,539 (82.2%)</td></tr>
             </table>
 
             <p style="margin: 10px 0;">
@@ -361,24 +337,23 @@ Computing PBS...
             </table>
 
             <div class="important">
-                <strong>Observation (expanded cohort, 5 Tier-1 candidates):</strong> The top 2 SNPs (both on
-                chromosome 12) show extremely high PBS values (&gt;2.7) with very low UZB MAF (~3%) compared to high
-                EUR/EAS MAF (~97&ndash;98%). These likely reflect ancestral allele retention rather than positive
-                selection. The remaining 3 candidates (PBS 0.36&ndash;0.53) are more biologically interesting: UZB
-                shows high MAF (~48&ndash;49%) diverging from other populations, most strikingly at 13:104524666
-                where UZB MAF (48.8%) contrasts with &lt;1% in every reference population — a near-private variant
-                pattern worth flagging for follow-up annotation (Step 12).
+                <strong>Observation:</strong> The top 3 SNPs (all on chromosome 12) show extremely high PBS values
+                (&gt;2.5) with very low UZB MAF (~2&ndash;3%) compared to high AFR MAF (~49%). These likely reflect
+                ancestral allele retention rather than positive selection. The more biologically interesting candidates
+                are SNPs 5&ndash;8 (PBS 0.32&ndash;0.53), where UZB shows high MAF (~48%) diverging from other populations.
+                Two additional SNPs (#9&ndash;10) with PBS 0.14&ndash;0.26 provide further candidates for follow-up.
             </div>
 
             <h2>5. Output Files</h2>
             <table>
                 <tr><th>File</th><th>Description</th></tr>
-                <tr><td><code>clusters_fixed.txt</code></td><td>Population cluster file, corrected (FID IID POP)</td></tr>
-                <tr><td><code>freq_{UZB,EUR,EAS,SAS,AFR}_fixed.frq</code></td><td>Per-population allele frequencies</td></tr>
-                <tr><td><code>fst_{POP1}_{POP2}_fixed.fst</code></td><td>Per-SNP pairwise F<sub>ST</sub> (5 pairs)</td></tr>
-                <tr><td><code>pbs_results/pbs_results.tsv</code></td><td>PBS scores for all 83,091 SNPs</td></tr>
-                <tr><td><code>pbs_results/uzbek_specific_snps.tsv</code></td><td>Tier 1 candidate SNPs (5 SNPs)</td></tr>
-                <tr><td><code>pbs_results/summary_stats.txt</code></td><td>Summary statistics (population-count label is stale — see Section 3.5 note; computed stats are correct)</td></tr>
+                <tr><td><code>clusters.txt</code></td><td>Population cluster file (FID IID POP)</td></tr>
+                <tr><td><code>freq_{UZB,EUR,EAS,SAS,AFR}.frq</code></td><td>Per-population allele frequencies</td></tr>
+                <tr><td><code>fst_{POP1}_{POP2}.fst</code></td><td>Per-SNP pairwise F<sub>ST</sub> (5 pairs)</td></tr>
+                <tr><td><code>pbs_all.tsv</code></td><td>PBS scores for all 79,767 SNPs</td></tr>
+                <tr><td><code>pbs_candidates.json</code></td><td>Filtered candidate SNPs (Tier 1/2/3)</td></tr>
+                <tr><td><code>pbs_stats.json</code></td><td>Summary statistics</td></tr>
+                <tr><td><code>pbs_histogram.json</code></td><td>PBS distribution for plotting</td></tr>
             </table>
 
             <h2>6. Next Steps</h2>
@@ -393,15 +368,17 @@ Computing PBS...
 </div>
 
 <script>
-// Expanded cohort (1,256 UZB samples), verified directly against DRAGEN
-// pbs_results/uzbek_specific_snps.tsv, Aug 13 2026. Only 5 Tier-1 (PBS>=0.3)
-// candidates in the expanded cohort vs 8 in the original — see Section 1 note.
 const TOP = [
-    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.786152, uzb: 0.03272, eur: 0.98012, eas: 0.97222, sas: 0.22390, afr: 0.51140 },
-    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.778998, uzb: 0.03339, eur: 0.98111, eas: 0.97222, sas: 0.23820, afr: 0.51290 },
-    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.528804, uzb: 0.48200, eur: 0.99006, eas: 0.98214, sas: 0.53580, afr: 0.66890 },
-    { snp: "13:104524666:T:C", chr: "13", bp: 104524666, pbs: 0.504084, uzb: 0.48790, eur: 0.00696, eas: 0.00298, sas: 0.00102, afr: 0.00682 },
-    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.358524, uzb: 0.47840, eur: 0.09145, eas: 0.02877, sas: 0.11760, afr: 0.01667 }
+    { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 3.01414, uzb: 0.01868, eur: 0.02778, eas: 0.04078, sas: 0.2185, afr: 0.4888 },
+    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.686098, uzb: 0.03209, eur: 0.02874, eas: 0.04078, sas: 0.2287, afr: 0.4896 },
+    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6559, uzb: 0.03386, eur: 0.02778, eas: 0.04078, sas: 0.2429, afr: 0.4881 },
+    { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.143402, uzb: 0.01471, eur: 0.4875, eas: 0.2165, sas: 0.1606, afr: 0.1654 },
+    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.53147, uzb: 0.4875, eur: 0.01054, eas: 0.02621, sas: 0.4614, afr: 0.3338 },
+    { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.488537, uzb: 0.4790, eur: 0.01149, eas: 0.02039, sas: 0.3872, afr: 0.1610 },
+    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.377781, uzb: 0.4787, eur: 0.08812, eas: 0.02913, sas: 0.1169, afr: 0.01639 },
+    { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.323517, uzb: 0.4834, eur: 0.1236, eas: 0.06117, sas: 0.1626, afr: 0.3219 },
+    { snp: "1:38462003:A:C", chr: "1", bp: 38462003, pbs: 0.25804, uzb: 0.4320, eur: 0.1178, eas: 0.06796, sas: 0.09553, afr: 0.2943 },
+    { snp: "5:9480094:A:G", chr: "5", bp: 9480094, pbs: 0.143427, uzb: 0.4481, eur: 0.1772, eas: 0.3515, sas: 0.1890, afr: 0.3517 }
 ];
 
 document.getElementById('top').innerHTML = TOP.map((r, i) => `

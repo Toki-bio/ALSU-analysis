@@ -94,28 +94,21 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 13: LD Analysis</h1>
             <p>Linkage disequilibrium clumping of PBS candidates and genome-wide LD decay estimation</p>
-            <span class="step-badge">✓ Expanded cohort — August 2026 (1,256 samples)</span>
-            <span class="step-badge step-badge-old">Original cohort (1,047 samples) — March 2026</span>
-            <a href="archive/step13_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
-        </div>
-        <div class="info-box" style="margin:20px 30px 0;">
-            <strong>Cohort expansion (August 2026):</strong> This page reflects the expanded cohort. Step 10's PBS
-            candidate list changed from 8 to 5 Tier-1 SNPs after the population-mislabeling bug fix (see
-            <a href="step10.html">Step 10</a>), so this page now analyzes 5 candidates, not 8.
+            <span class="step-badge">Completed &mdash; March 2026</span>
         </div>
 
         <div class="content">
 
             <h2>1. Overview</h2>
             <p>
-                To determine whether the 5 PBS candidate SNPs from <a href="step10.html">Step 10</a> (expanded
-                cohort) represent independent signals (rather than being in linkage disequilibrium with each other),
-                we perform LD clumping. Additionally, we estimate genome-wide LD decay to characterize the extent of
+                To determine whether the 8 PBS candidate SNPs from <a href="step10.html">Step 10</a> represent
+                independent signals (rather than being in linkage disequilibrium with each other), we perform
+                LD clumping. Additionally, we estimate genome-wide LD decay to characterize the extent of
                 haplotype structure in the Uzbek population.
             </p>
 
             <div class="info-box">
-                <strong>Goal:</strong> (1) Identify how many of the 5 PBS candidates are truly independent signals,
+                <strong>Goal:</strong> (1) Identify how many of the 8 PBS candidates are truly independent signals,
                 and (2) characterize the LD landscape of the Uzbek population for future fine-mapping analyses.
             </div>
 
@@ -123,19 +116,19 @@
             <table>
                 <tr><th>Input</th><th>Source</th><th>Description</th></tr>
                 <tr>
-                    <td><code>pbs_results/uzbek_specific_snps.tsv</code></td>
+                    <td><code>pbs_candidates.json</code></td>
                     <td><a href="step10.html">Step 10</a></td>
-                    <td>5 PBS candidate SNPs (expanded cohort)</td>
+                    <td>8 PBS candidate SNPs</td>
                 </tr>
                 <tr>
                     <td><code>UZB_1kG_merged.{bed,bim,fam}</code></td>
                     <td><a href="step8.html">Step 8</a></td>
-                    <td>Merged dataset for LD reference (3,804 samples &times; 83,091 SNPs)</td>
+                    <td>Merged dataset for LD reference (3,595 samples &times; 77,111 SNPs)</td>
                 </tr>
                 <tr>
-                    <td><code>UZB_imputed_HQ_qc.{bed,bim,fam}</code></td>
-                    <td><a href="step7.html">Step 7</a></td>
-                    <td>Uzbek QC-passed dataset for LD decay (1,256 samples &times; 5.36M SNPs)</td>
+                    <td><code>UZB_v2_qc.{bed,bim,fam}</code></td>
+                    <td><a href="step6.html">Step 6</a></td>
+                    <td>Uzbek QC-passed dataset for LD decay (1,047 samples &times; 5.41M SNPs)</td>
                 </tr>
             </table>
 
@@ -170,13 +163,13 @@ plink --bfile UZB_1kG_merged \
       --out pbs_clumped</div>
 
             <div class="command-output">
-5 variants loaded from pbs_clump_pval.txt.
-5 clumps formed from 5 top variants.
+8 variants loaded from pbs_clump_pval.txt.
+8 clumps formed from 8 top variants.
 Results written to pbs_clumped.clumped.</div>
 
             <h3>3.2 Pairwise LD Among Candidates</h3>
             <p>
-                Compute pairwise r&sup2; among all 5 PBS candidates to verify independence. Only pairs with
+                Compute pairwise r&sup2; among all 8 PBS candidates to verify independence. Only pairs with
                 r&sup2; &ge; 0.1 within &plusmn;5000 kb are reported:
             </p>
             <div class="code-block">
@@ -195,7 +188,7 @@ plink --bfile UZB_1kG_merged \
       --out pbs_ld</div>
 
             <div class="success">
-                <strong>Result:</strong> 0 pairs with r&sup2; &ge; 0.1 &mdash; all 5 PBS candidates are in independent loci.
+                <strong>Result:</strong> 0 pairs with r&sup2; &ge; 0.1 &mdash; all 8 PBS candidates are in independent loci.
             </div>
 
             <h3>3.3 Genome-Wide LD Decay</h3>
@@ -209,11 +202,11 @@ plink --bfile UZB_1kG_merged \
 # shuf -n 3000: randomly select 3,000 lines from stdin
 # --random-source=&lt;(yes 42): deterministic pseudo-random seed for reproducibility
 #   (process substitution feeds infinite "42\n" as entropy source to shuf)
-awk '{print $2}' UZB_imputed_HQ_qc.bim | shuf -n 3000 --random-source=&lt;(yes 42) > decay_snps.txt
+awk '{print $2}' UZB_v2_qc.bim | shuf -n 3000 --random-source=&lt;(yes 42) > decay_snps.txt
 
 # Compute pairwise r² (all pairs within 2 Mb, report all r² including 0)
 # --ld-window-r2 0.0: report ALL pairs including r²=0 (needed for unbiased decay curve)
-plink --bfile UZB_imputed_HQ_qc \
+plink --bfile UZB_v2_qc \
       --extract decay_snps.txt \
       --r2 \
       --ld-window-kb 2000 \
@@ -247,7 +240,7 @@ awk 'NR>1 {                                    # NR>1: skip header row
             </table>
 
             <div class="info-box">
-                <strong>Interpretation:</strong> All 5 PBS candidates reside on separate chromosomes or are
+                <strong>Interpretation:</strong> All 8 PBS candidates reside on separate chromosomes or are
                 far enough apart (with r&sup2; &lt; 0.1) to represent independent loci. This rules out a single
                 large-effect haplotype driving multiple apparent signals.
             </div>
@@ -255,7 +248,7 @@ awk 'NR>1 {                                    # NR>1: skip header row
             <h3>4.2 LD Decay</h3>
             <p>
                 Mean r&sup2; by genomic distance (50 kb bins), computed from 3,000 sampled SNPs in the
-                Uzbek QC-passed dataset (1,256 samples, expanded cohort):
+                Uzbek QC-passed dataset (1,047 samples):
             </p>
             <table>
                 <thead>
@@ -265,11 +258,9 @@ awk 'NR>1 {                                    # NR>1: skip header row
             </table>
 
             <div class="success">
-                <strong>LD Decay Summary:</strong> r&sup2; drops from 0.207 at 0&ndash;50 kb to 0.069 at 50&ndash;100 kb
-                (a 3.0-fold drop), reaching background levels (~0.0015) by 1,500 kb. Faster background decay and a
-                higher starting r&sup2; than the original cohort (0.175&rarr;0.040, 4.4-fold), consistent with
-                increased sample size improving short-range LD estimation precision. Pattern still consistent with
-                the admixed Central Asian population history, where multiple ancestral sources contribute
+                <strong>LD Decay Summary:</strong> r&sup2; drops from 0.175 at 0&ndash;50 kb to 0.040 at 50&ndash;100 kb
+                (a 4.4-fold drop), reaching background levels (~0.002) by 500 kb. This rapid decay is consistent
+                with the admixed Central Asian population history, where multiple ancestral sources contribute
                 heterogeneous haplotype blocks.
             </div>
 
@@ -294,30 +285,28 @@ awk 'NR>1 {                                    # NR>1: skip header row
 </div>
 
 <script>
-// Expanded cohort (1,256 UZB samples), verified directly against DRAGEN
-// pbs_clumped.clumped and uzbek_specific_snps.tsv, Aug 13 2026.
 const LOCI = [
-    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.786152, maf: 0.03272 },
-    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.778998, maf: 0.03339 },
-    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.528804, maf: 0.48200 },
-    { snp: "13:104524666:T:C", chr: "13", bp: 104524666, pbs: 0.504084, maf: 0.48790 },
-    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.358524, maf: 0.47840 }
+    { snp: "12:22967890:G:T", chr: "12", bp: 22967890, pbs: 2.9884501205, maf: 0.0196 },
+    { snp: "12:125520190:C:T", chr: "12", bp: 125520190, pbs: 2.6867358284, maf: 0.03206 },
+    { snp: "12:5664803:T:G", chr: "12", bp: 5664803, pbs: 2.6689319647, maf: 0.0332 },
+    { snp: "11:20665570:T:G", chr: "11", bp: 20665570, pbs: 1.1429295551, maf: 0.01472 },
+    { snp: "5:53879140:C:A", chr: "5", bp: 53879140, pbs: 0.5306474838, maf: 0.4880 },
+    { snp: "3:133749168:A:G", chr: "3", bp: 133749168, pbs: 0.4878184910, maf: 0.4785 },
+    { snp: "11:207698:C:T", chr: "11", bp: 207698, pbs: 0.3799007588, maf: 0.4801 },
+    { snp: "10:8512594:G:A", chr: "10", bp: 8512594, pbs: 0.3228614158, maf: 0.4829 }
 ];
 
-// Expanded cohort LD decay, computed directly from ld_decay.ld (183,662 pairs),
-// binned identically to the original (50kb windows, awk aggregation), verified
-// against DRAGEN, Aug 13 2026.
 const DECAY = [
-    { kb: 0, r2: 0.207294, n: 23103 },
-    { kb: 50, r2: 0.068812, n: 17082 },
-    { kb: 100, r2: 0.037531, n: 14192 },
-    { kb: 150, r2: 0.024938, n: 12758 },
-    { kb: 200, r2: 0.017152, n: 12111 },
-    { kb: 250, r2: 0.012232, n: 11161 },
-    { kb: 500, r2: 0.004587, n: 6465 },
-    { kb: 1000, r2: 0.002277, n: 1531 },
-    { kb: 1500, r2: 0.001604, n: 875 },
-    { kb: 1950, r2: 0.001500, n: 467 }
+    { kb: 0, r2: 0.1753, n: 642417 },
+    { kb: 50, r2: 0.0396, n: 544497 },
+    { kb: 100, r2: 0.0182, n: 542379 },
+    { kb: 150, r2: 0.0129, n: 511633 },
+    { kb: 200, r2: 0.0078, n: 506290 },
+    { kb: 250, r2: 0.0053, n: 476312 },
+    { kb: 500, r2: 0.0022, n: 427722 },
+    { kb: 1000, r2: 0.0015, n: 425126 },
+    { kb: 1500, r2: 0.0015, n: 393868 },
+    { kb: 2000, r2: 0.0015, n: 6 }
 ];
 
 document.getElementById('loci').innerHTML = LOCI.map((r, i) => `

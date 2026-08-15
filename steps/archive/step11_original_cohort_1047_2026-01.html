@@ -202,116 +202,14 @@ STILL OUTSTANDING (as of this writing):
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 11: Global ADMIXTURE with 1000 Genomes</h1>
             <p>Unsupervised ancestry decomposition of the Uzbek cohort with continental reference populations</p>
-            <span class="step-badge" style="background:rgba(76,175,80,0.35);">&#9989; Expanded cohort — August 2026 (1,256 samples, full parity complete)</span>
-            <span class="step-badge step-badge-old">Original cohort (1,047 samples) — April 11, 2026</span>
-            <a href="archive/step11_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:8px;color:rgba(255,255,255,0.8);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
+            <span class="step-badge" style="background:rgba(76,175,80,0.35);">&#9989; Data-cleanup update complete — Aug 2026 (stability check in progress)</span>
+            <span class="step-badge step-badge-old">Original run — Spring 2026 (April 11, 2026)</span>
+            <span class="step-badge step-badge-old">Prev. run — Mar 2026</span>
         </div>
 
         <div class="content">
 
-            <!-- ═══════ EXPANDED COHORT RESULTS (Aug 2026) ═══════ -->
-            <h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
-
-            <div class="success">
-                <strong>Full methodological parity achieved</strong> with the original cohort's verification standard:
-                global panel (Uzbek+1000G, B2/B4-corrected, 5 independent seeds) + standalone Uzbek-only panel
-                (single seed, matching original scope) + sNMF cross-validation on both panels. All jobs completed
-                cleanly on DRAGEN, Aug 13&ndash;14 2026. See
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">integration notes</a> for full methodology,
-                and <a href="#uzbek-only-validation">Section 3.3</a> below for why the 5-seed check is scoped to the
-                global panel only, not Uzbek-only.
-            </div>
-
-            <h3>0.1 Global panel — CV error, 5 independent seeds (43&ndash;47)</h3>
-            <table>
-                <tr><th>K</th><th>Seed 43</th><th>Seed 44</th><th>Seed 45</th><th>Seed 46</th><th>Seed 47</th><th>Spread</th></tr>
-                <tr><td>2</td><td>0.33627</td><td>0.33627</td><td>0.33628</td><td>0.33627</td><td>0.33628</td><td>0.00001</td></tr>
-                <tr><td>3</td><td>0.32552</td><td>0.32552</td><td>0.32552</td><td>0.32552</td><td>0.32552</td><td>0.00000</td></tr>
-                <tr><td>4</td><td>0.32259</td><td>0.32259</td><td>0.32259</td><td>0.32259</td><td>0.32258</td><td>0.00001</td></tr>
-                <tr><td>5</td><td>0.32052</td><td>0.32052</td><td>0.32052</td><td>0.32051</td><td>0.32052</td><td>0.00001</td></tr>
-                <tr><td>6</td><td>0.32000</td><td>0.32001</td><td>0.32001</td><td>0.32000</td><td>0.32000</td><td>0.00001</td></tr>
-                <tr><td>7</td><td>0.31979</td><td>0.31998</td><td>0.31979</td><td>0.31984</td><td>0.31984</td><td>0.00019</td></tr>
-                <tr style="background:#e8f5e9;font-weight:600;"><td>8</td><td>0.31962</td><td>0.31962</td><td>0.31962</td><td>0.31963</td><td>0.31963</td><td>0.00001</td></tr>
-            </table>
-            <p style="font-size:0.9em;">
-                Same pattern as the original cohort: K=8 scores lowest but K=5&ndash;6 are equally stable, and K=7
-                shows the most run-to-run spread of the useful range (0.00019, vs &le;0.00001 elsewhere) &mdash;
-                its "improvement" over K=6 is not trustworthy on stability grounds alone, mirroring the original's
-                finding about K=8.
-            </p>
-
-            <h3>0.2 sNMF cross-validation (both panels)</h3>
-            <table>
-                <tr><th>Panel</th><th>K</th><th>Mean component correlation</th><th>Range</th></tr>
-                <tr><td rowspan="3">Global</td><td>3</td><td>0.9994</td><td>0.9992&ndash;0.9997</td></tr>
-                <tr><td>5</td><td>0.9986</td><td>0.9974&ndash;0.9996</td></tr>
-                <tr><td>7</td><td>0.8286</td><td>0.3102&ndash;0.9994</td></tr>
-                <tr><td rowspan="4">Uzbek-only</td><td>2</td><td>0.9975</td><td>0.9975&ndash;0.9975</td></tr>
-                <tr><td>3</td><td>0.9837</td><td>0.9766&ndash;0.9912</td></tr>
-                <tr><td>4</td><td>0.8781</td><td>0.7645&ndash;0.9814</td></tr>
-                <tr><td>5</td><td>0.4219</td><td>0.1852&ndash;0.9134</td></tr>
-            </table>
-            <p style="font-size:0.9em;">
-                Global panel: near-perfect agreement through K=5, collapsing by K=7 &mdash; same qualitative pattern
-                as the original (K=3 r=0.9989, K=5 r=0.9983, K=7 r=0.7075), slightly higher correlations throughout.
-                Uzbek-only: agreement collapses even more sharply past K=2&ndash;3 than the original did (K=5 r=0.42
-                vs original's 0.80) &mdash; if anything, stronger evidence that K=2 is the only trustworthy number for
-                within-Uzbek structure.
-            </p>
-
-            <h3>0.3 Uzbek-only ADMIXTURE — CV error (single seed, K=2&ndash;8)</h3>
-            <table>
-                <tr><th>K</th><th>CV error</th></tr>
-                <tr style="background:#e8f5e9;font-weight:600;"><td>2</td><td>0.26461 &larr; minimum</td></tr>
-                <tr><td>3</td><td>0.26494</td></tr>
-                <tr><td>4</td><td>0.26562</td></tr>
-                <tr><td>5</td><td>0.26664</td></tr>
-                <tr><td>6</td><td>0.26735</td></tr>
-                <tr><td>7</td><td>0.26855</td></tr>
-                <tr><td>8</td><td>0.26974</td></tr>
-            </table>
-            <p style="font-size:0.9em;">
-                Monotonically increasing from K=2, same as the original (K=2 minimum both times) &mdash; confirms no
-                significant internal Uzbek substructure beyond the two-way EUR/EAS cline, reproduced in the expanded
-                cohort. Panel: 1,256 samples &times; 295,815 SNPs (QC + <code>--indep-pairwise 50 10 0.1</code>, same
-                recipe as the original, comparable scale to the original's 294,597 for 1,047 samples).
-            </p>
-
-            <h3>0.4 K=5 Ancestry Composition (Global Panel, Expanded Cohort)</h3>
-            <div class="important">
-                Component numbering (Q1&ndash;Q5) is <strong>not</strong> the same assignment as the original cohort's
-                run &mdash; ADMIXTURE's column order is not guaranteed consistent between runs ("label switching",
-                already documented below for the original). Assignments here were verified fresh by cross-referencing
-                each component's dominant population, not assumed to match the original's Q-numbering.
-            </div>
-            <table>
-                <tr><th>Component</th><th>Dominant in</th><th>Interpretation</th></tr>
-                <tr><td>Q1</td><td>EAS (99.55%)</td><td>East Asian</td></tr>
-                <tr><td>Q2</td><td>SAS (89.23%)</td><td>South Asian</td></tr>
-                <tr><td>Q3</td><td>AMR (42.55%, shared with Q5)</td><td>Americas-linked</td></tr>
-                <tr><td>Q4</td><td>AFR (95.54%)</td><td>African</td></tr>
-                <tr><td>Q5</td><td>EUR (96.21%), UZB (48.63%)</td><td>European / West Eurasian</td></tr>
-            </table>
-            <table>
-                <tr><th>Component</th><th>Ancestry</th><th>Uzbek Mean (expanded)</th><th>Uzbek Mean (original)</th></tr>
-                <tr><td>Q5</td><td>European / West Eurasian</td><td><strong>48.63%</strong></td><td>47.3%</td></tr>
-                <tr><td>Q1</td><td>East Asian</td><td><strong>28.52%</strong></td><td>28.5%</td></tr>
-                <tr><td>Q2</td><td>South Asian</td><td><strong>19.67%</strong></td><td>20.1%</td></tr>
-                <tr><td>Q3</td><td>Americas-linked</td><td>2.90%</td><td>3.6%</td></tr>
-                <tr><td>Q4</td><td>African</td><td>0.28%</td><td>0.6%</td></tr>
-            </table>
-            <p style="font-size:0.9em;">
-                Near-identical to the original cohort at every component (largest change: African component 0.6%&rarr;0.28%,
-                still effectively absent either way). Confirms the ancestry picture is robust to the cohort expansion.
-            </p>
-
-            <hr class="section-divider" style="margin:30px 0;">
-            <p style="font-size:0.85em;color:#888;text-align:center;">
-                The sections below (1 onward) document the original cohort's B2/B4 methodology correction in full
-                detail, preserved for provenance. Numbers in those sections are the <strong>original 1,047-sample
-                cohort's</strong> results, not yet superseded in their own text — Section 0 above is the current,
-                expanded-cohort reference.
-            </p>
+            
 
             <!-- 1. OVERVIEW -->
             <h2>1. Overview</h2>

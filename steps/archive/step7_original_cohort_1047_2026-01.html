@@ -112,17 +112,8 @@
                 <a href="../pca_viewer_enhanced.html" style="display:inline-block;margin-left:12px;padding:6px 14px;background:#1976d2;color:white;border-radius:4px;text-decoration:none;font-size:0.9em;font-weight:600;">&#128269; Open Interactive PCA Viewer</a>
                 <h1>Step 7: Local PCA on Uzbek Cohort</h1>
                 <p>Population structure analysis and visualization through principal component analysis</p>
-                <span class="step-badge">✓ Expanded cohort — August 2026 (1,256 samples)</span>
-                <span class="step-badge step-badge-old">Spring 2026 (1,047 samples) — April 11, 2026</span>
-                <a href="archive/step7_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
-            </div>
-            <div class="info-box" style="margin:20px 30px 0;">
-                <strong>Cohort expansion (August 2026):</strong> This page now reflects the expanded cohort — the
-                original 1,047-sample Uzbek cohort plus 48redone (chip-failure rescans), GWAS2026 wave 1, and
-                GWAS2026-2 (209 additional samples), all merged, imputed, and QC'd together (see
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">cohort expansion integration notes</a>
-                for full methodology). Numbers below are for the expanded cohort only; the original cohort's results
-                are preserved unchanged at the archive link above for comparison.
+                <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
+                <span class="step-badge step-badge-old">Winter 2025 — Jan 3–4, 2026</span>
             </div>
         
             <div class="content">
@@ -133,30 +124,29 @@
                         Perform standard post-imputation quality control, LD pruning, and Principal Component Analysis (PCA) on the Uzbek samples only to visualize internal population structure and validate data quality before downstream association studies.
                     </p>
 
-                    <h3 style="margin-top: 20px; color: #333;">Expanded Cohort — August 2026</h3>
+                    <h3 style="margin-top: 20px; color: #333;">Spring 2026</h3>
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value">1,268</div>
+                            <div class="stat-value">1,090</div>
                             <div class="stat-label">Input Samples</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">1,256</div>
+                            <div class="stat-value">1,047</div>
                             <div class="stat-label">After --mind 0.05</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">5,358,770</div>
+                            <div class="stat-value">5,400,328</div>
                             <div class="stat-label">QC Variants</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">87,573</div>
+                            <div class="stat-value">88,810</div>
                             <div class="stat-label">LD-Pruned SNPs</div>
                         </div>
                     </div>
                     <div class="info-box">
-                        <strong>Expanded cohort QC (verified directly from DRAGEN logs, Aug 13 2026):</strong> 12 samples removed by --mind 0.05
-                        (1,268 &rarr; 1,256); 2,396,697 variants removed by --geno 0.05; 2,053,297 by --maf 0.01
-                        (9,808,764 &rarr; 5,358,770). LD pruning (--indep-pairwise 1000kb 1 0.05) retained 87,573 of 5,358,770.
-                        <strong>Eigenvalues (PC1&ndash;10):</strong> 6.44213, 3.43372, 2.28107, 1.62824, 1.60785, 1.57861, 1.38029, 1.36192, 1.35567, 1.35077.
+                        <strong>Spring 2026 QC:</strong> 43 samples removed by --mind 0.05; 2,405,299 variants removed by --geno 0.05;
+                        2,176,187 by --maf 0.01. LD pruning (--indep-pairwise 1000kb 1 0.05) retained 88,810 of 5,400,328.
+                        <strong>Eigenvalues (PC1–10):</strong> 5.867, 3.265, 2.141, 1.693, 1.628, 1.594, 1.430, 1.396, 1.326, 1.323.
                     </div>
                 </div>
             </div>
@@ -171,9 +161,9 @@
                     <th>Description</th>
                 </tr>
                 <tr>
-                    <td>Input (post-Step-6)</td>
-                    <td><code>UZB_imputed_HQ_clean.{bed,bim,fam}</code></td>
-                    <td>Imputed, R&sup2;/MAF-filtered expanded-cohort data (9,808,764 variants, 1,268 samples)</td>
+                    <td>Input VCF</td>
+                    <td><code>UZB_imputed_HQ_clean_ALL.vcf.gz</code></td>
+                    <td>Imputed data (10.1M variants, 1,074 samples)</td>
                 </tr>
                 <tr>
                     <td>Reference</td>
@@ -194,7 +184,7 @@
                 </tr>
                 <tr>
                     <td><code>UZB_imputed_HQ_qc.{bed,bim,fam}</code></td>
-                    <td>QC-filtered dataset (1,256 samples, 5.36M variants)</td>
+                    <td>QC-filtered dataset (1,047 samples, 5.41M variants)</td>
                 </tr>
                 <tr>
                     <td><code>UZB_imputed_HQ_unique.{bed,bim,fam}</code></td>
@@ -202,7 +192,7 @@
                 </tr>
                 <tr>
                     <td><code>UZB_pruned.prune.in / .prune.out</code></td>
-                    <td>LD pruning results (87.6K independent SNPs)</td>
+                    <td>LD pruning results (88.7K independent SNPs)</td>
                 </tr>
                 <tr>
                     <td><code>UZB_final_pca.eigenvec</code></td>
@@ -220,15 +210,6 @@
                 </div>
             </div>
             
-            <div class="important" style="margin-top:20px;">
-                <strong>Steps 1&ndash;2 below (VCF&rarr;PLINK conversion validation) are preserved from the original
-                cohort's run and describe one-time pipeline-validation methodology, not re-run for the expanded
-                cohort — the conversion/alignment approach is identical, only sample/variant counts differ (see
-                Overview above for expanded-cohort counts). Sample counts and command output shown in Steps 1&ndash;2
-                below (1,074 samples, 10.1M variants) are the <em>original</em> cohort's numbers, kept for
-                methodology documentation.
-            </div>
-
             <h2 class="section-header">Step 1: Data Validation (Test Run)</h2>
             <p>Before processing the full dataset, a validation test was performed on chromosome 19 to confirm:</p>
             <ul>
@@ -410,19 +391,18 @@ plink2 --bfile UZB_imputed_HQ_clean \
             </table>
             
             <div class="stat-box">
-                <strong>Expanded cohort (verified from DRAGEN log, Aug 13 2026):</strong><br><br>
                 <span class="stat-label">Samples Removed (--mind):</span>
-                <span class="stat-value">12 (high missingness)</span><br><br>
+                <span class="stat-value">27 (high missingness)</span><br><br>
                 <span class="stat-label">Samples Remaining:</span>
-                <span class="stat-value">1,256</span><br><br>
+                <span class="stat-value">1,047</span><br><br>
                 <span class="stat-label">Variants Removed (--geno):</span>
-                <span class="stat-value">2,396,697</span><br><br>
+                <span class="stat-value">2,402,057</span><br><br>
                 <span class="stat-label">Variants Removed (--maf):</span>
-                <span class="stat-value">2,053,297</span><br><br>
+                <span class="stat-value">2,270,994</span><br><br>
                 <span class="stat-label">Variants Remaining:</span>
-                <span class="stat-value">5,358,770</span><br><br>
+                <span class="stat-value">5,405,898</span><br><br>
                 <span class="stat-label">Runtime:</span>
-                <span class="stat-value">~4 seconds (00:31:08 → 00:31:12)</span>
+                <span class="stat-value">~5 seconds (14:56:19 → 14:56:24)</span>
             </div>
             
             <h2 class="section-header">Step 4: Unique Variant ID Assignment</h2>
@@ -447,9 +427,11 @@ plink2 --bfile UZB_imputed_HQ_qc \
             
             <div class="stat-box">
                 <span class="stat-label">Variants Processed:</span>
-                <span class="stat-value">5,358,770</span><br><br>
+                <span class="stat-value">5,405,898</span><br><br>
                 <span class="stat-label">ID Format:</span>
-                <span class="stat-value">CHR:POS:REF:ALT</span>
+                <span class="stat-value">CHR:POS:REF:ALT</span><br><br>
+                <span class="stat-label">Runtime:</span>
+                <span class="stat-value">~1 second (15:00:51 → 15:00:52)</span>
             </div>
             
             <h2 class="section-header">Step 5: LD Pruning</h2>
@@ -496,17 +478,17 @@ plink2 --bfile UZB_imputed_HQ_unique \
             
             <div class="stat-box">
                 <span class="stat-label">Input Variants:</span>
-                <span class="stat-value">5,358,770</span><br><br>
+                <span class="stat-value">5,405,898</span><br><br>
                 <span class="stat-label">Variants Removed:</span>
-                <span class="stat-value">5,271,197</span><br><br>
+                <span class="stat-value">5,317,176</span><br><br>
                 <span class="stat-label">Independent Variants (prune.in):</span>
-                <span class="stat-value"><strong>87,573</strong></span><br><br>
+                <span class="stat-value"><strong>88,722</strong></span><br><br>
                 <span class="stat-label">Runtime:</span>
-                <span class="stat-value">~2 seconds (00:31:14 → 00:31:16)</span>
+                <span class="stat-value">~3 seconds (15:01:04 → 15:01:07)</span>
             </div>
-
+            
             <div class="success">
-                <strong>Pruning Reduction:</strong> 5.36M → 87.6K variants (98.4% reduction) preserves population structure
+                <strong>Pruning Reduction:</strong> 5.41M → 88.7K variants (98.4% reduction) preserves population structure
             </div>
             
             <h2 class="section-header">Step 6: Principal Component Analysis (PCA)</h2>
@@ -529,19 +511,19 @@ plink2 --bfile UZB_imputed_HQ_unique \
                 <span class="stat-label">Number of Components:</span>
                 <span class="stat-value">10 (PC1–PC10)</span><br><br>
                 <span class="stat-label">Samples Analyzed:</span>
-                <span class="stat-value">1,256</span><br><br>
+                <span class="stat-value">1,047</span><br><br>
                 <span class="stat-label">Variants Used:</span>
-                <span class="stat-value">87,573 (independent SNPs)</span><br><br>
+                <span class="stat-value">88,722 (independent SNPs)</span><br><br>
                 <span class="stat-label">Variance Explained (PC1):</span>
-                <span class="stat-value">28.74%</span><br><br>
+                <span class="stat-value">28.93%</span><br><br>
                 <span class="stat-label">Variance Explained (PC2):</span>
-                <span class="stat-value">15.32%</span><br><br>
+                <span class="stat-value">11.51%</span><br><br>
                 <span class="stat-label">Runtime:</span>
-                <span class="stat-value">~3 seconds (00:31:16 → 00:31:19)</span>
+                <span class="stat-value">~2 seconds (15:05:02 → 15:05:04)</span>
             </div>
-
+            
             <div class="important">
-                <strong>Note:</strong> The fast runtime demonstrates the efficiency of LD pruning. This reduced dataset captures ~44% of the top-10-component variance in just the first two components (PC1+PC2 = 44.06%), ideal for population structure visualization. PC1 is nearly unchanged from the original cohort (28.74% vs 28.93%); PC2 increased notably (15.32% vs 11.51%), likely reflecting additional structure introduced by the new batches (48redone, GWAS2026, GWAS2026-2) — worth flagging for downstream interpretation, not yet further investigated.
+                <strong>Note:</strong> The fast runtime (2 seconds) demonstrates the efficiency of LD pruning. This reduced dataset captures ~40% of total genetic variance in just the first two components, ideal for population structure visualization.
             </div>
             
             <h2 class="section-header">Step 7: PCA Visualization</h2>
@@ -568,8 +550,8 @@ pca_plot <- ggplot(eigenvec, aes(x = PC1, y = PC2)) +
     geom_point(alpha = 0.6, color = "darkblue", size = 1.5) +
     theme_bw() +
     labs(
-        title = "PCA of UZB Imputed Data (Expanded Cohort, N=1,256)",
-        subtitle = "Calculated from 87,573 independent SNPs",
+        title = "PCA of UZB Imputed Data",
+        subtitle = "Calculated from 88,722 independent SNPs",
         x = paste0("PC1 (", round(pve$pve[1], 2), "%)"),
         y = paste0("PC2 (", round(pve$pve[2], 2), "%)")
     ) +
@@ -579,8 +561,8 @@ pca_plot <- ggplot(eigenvec, aes(x = PC1, y = PC2)) +
     )
 
 # Save outputs
-ggsave("UZB_pca_plot_expanded.png", plot = pca_plot, width = 8, height = 6, dpi = 300)
-ggsave("UZB_pca_plot_expanded.pdf", plot = pca_plot, width = 8, height = 6)
+ggsave("UZB_pca_plot.png", plot = pca_plot, width = 8, height = 6, dpi = 300)
+ggsave("UZB_pca_plot.pdf", plot = pca_plot, width = 8, height = 6)
 
 cat("Success: UZB_pca_plot.png and UZB_pca_plot.pdf generated.\n")
 EOF
@@ -591,9 +573,9 @@ EOF
             </div>
             
             <div class="command-output">
-Success: UZB_pca_plot_expanded.png and UZB_pca_plot_expanded.pdf have been generated.
-PC1 explains: 28.73%
-PC2 explains: 15.32%
+Success: UZB_pca_plot.png and UZB_pca_plot.pdf have been generated.
+PC1 explains: 28.93%
+PC2 explains: 11.51%
             </div>
             
             <div class="success">
@@ -606,10 +588,10 @@ PC2 explains: 15.32%
             </div>
             
             <h3 style="margin-top: 30px; color: #555;">Result: Local PCA Plot</h3>
-            <p style="color: #666; margin: 15px 0;">The PCA plot below shows clear population substructure within the expanded Uzbek cohort. PC1 (28.73%) and PC2 (15.32%) capture 44.06% of the top-10-component variance, revealing distinct ancestry clusters.</p>
+            <p style="color: #666; margin: 15px 0;">The PCA plot below shows clear population substructure within the Uzbek cohort. PC1 (28.93%) and PC2 (11.51%) capture ~40.4% of total genetic variance, revealing distinct ancestry clusters.</p>
             <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0;">
-                <img src="../images/PCA_UZB_Imputed_Expanded.png" alt="PCA of UZB Imputed Data (Expanded Cohort)" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
-                <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Local PCA showing population structure in 1,256 Uzbek samples (expanded cohort) across 87,573 independent SNPs. <a href="archive/step7_original_cohort_1047_2026-01.html">View original 1,047-sample plot &rarr;</a></p>
+                <img src="../images/PCA_UZB_Imputed.png" alt="PCA of UZB Imputed Data" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Local PCA showing population structure in 1,047 Uzbek samples across 88,722 independent SNPs</p>
             </div>
 
             <div class="info-box">
@@ -626,33 +608,33 @@ PC2 explains: 15.32%
                 </tr>
                 <tr>
                     <td>Initial Samples</td>
-                    <td>1,268</td>
+                    <td>1,074</td>
                     <td>Pass</td>
                 </tr>
                 <tr>
                     <td>Initial Variants</td>
-                    <td>9,808,764</td>
+                    <td>10,078,949</td>
                     <td>Pass</td>
                 </tr>
                 <tr>
                     <td>Independent SNPs (after LD pruning)</td>
-                    <td>87,573</td>
+                    <td>88,722</td>
                     <td>Suitable for PCA</td>
                 </tr>
                 <tr>
                     <td>PC1 Variance Explained</td>
-                    <td>28.73%</td>
-                    <td>Strong population structure (matches original: 28.93%)</td>
+                    <td>28.93%</td>
+                    <td>Strong population structure</td>
                 </tr>
                 <tr>
                     <td>PC2 Variance Explained</td>
-                    <td>15.32%</td>
-                    <td>Secondary structure detected (up from original: 11.51%, flagged for follow-up)</td>
+                    <td>11.51%</td>
+                    <td>Secondary structure detected</td>
                 </tr>
                 <tr>
                     <td>Data Quality (APOE validation)</td>
                     <td>Allele order correct, MAF plausible</td>
-                    <td>Passed all checks (original-cohort validation; conversion methodology unchanged)</td>
+                    <td>Passed all checks</td>
                 </tr>
             </table>
             
@@ -661,10 +643,10 @@ PC2 explains: 15.32%
             <div class="success">
                 <strong>Data Quality Status: EXCELLENT</strong>
                 <ul style="margin: 10px 0 0 15px;">
-                    <li><strong>No allele flips or swaps:</strong> GRCh38 alignment 100% correct (conversion methodology unchanged from original validation)</li>
-                    <li><strong>Strong population structure:</strong> PC1+PC2 explain 44.06% of the top-10-component variance</li>
-                    <li><strong>Clean dataset:</strong> 1,256 high-quality samples, 87.6K independent variants</li>
-                    <li><strong>Consistent with original cohort:</strong> PC1 essentially unchanged (28.73% vs 28.93%); PC2 increased (15.32% vs 11.51%) — see note in Step 6 above</li>
+                    <li><strong>No allele flips or swaps:</strong> GRCh38 alignment 100% correct</li>
+                    <li><strong>Dosage import correct:</strong> Verified with APOE ε4 frequency (12.1% matches Central Asian expectations)</li>
+                    <li><strong>Strong population structure:</strong> PC1+PC2 explain ~40.4% of total variance</li>
+                    <li><strong>Clean dataset:</strong> 1,047 high-quality samples, 88.7K independent variants</li>
                 </ul>
             </div>
             
@@ -678,17 +660,17 @@ PC2 explains: 15.32%
             
             <h2 class="section-header">Output Files Location</h2>
             <div class="code-block">
-                <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/imputation_results/hq_filtered/</code>
+                <code>/staging/ALSU-analysis/winter2025/PLINK_301125_0312/michigan_ready_chr/imputation_results/unz/filtered_clean/</code>
             </div>
-
+            
             <div style="background: #e8f5e9; padding: 15px; border-left: 4px solid #4caf50; border-radius: 5px; margin: 20px 0;">
-                <strong>Files Generated (expanded cohort):</strong>
+                <strong>Files Generated:</strong>
                 <ul style="margin: 10px 0 0 15px;">
                     <li><code>UZB_imputed_HQ_qc.{bed,bim,fam}</code></li>
                     <li><code>UZB_imputed_HQ_unique.{bed,bim,fam}</code></li>
                     <li><code>UZB_pruned.prune.in</code> &amp; <code>.prune.out</code></li>
                     <li><code>UZB_final_pca.eigenvec</code> &amp; <code>.eigenval</code></li>
-                    <li><code>UZB_pca_plot_expanded.png</code> &amp; <code>.pdf</code></li>
+                    <li><code>UZB_pca_plot.png</code> &amp; <code>.pdf</code></li>
                 </ul>
             </div>
             
@@ -700,8 +682,7 @@ PC2 explains: 15.32%
 
             <div class="footer">
                 <a href="../index.html" style="color: #333; text-decoration: none; font-weight: 500;">Back to Home</a> |
-                Last updated: August 14, 2026 (expanded cohort) | Step 7 of 15 |
-                <a href="archive/step7_original_cohort_1047_2026-01.html" style="color:#333;">View original cohort version</a>
+                Last updated: January 4, 2026 | Step 7 of 15
             </div>
 
             </div>

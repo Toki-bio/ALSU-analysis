@@ -172,21 +172,8 @@
                 <a href="../index.html" class="back-link">← Back to Roadmap</a>
                 <h1>Step 9: Genome-Wide F<sub>ST</sub> Analysis (Uzbek vs EUR)</h1>
                 <p>Quantify population differentiation between Uzbek cohort and 1000 Genomes European reference</p>
-                <span class="step-badge">✓ Expanded cohort, GRCh38 canonical — August 2026 (1,256 samples)</span>
-                <span class="step-badge step-badge-old">Spring 2026 (1,047 samples) — April 11, 2026</span>
-                <a href="archive/step9_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
-            </div>
-            <div class="info-box" style="margin:20px 30px 0;">
-                <strong>Cohort expansion + methodology update (August 2026):</strong> This page reflects the expanded
-                cohort (1,256 Uzbek samples) using <strong>GRCh38 as the sole canonical build going forward</strong>.
-                A hg19-based Fst pipeline (Sections 3&ndash;10 below) was used historically because a GRCh38 1000G panel
-                wasn't available when this step was first run; a GRCh38 panel was later found and adopted. During this
-                session, a real bug was also found and fixed in the original hg19 flip/exclude logic (it discarded every
-                SNP it "fixed," roughly halving usable markers) &mdash; see
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">integration notes</a> for the isolated proof.
-                hg19 is retained only as a one-time bridge comparison to the originally published number (Section 3&ndash;10,
-                clearly marked historical below); GRCh38 is canonical for all new work. See
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">cohort expansion integration notes</a> for full methodology.
+                <span class="step-badge">✓ Spring 2026 — April 11, 2026</span>
+                <span class="step-badge step-badge-old">Winter 2025 — Oct–Nov 2025</span>
             </div>
         
             <div class="content">
@@ -211,42 +198,28 @@
                             <tr><td>>0.25</td><td>Very great differentiation</td><td>Extreme outlier loci under selection</td></tr>
                         </table>
 
-                        <h3 style="margin-top: 20px; color: #333;">Expanded Cohort F<sub>ST</sub> Results (GRCh38, canonical)</h3>
+                        <h3 style="margin-top: 20px; color: #333;">Spring 2026 F<sub>ST</sub> Results</h3>
                         <div class="info-box">
-                            <strong>Multi-population F<sub>ST</sub></strong> computed on the GRCh38 1000G panel using
-                            UZB (1,256), EUR (503), EAS (504), SAS (489), AFR (660) samples (verified directly from
-                            DRAGEN logs, Aug 13 2026). Cross-validated: the dedicated Option-B GRCh38 pipeline
-                            (1,759 samples, 82,957 markers) independently reproduced UZB vs EUR Weighted F<sub>ST</sub>
-                            = 0.0150 &mdash; an exact match to this multi-population run.
+                            <strong>Multi-population F<sub>ST</sub></strong> computed on 79,767 merged SNPs using
+                            UZB (1,047), EUR (522), EAS (515), SAS (492), AFR (671) samples.
                         </div>
                         <table>
                             <tr><th>Comparison</th><th>Weighted F<sub>ST</sub></th><th>Mean F<sub>ST</sub></th></tr>
-                            <tr><td>UZB vs EUR</td><td>0.01498</td><td>0.01028</td></tr>
-                            <tr><td>UZB vs EAS</td><td>0.03963</td><td>0.02349</td></tr>
-                            <tr><td>UZB vs SAS</td><td>0.01445</td><td>0.00989</td></tr>
-                            <tr><td>UZB vs AFR</td><td>0.12830</td><td>0.06114</td></tr>
-                            <tr><td>EUR vs EAS</td><td>0.08661</td><td>0.05086</td></tr>
+                            <tr><td>UZB vs EUR</td><td>0.01468</td><td>0.01002</td></tr>
+                            <tr><td>UZB vs EAS</td><td>0.04010</td><td>0.02393</td></tr>
+                            <tr><td>UZB vs SAS</td><td>0.01445</td><td>0.00988</td></tr>
+                            <tr><td>UZB vs AFR</td><td>0.12907</td><td>0.06153</td></tr>
+                            <tr><td>EUR vs EAS</td><td>0.08631</td><td>0.05090</td></tr>
                         </table>
                         <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;">
-                            <strong>Consistent with original cohort:</strong> UZB closest to EUR (0.0150) and SAS (0.0145), moderately distant from EAS (0.0396), most distant from AFR (0.1283). All values within 0.002 of the original 1,047-sample run, confirming reproducibility after cohort expansion. See <a href="step14.html">Step 14</a> for the full 10-pair pairwise matrix.
+                            <strong>Consistent with Winter:</strong> UZB closest to EUR (0.015) and SAS (0.014), moderately distant from EAS (0.040), most distant from AFR (0.129). Values nearly identical to winter run confirming reproducibility.
                         </div>
                     </div>
                 </div>
 
-                <!-- ==================== HISTORICAL HG19 PIPELINE (SECTIONS 2-10) ==================== -->
-                <div class="warning" style="margin: 30px 0;">
-                    <strong>Sections 2&ndash;10 below are historical and superseded.</strong> They document the original
-                    hg19-based Fst pipeline (inputs, liftover, chr22 pilot, genome-wide hg19 processing, results, and
-                    key findings), preserved for provenance and as the one-time bridge comparison to the originally
-                    published number. GRCh38 (Section 1 above) is the canonical methodology for all analysis going
-                    forward &mdash; a suitable GRCh38 1000G panel simply didn't exist yet when this step was first run.
-                    Numbers in Sections 2&ndash;10 reflect the original 1,047-sample (or 1,199-pre-QC) cohort on
-                    hg19/GRCh37 coordinates and have not been, and will not be, updated for the expanded cohort.
-                </div>
-
                 <!-- ==================== INPUT DATA ==================== -->
                 <div class="section">
-                    <h2 class="section-header">2. Input Data — Historical (hg19 pipeline)</h2>
+                    <h2 class="section-header">2. Input Data</h2>
                     <div class="section-content">
                         <table>
                             <tr>
@@ -284,7 +257,7 @@
 
                 <!-- ==================== STEP 1: LIFTOVER ==================== -->
                 <div class="section">
-                    <h2 class="section-header">3. Coordinate Liftover (hg38 → hg19) — Historical</h2>
+                    <h2 class="section-header">3. Coordinate Liftover (hg38 → hg19)</h2>
                     <div class="section-content">
                         <p>
                             The 1000 Genomes Phase 3 reference data uses hg19 (GRCh37) coordinates, while our Uzbek genotyping data was called on hg38 (GRCh38). To merge the datasets, we must convert Uzbek coordinates to hg19.
@@ -941,7 +914,7 @@ CHR     SNP     POS     NMISS   FST
                         <ul>
                             <li><strong>Gene Annotation:</strong> Annotate the 256 extreme F<sub>ST</sub> loci (F<sub>ST</sub> &gt; 0.5) with nearest genes using ANNOVAR/VEP</li>
                             <li><strong>Fst Manhattan Plot:</strong> Create a genome-wide Manhattan plot of F<sub>ST</sub> values for visual identification of differentiation peaks</li>
-                            <li><strong>Recalculate on Final Dataset:</strong> <s>Re-run F<sub>ST</sub> using the post-QC 1,047 samples</s> &mdash; done: expanded to 1,256 samples on GRCh38, see Section 1</li>
+                            <li><strong>Recalculate on Final Dataset:</strong> Re-run F<sub>ST</sub> using the post-QC 1,047 samples for consistency with GWAS</li>
                             <li><strong>Cross-reference with GWAS:</strong> Flag any GWAS hits that overlap with high-F<sub>ST</sub> regions</li>
                             <li><strong>Compare with EAS/SAS:</strong> Calculate F<sub>ST</sub> against East Asian and South Asian 1000G populations to decompose Uzbek ancestry components</li>
                             <li><strong>ADMIXTURE Integration:</strong> Combine F<sub>ST</sub> with ADMIXTURE results (Step 10) for comprehensive ancestry characterization</li>

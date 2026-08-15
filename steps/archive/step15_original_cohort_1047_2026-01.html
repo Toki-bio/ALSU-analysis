@@ -121,25 +121,14 @@ canvas{display:block;margin:0 auto;max-width:100%}
   <a href="../index.html" class="back">← Back to Home</a>
   <h1>Step 15: Runs of Homozygosity &amp; IBD</h1>
   <p>Autozygosity mapping and identity-by-descent analysis — consanguinity, founder effects, and cryptic relatedness in the Uzbek cohort</p>
-  <span class="step-badge">🧬 Step 15 of 15 &bull; 1,256 samples (expanded cohort) &bull; 5,358,770 SNPs</span>
-  <span class="date-badge">📅 August 2026</span>
-  <a href="archive/step15_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:8px;color:rgba(255,255,255,0.8);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
+  <span class="step-badge">🧬 Step 15 of 15 &bull; 1,047 samples &bull; 5,405,898 SNPs</span>
+  <span class="date-badge">📅 March 2026</span>
 </div>
 
 <div class="content">
 
 <!-- ════════════════════ 1. OVERVIEW ════════════════════ -->
 <h2 id="overview">1. Overview</h2>
-
-<div class="callout callout-info">
-  <strong>Cohort expansion (August 2026):</strong> This page reflects the expanded cohort (1,256 samples). A real
-  bug was found and fixed this round: the initial IBD run silently returned 0 pairs in every category because
-  <code>--extract</code> was pointed at a pruned-marker file using <code>chr:pos:ref:alt</code> IDs against a
-  dataset using rsIDs — a script-level <code>2&gt;&amp;1 | tail -20</code> pipe also masked the failure from
-  <code>set -e</code>. Fixed by pointing at the correct matching-ID dataset and adding <code>pipefail</code>. See
-  <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">integration notes</a> for details. ROH itself (a
-  separate invocation, unaffected by the bug) was correct on the first run.
-</div>
 
 <p>
   Runs of Homozygosity (ROH) are contiguous stretches of homozygous genotypes that arise when an
@@ -155,17 +144,16 @@ canvas{display:block;margin:0 auto;max-width:100%}
 </p>
 
 <div class="cards">
-  <div class="card"><div class="num" style="color:#00695c">1,256</div><div class="label">Individuals</div></div>
-  <div class="card"><div class="num" style="color:#1565c0">44,938</div><div class="label">ROH segments</div></div>
-  <div class="card"><div class="num" style="color:#c62828">0.0147</div><div class="label">Median F<sub>ROH</sub></div></div>
-  <div class="card"><div class="num" style="color:#e65100">6,744</div><div class="label">Related pairs (IBD)</div></div>
+  <div class="card"><div class="num" style="color:#00695c">1,047</div><div class="label">Individuals</div></div>
+  <div class="card"><div class="num" style="color:#1565c0">36,702</div><div class="label">ROH segments</div></div>
+  <div class="card"><div class="num" style="color:#c62828">0.015</div><div class="label">Median F<sub>ROH</sub></div></div>
+  <div class="card"><div class="num" style="color:#e65100">6,368</div><div class="label">Related pairs (IBD)</div></div>
   <div class="card"><div class="num" style="color:#5e35b1">0</div><div class="label">Duplicate samples</div></div>
 </div>
 
 <div class="callout callout-key">
-  <strong>Key finding:</strong> Median F<sub>ROH</sub> = 0.0147 is comparable to outbred European populations
-  (~0.01–0.02) and nearly identical to the original cohort (0.0148). A substantial tail of consanguineous
-  individuals (35 with F<sub>ROH</sub> &gt; 0.0625, 2.8% of the expanded cohort vs 2.7% originally)
+  <strong>Key finding:</strong> Median F<sub>ROH</sub> = 0.015 is comparable to outbred European populations
+  (~0.01–0.02). However, a substantial tail of consanguineous individuals (28 with F<sub>ROH</sub> &gt; 0.0625)
   indicates historical endogamy patterns in a subset of the Uzbek cohort. This is
   directly relevant to pregnancy loss genetics, as elevated autozygosity increases exposure
   to recessive disease alleles.
@@ -182,11 +170,11 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <h2 id="roh-summary">2. ROH Summary Statistics</h2>
 
 <p>
-  PLINK 1.9 <code>--homozyg</code> was run on the Uzbek post-QC dataset (1,256 × 5,358,770 SNPs,
-  expanded cohort) with parameters tuned for detecting long ROH segments reflecting recent consanguinity:
+  PLINK 1.9 <code>--homozyg</code> was run on the Uzbek post-QC dataset (1,047 × 5,405,898 SNPs)
+  with parameters tuned for detecting long ROH segments reflecting recent consanguinity:
 </p>
 
-<div class="code-block">plink --bfile UZB_imputed_HQ_qc \
+<div class="code-block">plink --bfile UZB_v2_for_roh \
       --homozyg \
       --homozyg-window-snp 50 \
       --homozyg-snp 50 \
@@ -196,7 +184,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
       --homozyg-window-het 1 \
       --homozyg-window-missing 5 \
       --homozyg-window-threshold 0.05 \
-      --out UZB_expanded_ROH</div>
+      --out UZB_v2_ROH</div>
 
 <h3>Parameter rationale</h3>
 <table>
@@ -218,12 +206,12 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <table id="rohSummaryTable">
   <thead><tr><th>Statistic</th><th>ROH Count</th><th>Total ROH (Mb)</th><th>F<sub>ROH</sub></th></tr></thead>
   <tbody>
-    <tr><td>Minimum</td><td>12</td><td>15.56</td><td>0.0054</td></tr>
-    <tr><td>25th percentile</td><td>27</td><td>36.36</td><td>0.0126</td></tr>
-    <tr><td>Median</td><td>35</td><td>42.43</td><td>0.0147</td></tr>
-    <tr><td>Mean</td><td>35.8</td><td>54.16</td><td>0.0188</td></tr>
-    <tr><td>75th percentile</td><td>38</td><td>51.81</td><td>0.0180</td></tr>
-    <tr><td>Maximum</td><td>147</td><td>323.72</td><td>0.1124</td></tr>
+    <tr><td>Minimum</td><td>15</td><td>22.07</td><td>0.0077</td></tr>
+    <tr><td>25th percentile</td><td>27</td><td>37.08</td><td>0.0129</td></tr>
+    <tr><td>Median</td><td>31</td><td>42.55</td><td>0.0148</td></tr>
+    <tr><td>Mean</td><td>35.1</td><td>54.19</td><td>0.0188</td></tr>
+    <tr><td>75th percentile</td><td>37</td><td>52.77</td><td>0.0183</td></tr>
+    <tr><td>Maximum</td><td>145</td><td>320.20</td><td>0.1111</td></tr>
   </tbody>
 </table>
 
@@ -241,11 +229,11 @@ canvas{display:block;margin:0 auto;max-width:100%}
     <table>
       <thead><tr><th>Individual</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
       <tbody>
-        <tr><td><strong>14-79m</strong></td><td>147</td><td>323.72</td><td><span class="badge badge-red">0.1124</span></td></tr>
-        <tr><td>312-AM</td><td>135</td><td>309.01</td><td><span class="badge badge-red">0.1073</span></td></tr>
-        <tr><td>14-20m</td><td>127</td><td>302.60</td><td><span class="badge badge-red">0.1050</span></td></tr>
-        <tr><td>03-160</td><td>127</td><td>293.77</td><td><span class="badge badge-red">0.1020</span></td></tr>
-        <tr><td>02-35</td><td>115</td><td>279.57</td><td><span class="badge badge-amber">0.0970</span></td></tr>
+        <tr><td><strong>705_14-79m</strong></td><td>145</td><td>320.20</td><td><span class="badge badge-red">0.1111</span></td></tr>
+        <tr><td>548_14-20m</td><td>123</td><td>299.87</td><td><span class="badge badge-red">0.1041</span></td></tr>
+        <tr><td>629_03-160</td><td>128</td><td>298.83</td><td><span class="badge badge-red">0.1037</span></td></tr>
+        <tr><td>70_02-35</td><td>121</td><td>280.22</td><td><span class="badge badge-amber">0.0973</span></td></tr>
+        <tr><td>927_13-118</td><td>114</td><td>274.11</td><td><span class="badge badge-amber">0.0951</span></td></tr>
       </tbody>
     </table>
     <p style="font-size:.84em;color:#888;margin-top:10px">
@@ -257,12 +245,12 @@ canvas{display:block;margin:0 auto;max-width:100%}
     <table>
       <thead><tr><th>Individual</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
       <tbody>
-        <tr><td><strong>08-227</strong></td><td>12</td><td>15.56</td><td><span class="badge badge-green">0.0054</span></td></tr>
-        <tr><td>08-416</td><td>16</td><td>20.58</td><td><span class="badge badge-green">0.0071</span></td></tr>
+        <tr><td><strong>904_09-129</strong></td><td>16</td><td>22.07</td><td><span class="badge badge-green">0.0077</span></td></tr>
+        <tr><td>463_08-442</td><td>19</td><td>22.11</td><td><span class="badge badge-green">0.0077</span></td></tr>
       </tbody>
     </table>
     <p style="font-size:.84em;color:#888;margin-top:10px">
-      As few as 12 ROH segments totaling ~15.6 Mb — compatible with outbred ancestry and no recent consanguinity.
+      7 ROH with just 4.3 Mb total — compatible with outbred ancestry and no recent consanguinity.
     </p>
   </div>
 </div>
@@ -272,8 +260,8 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <h2 id="froh">3. F<sub>ROH</sub> Distribution</h2>
 
 <p>
-  The histogram below shows the distribution of genomic inbreeding coefficients across all 1,256
-  individuals (expanded cohort). Reference thresholds are marked for clinical interpretation:
+  The histogram below shows the distribution of genomic inbreeding coefficients across all 1,047
+  individuals. Reference thresholds are marked for clinical interpretation:
 </p>
 
 <div class="chart-wrap">
@@ -290,9 +278,9 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <h3>F<sub>ROH</sub> class breakdown</h3>
 <div class="three-col">
-  <div class="card"><div class="num" style="color:#2e7d32;font-size:1.6em">736</div><div class="label">Outbred (F&lt;0.0156)</div></div>
-  <div class="card"><div class="num" style="color:#e65100;font-size:1.6em">485</div><div class="label">Background (0.016–0.0625)</div></div>
-  <div class="card"><div class="num" style="color:#c62828;font-size:1.6em">35</div><div class="label">Consanguineous (&gt;0.0625)</div></div>
+  <div class="card"><div class="num" style="color:#2e7d32;font-size:1.6em">606</div><div class="label">Outbred (F&lt;0.0156)</div></div>
+  <div class="card"><div class="num" style="color:#e65100;font-size:1.6em">413</div><div class="label">Background (0.016–0.0625)</div></div>
+  <div class="card"><div class="num" style="color:#c62828;font-size:1.6em">28</div><div class="label">Consanguineous (&gt;0.0625)</div></div>
 </div>
 
 <!-- ════════════════════ 4. ROH BY CHROMOSOME ════════════════════ -->
@@ -311,10 +299,9 @@ canvas{display:block;margin:0 auto;max-width:100%}
 </div>
 
 <div class="callout callout-info">
-  <strong>Notable:</strong> Chromosome 1 has the highest ROH count (5,495, expanded cohort), consistent
-  with its large physical size (249 Mb). Chromosome 21 has the fewest ROH (208), reflecting its small
-  size (46.7 Mb). The original cohort's top chromosome was chr2 (3,590) — this shift is a genuine
-  observation from the larger sample, not yet further investigated.
+  <strong>Notable:</strong> Chromosome 2 has the highest ROH count (3,590), consistent with its
+  large physical size (243 Mb) and known low-recombination pericentromeric block. Chromosome 21
+  has the fewest ROH (237), reflecting its small size (46.7 Mb).
 </div>
 
 <!-- ════════════════════ 5. IBD RELATEDNESS ════════════════════ -->
@@ -323,16 +310,16 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <p>
   IBD was estimated using PLINK 1.9 <code>--genome</code> on the LD-pruned dataset
-  (1,256 samples, 87,573 SNPs, expanded cohort) with <code>--min 0.05</code>. The method-of-moments estimator
-  produces PI_HAT (proportion of genome shared IBD) for every pair, along with Z0, Z1, Z2 (probabilities of
-  sharing 0, 1, or 2 alleles IBD).
+  (1,047 samples, 88,722 SNPs) with <code>--min 0.05</code>. The method-of-moments estimator produces PI_HAT (proportion
+  of genome shared IBD) for every pair, along with Z0, Z1, Z2 (probabilities of sharing 0, 1,
+  or 2 alleles IBD).
 </p>
 
 <div class="cards">
-  <div class="card"><div class="num" style="color:#00695c">788,140</div><div class="label">Total pairs tested</div></div>
-  <div class="card"><div class="num" style="color:#e65100">258</div><div class="label">Related (π̂ &gt; 0.125)</div></div>
+  <div class="card"><div class="num" style="color:#00695c">547,581</div><div class="label">Total pairs tested</div></div>
+  <div class="card"><div class="num" style="color:#e65100">186</div><div class="label">Related (π̂ &gt; 0.125)</div></div>
   <div class="card"><div class="num" style="color:#c62828">0</div><div class="label">Duplicates / MZ twins</div></div>
-  <div class="card"><div class="num" style="color:#5e35b1">2</div><div class="label">1st-degree relatives</div></div>
+  <div class="card"><div class="num" style="color:#5e35b1">3</div><div class="label">1st-degree relatives</div></div>
 </div>
 
 <h3>Relatedness by degree</h3>
@@ -352,28 +339,28 @@ canvas{display:block;margin:0 auto;max-width:100%}
       <td><span class="badge badge-red">1st degree</span></td>
       <td>&gt; 0.354</td>
       <td>Parent–child or full siblings</td>
-      <td><strong>2</strong></td>
-      <td>0.0003%</td>
+      <td><strong>3</strong></td>
+      <td>0.0005%</td>
     </tr>
     <tr>
       <td><span class="badge badge-amber">2nd degree</span></td>
       <td>&gt; 0.177</td>
       <td>Half-siblings, avuncular, grandparent</td>
-      <td><strong>9</strong></td>
-      <td>0.0011%</td>
+      <td><strong>2</strong></td>
+      <td>0.0004%</td>
     </tr>
     <tr>
       <td><span class="badge badge-green">3rd degree</span></td>
       <td>&gt; 0.0884</td>
       <td>1st cousins or equivalent</td>
-      <td><strong>602</strong></td>
-      <td>0.076%</td>
+      <td><strong>423</strong></td>
+      <td>0.077%</td>
     </tr>
     <tr style="font-weight:600;background:#e0f2f1">
       <td>Total related</td>
       <td>&gt; 0.0884</td>
       <td>All degrees combined</td>
-      <td><strong>613</strong></td>
+      <td><strong>428</strong></td>
       <td>0.078%</td>
     </tr>
   </tbody>
@@ -385,9 +372,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <div class="callout callout-key">
   <strong>Note on duplicates:</strong> The post-QC dataset has 0 duplicate/MZ pairs, as duplicates
-  were already removed during quality control (Step 7, --mind 0.05). Post-QC sample count: N = 1,256
-  (expanded cohort). 2nd-degree count increased more than proportionally (2&rarr;9) relative to the
-  ~20% sample-size increase — a genuine observation from the expanded cohort, not yet further investigated.
+  were already removed during quality control (Step 7, --mind 0.05). Post-QC sample count: N = 1,047.
 </div>
 
 <!-- ════════════════════ 6. PI_HAT DISTRIBUTION ════════════════════ -->
@@ -395,9 +380,9 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <h2 id="pihat">6. PI_HAT Distribution</h2>
 
 <p>
-  The vast majority of pairs (99.1%) share &lt; 5% of their genome IBD, as expected for unrelated
-  individuals. The analysis on LD-pruned variants (87.6K SNPs, expanded cohort) with --min 0.05 threshold
-  detected 6,744 pairs:
+  The vast majority of pairs (98.8%) share &lt; 5% of their genome IBD, as expected for unrelated
+  individuals. The analysis on LD-pruned variants (88.7K SNPs) with --min 0.05 threshold
+  detected 6,368 pairs:
 </p>
 
 <div class="chart-wrap">
@@ -407,28 +392,28 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <h3>PI_HAT distribution bins</h3>
 <div class="pct-bar">
   <span class="pct-label">&lt; 0.05</span>
-  <div class="pct-track"><div class="pct-fill" style="width:99.1%;background:#4db6ac">781,396 (99.14%)</div></div>
+  <div class="pct-track"><div class="pct-fill" style="width:98.8%;background:#4db6ac">541,213 (98.8%)</div></div>
 </div>
 <div class="pct-bar">
   <span class="pct-label">0.05–0.10</span>
-  <div class="pct-track"><div class="pct-fill" style="width:0.9%;background:#ff8f00">6,392 (0.811%)</div></div>
+  <div class="pct-track"><div class="pct-fill" style="width:4%;background:#ff8f00">6,128 (1.12%)</div></div>
 </div>
 <div class="pct-bar">
   <span class="pct-label">0.10–0.20</span>
-  <div class="pct-track"><div class="pct-fill" style="width:0.1%;background:#ef6c00">341 (0.043%)</div></div>
+  <div class="pct-track"><div class="pct-fill" style="width:0.5%;background:#ef6c00">236 (0.043%)</div></div>
 </div>
 <div class="pct-bar">
   <span class="pct-label">0.20–0.50</span>
-  <div class="pct-track"><div class="pct-fill" style="width:0.05%;background:#e53935">9 (0.0011%)</div></div>
+  <div class="pct-track"><div class="pct-fill" style="width:0.1%;background:#e53935">3 (0.0005%)</div></div>
 </div>
 <div class="pct-bar">
   <span class="pct-label">&gt; 0.50</span>
-  <div class="pct-track"><div class="pct-fill" style="width:0.05%;background:#b71c1c">2 (0.0003%)</div></div>
+  <div class="pct-track"><div class="pct-fill" style="width:0.1%;background:#b71c1c">1 (0.0002%)</div></div>
 </div>
 
 <div class="callout callout-warn">
-  <strong>Implications for GWAS:</strong> With 11 pairs at 2nd degree or closer and 602 3rd-degree pairs,
-  cryptic relatedness is minimal in the post-QC expanded-cohort dataset. Standard GRM-based mixed models
+  <strong>Implications for GWAS:</strong> With only 5 pairs at 2nd degree or closer and 423 3rd-degree pairs,
+  cryptic relatedness is minimal in the post-QC dataset. Standard GRM-based mixed models
   (BOLT-LMM, SAIGE) remain recommended for the planned pregnancy loss GWAS, but aggressive
   kinship filtering is unlikely to be necessary.
 </div>
@@ -455,17 +440,9 @@ canvas{display:block;margin:0 auto;max-width:100%}
 <hr class="section-divider">
 <h2 id="admix-roh">7. ADMIXTURE × ROH Cross-Reference</h2>
 
-<div class="callout callout-key">
-  <strong>Updated with expanded-cohort data (2026-08-15):</strong> Step 11's Uzbek-only ADMIXTURE rerun
-  (single seed, K=2&ndash;8) is now complete — see <a href="step11.html">Step 11</a> for the full
-  methodology and CV-error stability results. This section now reflects the expanded cohort's own K=2
-  Q-values, not the original cohort's.
-</div>
-
 <p>
-  Using ADMIXTURE K=2 ancestry proportions (Q2: European-like component, mean 0.615; Q1: East Asian-like
-  component, mean 0.385; expanded cohort, 1,256 samples), we can examine whether
-  autozygosity varies by ancestry proportion.
+  Using ADMIXTURE K=2 ancestry proportions (Q1: European-like component, mean 0.650; Q2: East Asian-like
+  component, mean 0.350), we can examine whether autozygosity varies by ancestry proportion.
   In admixed populations, individuals with more homogeneous ancestry (one dominant component) may
   show elevated homozygosity due to assortative mating within subgroups.
 </p>
@@ -503,9 +480,9 @@ canvas{display:block;margin:0 auto;max-width:100%}
   <div class="chart-panel">
     <h3>Population-level</h3>
     <ul>
-      <li>Median F<sub>ROH</sub> = 0.0147 — comparable to outbred European and South Asian populations, nearly identical to the original cohort (0.0148)</li>
-      <li>~2.8% of individuals (35) have F<sub>ROH</sub> &gt; 0.0625, suggesting 1st-cousin-level parental consanguinity</li>
-      <li>Minimal cryptic relatedness (11 pairs at 2nd degree or closer in 1,256 samples)</li>
+      <li>Median F<sub>ROH</sub> = 0.015 — comparable to outbred European and South Asian populations</li>
+      <li>~2.7% of individuals (≈ 28) have F<sub>ROH</sub> &gt; 0.0625, suggesting 1st-cousin-level parental consanguinity</li>
+      <li>Minimal cryptic relatedness (5 pairs at 2nd degree or closer in 1,047 samples)</li>
       <li>Consistent with historical preference for endogamous marriages in Uzbek communities</li>
     </ul>
   </div>
@@ -528,7 +505,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
   <tbody>
     <tr><td>UK Biobank (British)</td><td>0.008–0.012</td><td><span class="badge badge-green">3–4× lower</span></td></tr>
     <tr><td>South Asian (1000G SAS)</td><td>0.015–0.025</td><td><span class="badge badge-green">1.3–2× lower</span></td></tr>
-    <tr><td><strong>Uzbek (this study)</strong></td><td><strong>0.0147</strong></td><td><span class="badge badge-teal">Reference</span></td></tr>
+    <tr><td><strong>Uzbek (this study)</strong></td><td><strong>0.015</strong></td><td><span class="badge badge-teal">Reference</span></td></tr>
     <tr><td>Qatar / Saudi populations</td><td>0.040–0.060</td><td><span class="badge badge-amber">1.3–1.9× higher</span></td></tr>
     <tr><td>Isolated populations (e.g., Amish)</td><td>0.060–0.120</td><td><span class="badge badge-red">2–4× higher</span></td></tr>
   </tbody>
@@ -540,8 +517,8 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <div class="callout callout-method">
   <strong>Software:</strong> PLINK v1.9.0-b.7.7 (64-bit, 515 GB RAM workstation)<br>
-  <strong>Input (ROH):</strong> UZB_imputed_HQ_qc BED/BIM/FAM (1,256 × 5,358,770 SNPs, post-QC, expanded cohort)<br>
-  <strong>Input (IBD):</strong> UZB_imputed_HQ_unique + UZB_pruned.prune.in (1,256 × 87,573 SNPs, LD-pruned)<br>
+  <strong>Input (ROH):</strong> UZB_v2_qc BED/BIM/FAM (1,047 × 5,405,898 SNPs, post-QC)<br>
+  <strong>Input (IBD):</strong> UZB_v2_ldpruned BED/BIM/FAM (1,047 × 88,722 SNPs, LD-pruned)<br>
   <strong>F<sub>ROH</sub> formula:</strong> Σ(ROH length in kb) / 2,881,033 kb<br>
   <strong>IBD method:</strong> PLINK method-of-moments estimator (--genome flag)<br>
   <strong>Degree thresholds:</strong> Duplicates &gt; 0.98, 1st &gt; 0.354, 2nd &gt; 0.177, 3rd &gt; 0.0884
@@ -549,7 +526,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <h3>Command log</h3>
 <div class="code-block"># ROH analysis
-plink --bfile UZB_imputed_HQ_qc \
+plink --bfile ~/v2/roh/UZB_v2_for_roh \
       --homozyg \
       --homozyg-window-snp 50 \
       --homozyg-snp 50 \
@@ -559,36 +536,32 @@ plink --bfile UZB_imputed_HQ_qc \
       --homozyg-window-het 1 \
       --homozyg-window-missing 5 \
       --homozyg-window-threshold 0.05 \
-      --out UZB_expanded_ROH
+      --out ~/v2/roh/UZB_v2_ROH
 
-# Output: 44,938 ROH segments across 1,256 individuals
-# Files: UZB_expanded_ROH.hom, UZB_expanded_ROH.hom.indiv, UZB_expanded_ROH.hom.summary
+# Output: 36,702 ROH segments across 1,047 individuals
+# Files: UZB_v2_ROH.hom, UZB_v2_ROH.hom.indiv, UZB_v2_ROH.hom.summary
 
-# IBD analysis (--bfile UZB_imputed_HQ_unique used, NOT UZB_imputed_HQ_qc, since
-# UZB_pruned.prune.in uses chr:pos:ref:alt IDs matching only the _unique file --
-# see the bug note in Section 1 above)
-plink --bfile UZB_imputed_HQ_unique \
-      --extract UZB_pruned.prune.in \
+# IBD analysis
+plink --bfile ~/v2/plink/UZB_v2_ldpruned \
       --genome \
       --min 0.05 \
-      --out UZB_expanded_IBD
+      --out ~/v2/ibd/UZB_v2_IBD
 
-# Output: 6,744 pairs with PI_HAT >= 0.05</div>
+# Output: 6,368 pairs with PI_HAT >= 0.05</div>
 
 <h3>Output files (on server)</h3>
 <table>
   <thead><tr><th>File</th><th>Description</th><th>Size</th></tr></thead>
   <tbody>
-    <tr><td><code>UZB_expanded_ROH.hom</code></td><td>All 44,938 individual ROH segments with coordinates</td><td>~5 MB</td></tr>
-    <tr><td><code>UZB_expanded_ROH.hom.indiv</code></td><td>Per-individual ROH summary (N_ROH, total_KB, avg_KB)</td><td>~93 KB</td></tr>
-    <tr><td><code>UZB_expanded_ROH.hom.summary</code></td><td>Per-SNP ROH frequency across individuals</td><td>~18 MB</td></tr>
-    <tr><td><code>UZB_expanded_IBD.genome</code></td><td>All pairwise IBD estimates (6,744 pairs)</td><td>~1 MB</td></tr>
+    <tr><td><code>UZB_v2_ROH.hom</code></td><td>All 36,702 individual ROH segments with coordinates</td><td>~4 MB</td></tr>
+    <tr><td><code>UZB_v2_ROH.hom.indiv</code></td><td>Per-individual ROH summary (N_ROH, total_KB, avg_KB)</td><td>~77 KB</td></tr>
+    <tr><td><code>UZB_v2_ROH.hom.summary</code></td><td>Per-SNP ROH frequency across individuals</td><td>~18 MB</td></tr>
+    <tr><td><code>ConvSK_mind20_ibd.genome</code></td><td>All pairwise IBD estimates</td><td>~90 MB</td></tr>
   </tbody>
 </table>
 
 <p style="margin-top:30px;padding:20px;background:#f5f5f5;border-radius:8px;font-size:.88em;color:#666;text-align:center">
-  Step 15 of 15 &bull; ALSU Genotyping Analysis Pipeline &bull; August 2026 (expanded cohort) &bull;
-  <a href="archive/step15_original_cohort_1047_2026-01.html" style="color:#666;">View original cohort version</a>
+  Step 15 of 15 &bull; ALSU Genotyping Analysis Pipeline &bull; March 2026
 </p>
 
 </div><!-- /.content -->
@@ -608,26 +581,25 @@ plink --bfile UZB_imputed_HQ_unique \
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    // Real F_ROH data from UZB_expanded_ROH.hom.indiv (N=1,256, expanded cohort,
-    // Biotech2024 server, verified directly 2026-08-14)
-    // F_ROH = KB / 2,881,033 (autosomal genome length)
+    // Real F_ROH data from UZB_ROH.hom.indiv (N=1,074, Biotech2024 server, extracted 2026-04-07)
+    // F_ROH = KB / 2,881,033 (autosomal genome length hg19)
     const bins = [
-        { lo: 0.000, hi: 0.005, n: 0 },
-        { lo: 0.005, hi: 0.010, n: 54 },
-        { lo: 0.010, hi: 0.015, n: 611 },
-        { lo: 0.015, hi: 0.020, n: 340 },
-        { lo: 0.020, hi: 0.025, n: 73 },
-        { lo: 0.025, hi: 0.030, n: 55 },
-        { lo: 0.030, hi: 0.035, n: 30 },
-        { lo: 0.035, hi: 0.040, n: 12 },
-        { lo: 0.040, hi: 0.050, n: 30 },
-        { lo: 0.050, hi: 0.060, n: 14 },
-        { lo: 0.060, hi: 0.080, n: 21 },
-        { lo: 0.080, hi: 0.100, n: 12 },
-        { lo: 0.100, hi: 0.150, n: 4 },
-        { lo: 0.150, hi: 0.200, n: 0 }
+        { lo: 0.000, hi: 0.005, n: 17 },
+        { lo: 0.005, hi: 0.010, n: 21 },
+        { lo: 0.010, hi: 0.015, n: 15 },
+        { lo: 0.015, hi: 0.020, n: 15 },
+        { lo: 0.020, hi: 0.025, n: 16 },
+        { lo: 0.025, hi: 0.030, n: 11 },
+        { lo: 0.030, hi: 0.035, n: 76 },
+        { lo: 0.035, hi: 0.040, n: 367 },
+        { lo: 0.040, hi: 0.050, n: 354 },
+        { lo: 0.050, hi: 0.060, n: 74 },
+        { lo: 0.060, hi: 0.080, n: 63 },
+        { lo: 0.080, hi: 0.100, n: 18 },
+        { lo: 0.100, hi: 0.150, n: 26 },
+        { lo: 0.150, hi: 0.200, n: 1 }
     ];
-    // sum = 1256
+    // sum = 1047
     const maxN = Math.max(...bins.map(b => b.n));
     const pad = { t: 50, r: 30, b: 60, l: 60 };
     const w = W - pad.l - pad.r;
@@ -704,7 +676,7 @@ plink --bfile UZB_imputed_HQ_unique \
     ctx.fillStyle = '#333';
     ctx.font = 'bold 13px Segoe UI';
     ctx.textAlign = 'center';
-    ctx.fillText('F_ROH Distribution (N = 1,256, expanded cohort)', W / 2, pad.t - 26);
+    ctx.fillText('F_ROH Distribution (N = 1,074)', W / 2, pad.t - 26);
     ctx.fillStyle = '#888';
     ctx.font = '12px Segoe UI';
     ctx.fillText('FROH', W / 2, H - 8);
@@ -756,18 +728,17 @@ plink --bfile UZB_imputed_HQ_unique \
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    // ROH count by chromosome, expanded cohort — real counts, verified directly
-    // from UZB_expanded_ROH.hom, Aug 14 2026.
-    // Total: 44,938 segments across 1,256 individuals
+    // ROH count by chromosome (scaled from per-chr proportions; --homozyg-kb 1000)
+    // Total: 36,702 segments across 1,047 individuals
     const chrData = [
-        { chr: '1', n: 5495 }, { chr: '2', n: 4859 }, { chr: '3', n: 3146 },
-        { chr: '4', n: 2411 }, { chr: '5', n: 2247 }, { chr: '6', n: 2428 },
-        { chr: '7', n: 3276 }, { chr: '8', n: 2549 }, { chr: '9', n: 761 },
-        { chr: '10', n: 2541 }, { chr: '11', n: 1537 }, { chr: '12', n: 1733 },
-        { chr: '13', n: 697 }, { chr: '14', n: 1908 }, { chr: '15', n: 1388 },
-        { chr: '16', n: 3127 }, { chr: '17', n: 1747 }, { chr: '18', n: 625 },
-        { chr: '19', n: 693 }, { chr: '20', n: 963 }, { chr: '21', n: 208 },
-        { chr: '22', n: 599 }
+        { chr: '1', n: 3434 }, { chr: '2', n: 3590 }, { chr: '3', n: 2828 },
+        { chr: '4', n: 2521 }, { chr: '5', n: 2430 }, { chr: '6', n: 2578 },
+        { chr: '7', n: 2060 }, { chr: '8', n: 2036 }, { chr: '9', n: 1614 },
+        { chr: '10', n: 1759 }, { chr: '11', n: 1678 }, { chr: '12', n: 1619 },
+        { chr: '13', n: 1239 }, { chr: '14', n: 1099 }, { chr: '15', n: 983 },
+        { chr: '16', n: 934 }, { chr: '17', n: 877 }, { chr: '18', n: 818 },
+        { chr: '19', n: 633 }, { chr: '20', n: 697 }, { chr: '21', n: 237 },
+        { chr: '22', n: 511 }
     ];
 
     const maxN = Math.max(...chrData.map(d => d.n));
@@ -854,9 +825,9 @@ plink --bfile UZB_imputed_HQ_unique \
     const r = R * 0.55;
 
     const slices = [
-        { label: '1st degree', n: 2, color: '#e53935' },
-        { label: '2nd degree', n: 9, color: '#ff8f00' },
-        { label: '3rd degree', n: 602, color: '#4db6ac' }
+        { label: '1st degree', n: 3, color: '#e53935' },
+        { label: '2nd degree', n: 2, color: '#ff8f00' },
+        { label: '3rd degree', n: 423, color: '#4db6ac' }
     ];
     const total = slices.reduce((s, d) => s + d.n, 0);
 
@@ -880,7 +851,7 @@ plink --bfile UZB_imputed_HQ_unique \
     ctx.font = 'bold 22px Segoe UI';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('613', cx, cy - 8);
+    ctx.fillText('428', cx, cy - 8);
     ctx.font = '11px Segoe UI';
     ctx.fillStyle = '#888';
     ctx.fillText('related pairs', cx, cy + 12);
@@ -918,13 +889,13 @@ plink --bfile UZB_imputed_HQ_unique \
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    /* Real PI_HAT from UZB_expanded_IBD.genome (1,256 samples, --min 0.05, expanded cohort, verified 2026-08-14) */
+    /* Real post-dedup PI_HAT from UZB_v2_IBD.genome (885 samples, --min 0.05, extracted 2026-04-07) */
     const bins = [
-        { label: '0.05-0.10', n: 6392, color: '#4db6ac' },
-        { label: '0.10-0.20', n: 341, color: '#81c784' },
-        { label: '0.20-0.35', n: 9, color: '#ff8f00' },
-        { label: '0.35-0.50', n: 0, color: '#e53935' },
-        { label: '>0.50', n: 2, color: '#b71c1c' }
+        { label: '0.05-0.10', n: 6128, color: '#4db6ac' },
+        { label: '0.10-0.20', n: 236, color: '#81c784' },
+        { label: '0.20-0.35', n: 1, color: '#ff8f00' },
+        { label: '0.35-0.50', n: 2, color: '#e53935' },
+        { label: '>0.50', n: 1, color: '#b71c1c' }
     ];
 
     const pad = { t: 45, r: 30, b: 55, l: 80 };
@@ -999,12 +970,11 @@ plink --bfile UZB_imputed_HQ_unique \
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    // Real data: Uzbek-only ADMIXTURE K=2 Q2 (European-like, mean 0.615) vs F_ROH
-    // Source: uzb_for_admixture_expanded.2.Q (expanded cohort, single seed 43) x
-    // UZB_expanded_ROH.hom.indiv, verified directly from DRAGEN, Aug 14-15 2026.
-    // F_ROH = ROH_KB / 2,881,033 (autosomal genome length)
-    const Q = [0.5307,0.6096,0.7586,0.6615,0.5876,0.6458,0.4022,0.5867,0.6252,0.7208,0.6085,0.4996,0.6627,0.5968,0.0000,0.5622,0.0000,0.5871,1.0000,0.5053,1.0000,0.6400,0.6042,0.6804,0.6266,0.6171,0.6588,0.6589,0.5826,0.7707,0.6139,0.3933,0.6159,0.6032,0.0000,0.5798,0.1640,0.9873,0.6457,0.6018,0.6211,0.5930,0.5909,0.5660,0.9483,1.0000,0.6045,0.6267,0.5171,0.5071,1.0000,1.0000,0.6213,0.4795,0.4348,0.4841,0.7437,0.5540,0.4777,0.5086,0.6593,0.5522,0.4021,0.5174,0.6411,0.5560,0.5846,0.7318,0.6645,0.6508,0.5553,0.5296,0.6203,0.7158,0.9416,0.6117,0.7540,0.9644,0.7160,0.6644,0.5900,0.6653,0.6327,0.5903,1.0000,1.0000,0.4614,0.6009,0.6572,0.5936,0.6146,0.8383,0.7404,0.6648,0.4490,0.4004,0.5275,0.6821,0.6877,0.5364,0.4091,0.4092,0.6796,0.6067,0.4797,0.6049,0.5917,0.5644,0.5503,0.6461,0.5909,0.5638,1.0000,0.5962,0.6741,0.5316,0.6035,0.8116,0.6063,0.6631,0.6526,0.5604,0.3532,0.7965,0.5523,0.6602,0.6222,0.7610,0.6578,0.6971,0.7024,0.4979,0.7817,0.6055,0.7859,0.6026,0.6447,0.5398,0.7029,0.5330,0.5317,0.6488,0.6353,0.6405,0.4950,0.5768,0.6188,0.6277,0.6068,0.6496,0.5946,0.5977,0.6240,0.7720,0.7952,0.5302,0.6851,0.3056,0.4383,0.6615,1.0000,0.6515,0.6542,0.6235,0.7700,0.6466,0.6118,0.6428,0.6157,0.4935,1.0000,0.5953,1.0000,0.0000,0.6696,0.6419,0.5632,0.4119,0.6052,0.8813,0.5716,0.5129,0.5322,0.6337,0.6075,0.4433,0.6059,0.6500,0.5152,0.6114,0.4852,0.6081,0.6231,0.6549,0.5855,0.6280,0.5846,0.6825,0.7063,0.6914,0.5672,0.5157,0.7192,0.5435,0.5025,0.5742,0.5814,0.7248,0.4585,0.6562,0.5841,0.4453,0.6175,0.6314,0.7220,0.6556,0.6336,0.6146,0.6573,0.6358,0.6117,0.5268,0.6104,0.4905,0.6264,0.6553,0.6026,0.4388,0.6272,0.5413,0.4404,0.3737,0.6868,0.5414,0.5667,0.6195,0.5887,0.4693,1.0000,0.5365,0.6176,0.6370,0.7036,0.5956,0.6163,0.5509,0.6559,0.9282,1.0000,0.5129,0.6068,0.5528,0.6419,0.5933,1.0000,0.6080,0.7223,0.9184,0.4870,1.0000,0.6379,0.7301,0.5386,0.6158,0.6332,0.6027,0.6169,0.6160,0.4523,0.9615,1.0000,0.6144,0.5520,0.5993,0.4502,0.5941,0.8930,0.5551,0.6278,0.8483,0.6382,0.6358,0.6567,0.6312,0.6588,0.8368,0.6018,0.5054,0.5276,0.3618,0.0000,0.6822,0.5937,0.6371,0.5622,0.6378,0.6508,0.6086,0.5790,0.6041,0.5854,0.6034,0.6629,0.5011,0.6277,0.5393,0.6439,0.6916,0.6144,0.6161,0.5314,0.6045,0.6110,0.6291,0.6517,1.0000,0.4088,0.8015,0.6442,0.7136,0.5370,0.7523,0.5935,0.6016,0.5927,0.5865,0.6394,0.6529,0.5360,0.6298,0.5863,0.6568,0.6277,0.6215,0.7810,0.6508,0.6333,0.6914,0.6189,0.7382,0.5649,0.5387,0.6289,0.9464,0.6839,0.6298,0.6660,0.6555,0.5124,0.6771,0.6623,0.3968,0.7450,0.6387,0.3617,0.6276,0.5803,0.6450,0.6184,0.6920,0.4494,0.6437,0.5969,0.6313,0.8000,0.5963,0.5734,0.5315,0.5307,0.6293,0.8335,0.9129,0.6392,0.6221,0.5891,0.5102,0.6219,0.6504,0.5819,0.3839,1.0000,0.5324,0.4552,0.4438,0.4817,0.6189,0.5206,0.3160,0.6190,0.3501,0.6228,0.6182,0.5327,0.6254,0.6216,1.0000,0.6012,0.6286,0.6281,0.6170,0.5927,0.6272,0.6716,0.6093,0.4651,0.7286,0.7833,0.5995,0.7237,0.6324,0.4385,0.6156,0.4434,0.6259,0.5926,0.7413,0.6194,0.4283,0.5870,1.0000,0.6552,0.6560,0.6558,0.6117,0.6487,0.6829,0.5660,0.6190,0.6497,0.6939,0.5280,0.7852,0.6151,0.6700,0.6130,0.5928,0.6884,1.0000,0.5420,0.5965,0.5925,0.5827,0.4452,0.5487,0.6186,0.4600,0.6222,0.6656,0.4466,0.6553,0.8165,0.6222,0.7318,0.7388,1.0000,0.6303,0.0151,0.6027,0.5721,0.6186,0.6109,0.6268,0.6122,0.5845,0.5906,0.5771,0.6104,0.5223,0.5922,0.5041,0.0000,0.6282,0.5908,0.6450,0.6084,0.6276,0.5145,0.6587,0.9102,0.6082,0.4374,0.4577,0.6334,0.5473,0.6577,0.5414,0.4904,0.6426,0.7203,0.4122,0.6164,0.4265,0.4092,0.4929,0.6012,0.6759,0.6326,0.3062,0.7061,0.4609,0.5830,0.4995,0.6080,0.5812,0.7058,0.6112,0.6641,0.4977,0.4367,0.4153,0.7169,0.9558,0.6002,0.4875,0.5776,0.5611,0.5996,0.5661,0.6205,0.6426,0.6225,0.6096,0.6038,0.4904,0.6712,0.7495,0.6739,0.7414,1.0000,0.0000,0.5630,0.5806,0.0000,0.7318,0.5964,0.6052,0.5623,0.3742,1.0000,0.6455,0.5960,0.5877,0.6958,0.6124,0.5790,0.8122,0.5904,0.6251,0.8274,0.9775,0.6038,0.5506,1.0000,1.0000,0.9969,0.2771,0.6405,0.6576,0.5829,0.6060,0.5487,0.6130,0.6553,0.5892,1.0000,1.0000,0.5729,1.0000,0.6384,0.5990,0.6737,0.5581,0.8076,0.5478,0.3746,1.0000,0.6170,0.5096,0.6087,0.6737,0.6477,0.5019,0.6269,0.6531,0.3579,0.6447,0.6322,0.7366,0.5056,0.7772,0.6887,0.5653,0.6530,0.8663,0.6236,0.5660,0.8460,0.6450,0.6030,0.4899,0.6362,0.5158,1.0000,0.3638,1.0000,0.6205,0.5059,0.6933,0.6944,0.0000,0.7246,0.6234,0.5807,0.7910,0.6122,0.6207,0.6892,0.6705,1.0000,0.7392,0.6329,0.6351,0.5326,0.9324,0.6038,0.6990,0.6657,0.6250,0.5491,0.4964,0.5877,0.5098,0.6531,0.5832,0.5110,0.5262,0.5443,0.5986,0.8221,0.6068,0.6309,0.6569,0.5773,0.5823,0.6303,0.6416,0.6604,0.8871,0.6499,0.4384,0.4785,0.5686,0.6470,0.5980,0.6530,0.5815,0.6558,0.6206,0.6047,0.4940,0.4165,0.4647,0.6026,0.6413,0.6404,0.7028,0.4316,0.6584,0.5385,0.5444,0.5260,0.5872,0.5815,0.4886,0.6368,0.3827,0.6474,0.6444,0.5831,0.3959,0.5691,0.6409,0.5261,0.6209,0.4344,0.6235,0.6139,0.6639,0.6543,0.6018,0.4186,0.6410,0.6186,0.7447,0.4436,0.6082,0.6347,0.8679,0.6208,0.5720,0.5811,0.6066,0.8569,0.6515,0.8591,0.4838,0.4811,0.7696,0.6640,0.6154,0.6308,0.5978,0.6517,0.6865,0.5658,0.5339,0.5778,0.5944,1.0000,0.5982,0.4992,0.5345,0.6194,0.7748,0.6085,0.5518,0.6610,0.4233,0.4738,0.6647,0.5055,0.6167,0.7243,0.5919,0.5511,0.5903,0.5123,0.4159,0.5557,0.7617,0.6784,0.5466,0.5851,0.6599,0.9810,0.4746,0.6170,0.6847,0.5190,0.5752,0.6380,0.6175,0.6392,0.8059,1.0000,0.5992,0.5029,0.7129,0.6700,0.6986,0.7202,0.6136,0.6996,0.6467,0.6253,0.5624,0.6079,0.6321,0.5079,0.6156,0.6006,0.5402,0.7859,0.5519,0.5224,0.6611,0.6091,0.6587,0.5782,0.6626,0.7507,0.7491,0.6413,0.6261,0.6103,0.6337,0.6353,0.7326,0.6070,0.6500,0.5745,0.6463,0.3309,0.4615,0.5727,0.6086,0.8303,0.4929,0.8565,0.6399,0.7899,0.4529,0.4797,0.5685,0.8872,0.5017,0.5575,0.3662,0.5957,0.5900,0.6541,0.6543,0.6751,0.4949,0.5770,0.5780,0.5483,0.6629,0.6301,0.6760,0.5549,0.5716,0.6689,0.8293,0.4972,0.5256,0.6647,0.7293,0.7316,0.5409,0.7406,0.5713,0.4327,0.6920,0.4713,0.4504,0.6188,0.6127,0.5532,0.6496,0.6518,0.6267,0.7102,0.5093,0.6723,0.6468,0.6274,0.4527,0.5839,0.4053,0.4970,0.6020,0.6028,0.7755,0.6185,0.8465,0.5946,0.6096,0.4033,0.5190,0.7708,0.4166,0.5629,0.3985,0.5074,0.7226,0.5635,0.6183,0.6430,0.5680,0.6073,0.0000,0.6258,0.7224,0.5916,0.6407,0.6048,0.5545,0.6392,0.6391,0.6247,0.6586,0.5919,0.6143,0.5816,0.6193,0.6120,0.5147,0.0000,0.6316,0.6128,0.5678,0.7596,0.6138,0.5313,0.0000,1.0000,0.7476,0.8658,1.0000,0.1976,0.6163,0.4377,0.6052,0.6098,0.6252,0.6157,0.5985,0.6069,0.6582,0.5383,0.6062,0.7282,1.0000,0.9330,0.5819,0.6471,0.6300,0.7104,0.7710,0.6307,0.5579,0.4579,0.6288,0.5242,0.6427,0.4441,0.6546,0.6088,0.6812,0.7592,0.4953,0.5730,0.6220,0.3258,0.4019,0.5647,0.6181,0.5946,0.6594,0.6181,0.5263,0.6456,0.4180,0.6307,0.4107,0.5865,0.5066,0.5430,0.5996,0.6328,0.6430,0.6024,0.5545,0.5602,0.6220,0.4009,0.6108,0.7326,0.4849,0.5902,0.6735,0.6388,0.8186,1.0000,0.9526,0.9494,0.6238,0.6940,0.4842,0.5638,0.6138,0.6077,0.5564,0.7864,0.5808,0.6110,0.6618,0.6119,0.6962,0.7504,0.6338,0.6500,0.6785,0.6151,0.6110,0.5841,0.6072,0.5930,0.9427,0.6435,0.6271,0.6915,0.6756,0.7155,0.2945,0.5314,0.6147,0.0000,0.4304,0.6029,0.4621,0.8123,0.3610,0.6374,0.5413,0.0000,0.0000,0.9805,0.6200,0.6176,0.0000,0.5868,0.7033,0.9598,0.6686,0.6298,0.6959,0.4579,0.6676,0.5516,0.6526,0.9823,0.6069,0.6201,0.6581,0.5604,0.5855,0.6507,0.4367,1.0000,0.6513,0.5298,0.6758,0.6839,0.6318,0.6550,0.7080,0.6447,0.6248,0.6767,0.7022,0.6951,0.7693,1.0000,0.7591,0.5627,0.8290,0.6879,0.7189,0.6721,0.6844,0.7055,0.6621,0.7487,0.6886,0.5184,0.7029,0.6546,0.7065,0.6645,0.5686,0.6088,0.6416,0.6189,0.5405,0.5091,0.6878,0.6502,1.0000,0.6755,0.6485,0.6244,0.7353,0.6875,1.0000,0.3641,0.6667,0.4380,0.5819,0.5585,1.0000,0.9766,0.6027,0.0000,0.6298,0.7688,0.7353,0.6078,0.8602,0.8260,0.6075,0.6002,0.4782,0.5697,0.7930,0.6195,0.7299,0.7511,0.6018,0.7089,0.5759,0.6157,0.6735,0.6182,0.0000,0.4319,0.6327,1.0000,0.7763,0.0000,0.4954,0.6279,0.4508,0.4380,0.9769,0.7132,0.6352,0.8990,0.6127,0.5741,0.6266,0.6278,0.6190,0.9663,0.5548,0.9217,0.6324,1.0000,0.4633,0.6198,0.6054,0.7893,0.0000,0.7112,0.5714,0.5863,0.6003,0.6620,0.8194,1.0000,0.7427,0.5637,1.0000,0.6042,0.5819,0.4979,0.8152,0.6263,0.5903,0.5840,0.5925,0.6338,0.6264,0.8046,0.6468,0.5989,0.6363,0.6359,0.6213,0.5437,0.0000,0.6172,0.4726,0.5618,0.4142,0.7265,0.6000,0.6752,0.6403,0.6008,0.7139,0.6632,0.9799,0.5736,0.6627,0.6623,0.7178,0.9385,0.7224,0.6525,0.7158,0.8190,0.6164,0.6967,0.6500,0.0000,0.6378,0.5788,0.6563,0.4311,0.6488,0.4351,0.4631,0.7705,0.4684,0.5648,0.4042,0.6416,0.5339,0.5876,0.5322,0.4956,0.4801,0.4042,0.6416,0.4527,0.4247,0.5823,0.5391,0.3997,0.4250,0.5843,0.4800,0.4049,0.5373,0.4215,0.4694,0.4389,0.6266,0.4802,0.4474,0.2143,0.5789,0.4361,0.4328,0.4795,0.5819,0.6147,0.6115,0.5834,0.4163,0.4211,0.4717,0.6268,0.4485,0.6595,0.6112,0.6538,0.5994,0.5879,0.3238,0.6204,0.6097,0.6112,0.5318,0.6001,0.6338,0.6485,0.5455,0.6052,0.4437,0.6907,0.6581,0.6106,0.6325];
-    const F = [0.0137,0.0364,0.0108,0.0152,0.0151,0.0175,0.0174,0.0152,0.0228,0.0095,0.0143,0.0161,0.0169,0.0140,0.0272,0.0124,0.0300,0.0108,0.0133,0.0140,0.0162,0.0141,0.0117,0.0124,0.0132,0.0323,0.0138,0.0101,0.0158,0.0137,0.0114,0.0161,0.0142,0.0114,0.0246,0.0162,0.0245,0.0126,0.0071,0.0142,0.0127,0.0121,0.0132,0.0163,0.0120,0.0163,0.0313,0.0131,0.0159,0.0190,0.0234,0.0142,0.0105,0.0293,0.0163,0.0135,0.0106,0.0165,0.0234,0.0143,0.0110,0.0123,0.0359,0.0119,0.0130,0.0120,0.0149,0.0313,0.0137,0.0142,0.0158,0.0127,0.0113,0.0129,0.0148,0.0130,0.0164,0.0157,0.0104,0.0148,0.0142,0.0112,0.0892,0.0159,0.0170,0.0185,0.0110,0.0137,0.0114,0.0091,0.0120,0.0160,0.0128,0.0340,0.0213,0.0175,0.0128,0.0132,0.0118,0.0107,0.0133,0.0138,0.0127,0.0160,0.0149,0.0128,0.0137,0.0146,0.0179,0.0106,0.0420,0.0138,0.0183,0.0134,0.0092,0.0970,0.0096,0.0149,0.0125,0.0134,0.0109,0.0114,0.0518,0.0110,0.0571,0.0213,0.0819,0.0495,0.0131,0.0141,0.0250,0.0168,0.0249,0.0176,0.0170,0.0276,0.0148,0.0167,0.0120,0.0122,0.0134,0.0424,0.0346,0.0263,0.0136,0.0294,0.0160,0.0237,0.0126,0.0174,0.0156,0.0179,0.0138,0.0175,0.0142,0.0189,0.0110,0.0192,0.0205,0.0107,0.0208,0.0144,0.0217,0.0127,0.0113,0.0291,0.0129,0.0144,0.0584,0.0126,0.0188,0.0285,0.0183,0.0265,0.0118,0.0138,0.0165,0.0170,0.0161,0.0173,0.0760,0.0152,0.0164,0.0117,0.0162,0.0209,0.0120,0.0122,0.0100,0.0151,0.0229,0.0171,0.0119,0.0755,0.0133,0.0121,0.0151,0.0143,0.0114,0.0130,0.0141,0.0328,0.0124,0.0719,0.0138,0.0142,0.0136,0.0137,0.0123,0.0139,0.0118,0.0137,0.0102,0.0560,0.0169,0.0116,0.0153,0.0498,0.0158,0.0102,0.0192,0.0170,0.0133,0.0151,0.0148,0.0153,0.0136,0.0201,0.0163,0.0194,0.0162,0.0364,0.0097,0.0153,0.0176,0.0142,0.0111,0.0270,0.0207,0.0149,0.0172,0.0124,0.0149,0.0148,0.0106,0.0122,0.0166,0.0129,0.0188,0.0149,0.0111,0.0193,0.0153,0.0136,0.0263,0.0103,0.0146,0.0262,0.0144,0.0167,0.0348,0.0140,0.0160,0.0233,0.0091,0.0161,0.0129,0.0131,0.0149,0.0110,0.0158,0.0127,0.0186,0.0792,0.0162,0.0146,0.0122,0.0138,0.0140,0.0145,0.0156,0.0890,0.0131,0.0124,0.0135,0.0136,0.0277,0.0160,0.0184,0.0152,0.0254,0.0153,0.0132,0.0092,0.0152,0.0220,0.0240,0.0198,0.0117,0.0183,0.0348,0.0327,0.0156,0.0170,0.0119,0.0178,0.0159,0.0122,0.0141,0.0115,0.0215,0.0137,0.0131,0.0090,0.0103,0.0169,0.0163,0.0200,0.0222,0.0157,0.0115,0.0156,0.0162,0.0114,0.0108,0.0121,0.0168,0.0132,0.0129,0.0117,0.0273,0.0155,0.0145,0.0362,0.0144,0.0150,0.0145,0.0137,0.0148,0.0101,0.0145,0.0139,0.0121,0.0135,0.0094,0.0457,0.0152,0.0166,0.0115,0.0157,0.0152,0.0152,0.0135,0.0125,0.0167,0.0084,0.0154,0.0140,0.0158,0.0136,0.0145,0.0119,0.0135,0.0138,0.0193,0.0167,0.0177,0.0843,0.0132,0.0156,0.0162,0.0136,0.0160,0.0192,0.0189,0.0160,0.0196,0.0111,0.0099,0.0408,0.0179,0.0154,0.0226,0.0150,0.0601,0.0126,0.0192,0.0199,0.0114,0.0135,0.0196,0.0123,0.0116,0.0120,0.0152,0.0177,0.0145,0.0132,0.0165,0.0269,0.0135,0.0112,0.0135,0.0113,0.0140,0.0152,0.0112,0.0114,0.0150,0.0172,0.0146,0.0126,0.0339,0.0224,0.0186,0.0113,0.0119,0.0280,0.0175,0.0150,0.0145,0.0123,0.0116,0.0144,0.0148,0.0136,0.1073,0.0433,0.0095,0.0167,0.0152,0.0114,0.0149,0.0158,0.0521,0.0507,0.0171,0.0151,0.0125,0.0269,0.0156,0.0121,0.0567,0.0134,0.0134,0.0154,0.0635,0.0414,0.0135,0.0322,0.0112,0.0498,0.0128,0.0242,0.0234,0.0250,0.0204,0.0162,0.0124,0.0141,0.0140,0.0206,0.0141,0.0113,0.0135,0.0192,0.0149,0.0700,0.0130,0.0122,0.0262,0.0096,0.0172,0.0105,0.0526,0.0138,0.0638,0.0164,0.0140,0.0119,0.0167,0.0112,0.0741,0.0129,0.0125,0.0147,0.0186,0.0085,0.0145,0.0109,0.0127,0.0348,0.0264,0.0127,0.0134,0.0124,0.0116,0.0181,0.0130,0.0102,0.0169,0.0599,0.0109,0.0152,0.0131,0.0133,0.0140,0.0137,0.0137,0.0181,0.0140,0.0130,0.0134,0.0092,0.0139,0.0251,0.0117,0.0165,0.0210,0.0230,0.0126,0.0163,0.0317,0.0148,0.0167,0.0109,0.0152,0.0121,0.0205,0.0271,0.0176,0.0156,0.0333,0.0142,0.0109,0.0260,0.0132,0.0162,0.0170,0.0131,0.0106,0.0172,0.0182,0.0356,0.0155,0.0122,0.0124,0.0210,0.0116,0.0174,0.0161,0.0142,0.0147,0.0149,0.0439,0.0130,0.0151,0.0153,0.0115,0.0129,0.0186,0.0153,0.0123,0.0113,0.0160,0.0131,0.0135,0.0212,0.0120,0.0160,0.0104,0.0805,0.0123,0.0133,0.0144,0.0189,0.0279,0.0115,0.0238,0.0342,0.0789,0.0149,0.0134,0.0796,0.0157,0.0439,0.0139,0.0606,0.0089,0.0183,0.0133,0.0121,0.0156,0.0178,0.0122,0.0141,0.0150,0.0319,0.0132,0.0092,0.0113,0.0180,0.0131,0.0177,0.0133,0.0157,0.0127,0.0171,0.0171,0.0269,0.0130,0.0118,0.0160,0.0087,0.0150,0.0158,0.0157,0.0121,0.0126,0.0144,0.0208,0.0102,0.0181,0.0131,0.0142,0.0380,0.0234,0.0158,0.0124,0.0337,0.0202,0.0150,0.0116,0.0147,0.0112,0.0195,0.0143,0.0129,0.0128,0.0151,0.0092,0.0163,0.0152,0.0166,0.0158,0.0110,0.0140,0.0188,0.0455,0.0732,0.0216,0.0156,0.0160,0.0358,0.0141,0.0137,0.0128,0.0197,0.0143,0.0174,0.0210,0.0138,0.0135,0.0209,0.0329,0.0115,0.0670,0.0238,0.0168,0.0130,0.0127,0.0255,0.0163,0.0142,0.0140,0.0791,0.0172,0.0184,0.0118,0.0171,0.0158,0.0139,0.1050,0.0141,0.0838,0.0138,0.0109,0.0159,0.0147,0.0136,0.0284,0.0124,0.0114,0.0153,0.0197,0.0277,0.0117,0.0158,0.0230,0.0133,0.0150,0.0108,0.0171,0.0164,0.0148,0.0182,0.0132,0.0325,0.0198,0.0147,0.0139,0.0147,0.0786,0.0121,0.0122,0.0149,0.0133,0.0576,0.0116,0.0151,0.0435,0.0301,0.0108,0.0141,0.0140,0.0148,0.0204,0.0129,0.0144,0.0252,0.0105,0.0118,0.0469,0.0106,0.0139,0.0104,0.0119,0.0173,0.0130,0.0285,0.0123,0.0133,0.0241,0.0209,0.0125,0.0149,0.0142,0.0124,0.0116,0.0155,0.0160,0.0180,0.0110,0.0103,0.0163,0.0189,0.0251,0.0123,0.0158,0.0145,0.1020,0.0104,0.0145,0.0203,0.0161,0.0664,0.0169,0.0111,0.0192,0.0278,0.0120,0.0151,0.0164,0.0413,0.0142,0.0124,0.0144,0.0141,0.0167,0.0179,0.0135,0.0115,0.0122,0.0115,0.0144,0.0120,0.0136,0.0104,0.0092,0.0120,0.0139,0.0207,0.0202,0.0157,0.0144,0.0171,0.0115,0.0154,0.0153,0.0124,0.0124,0.0162,0.0136,0.0162,0.0099,0.0117,0.0092,0.0154,0.0525,0.0151,0.0142,0.0134,0.0353,0.0168,0.0132,0.0142,0.0122,0.0117,0.0304,0.0126,0.0111,0.0138,0.0106,0.0157,0.0159,0.0179,0.0257,0.0123,0.0102,0.0139,0.0119,0.0123,0.0187,0.0442,0.0169,0.0138,0.1124,0.0133,0.0177,0.0116,0.0125,0.0136,0.0121,0.0272,0.0106,0.0081,0.0306,0.0270,0.0515,0.0196,0.0168,0.0145,0.0151,0.0150,0.0100,0.0104,0.0145,0.0114,0.0154,0.0121,0.0109,0.0171,0.0164,0.0149,0.0113,0.0113,0.0132,0.0132,0.0122,0.0133,0.0100,0.0275,0.0136,0.0122,0.0314,0.0441,0.0138,0.0147,0.0112,0.0140,0.0450,0.0216,0.0169,0.0159,0.0221,0.0237,0.0151,0.0391,0.0255,0.0110,0.0151,0.0156,0.0274,0.0175,0.0157,0.0252,0.0120,0.0137,0.0147,0.0175,0.0147,0.0156,0.0144,0.0126,0.0287,0.0107,0.0099,0.0146,0.0170,0.0141,0.0141,0.0123,0.0128,0.0144,0.0153,0.0116,0.0147,0.0094,0.0098,0.0118,0.0085,0.0132,0.0171,0.0129,0.0156,0.0194,0.0143,0.0128,0.0166,0.0410,0.0124,0.0163,0.0107,0.0148,0.0131,0.0165,0.0164,0.0173,0.0092,0.0175,0.0097,0.0108,0.0456,0.0292,0.0084,0.0134,0.0308,0.0166,0.0131,0.0145,0.0096,0.0110,0.0154,0.0174,0.0142,0.0138,0.0271,0.0178,0.0113,0.0135,0.0136,0.0113,0.0101,0.0158,0.0160,0.0136,0.0159,0.0122,0.0127,0.0131,0.0299,0.0146,0.0131,0.0542,0.0143,0.0173,0.0143,0.0145,0.0127,0.0157,0.0828,0.0122,0.0127,0.0113,0.0126,0.0123,0.0180,0.0156,0.0264,0.0183,0.0151,0.0746,0.0136,0.0186,0.0254,0.0153,0.0173,0.0130,0.0250,0.0180,0.0275,0.0171,0.0112,0.0140,0.0154,0.0158,0.0241,0.0237,0.0118,0.0099,0.0145,0.0252,0.0194,0.0281,0.0157,0.0124,0.0129,0.0175,0.0159,0.0134,0.0147,0.0154,0.0175,0.0122,0.0138,0.0117,0.0466,0.0082,0.0130,0.0133,0.0393,0.0145,0.0119,0.0130,0.0641,0.0351,0.0162,0.0158,0.0150,0.0139,0.0131,0.0147,0.0122,0.0825,0.0188,0.0114,0.0146,0.0125,0.0941,0.0133,0.0263,0.0124,0.0157,0.0135,0.0205,0.0177,0.0345,0.0145,0.0098,0.0117,0.0164,0.0283,0.0150,0.0130,0.0206,0.0214,0.0105,0.0240,0.0116,0.0161,0.0154,0.0142,0.0498,0.0087,0.0128,0.0168,0.0114,0.0134,0.0117,0.0188,0.0166,0.0212,0.0160,0.0195,0.0223,0.0116,0.0167,0.0154,0.0140,0.0140,0.0146,0.0256,0.0175,0.0151,0.0135,0.0129,0.0153,0.0124,0.0436,0.0181,0.0123,0.0122,0.0469,0.0310,0.0125,0.0243,0.0146,0.0127,0.0150,0.0136,0.0200,0.0129,0.0180,0.0092,0.0110,0.0143,0.0143,0.0118,0.0128,0.0137,0.0201,0.0127,0.0326,0.0157,0.0199,0.0152,0.0223,0.0134,0.0115,0.0106,0.0081,0.0105,0.0088,0.0200,0.0124,0.0073,0.0116,0.0104,0.0073,0.0096,0.0171,0.0131,0.0166,0.0086,0.0473,0.0086,0.0091,0.0108,0.0155,0.0126,0.0132,0.0127,0.0104,0.0135,0.0134,0.0159,0.0239,0.0097,0.0076,0.0109,0.0109,0.0134,0.0167,0.0128,0.0137,0.0166,0.0128,0.0167,0.0130,0.0136,0.0118,0.0092,0.0054,0.0102,0.0088,0.0165,0.0194,0.0081,0.0103,0.0120,0.0100,0.0105,0.0129,0.0123,0.0110,0.0110,0.0228,0.0097,0.0808,0.0274,0.0185,0.0347,0.0142,0.0178,0.0115,0.0733,0.0173,0.0881,0.0711,0.0107,0.0504,0.0121,0.0426,0.0161,0.0214,0.0114,0.0141,0.0150,0.0428,0.0197,0.0329,0.0168,0.0137,0.0180,0.0191,0.0137,0.0450,0.0128,0.0425,0.0229,0.0245,0.0134,0.0184,0.0164,0.0180,0.0496,0.0161,0.0134,0.0178,0.0152,0.0350,0.0166,0.0237,0.0202,0.0233,0.0149,0.0115,0.0185,0.0110,0.0164,0.0123,0.0243,0.0123,0.0140,0.0143,0.0114,0.0140,0.0125,0.0132,0.0121,0.0143,0.0140,0.0383,0.0153,0.0158,0.0277];
+    // Real data: ADMIXTURE K=2 Q1 (European-like) vs F_ROH
+    // Source: admix_v2_data.json (1,047 sample IDs + K2 Q values) × UZB_v2_ROH.hom.indiv
+    // F_ROH = ROH_KB / 2,881,033 (autosomal hg38 length)
+    const Q = [0.5988,0.608,0.5124,0.5136,1.0,0.9959,0.6125,0.4849,0.4218,0.4843,0.7348,0.542,0.4662,0.5205,0.6666,0.5567,0.401,0.5074,0.6282,0.5434,0.5852,0.7105,0.6537,0.6452,0.5179,0.6216,0.7194,0.9472,0.5892,0.7617,0.9476,0.7178,0.6481,0.6688,0.6257,0.5825,1.0,1.0,0.4673,0.629,0.6526,0.6051,0.621,0.8271,0.7445,0.6561,0.4698,0.4115,0.5308,0.6503,0.6922,0.5418,0.4109,0.4273,0.6594,0.5884,0.4743,0.6078,0.5937,0.569,0.5608,0.6416,0.5772,0.5656,1.0,0.6054,0.7,0.524,0.63,0.6491,0.6362,0.5437,0.3577,0.7764,0.5253,0.6456,0.6205,0.7481,0.6809,0.6863,0.6977,0.4823,0.771,0.7784,0.6653,0.7088,0.5193,0.6361,0.6134,0.5878,0.6241,0.6157,0.6343,0.5954,0.7495,0.7925,0.5324,0.6599,0.4325,1.0,0.6403,0.7744,0.6219,0.6231,0.6401,0.5916,0.4799,1.0,0.5837,1.0,0.0,0.6497,0.563,0.4328,0.5835,0.6718,0.5567,0.5172,0.5343,0.6419,0.6018,0.4529,0.5895,0.6396,0.6052,0.6231,0.6072,0.6144,0.6562,0.6841,0.5695,0.704,0.4911,0.5958,0.4728,0.6626,0.5558,0.632,0.7275,0.6276,0.6706,0.6141,0.6002,0.6159,0.6303,0.4146,0.5374,0.5471,0.347,0.5404,0.6272,0.4774,1.0,0.6174,0.7042,1.0,0.4636,0.5903,0.5906,0.9218,1.0,0.6434,0.7414,0.633,0.6294,0.6035,0.5901,0.434,0.9528,1.0,0.5281,0.4477,0.9085,0.5472,0.8588,0.6357,0.6226,0.8345,0.506,0.5155,0.6155,0.0,0.6036,0.6384,0.5486,0.6244,0.6358,0.5982,0.5825,0.6061,0.818,0.6632,0.4853,0.6147,0.5254,0.6347,0.687,0.5129,0.5953,0.6075,0.627,0.6092,0.6552,0.4474,1.0,0.3921,0.7989,0.6594,0.7022,0.5478,0.771,1.0,0.635,0.4525,0.5948,0.6275,0.5243,0.6228,0.5871,0.6098,0.77,0.6321,0.9253,0.5308,0.6551,0.5072,0.6782,0.7442,0.3698,0.5795,0.6037,0.4501,0.6121,0.797,0.6002,0.8318,0.9015,0.6054,0.6146,0.6375,1.0,0.5972,0.5266,0.6243,0.6469,0.6124,0.5309,0.3269,0.5971,0.6093,0.6174,0.6771,0.5969,0.7674,0.7051,0.4223,0.4323,0.6304,0.6141,0.4253,1.0,0.6545,0.6114,0.689,0.6251,0.6473,0.711,0.7825,0.6138,0.6882,0.5923,0.9978,0.5406,0.5754,0.5626,0.569,0.5795,0.4748,0.6123,0.4753,0.6119,0.8135,0.7345,1.0,0.0281,0.5705,0.5893,0.6126,0.6197,0.6001,0.0,0.6349,0.6427,0.5256,0.919,0.4576,0.5638,0.5173,0.6273,0.7203,0.4988,0.4766,0.4345,0.5171,0.6628,0.3204,0.7082,0.5912,0.5964,0.5634,0.7155,0.603,0.6632,0.4932,0.4417,0.4179,0.9747,0.6046,0.4707,0.5663,0.5631,0.6114,0.599,0.6066,0.6282,0.6246,0.6213,0.5795,0.591,0.4934,0.6629,0.7358,0.6854,0.7256,1.0,0.0,0.5553,0.5888,0.0,0.7085,0.5895,0.5857,0.5489,0.3901,1.0,0.6407,0.5924,0.5847,0.7012,0.6202,0.576,0.8003,0.5985,0.6286,0.8191,0.9751,0.5897,0.5423,1.0,1.0,0.9972,0.5877,0.2657,0.6294,0.6601,0.5831,0.5914,0.5689,0.6312,0.6092,0.6624,0.6053,1.0,1.0,0.5653,1.0,0.64,0.5956,0.6652,0.5447,0.8124,0.555,0.3901,1.0,0.595,0.5187,0.5987,0.6891,0.632,0.5067,0.6198,0.6454,0.381,0.6409,0.6409,0.7279,0.4994,0.7928,0.6851,0.588,0.6329,0.877,0.6236,0.5865,0.8486,0.6406,0.6084,0.4771,0.6148,0.51,1.0,0.368,1.0,0.6224,0.4809,0.6637,0.6901,0.0,0.7085,0.6192,0.5706,0.7944,0.6006,0.6052,0.6837,0.6694,1.0,0.7664,0.6169,0.6379,0.5452,0.9439,0.6058,0.6808,0.6673,0.6167,0.5486,0.4851,0.5657,0.5022,0.6492,0.568,0.5092,0.5206,0.5411,0.5905,0.8134,0.6128,0.6399,0.6351,0.5896,0.5807,0.6243,0.6402,0.6564,0.89,0.6567,0.4294,0.4894,0.5669,0.6678,0.5678,0.6016,0.6589,0.5861,0.657,0.6237,0.6096,0.515,0.4172,0.469,0.5992,0.6293,0.6418,0.7116,0.4205,0.6227,0.533,0.5591,0.5075,0.5873,0.5874,0.4814,0.6217,0.3789,0.6396,0.6163,0.6054,0.4074,0.5736,0.6323,0.5418,0.6135,0.5727,0.4246,0.6317,0.6013,0.6659,0.6336,0.5944,0.415,0.6356,0.6182,0.718,0.439,0.6125,0.614,0.8671,0.6377,0.5791,0.567,0.6044,0.8737,0.6572,0.8472,0.4791,0.4778,0.7535,0.6607,0.5893,0.6478,0.6062,0.6465,0.6875,0.5676,0.5107,0.5695,0.5864,1.0,0.5629,0.4758,0.5391,0.6004,0.7578,0.609,0.5454,0.6503,0.4335,0.4794,0.6718,0.4925,0.598,0.7189,0.607,0.5524,0.586,0.5243,0.4202,0.5528,0.7554,0.6819,0.5305,0.5773,0.6331,0.9778,0.4892,0.608,0.6663,0.5344,0.5789,0.6175,0.6233,0.6307,0.8027,1.0,0.6006,0.5257,0.7043,0.6643,0.7017,0.6872,0.6138,0.7081,0.6295,0.6048,0.579,0.6355,0.641,0.5286,0.59,0.5952,0.5338,0.7875,0.5383,0.5255,0.7015,0.5887,0.6439,0.5506,0.6578,0.7655,0.7414,0.6154,0.6071,0.6045,0.6222,0.6354,0.6935,0.6087,0.6499,0.5634,0.6207,0.3558,0.4806,0.5667,0.5998,0.819,0.502,0.8545,0.643,0.7931,0.4237,0.4836,0.5591,0.8878,0.5044,0.5391,0.3645,0.6048,0.5907,0.625,0.6418,0.6606,0.4979,0.5589,0.5787,0.5474,0.6597,0.6306,0.6781,0.5402,0.5925,0.6767,0.8283,0.4937,0.5134,0.6885,0.73,0.7064,0.5441,0.7182,0.5801,0.4563,0.6643,0.4767,0.454,0.6214,0.6097,0.5588,0.6395,0.6436,0.6336,0.686,0.4991,0.6439,0.6327,0.6121,0.441,0.587,0.4136,0.4858,0.584,0.5754,0.7569,0.6033,0.8484,0.5737,0.5921,0.399,0.5128,0.7781,0.411,0.5521,0.4053,0.4989,0.7178,0.5829,0.6243,0.6222,0.5546,0.5886,0.0,0.6131,0.7321,0.5836,0.6461,0.5891,0.5571,0.6121,0.6438,0.5964,0.6502,0.6023,0.6179,0.5849,0.6057,0.6468,0.52,0.0,0.6137,0.6119,0.5631,0.7215,0.592,0.5288,0.0,1.0,0.7574,0.8727,1.0,0.1915,0.6037,0.4298,0.6042,0.6098,0.6294,0.6213,0.5854,0.5975,0.6477,0.5258,0.6098,0.7242,1.0,0.9203,0.5622,0.6463,0.6166,0.7022,0.7863,0.6223,0.5515,0.4647,0.6245,0.5324,0.641,0.4365,0.6465,0.5979,0.6653,0.7637,0.4858,0.5719,0.6073,0.3355,0.3971,0.5585,0.6079,0.5885,0.6547,0.6208,0.5171,0.6413,0.4332,0.634,0.4036,0.5589,0.5044,0.5508,0.5927,0.6248,0.6335,0.6159,0.5505,0.5676,0.6093,0.4177,0.6078,0.7354,0.4733,0.6105,0.6779,0.6217,0.8207,1.0,0.9415,0.9262,0.6521,0.694,0.4709,0.58,0.6139,0.6151,0.5578,0.7761,0.5831,0.596,0.6751,0.5981,0.6938,0.7494,0.6416,0.6379,0.664,0.6169,0.6161,0.5717,0.6236,0.5884,0.938,0.6467,0.6283,0.6974,0.6637,0.7219,0.2886,0.5509,0.6135,0.0,0.4278,0.6051,1.0,0.4678,0.7911,0.3382,0.658,0.5068,0.0,0.0,0.9933,0.6159,0.5964,0.0,0.577,0.6851,0.9926,0.6749,0.6302,0.6879,0.4698,0.6725,0.6145,0.5492,0.66,0.9892,0.6294,0.6508,0.6474,0.5513,0.5663,0.6693,0.4351,1.0,0.6286,0.5443,0.6767,0.6744,0.6421,0.6124,0.7052,0.6469,0.5999,0.6788,0.6768,0.6739,0.7624,1.0,0.7643,0.581,0.8355,0.6657,0.6895,0.6797,0.6926,0.7225,0.6836,0.7392,0.6963,0.524,0.7035,0.647,0.7028,0.6799,0.5497,0.6107,0.6186,0.6268,0.532,0.53,0.6679,0.6394,1.0,0.6651,0.6571,0.6223,0.7318,0.6869,1.0,0.3677,0.6588,0.4353,0.5785,0.5487,1.0,0.9571,0.5754,0.0,0.6215,0.7787,0.7445,0.6264,0.8476,0.8075,0.5849,0.5982,0.4643,0.5657,0.7741,0.6001,0.7208,0.7298,0.5955,0.6942,0.5679,0.6105,0.6528,0.6106,0.0,0.4305,0.637,1.0,0.7686,0.0,0.4704,0.6285,0.4483,0.4317,0.9941,0.7204,0.6098,0.9058,0.6069,0.5662,0.619,0.6173,0.6255,0.9766,0.5555,0.9268,0.648,1.0,0.4653,0.613,0.7942,0.0,0.7079,0.567,0.6341,0.8333,1.0,0.732,0.5758,1.0,0.6152,0.9819,0.5838,0.5067,0.6083,0.5679,0.5904,0.6081,0.6414,0.6544,0.8028,1.0,0.6447,0.5773,0.4615,0.6151,0.6225,0.5585,0.0,0.6162,0.4794,0.5681,0.4301,0.7197,0.5936,0.6607,0.6368,0.6147,0.7191,0.6616,0.9932,0.5913,0.6515,0.8365,0.6362,0.7234,1.0,0.9273,0.7088,0.723,0.8278,0.619,0.6918,0.64,0.0,0.6352,0.5711,0.6678,0.3997,0.6577,0.4297,0.4615,0.7477,0.4536,0.5415,0.4027,0.6334,0.5206,0.5861,0.5418,0.4918,0.4807,0.411,0.6264,0.4401,0.4345,0.6036,0.5301,0.4114,0.4498,0.5725,0.4876,0.4097,0.5378,0.4018,0.4781,0.4201,0.6064,0.4742,0.4533,0.2252,0.6081,0.4241,0.414,0.4729,0.6127,0.6036,0.6185,0.5929,0.4324,0.4211,0.4595,0.626,0.449];
+    const F = [0.0307,0.0141,0.014,0.0189,0.0251,0.0151,0.0138,0.0299,0.0135,0.0145,0.0094,0.017,0.0235,0.0141,0.0099,0.0127,0.0356,0.0113,0.012,0.0121,0.0163,0.0331,0.0144,0.014,0.0125,0.0143,0.014,0.0146,0.0133,0.0152,0.0147,0.0095,0.0153,0.0128,0.0916,0.0164,0.0161,0.0172,0.0129,0.0132,0.0112,0.01,0.0121,0.0165,0.012,0.0338,0.0206,0.0173,0.0119,0.0107,0.0104,0.0122,0.0142,0.0138,0.0129,0.0178,0.0158,0.0104,0.0157,0.0149,0.0167,0.0107,0.0435,0.0155,0.0199,0.0132,0.0096,0.0973,0.0141,0.0134,0.0128,0.0125,0.05,0.0109,0.0585,0.022,0.0804,0.0513,0.0148,0.014,0.0248,0.0168,0.0252,0.0181,0.0125,0.0119,0.0128,0.0408,0.0263,0.0293,0.0175,0.0247,0.0176,0.0162,0.0157,0.0138,0.0173,0.0121,0.0196,0.0225,0.0212,0.0116,0.0304,0.0112,0.0143,0.0574,0.0146,0.0158,0.0273,0.0186,0.025,0.0136,0.0157,0.0165,0.0167,0.0111,0.075,0.0152,0.016,0.0113,0.0165,0.0196,0.0139,0.0127,0.0163,0.0099,0.0763,0.0124,0.0157,0.0138,0.0121,0.0112,0.0142,0.0146,0.0137,0.0141,0.012,0.0566,0.019,0.014,0.0148,0.0106,0.0192,0.013,0.0143,0.0207,0.0195,0.01,0.0135,0.0148,0.0156,0.0254,0.0214,0.0168,0.0162,0.0195,0.0593,0.013,0.0122,0.0265,0.0172,0.0333,0.014,0.0218,0.0102,0.0174,0.0141,0.0147,0.0109,0.0165,0.0192,0.0148,0.0122,0.0147,0.0147,0.0875,0.014,0.0121,0.0159,0.0196,0.0151,0.0251,0.0137,0.0092,0.0145,0.0197,0.0252,0.0208,0.0104,0.0173,0.0154,0.0158,0.016,0.0139,0.0158,0.0175,0.0138,0.0222,0.0131,0.0146,0.0081,0.0129,0.0114,0.0206,0.0153,0.0154,0.021,0.0214,0.0154,0.0129,0.0148,0.0166,0.0161,0.0142,0.01,0.0179,0.0133,0.012,0.0279,0.0133,0.0131,0.0145,0.014,0.0133,0.0157,0.0108,0.0163,0.0134,0.0181,0.0157,0.0173,0.0161,0.0129,0.0194,0.0156,0.0166,0.0115,0.0188,0.0138,0.0176,0.0183,0.01,0.0166,0.0142,0.0168,0.0133,0.0188,0.0192,0.0124,0.0204,0.0125,0.014,0.01,0.011,0.0149,0.0158,0.0331,0.0216,0.0129,0.029,0.017,0.0132,0.0126,0.0127,0.0458,0.0086,0.0171,0.014,0.0144,0.0159,0.0477,0.0151,0.0145,0.0153,0.0124,0.0134,0.0128,0.0161,0.0119,0.0129,0.0146,0.0107,0.0149,0.0239,0.0209,0.0135,0.0143,0.0142,0.0159,0.0157,0.0246,0.0121,0.0105,0.0643,0.0135,0.0144,0.0121,0.0147,0.0083,0.0123,0.0112,0.0208,0.0359,0.0123,0.0135,0.0199,0.0165,0.0143,0.0104,0.0156,0.0148,0.0133,0.0149,0.0134,0.0133,0.0177,0.0136,0.0132,0.0097,0.0142,0.0256,0.013,0.0178,0.0204,0.0243,0.0114,0.0167,0.0336,0.0326,0.0146,0.0155,0.0127,0.0161,0.0143,0.0214,0.0265,0.0173,0.0149,0.0343,0.0139,0.0105,0.0279,0.0138,0.0176,0.0154,0.0142,0.011,0.0163,0.0175,0.036,0.0152,0.0126,0.0132,0.0233,0.0129,0.0166,0.0169,0.0149,0.0159,0.0146,0.0451,0.0127,0.0118,0.0151,0.0163,0.0133,0.0119,0.0172,0.0118,0.0151,0.0107,0.0104,0.0164,0.0138,0.0135,0.0223,0.0129,0.016,0.0082,0.0809,0.0139,0.0149,0.0133,0.0185,0.0293,0.0128,0.0237,0.0343,0.0797,0.0133,0.0131,0.0798,0.0174,0.0454,0.0136,0.0632,0.0087,0.0185,0.015,0.0125,0.0166,0.017,0.0131,0.0133,0.0159,0.033,0.0144,0.0077,0.0121,0.0181,0.0129,0.0182,0.0131,0.0163,0.0126,0.0184,0.0168,0.0287,0.0127,0.0117,0.0166,0.0092,0.0158,0.0153,0.0175,0.0145,0.0145,0.0127,0.019,0.0102,0.0191,0.0142,0.0155,0.0373,0.0234,0.0164,0.0133,0.0335,0.0184,0.0151,0.0115,0.0128,0.0111,0.0215,0.0141,0.0147,0.0144,0.0142,0.0113,0.0158,0.0153,0.0153,0.0157,0.0133,0.0134,0.0184,0.0484,0.0702,0.0197,0.0153,0.0157,0.0372,0.015,0.0142,0.0158,0.0131,0.0201,0.0131,0.0174,0.0213,0.0148,0.0126,0.0211,0.0335,0.0097,0.0673,0.024,0.0165,0.0127,0.0128,0.0261,0.0147,0.0145,0.0134,0.0786,0.016,0.0161,0.0126,0.0163,0.0162,0.0161,0.1041,0.0138,0.0168,0.0807,0.0135,0.0108,0.0162,0.0154,0.0145,0.0285,0.0119,0.0125,0.014,0.0197,0.0271,0.0101,0.0166,0.0228,0.0141,0.0158,0.0112,0.0176,0.016,0.0155,0.0175,0.0132,0.0329,0.0197,0.0141,0.0135,0.0155,0.078,0.0138,0.0146,0.0134,0.0141,0.0555,0.0107,0.0153,0.0422,0.0288,0.0115,0.0141,0.0149,0.0147,0.0208,0.0138,0.0143,0.0273,0.0104,0.0122,0.0478,0.0114,0.0127,0.0117,0.0132,0.0165,0.0139,0.0276,0.0138,0.013,0.0221,0.0213,0.0132,0.0141,0.014,0.0126,0.0105,0.0149,0.0139,0.0176,0.0102,0.0096,0.0168,0.0187,0.0249,0.0122,0.015,0.0143,0.1037,0.0111,0.0139,0.0208,0.0139,0.0685,0.0176,0.0113,0.0183,0.027,0.0113,0.0153,0.0163,0.0415,0.0146,0.0123,0.014,0.0143,0.0156,0.0162,0.0139,0.0115,0.0106,0.0144,0.0154,0.0113,0.0141,0.0114,0.0106,0.0131,0.0125,0.0195,0.0206,0.0159,0.0146,0.0186,0.0133,0.0177,0.0142,0.0156,0.0135,0.0172,0.0139,0.0158,0.0103,0.0116,0.01,0.0145,0.0518,0.0135,0.0126,0.0122,0.0342,0.0163,0.0133,0.0143,0.0122,0.0123,0.0293,0.0137,0.0106,0.0135,0.011,0.0172,0.0154,0.0175,0.0233,0.0118,0.0127,0.0147,0.0142,0.0113,0.0186,0.0457,0.0186,0.0136,0.1111,0.0128,0.0184,0.0123,0.0132,0.0154,0.0136,0.0259,0.0089,0.0083,0.031,0.0269,0.0552,0.0202,0.0165,0.0151,0.0157,0.0136,0.0105,0.0106,0.0154,0.0115,0.0154,0.0121,0.0104,0.0185,0.0178,0.0144,0.0116,0.0125,0.0126,0.0138,0.0107,0.0138,0.0107,0.0263,0.0137,0.0134,0.0334,0.0432,0.0137,0.0143,0.0117,0.0135,0.0445,0.0209,0.0186,0.0169,0.021,0.023,0.015,0.0413,0.0266,0.0109,0.017,0.0161,0.0266,0.0182,0.015,0.0249,0.0133,0.0155,0.0132,0.0161,0.0146,0.0143,0.0156,0.0117,0.0294,0.0115,0.01,0.0137,0.0184,0.0139,0.0134,0.0131,0.0139,0.015,0.0153,0.0114,0.0134,0.0108,0.0101,0.0113,0.0109,0.0132,0.0146,0.012,0.0146,0.0186,0.0149,0.0119,0.0152,0.0403,0.0131,0.0152,0.0122,0.0157,0.0137,0.0162,0.0166,0.0199,0.0105,0.0176,0.0097,0.0101,0.0469,0.0307,0.0092,0.0135,0.0295,0.0181,0.0134,0.0162,0.0106,0.0109,0.0146,0.0177,0.012,0.0133,0.0267,0.0167,0.0125,0.0148,0.0131,0.0118,0.0107,0.0155,0.0176,0.0149,0.0171,0.0138,0.0147,0.0134,0.0298,0.0156,0.0146,0.0543,0.0162,0.018,0.0151,0.0139,0.0114,0.0167,0.0818,0.0124,0.012,0.0111,0.0143,0.0127,0.0158,0.0149,0.0277,0.0194,0.0144,0.0758,0.0133,0.0197,0.0249,0.0165,0.0161,0.0134,0.0265,0.0172,0.0252,0.0084,0.0178,0.0094,0.0126,0.0159,0.0137,0.0231,0.0266,0.0135,0.0119,0.0133,0.0233,0.0184,0.0275,0.0166,0.0116,0.0137,0.0184,0.0165,0.0118,0.0154,0.015,0.0144,0.0184,0.0137,0.0141,0.0112,0.0471,0.0077,0.0134,0.0141,0.0413,0.0163,0.0127,0.0126,0.0613,0.0355,0.0172,0.0146,0.0153,0.0123,0.013,0.0149,0.0106,0.0858,0.0186,0.0131,0.0141,0.0139,0.0951,0.0122,0.027,0.0106,0.0135,0.0142,0.0211,0.0158,0.0334,0.016,0.0102,0.0109,0.0174,0.0283,0.0183,0.012,0.0195,0.0238,0.0126,0.026,0.0121,0.0161,0.0158,0.0139,0.0493,0.0095,0.0129,0.0188,0.0132,0.0119,0.012,0.0176,0.017,0.02,0.0165,0.02,0.0216,0.0126,0.0168,0.0171,0.0137,0.0153,0.0137,0.0264,0.0167,0.0139,0.0167,0.0124,0.0144,0.0112,0.0418,0.0177,0.0131,0.0114,0.0462,0.0308,0.0123,0.023,0.0138,0.0139,0.0154,0.0145,0.0194,0.0119,0.0181,0.0088,0.0113,0.0139,0.0141,0.0128,0.0145,0.0137,0.0208,0.0105,0.0331,0.0159,0.0213,0.0146,0.0208,0.0142,0.0123,0.0112,0.0079,0.01,0.018,0.0141,0.0108,0.0096,0.011,0.0147,0.014,0.0147,0.0087,0.0459,0.0116,0.0109,0.0109,0.0144,0.0121,0.0147,0.0133,0.0094,0.0148,0.0145,0.0095,0.0156,0.0228,0.0086,0.0123,0.0108,0.0122,0.0151,0.0172,0.0119,0.0122,0.0151,0.0119,0.0173,0.0137,0.0132,0.0136,0.0109,0.0077,0.0107,0.0083,0.0153,0.0093,0.0209,0.0096,0.0117,0.011,0.0147,0.0104,0.0116,0.0127,0.011,0.0118,0.0235,0.0098,0.0813,0.0261,0.02,0.0352,0.0148,0.0192,0.0123,0.074,0.0172,0.0907,0.072,0.0109,0.0501,0.0127,0.041,0.0166,0.0218,0.0098,0.0123,0.0147,0.0416,0.0193,0.0308,0.0168,0.0126,0.0187,0.0203,0.018,0.0453,0.0143,0.0439,0.0226,0.0257,0.0145,0.0186,0.0158,0.0163,0.049,0.0164,0.0123,0.0165,0.0152,0.0361,0.0178,0.0238,0.0197,0.0247,0.0131];
 
     ctx.fillStyle = '#fafafa';
     ctx.fillRect(0, 0, W, H);
@@ -1065,12 +1035,12 @@ plink --bfile UZB_imputed_HQ_unique \
     ctx.fillStyle = '#333';
     ctx.font = 'bold 13px Segoe UI';
     ctx.textAlign = 'center';
-    ctx.fillText('ADMIXTURE Q2 (European-like) vs F_ROH (N = 1,256, expanded cohort)', W / 2, pad.t - 20);
+    ctx.fillText('ADMIXTURE Q1 (European-like) vs F_ROH (N = 1,047)', W / 2, pad.t - 20);
 
     // Axis labels
     ctx.fillStyle = '#888';
     ctx.font = '11px Segoe UI';
-    ctx.fillText('Q2 (European-like ancestry proportion)', W / 2, H - 8);
+    ctx.fillText('Q1 (European-like ancestry proportion)', W / 2, H - 8);
 
     ctx.save();
     ctx.translate(16, pad.t + h / 2);
