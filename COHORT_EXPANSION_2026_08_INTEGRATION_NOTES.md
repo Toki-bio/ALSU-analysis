@@ -144,6 +144,47 @@ Latinized by the pre-submission prep step — caught by requiring 0 unmapped IDs
 touching any file, not assumed. Verified clean on all 22 chromosomes afterward
 (uniform 1,268 samples, 0 non-ASCII names remaining).
 
+### 6a. Step 9 Fst — hg19 flip/exclude bug found and fixed (bridge comparison only)
+
+Before GRCh38 became canonical (see Step 9's own page for the retirement decision),
+the original hg19 pipeline was replicated once on the expanded cohort as a one-time
+bridge comparison to the originally published number. Doing so surfaced a real bug
+in the *original, already-published* pipeline's flip/exclude logic: it flips SNPs
+that conflict on strand with the 1000G reference, then immediately excludes those
+same SNPs using the pre-flip conflict list — discarding every SNP it just "fixed"
+regardless of whether the flip actually resolved the conflict.
+
+Proved with an isolated test: SNP `1:100007258`/`1:99541702` conflicts pre-flip
+(UZB A/G vs 1000G T/C), but matches cleanly post-flip (UZB T/C vs 1000G T/C) —
+confirming the flip works and was being wrongly discarded anyway.
+
+Verified directly from DRAGEN logs (`fst_optionA_hg19/` vs `fst_optionA_corrected/`):
+
+| | Markers | Mean F<sub>ST</sub> | Weighted F<sub>ST</sub> |
+|---|---|---|---|
+| Buggy (as originally published) | 226,195 | 0.0135 | 0.0182 |
+| Corrected (flip re-tested) | 451,014 (2.0x) | 0.0133 | 0.0179 |
+
+The bug cost statistical power (half the usable markers discarded needlessly), not
+correctness — the point estimates barely move. hg19/GRCh37 is retired after this;
+GRCh38 (Option B, Section 6b below) is canonical for all further work.
+
+### 6b. Step 9 Fst — GRCh38 canonical (Option B)
+
+Two-population UZB vs EUR Fst, computed directly on the GRCh38 1000G panel (no
+liftover): 1,759 samples (1,256 UZB + 503 EUR), **5,358,904 markers** (full merged
+set, no LD-pruning/intersection restriction — verified directly from
+`fst_optionB_grch38/genomewide_uzbek_vs_eur_fst_grch38.log`, correcting an earlier
+draft of this note that wrongly stated 82,957, likely confused with Step 8's
+`KG_reference_final` marker count from a different context), Mean F<sub>ST</sub> = 0.0103,
+Weighted F<sub>ST</sub> = 0.0150. Independently cross-validated against the separate
+multi-population Fst run (Step 10's `fst_UZB_EUR_fixed.log`, 83,091 LD-pruned
+markers, 5-population panel) — both report Weighted F<sub>ST</sub> = 0.0150 for the same
+pair, an exact match despite using very different marker sets (5.36M unpruned vs
+83K LD-pruned) and pipeline paths — genome-wide weighted Fst converging to the same
+estimate either way is itself reassuring evidence the result isn't an artifact of
+marker selection.
+
 ### 6. R²/MAF quality filtering and the mandatory allele-orientation check
 
 Applied `bcftools view -i 'INFO/R2>=0.80 && INFO/MAF>=0.001'` per chromosome, matching

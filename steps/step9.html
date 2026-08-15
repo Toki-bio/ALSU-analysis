@@ -216,8 +216,10 @@
                             <strong>Multi-population F<sub>ST</sub></strong> computed on the GRCh38 1000G panel using
                             UZB (1,256), EUR (503), EAS (504), SAS (489), AFR (660) samples (verified directly from
                             DRAGEN logs, Aug 13 2026). Cross-validated: the dedicated Option-B GRCh38 pipeline
-                            (1,759 samples, 82,957 markers) independently reproduced UZB vs EUR Weighted F<sub>ST</sub>
-                            = 0.0150 &mdash; an exact match to this multi-population run.
+                            (1,759 samples, 5,358,904 markers &mdash; full unpruned set, no LD/intersection
+                            restriction) independently reproduced UZB vs EUR Weighted F<sub>ST</sub> = 0.0150
+                            &mdash; an exact match to this multi-population run (83,091 LD-pruned markers), despite
+                            using a very different marker set.
                         </div>
                         <table>
                             <tr><th>Comparison</th><th>Weighted F<sub>ST</sub></th><th>Mean F<sub>ST</sub></th></tr>

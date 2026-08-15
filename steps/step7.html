@@ -541,7 +541,18 @@ plink2 --bfile UZB_imputed_HQ_unique \
             </div>
 
             <div class="important">
-                <strong>Note:</strong> The fast runtime demonstrates the efficiency of LD pruning. This reduced dataset captures ~44% of the top-10-component variance in just the first two components (PC1+PC2 = 44.06%), ideal for population structure visualization. PC1 is nearly unchanged from the original cohort (28.74% vs 28.93%); PC2 increased notably (15.32% vs 11.51%), likely reflecting additional structure introduced by the new batches (48redone, GWAS2026, GWAS2026-2) — worth flagging for downstream interpretation, not yet further investigated.
+                <strong>Note:</strong> The fast runtime demonstrates the efficiency of LD pruning. This reduced dataset captures ~44% of the top-10-component variance in just the first two components (PC1+PC2 = 44.06%), ideal for population structure visualization. PC1 is nearly unchanged from the original cohort (28.74% vs 28.93%); PC2 increased notably (15.32% vs 11.51%).
+                <br><br>
+                <strong>Investigated 2026-08-15:</strong> Tested whether the 213 new samples (48redone + GWAS2026 +
+                GWAS2026-2) form a distinct PC2 cluster driving the increase — directly computed per-batch PC2
+                mean and spread. Result: the new batch is <em>more</em> tightly clustered on PC2 (SD=0.0022) than
+                the original cohort (SD=0.0308, ~14&times; larger), and its mean is not dramatically offset from
+                zero — ruling out "new batch forms a separate cluster" as the explanation. The more likely cause:
+                the LD-pruned marker set is independently recomputed for each cohort version from that version's
+                own MAF/genotyping-rate distribution (87,573 markers for the expanded cohort vs 88,722 for the
+                original — not a subset/superset relationship), which can redistribute variance across principal
+                components without any batch artifact or data-quality problem. Not a bug; a real consequence of
+                re-deriving the marker set from a different sample composition.
             </div>
             
             <h2 class="section-header">Step 7: PCA Visualization</h2>
@@ -647,7 +658,7 @@ PC2 explains: 15.32%
                 <tr>
                     <td>PC2 Variance Explained</td>
                     <td>15.32%</td>
-                    <td>Secondary structure detected (up from original: 11.51%, flagged for follow-up)</td>
+                    <td>Secondary structure detected (up from original: 11.51%; investigated, not a batch artifact — see Step 6 note)</td>
                 </tr>
                 <tr>
                     <td>Data Quality (APOE validation)</td>

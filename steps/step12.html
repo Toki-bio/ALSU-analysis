@@ -105,12 +105,14 @@
             <h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
 
             <div class="info-box">
-                <strong>Methodology note:</strong> DRAGEN (Biotech2024) has no outbound internet access, so this
-                round was run directly from the local machine via <code>curl</code> against the same four APIs
-                the original <code>annotate_uzb_snps.py</code> script uses (Ensembl VEP, GWAS Catalog, ClinVar,
-                NCBI eutils), rather than porting the script itself — only 5 candidates this round, so a full
-                script run wasn't necessary. Only 5 candidates because Step 10's population-mislabeling bug fix
-                dropped Tier-1 from 8 to 5 SNPs (see <a href="step10.html">Step 10</a>).
+                <strong>Methodology note:</strong> This round was run via <code>curl</code> directly from the
+                local machine against the same four APIs the original <code>annotate_uzb_snps.py</code> script
+                uses (Ensembl VEP, GWAS Catalog, ClinVar, NCBI eutils) — a correction to an earlier draft of this
+                note, which incorrectly claimed DRAGEN lacks internet access; verified directly (DRAGEN reaches
+                rest.ensembl.org fine) that it does. The <code>curl</code> approach was still reasonable given
+                only 5 candidates this round (down from 8 after Step 10's population-mislabeling bug fix, see
+                <a href="step10.html">Step 10</a>) — not worth porting the full Python script for 5 lookups either
+                way, but the earlier stated reason was wrong and is corrected here.
             </div>
 
             <div class="success">
