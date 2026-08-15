@@ -756,13 +756,16 @@ function drawHeatmap() {
   const TOTAL_H     = LABEL_H + HEAT_H + 4;
   const W           = Math.max(wrap.clientWidth||800, n*CELL+PAD_L+PAD_R, 900);
 
-  canvas.width  = W;
-  canvas.height = TOTAL_H;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = W * dpr;
+  canvas.height = TOTAL_H * dpr;
+  canvas.style.width  = W + 'px';
   canvas.style.height = TOTAL_H + 'px';
 
   const axLen  = n * CELL;
   const axLeft = PAD_L + (W - PAD_L - PAD_R - axLen) / 2;
   const ctx    = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
 
   ctx.fillStyle = '#f4f6fb';
   ctx.fillRect(0,0,W,TOTAL_H);
@@ -777,8 +780,8 @@ function drawHeatmap() {
   // ── (1) GENOMIC RULER at top — aligns horizontally with Manhattan x-axis above ──
   ctx.strokeStyle='#3a4868'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(GENOM_PAD_L, RULER_Y); ctx.lineTo(W-GENOM_PAD_R, RULER_Y); ctx.stroke();
-  ctx.fillStyle='#5a6a90'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='right'; ctx.textBaseline='middle';
-  ctx.fillText('genomic position →', GENOM_PAD_L-4, RULER_Y);
+  ctx.fillStyle='#5a6a90'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+  ctx.fillText('genomic position →', 2, RULER_Y-2);
   // Mb tick labels
   ctx.fillStyle='#5a6a90'; ctx.textAlign='center'; ctx.textBaseline='top';
   [70450000,70465000,70480000,70493111,70505000,70520000].forEach(t=>{
@@ -877,8 +880,8 @@ function drawHeatmap() {
     }
   }
 
-  // Store geometry for tooltip
-  canvas._geo = {axLeft,CELL,Y,HEAT_H,PAD_T,order};
+  // Store geometry for tooltip (logical/CSS-pixel space, independent of the dpr-scaled backing buffer)
+  canvas._geo = {axLeft,CELL,Y,HEAT_H,PAD_T,order,W,TOTAL_H};
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -889,9 +892,11 @@ const canvas = document.getElementById('ldCanvas');
 
 canvas.addEventListener('mousemove', e => {
   if(!canvas._geo){tip.style.display='none';return;}
-  const {axLeft,CELL,Y,HEAT_H,PAD_T,order:ord}=canvas._geo;
+  const {axLeft,CELL,Y,HEAT_H,PAD_T,order:ord,W:geoW,TOTAL_H:geoH}=canvas._geo;
   const rect=canvas.getBoundingClientRect();
-  const sx=canvas.width/rect.width, sy=canvas.height/rect.height;
+  // Scale by the logical (CSS-pixel) drawing space vs actual on-screen size, NOT the
+  // dpr-scaled backing-buffer resolution (canvas.width) — those are decoupled now.
+  const sx=geoW/rect.width, sy=geoH/rect.height;
   const mx=(e.clientX-rect.left)*sx, my=(e.clientY-rect.top)*sy;
   if(my<Y||my>Y+HEAT_H){tip.style.display='none';return;}
 
@@ -1004,8 +1009,10 @@ function drawManhattan(){
       svg.insertAdjacentHTML('beforeend',
         `<text class="gene-label" x="${gx0+3}" y="${yy+7}">${g.name}</text>`);
     } else {
+      // Clear the strand-arrow footprint (+ strand draws an arrowhead at gx1..gx1+6, colliding with a gx1+3 label)
+      const labelX = g.strand>0 ? gx1+9 : gx1+3;
       svg.insertAdjacentHTML('beforeend',
-        `<text class="gene-label" x="${gx1+3}" y="${yy+7}" style="fill:#5a6a90">${g.name}</text>`);
+        `<text class="gene-label" x="${labelX}" y="${yy+7}" style="fill:#5a6a90">${g.name}</text>`);
     }
   });
 
@@ -1115,10 +1122,15 @@ function drawManhattan(){
       const r = (i%2===0) ? 9 : 4;
       pts.push(`${(tx+r*Math.cos(a)).toFixed(2)},${(ty+r*Math.sin(a)).toFixed(2)}`);
     }
+    // Flip the label below the star instead of above when there isn't enough headroom
+    // above PAD_T (the top SNP's -logp can sit close to the GWS line / gene track).
+    const labelAbove = (ty - 26) >= PAD_T;
+    const labelRectY = labelAbove ? ty-26 : ty+13;
+    const labelTextY  = labelAbove ? ty-17 : ty+22;
     svg.insertAdjacentHTML('beforeend',
       `<polygon points="${pts.join(' ')}" fill="#ffd600" stroke="#b08a00" stroke-width="1" opacity="0.95"><title>TOP signal: ${topSnp.id} · −log p=${topSnp.logp.toFixed(2)}</title></polygon>`+
-      `<rect x="${tx-58}" y="${ty-26}" width="116" height="12" fill="#ffd600" stroke="#b08a00" stroke-width=".6" rx="2"/>`+
-      `<text x="${tx}" y="${ty-17}" text-anchor="middle" style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;fill:#5a3f00">★ TOP ${topSnp.id} −logp=${topSnp.logp.toFixed(2)}</text>`);
+      `<rect x="${tx-58}" y="${labelRectY}" width="116" height="12" fill="#ffd600" stroke="#b08a00" stroke-width=".6" rx="2"/>`+
+      `<text x="${tx}" y="${labelTextY}" text-anchor="middle" style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;fill:#5a3f00">★ TOP ${topSnp.id} −logp=${topSnp.logp.toFixed(2)}</text>`);
   }
 
   // Highlighted extension SNPs without p (rs12373479 rs36064578 rs144663858 rs12958225) — show as ▽ at logp=0
