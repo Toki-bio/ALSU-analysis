@@ -1058,9 +1058,14 @@ function drawManhattan(){
     // Boundary tag at top of plot
     const tagX = b.side==='left' ? bx+4 : bx-4;
     const anchor = b.side==='left' ? 'start' : 'end';
+    const labelStr = `${b.side==='left'?'◀':''} LD ${b.side==='left'?'start':'end'}: ${b.id} r²=${b.r2.toFixed(2)} ${b.side==='right'?'▶':''}`;
+    // Size the pill to the actual label (9.5px JetBrains Mono ≈ 5.9px/char) instead of a
+    // fixed 128px — the fixed width was narrower than the text, so the overflow (white
+    // fill) spilled onto the page background and became invisible.
+    const tagW = Math.ceil(labelStr.length * 5.9) + 8;
     svg.insertAdjacentHTML('beforeend',
-      `<rect x="${b.side==='left'?bx+2:bx-130}" y="${PAD_T-1}" width="128" height="13" fill="${b.color}" opacity="0.92" rx="2"/>`+
-      `<text x="${tagX}" y="${PAD_T+9}" text-anchor="${anchor}" fill="#fff" style="font-family:var(--font-mono);font-size:9.5px;font-weight:600">${b.side==='left'?'◀':''} LD ${b.side==='left'?'start':'end'}: ${b.id} r²=${b.r2.toFixed(2)} ${b.side==='right'?'▶':''}</text>`);
+      `<rect x="${b.side==='left'?bx+2:bx-4-tagW}" y="${PAD_T-1}" width="${tagW}" height="13" fill="${b.color}" opacity="0.92" rx="2"/>`+
+      `<text x="${tagX}" y="${PAD_T+9}" text-anchor="${anchor}" fill="#fff" style="font-family:var(--font-mono);font-size:9.5px;font-weight:600">${labelStr}</text>`);
   });
 
   // ── identify TOP signal (max −log p) and genotyped/missing categories ──
