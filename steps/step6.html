@@ -115,6 +115,12 @@
                         <strong>Filter:</strong> <code>bcftools view -i 'INFO/R2>=0.80 && INFO/MAF>=0.001'</code> — streaming expression filter on dose VCF (no targets file needed).<br>
                         <strong>Optimization:</strong> Previous -T targets approach was extremely slow (I/O-bound hash lookup per variant). Expression-based -i filter streams through VCF once.
                     </div>
+                    <div class="info-box" style="margin-top: 16px; background: #e8f4fd; border-left: 4px solid #2563eb;">
+                        <strong>Uzbek allele frequency catalog:</strong> Interactive lookup of imputed UZB frequencies for clinical and pharmacogenomic variants
+                        (spring 2026 expanded cohort, N=1,256) —
+                        <a href="https://toki-bio.github.io/uzbek-variant-frequency-explorer/" target="_blank" rel="noopener">Variant Frequency Explorer</a>.
+                        Built from the HQ-filtered imputed variant set produced in this step.
+                    </div>
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-value">1,093</div>

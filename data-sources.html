@@ -105,13 +105,21 @@
 
         <h2>5. Uzbek-Specific Allele Frequency Database</h2>
         <p>
-            Underlies the "ALSU Variant Frequency Explorer" (<code>uzb_freq.html</code>) &mdash; not
-            currently part of this GitHub repository, so not linked here; it exists only in the local
-            project working copy.
+            Interactive catalog of UZB imputed allele frequencies for clinical, pharmacogenomic, and
+            population-comparison use. Spring 2026 build uses the expanded imputed cohort (N=1,256;
+            HQ filter R²&ge;0.80, MAF&ge;0.001 — same criteria as <a href="steps/step6.html">Step 6</a>).
+        </p>
+        <p>
+            <strong>Live tool:</strong>
+            <a href="https://toki-bio.github.io/uzbek-variant-frequency-explorer/" target="_blank" rel="noopener">toki-bio.github.io/uzbek-variant-frequency-explorer</a>
+            (source repo: <a href="https://github.com/Toki-bio/uzbek-variant-frequency-explorer">uzbek-variant-frequency-explorer</a>).
         </p>
         <table>
             <tr><th>Item</th><th>Detail</th></tr>
-            <tr><td>Server location</td><td><code>/staging/ALSU-analysis/admixture_analysis/uzb_freq/</code> on Biotech2024</td></tr>
+            <tr><td>DRAGEN location (spring 2026)</td><td><code>/staging/ALSU-analysis/admixture_analysis/uzb_freq/spring2026/</code></td></tr>
+            <tr><td>HQ catalog (panel / report)</td><td><code>UZB_HQ_annotated_freq.tsv</code> (~9.8M variants, N=1,256)</td></tr>
+            <tr><td>Full catalog (live lookup)</td><td><code>UZB_full_annotated_freq.tsv</code> (~49M variants, all imputed sites)</td></tr>
+            <tr><td>Legacy winter 2025 build</td><td><code>/staging/ALSU-analysis/admixture_analysis/uzb_freq/UZB_full_annotated_freq.tsv</code> (N=1,098)</td></tr>
         </table>
 
         <h2>6. New Genotyping Data &mdash; Not Yet Integrated</h2>
