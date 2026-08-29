@@ -30,10 +30,39 @@
   <div class="card"><strong>4,494</strong>PI_HAT-only discordant pairs</div>
   <div class="card"><strong>5</strong>PI_HAT-only pairs supported by PC-Relate</div>
     <div class="card"><strong>1</strong>PI_HAT-only pair supported by RelateAdmix</div>
-  <div class="card"><strong>992</strong>Step 11 samples mapped by birthplace</div>
+  <div class="card"><strong>1,021</strong>samples mapped by birthplace (expanded cohort; 992 in the superseded Spring run)</div>
 </div>
 <div class="callout"><strong>Current recommendation:</strong> keep KING as the conservative operational screen, use PC-Relate and RelateAdmix as ancestry-aware validation layers, and do not remove samples solely on PI_HAT-only calls in this admixed merged dataset.</div>
-<div class="figure"><img src="../images/alsu_uzbekistan_k5_birthplace_map.png" alt="ALSU K=5 ADMIXTURE by Uzbekistan birthplace region"><div class="caption">Birthplace-region map generated from the verified Step 11 K=5 ADMIXTURE source files and the GWAS survey geography fields.</div></div>
+<div class="figure">
+  <img src="../images/alsu_uzbekistan_k5_birthplace_map_expanded.png"
+       alt="K=5 ADMIXTURE by Uzbekistan birthplace region, expanded August 2026 cohort">
+  <div class="caption"><strong>Current (expanded cohort, August 2026).</strong>
+    Mean global K=5 ADMIXTURE proportions by participant birthplace region, rebuilt from
+    <code>step11_admixture/global_for_admixture_expanded.5.Q</code> (3,804 rows; UZB n = 1,256).
+    1,021 of the 1,256 Uzbek participants carry an Uzbekistan birthplace code and map to all
+    14 first-level regions; 199 have no survey record and 36 were born outside Uzbekistan.
+    Pies sized by &radic;N. Component labels were derived from the data, by averaging Q over the
+    1000 Genomes reference samples in the same run (EUR 0.962, EAS 0.996, SAS 0.892, AFR 0.955
+    on their respective components) rather than assumed from column order.
+    Per-region values: <code>data/alsu_uzbekistan_k5_birthplace_summary_expanded.tsv</code>.
+  </div>
+</div>
+
+<details style="margin:14px 0">
+  <summary style="cursor:pointer"><strong>Previous version (Spring 2026 run, UZB n = 1,047) &mdash; kept for reference</strong></summary>
+  <div class="figure" style="margin-top:12px">
+    <img src="../images/alsu_uzbekistan_k5_birthplace_map.png"
+         alt="ALSU K=5 ADMIXTURE by Uzbekistan birthplace region, original 1,047-sample cohort">
+    <div class="caption"><strong>Superseded.</strong> Built from the Spring 2026 global run
+      (<code>.fam</code>/<code>.5.Q</code> = 3,595 rows; UZB n = 1,047), mapping 992 participants.
+      Retained so the two cohorts can be compared directly. The regional pattern is the same in
+      both; the counts differ because the expanded cohort adds the 48-sample rescan and the two
+      2026 genotyping batches, and because the 45 unmapped 1000 Genomes samples that the earlier
+      cluster script had silently relabelled &quot;UZB&quot; are excluded here.
+      Per-region values: <code>data/alsu_uzbekistan_k5_birthplace_summary.tsv</code>.
+    </div>
+  </div>
+</details>
 <p>Draft date: 2026-05-18</p>
 <h2 id="objective">Objective</h2>
 <p>The working question was whether recent-relatedness estimates in the Uzbek GSA data are affected by the strong admixture structure of the population represented by two datasets: ALSU and the new GWAS2026 array set. The practical aim was to inspect the existing ALSU admixture results, quantify where relatedness methods disagree, investigate admixture-aware approaches such as RelateAdmix and PC-AiR/PC-Relate, and prepare the results for discussion.</p>
@@ -117,7 +146,9 @@
 <p>Geographic metadata came from <code>GWAS от 27.08 - For_Plink.csv</code>. The copy in the project folder was checked against <code>C:\work\alsu\GWAS от 27.08 - For_Plink.csv</code> and was byte-identical. The CSV has 1,815 rows and 246 columns, including coded fields for participant birthplace, participant residence, and birthplace fields for grandparents and partners. The map uses participant birthplace only.</p>
 <p>The rendered artifacts are:</p>
 <ul>
-<li><code>images/alsu_uzbekistan_k5_birthplace_map.png</code></li>
+<li><code>images/alsu_uzbekistan_k5_birthplace_map_expanded.png</code> (current, expanded cohort n = 1,256)</li>
+<li><code>data/alsu_uzbekistan_k5_birthplace_summary_expanded.tsv</code></li>
+<li><code>images/alsu_uzbekistan_k5_birthplace_map.png</code> (superseded, Spring 2026 run n = 1,047)</li>
 <li><code>data/alsu_uzbekistan_k5_birthplace_summary.tsv</code></li>
 <li><code>data/natural_earth_uzb_admin1.geojson</code></li>
 </ul>
