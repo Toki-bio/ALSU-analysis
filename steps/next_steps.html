@@ -825,12 +825,14 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <th>Why it matters</th>
         <th>Output</th>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e8f5e9;">
         <td>1</td>
-        <td>F<sub>ROH</sub> covariate rerun for primary GWAS</td>
-        <td class="status-next">NEXT</td>
+        <td><a href="robustness_analyses.html">F<sub>ROH</sub> covariate rerun</a> for primary GWAS</td>
+        <td class="status-done">DONE 2026-09-20</td>
         <td>Addresses the largest remaining model-design caveat.</td>
-        <td>Primary + one sensitivity GWAS rerun; compare chr18/chr9/chr15 effect sizes.</td>
+        <td>&lambda;<sub>GC</sub>=0.978 (identical to primary); chr15/chr9 lead signals unchanged; 0 genome-wide
+        significant, 212 suggestive (vs. 198 primary). Caveat: 93/1,090 samples lack a matched F<sub>ROH</sub>
+        value and are dropped as incomplete cases.</td>
     </tr>
     <tr style="background:#e8f5e9;">
         <td>2</td>
@@ -1015,11 +1017,11 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td>Good follow-up proposal, but not needed for the current HTML/GWAS submission package.</td>
         <td>External</td>
     </tr>
-    <tr style="background:#e3f2fd;">
+    <tr style="background:#e8f5e9;">
         <td>P12</td>
-        <td>Bootstrap confidence intervals on PBS Tier-1 candidates (1000 resamples)</td>
-        <td>Strengthens the population-genomics manuscript; less central to the RPL GWAS.</td>
-        <td>0.5 day</td>
+        <td><a href="robustness_analyses.html">DONE 2026-09-20</a> &mdash; Bootstrap CIs on the 5 corrected PBS candidates (1,000 resamples)</td>
+        <td>All 5 candidates' 95% CIs exclude zero &mdash; signal robust to individual-level resampling.</td>
+        <td>Done</td>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>P13</td>

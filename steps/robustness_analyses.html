@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robustness &amp; Sensitivity Analyses — ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:20px}
+.page-wrapper{display:flex;gap:20px;max-width:1300px;margin:0 auto}
+.sidebar{width:250px;flex-shrink:0;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);padding:20px;height:fit-content;position:sticky;top:20px}
+.sidebar h3{font-size:1em;color:#333;margin-bottom:12px;border-bottom:2px solid #888;padding-bottom:8px}
+.roadmap-mini{display:flex;flex-direction:column;gap:6px}
+.roadmap-mini a{padding:9px 12px;background:#f5f5f5;color:#333;text-decoration:none;border-radius:5px;border-left:4px solid transparent;font-size:.88em}
+.roadmap-mini a:hover{background:#ebebeb;border-left-color:#666}
+.roadmap-mini a.current{background:#1565c0;color:white;border-left-color:#0d47a1;font-weight:600}
+.main-content{flex:1;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);overflow:hidden}
+.page-header{background:linear-gradient(135deg,#0d47a1 0%,#1565c0 100%);color:white;padding:30px}
+.page-header a.back{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9em;display:inline-block;margin-bottom:12px}
+.page-header h1{font-size:1.9em;margin-bottom:8px}
+.page-header p{opacity:.9;font-size:.95em}
+.step-badge{display:inline-block;background:rgba(255,255,255,.2);padding:5px 14px;border-radius:20px;font-size:.85em;margin-top:10px;margin-right:6px}
+.content{padding:30px}
+h2{color:#333;font-size:1.35em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid #e0e0e0}
+h3{color:#444;margin:18px 0 8px;font-size:1.05em}
+p,li{color:#555;line-height:1.7;margin-bottom:10px}
+ul{margin-left:22px}
+code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:.88em}
+.callout{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:.92em}
+.callout-info{background:#e3f2fd;border-left:4px solid #1565c0}
+.callout-warn{background:#fff3e0;border-left:4px solid #ef6c00}
+.callout-done{background:#e8f5e9;border-left:4px solid #2e7d32}
+.callout strong{font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88em;margin:16px 0}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eee}
+th{background:#f5f5f5;font-weight:600;color:#333}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:18px 0}
+.card{background:#f9f9f9;border-radius:8px;padding:14px;text-align:center;border:1px solid #e8e8e8}
+.card .num{font-size:1.5em;font-weight:700;color:#1565c0}
+.card .label{font-size:.75em;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.source{font-size:.75em;color:#999;margin-top:24px;padding-top:12px;border-top:1px solid #eee}
+@media(max-width:900px){.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<aside class="sidebar">
+  <h3>Pipeline Steps</h3>
+  <div class="roadmap-mini">
+    <a href="step10.html">Step 10: Multi-Pop &amp; PBS</a>
+    <a href="step16.html">Step 16: GWAS</a>
+    <a href="robustness_analyses.html" class="current">Robustness Analyses</a>
+    <a href="next_steps.html">Next Steps</a>
+  </div>
+</aside>
+
+<div class="main-content">
+  <div class="page-header">
+    <a href="next_steps.html" class="back">&larr; Back to Next Steps</a>
+    <h1>Robustness &amp; Sensitivity Analyses</h1>
+    <p>F<sub>ROH</sub> covariate GWAS rerun and bootstrap confidence intervals on the PBS candidates &mdash; closes Priority Roadmap items #1 and #12</p>
+    <span class="step-badge">Run 2026-09-20</span>
+    <span class="step-badge">DRAGEN Biotech2024</span>
+  </div>
+
+  <div class="content">
+
+    <h2 id="froh">1. F<sub>ROH</sub> covariate GWAS rerun</h2>
+    <p>
+      The primary RPL GWAS (AGE, BMI, PC1&ndash;PC3) planned to include F<sub>ROH</sub> (inbreeding
+      coefficient from runs of homozygosity) as a covariate but never joined it at run time. This
+      reruns the full genome-wide scan and the PBS-candidate targeted test with F<sub>ROH</sub> added,
+      using the same phenotype and cohort as the primary run.
+    </p>
+    <div class="cards">
+      <div class="card"><div class="num">997/1,090</div><div class="label">samples with matched F<sub>ROH</sub></div></div>
+      <div class="card"><div class="num">9,913,211</div><div class="label">SNPs with a valid result</div></div>
+      <div class="card"><div class="num">0</div><div class="label">genome-wide significant (p&lt;5&times;10&#8315;&#8312;)</div></div>
+      <div class="card"><div class="num">212</div><div class="label">suggestive (p&lt;1&times;10&#8315;&#8309;)</div></div>
+      <div class="card"><div class="num">0.978</div><div class="label">&lambda;<sub>GC</sub> (identical to primary GWAS)</div></div>
+    </div>
+    <div class="callout callout-warn">
+      <strong>Caveat, stated plainly:</strong> 93 of the 1,090 primary-cohort samples (8.5%) have no
+      F<sub>ROH</sub> match against the ROH source (computed on the newer 1,256-sample expanded cohort)
+      and are dropped from this model as incomplete cases. This is a real reduction in N relative to the
+      primary GWAS, not an error to paper over.
+    </div>
+
+    <h3>Top hits with F<sub>ROH</sub> included</h3>
+    <table>
+      <tr><th>CHR</th><th>POS</th><th>ID</th><th>OR</th><th>P</th><th>Note</th></tr>
+      <tr><td>15</td><td>31,340,603</td><td>rs8027539</td><td>1.85</td><td>2.35&times;10&#8315;&#8311;</td><td>Same locus as primary GWAS and SAIGE lead signal</td></tr>
+      <tr><td>15</td><td>31,333,129</td><td>rs58566807</td><td>2.09</td><td>2.54&times;10&#8315;&#8311;</td><td>Same block as above</td></tr>
+      <tr><td>9</td><td>115,907,201</td><td>rs28446251</td><td>2.27</td><td>3.02&times;10&#8315;&#8311;</td><td>Exact lead SNP from the chr9 functional page</td></tr>
+      <tr><td>1</td><td>109,154,605</td><td>rs594626</td><td>2.10</td><td>3.98&times;10&#8315;&#8311;</td><td>New region, not previously highlighted</td></tr>
+    </table>
+    <p>
+      The chr15 and chr9 lead signals survive F<sub>ROH</sub> adjustment essentially unchanged &mdash;
+      the same loci, same direction of effect, comparable p-values to the primary and SAIGE runs. This is
+      the result the roadmap item was written to obtain: F<sub>ROH</sub> is not driving or masking the
+      lead findings.
+    </p>
+
+    <h3>PBS candidates &mdash; F<sub>ROH</sub>-adjusted RPL association</h3>
+    <p>All 8 original PBS Tier-1 candidates remain non-significant for RPL association after
+       F<sub>ROH</sub> adjustment (p range 0.22&ndash;0.98) &mdash; consistent with the primary model.
+       PBS and RPL-GWAS signal are, as expected, independent tracks.</p>
+
+    <h2 id="pbs-boot">2. Bootstrap confidence intervals on PBS candidates</h2>
+    <p>
+      1,000 individual-level bootstrap resamples (resampling with replacement within each population),
+      Hudson's F<sub>ST</sub> estimator, recomputing PBS<sub>UZB</sub> = (T<sub>UZB-EUR</sub> +
+      T<sub>UZB-EAS</sub> &minus; T<sub>EUR-EAS</sub>)/2 each time, for the 5 corrected PBS candidates
+      (the current report's candidate set, not the earlier pre-bugfix 8-candidate list).
+    </p>
+    <table>
+      <tr><th>Locus</th><th>Point PBS<sub>UZB</sub></th><th>Bootstrap mean</th><th>SE</th><th>95% CI</th><th>Excludes 0?</th></tr>
+      <tr><td>chr12:5,664,803</td><td>2.845</td><td>2.851</td><td>0.098</td><td>[2.676, 3.047]</td><td>Yes</td></tr>
+      <tr><td>chr12:125,520,190</td><td>2.847</td><td>2.855</td><td>0.099</td><td>[2.674, 3.057]</td><td>Yes</td></tr>
+      <tr><td>chr5:53,879,140</td><td>0.675</td><td>0.673</td><td>0.019</td><td>[0.638, 0.711]</td><td>Yes</td></tr>
+      <tr><td>chr13:104,524,666</td><td>0.649</td><td>0.649</td><td>0.015</td><td>[0.618, 0.678]</td><td>Yes</td></tr>
+      <tr><td>chr11:207,698</td><td>0.442</td><td>0.443</td><td>0.018</td><td>[0.407, 0.480]</td><td>Yes</td></tr>
+    </table>
+    <div class="callout callout-done">
+      <strong>Result: all 5 candidates' 95% CIs exclude zero</strong> &mdash; the PBS signal is robust
+      to individual-level sampling variance at every candidate locus.
+    </div>
+    <div class="callout callout-info">
+      <strong>Methodological note:</strong> the point PBS estimates here (Hudson's estimator, computed
+      independently from genotypes) differ slightly in magnitude from the report's published PBS table
+      (e.g. 2.845 here vs. 2.786 published for chr12:125,520,190) because a different, standard F<sub>ST</sub>
+      estimator was used for this robustness check rather than reproducing the original pipeline's exact
+      formula. Both agree on direction, relative ranking, and — the point of this analysis — that the
+      signal survives resampling.
+    </div>
+
+    <p class="source">
+      Computed on DRAGEN (Biotech2024, <code>copilot@100.104.25.22</code>) 2026-09-20.
+      F<sub>ROH</sub> rerun: <code>/staging/ALSU-analysis/spring2026/gwas/froh_rerun/</code>, genome
+      length normalized to 2,881,033 Kb (standard convention). PBS bootstrap: 1,000 resamples, seed 42,
+      script and full per-SNP results in <code>pbs_bootstrap_results.json</code> alongside the same
+      working directory tree.
+    </p>
+  </div>
+</div>
+</div>
+</body>
+</html>
