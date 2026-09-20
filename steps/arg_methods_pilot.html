@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARG Methods Pilot — ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:20px}
+.page-wrapper{display:flex;gap:20px;max-width:1300px;margin:0 auto}
+.sidebar{width:250px;flex-shrink:0;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);padding:20px;height:fit-content;position:sticky;top:20px}
+.sidebar h3{font-size:1em;color:#333;margin-bottom:12px;border-bottom:2px solid #888;padding-bottom:8px}
+.roadmap-mini{display:flex;flex-direction:column;gap:6px}
+.roadmap-mini a{padding:9px 12px;background:#f5f5f5;color:#333;text-decoration:none;border-radius:5px;border-left:4px solid transparent;font-size:.88em}
+.roadmap-mini a:hover{background:#ebebeb;border-left-color:#666}
+.roadmap-mini a.current{background:#1565c0;color:white;border-left-color:#0d47a1;font-weight:600}
+.main-content{flex:1;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);overflow:hidden}
+.page-header{background:linear-gradient(135deg,#0d47a1 0%,#1565c0 100%);color:white;padding:30px}
+.page-header a.back{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9em;display:inline-block;margin-bottom:12px}
+.page-header h1{font-size:1.9em;margin-bottom:8px}
+.page-header p{opacity:.9;font-size:.95em}
+.step-badge{display:inline-block;background:rgba(255,255,255,.2);padding:5px 14px;border-radius:20px;font-size:.85em;margin-top:10px;margin-right:6px}
+.content{padding:30px}
+h2{color:#333;font-size:1.35em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid #e0e0e0}
+h3{color:#444;margin:18px 0 8px;font-size:1.05em}
+p,li{color:#555;line-height:1.7;margin-bottom:10px}
+ul,ol{margin-left:22px}
+code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:.88em}
+.callout{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:.92em}
+.callout-info{background:#e3f2fd;border-left:4px solid #1565c0}
+.callout-warn{background:#fff3e0;border-left:4px solid #ef6c00}
+.callout-done{background:#e8f5e9;border-left:4px solid #2e7d32}
+.callout strong{font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88em;margin:16px 0}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eee}
+th{background:#f5f5f5;font-weight:600;color:#333}
+.status-run{color:#e65100;font-weight:600}
+.status-done{color:#2e7d32;font-weight:600}
+.status-next{color:#1565c0;font-weight:600}
+.status-no{color:#c62828;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:18px 0}
+.card{background:#f9f9f9;border-radius:8px;padding:14px;text-align:center;border:1px solid #e8e8e8}
+.card .num{font-size:1.5em;font-weight:700;color:#1565c0}
+.card .label{font-size:.75em;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.source{font-size:.75em;color:#999;margin-top:24px;padding-top:12px;border-top:1px solid #eee}
+@media(max-width:900px){.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<aside class="sidebar">
+  <h3>Pipeline Steps</h3>
+  <div class="roadmap-mini">
+    <a href="step13.html">Step 13: LD</a>
+    <a href="step15.html">Step 15: ROH &amp; IBD</a>
+    <a href="arg_methods_pilot.html" class="current">↳ ARG Methods Pilot</a>
+    <a href="next_steps.html">Next Steps</a>
+  </div>
+</aside>
+
+<div class="main-content">
+  <div class="page-header">
+    <a href="next_steps.html" class="back">← Back to Next Steps</a>
+    <h1>Ancestral Recombination Graph Methods — Pilot</h1>
+    <p>Applicability of tsinfer+tsdate, SINGER, and ARG-Needle to the ALSU array cohort, and a real chr22 pilot run</p>
+    <span class="step-badge">Pilot — 2026-09-20</span>
+    <span class="step-badge">DRAGEN Biotech2024</span>
+  </div>
+
+  <div class="content">
+
+    <h2 id="why">1. What an ARG adds beyond Fst/PBS/ADMIXTURE</h2>
+    <p>
+      An ancestral recombination graph (ARG) reconstructs the genome-wide genealogy underlying a
+      cohort — which samples share a recent common ancestor, where, and how long ago — rather than
+      the allele-frequency snapshots that Fst, PBS, and ADMIXTURE all rely on. It adds a genuine time
+      axis: effective population size through time (N<sub>e</sub>(t)), divergence times between
+      populations, and — most directly relevant here — corroborating genealogical evidence for
+      selection at the loci already flagged by PBS (the chr9/chr18 loci, and the 5 PBS candidates):
+      an unusually recent common ancestor among carriers of a candidate variant is independent
+      support for selection, on top of the allele-frequency-based PBS signal.
+    </p>
+
+    <h2 id="applicability">2. Method applicability to array data</h2>
+    <table>
+      <tr><th>Method</th><th>Supports SNP array?</th><th>Scales to ~1,256 samples?</th><th>Verdict</th></tr>
+      <tr>
+        <td><strong>ARG-Needle</strong></td>
+        <td class="status-done">Yes — native, purpose-built for array/biobank data</td>
+        <td class="status-done">Yes — validated floor is ~300 haploid samples, our cohort is 2,512 haploid</td>
+        <td class="status-done">Primary candidate — used for this pilot</td>
+      </tr>
+      <tr>
+        <td><strong>tsinfer + tsdate</strong></td>
+        <td class="status-run">Yes, via a sparse-data mode — not its native regime</td>
+        <td class="status-done">Yes</td>
+        <td class="status-run">Secondary / cross-check option</td>
+      </tr>
+      <tr>
+        <td><strong>SINGER</strong></td>
+        <td class="status-no">No array support in the current release</td>
+        <td class="status-no">Validated range is tens&ndash;hundreds of dense-sequence samples, not array-scale cohorts</td>
+        <td class="status-no">Not applicable until WGS data exists</td>
+      </tr>
+    </table>
+    <p>
+      Source: Nielsen, Vaughn &amp; Deng, "Inference and applications of ancestral recombination graphs,"
+      <em>Nat Rev Genet</em> 26:47&ndash;58 (2025) — Table 1 explicitly lists genotyping-array support
+      per method; ARG-Needle and tsinfer's sparse variant are the only two marked yes.
+      ARG-Needle's minimum validated sample count (~300 sequences) is from Wang &amp; Palamara,
+      "The era of the ARG" (arXiv:2310.12070).
+    </p>
+
+    <h2 id="pilot">3. Pilot run — chr22, n=160 (320 haploid)</h2>
+    <div class="callout callout-warn">
+      <strong>This is a functional pilot, not a finished analysis.</strong> It uses a random 160-sample
+      subset of the UZB popgen cohort, chromosome 22 only, and ARG-Needle's bundled default CEU
+      demographic model for time normalization — not a Uzbek-calibrated demography. The TMRCA values
+      below demonstrate that the pipeline runs correctly end to end on real ALSU data; they are not
+      yet a calibrated estimate of Uzbek population history.
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="num">160</div><div class="label">diploid samples (pilot)</div></div>
+      <div class="card"><div class="num">92,686</div><div class="label">chr22 SNPs used</div></div>
+      <div class="card"><div class="num">71,449</div><div class="label">local trees inferred</div></div>
+      <div class="card"><div class="num">7.9M</div><div class="label">ARG edges</div></div>
+    </div>
+
+    <table>
+      <tr><th>Quantity</th><th>Value</th></tr>
+      <tr><td>Region covered</td><td>chr22:0&ndash;35,416,614 (GRCh38)</td></tr>
+      <tr><td>ARG nodes / edges</td><td>1,233,422 / 7,915,739</td></tr>
+      <tr><td>Local trees (recombination-delimited)</td><td>71,449</td></tr>
+      <tr><td>TMRCA across 2,042 sampled local trees (generations)</td>
+          <td>min 1,426 &middot; median 50,131 &middot; mean 60,621 &middot; max 307,374</td></tr>
+      <tr><td>Decoding quantities</td><td><code>30-100-2000_CEU.decodingQuantities.gz</code> (ARG-Needle bundled default)</td></tr>
+    </table>
+
+    <h3>Real problems hit and fixed, for the next run</h3>
+    <ol>
+      <li><strong>Neither <code>arg-needle-lib</code> nor <code>arg-needle</code> (the CLI, entry point
+        <code>infer_args</code>) were installed anywhere on DRAGEN</strong> — both installed cleanly via
+        <code>pip install --user arg-needle-lib arg-needle</code> (pulls in ASMC decoding-quantity
+        dependencies automatically).</li>
+      <li><code>infer_args --mode array</code> requires <code>--num_snp_samples</code> (haploid count)
+        explicitly — omitting it fails deep inside the C++ layer with an opaque <code>stoul</code> error,
+        not the documented validation message.</li>
+      <li>The genetic map must be <strong>4 columns, tab-separated</strong>: chromosome, SNP ID, cM, bp
+        position — a 3-column map (ID, bp, cM) fails with the same opaque error.</li>
+      <li><strong>Duplicate physical positions</strong> in TOPMed-imputed data (multiple SNP IDs at the
+        same bp, 18 of 92,704 chr22 sites here) must be removed from the <code>.haps</code> and
+        <code>.map</code> files in lockstep, matched by row position — filtering by SNP ID alone silently
+        fails when an ID also repeats.</li>
+      <li><strong>Confirmed hard floor: ARG-Needle's CSFS requires &ge;300 haploid samples.</strong> A
+        98-haploid attempt failed explicitly: <code>"SNP with ID rs117578132 has 98 non-missing
+        individuals, but the CSFS requires at least 300."</code> This empirically confirms the ~300-sequence
+        minimum cited in the literature (§2 above) against our actual data.</li>
+      <li>Threading rate observed: <strong>~20&ndash;21 seconds per haploid sample</strong> on chr22
+        (92,686 SNPs) at 320 total haploid samples &mdash; roughly linear in sample count, so a full-cohort
+        run (2,512 haploid) on one chromosome is a multi-hour job, and genome-wide is substantially longer.
+        Not a "run it and check back in five minutes" task at full scale.</li>
+    </ol>
+
+    <h2 id="next">4. Next steps</h2>
+    <ol>
+      <li>Fit or source a Uzbek/Central-Asian-appropriate demographic model for normalization, rather
+        than the bundled CEU default, before treating N<sub>e</sub>(t) or TMRCA outputs as calibrated.</li>
+      <li>Extend the pilot to the full popgen cohort (n=1,256) on chromosomes containing the PBS
+        candidates and the chr9/chr18 loci, to test for genealogical corroboration of the existing
+        selection signals — the direct scientific payoff of this method.</li>
+      <li>Consider tsinfer+tsdate as an independent cross-check on the same data once a genome-wide
+        run exists to compare against.</li>
+    </ol>
+
+    <p class="source">
+      Verified on DRAGEN (Biotech2024, <code>copilot@100.104.25.22</code>) 2026-09-20. Working directory:
+      <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/argneedle_pilot_2026-09/</code>.
+      Input: Eagle-phased, TOPMed-imputed chr22 VCF
+      (<code>spring2026/post_imputation/filtered/chr22.clean.vcf.gz</code>), MAF&ge;0.01, 1,024 UZB
+      samples available in that file, 160 randomly subset for this pilot.
+    </p>
+  </div>
+</div>
+</div>
+</body>
+</html>
