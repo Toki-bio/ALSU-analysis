@@ -832,19 +832,25 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td>Addresses the largest remaining model-design caveat.</td>
         <td>Primary + one sensitivity GWAS rerun; compare chr18/chr9/chr15 effect sizes.</td>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e8f5e9;">
         <td>2</td>
-        <td>Mixed-model sensitivity check (SAIGE or REGENIE)</td>
-        <td class="status-next">HIGH</td>
+        <td>Mixed-model sensitivity check (SAIGE)</td>
+        <td class="status-done">DONE &mdash; found unpublished 2026-09-20</td>
         <td>Cryptic relatedness is present; reviewers may not accept PC-only correction.</td>
-        <td>Relatedness-aware effect/p table for lead loci and genome-wide calibration.</td>
+        <td>Full genome-wide SAIGE run existed on DRAGEN since 2026-04-21 (all 22 chr, same covariates as
+        primary GWAS) but was never surfaced. Corroborates the chr15 and chr18 primary-GWAS signals.
+        See <code>/staging/ALSU-analysis/spring2026/saige/top_hits_5e-7.tsv</code>.</td>
     </tr>
-    <tr style="background:#fff3e0;">
+    <tr style="background:#e8f5e9;">
         <td>3</td>
         <td>chr15 and chr9 dense regional LD matrices</td>
-        <td class="status-next">HIGH</td>
-        <td>Current chr15/chr9 LD pages are decay summaries; chr18 has the publication-grade heatmap.</td>
-        <td>Full heatmap/schematic pages matching <a href="chr18_ld_eur_sas_uzb.html">chr18</a>.</td>
+        <td class="status-done">DONE &mdash; published 2026-09-20</td>
+        <td>Current chr15/chr9 LD pages were decay summaries only; chr18 had the publication-grade heatmap.</td>
+        <td>The dense matrices already existed on DRAGEN (computed 2026-04-24/05-04) but were never
+        visualized. Built and published: <a href="chr9_ld_dense.html">chr9</a>,
+        <a href="chr15_ld_dense.html">chr15</a> &mdash; matches
+        <a href="chr18_ld_eur_sas_uzb.html">chr18</a>'s standard. UZB-only for the dense region matrix;
+        a UZB vs EUR dense matrix for these specific regions is not yet run.</td>
     </tr>
     <tr style="background:#fff3e0;">
         <td>4</td>
@@ -860,12 +866,19 @@ text(mds, labels=rownames(mds), pos=3)</div>
         <td>HTML functional pages contain database lookup targets; final manuscript needs verified claims.</td>
         <td>GTEx/ENCODE/UCSC evidence table with tissue and regulatory annotation.</td>
     </tr>
-    <tr style="background:#e3f2fd;">
+    <tr style="background:#fff3e0;">
         <td>6</td>
         <td>Known RPL / thrombophilia allele-frequency supplement</td>
-        <td class="status-planned">MEDIUM</td>
+        <td class="status-next">BLOCKED &mdash; investigated 2026-09-20</td>
         <td>Association screen is negative; population-frequency novelty remains useful.</td>
-        <td>UZB vs EUR/SAS/EAS frequency table, with missing/imputed flags.</td>
+        <td>Confirmed still not done (prior attempt errored: "'RPL' is not a categorical phenotype",
+        produced nothing). Of the 4 target variants, only rs1801133 (MTHFR) and rs6025 (Factor V Leiden)
+        are present in the common UZB&times;1000G marker set; rs1799963 (Prothrombin) and rs1799889
+        (PAI-1) did not survive the merge/QC. UZB frequencies obtained (rs1801133: 0.303, rs6025: 0.0200)
+        but the reference-population comparison is blocked: the available
+        <code>1000g_grch38/ALL.chr1...GRCh38...vcf.gz</code> file appears to have no variants at all in a
+        1&nbsp;kb window around either position &mdash; a likely coordinate/build problem in that file,
+        not a code issue. Needs a verified alternate 1000G GRCh38 source before this can be finished.</td>
     </tr>
     <tr style="background:#e3f2fd;">
         <td>7</td>
