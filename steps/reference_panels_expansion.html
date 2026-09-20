@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reference Panel Expansion — ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:20px}
+.page-wrapper{display:flex;gap:20px;max-width:1300px;margin:0 auto}
+.sidebar{width:250px;flex-shrink:0;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);padding:20px;height:fit-content;position:sticky;top:20px}
+.sidebar h3{font-size:1em;color:#333;margin-bottom:12px;border-bottom:2px solid #888;padding-bottom:8px}
+.roadmap-mini{display:flex;flex-direction:column;gap:6px}
+.roadmap-mini a{padding:9px 12px;background:#f5f5f5;color:#333;text-decoration:none;border-radius:5px;border-left:4px solid transparent;font-size:.88em}
+.roadmap-mini a:hover{background:#ebebeb;border-left-color:#666}
+.roadmap-mini a.current{background:#1565c0;color:white;border-left-color:#0d47a1;font-weight:600}
+.main-content{flex:1;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);overflow:hidden}
+.page-header{background:linear-gradient(135deg,#0d47a1 0%,#1565c0 100%);color:white;padding:30px}
+.page-header a.back{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9em;display:inline-block;margin-bottom:12px}
+.page-header h1{font-size:1.9em;margin-bottom:8px}
+.page-header p{opacity:.9;font-size:.95em}
+.step-badge{display:inline-block;background:rgba(255,255,255,.2);padding:5px 14px;border-radius:20px;font-size:.85em;margin-top:10px;margin-right:6px}
+.content{padding:30px}
+h2{color:#333;font-size:1.35em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid #e0e0e0}
+h3{color:#444;margin:18px 0 8px;font-size:1.05em}
+p,li{color:#555;line-height:1.7;margin-bottom:10px}
+ul{margin-left:22px}
+code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:.88em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:18px 0}
+.card{background:#f9f9f9;border-radius:8px;padding:14px;text-align:center;border:1px solid #e8e8e8}
+.card .num{font-size:1.7em;font-weight:700;color:#1565c0}
+.card .label{font-size:.75em;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.callout{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:.92em}
+.callout-info{background:#e3f2fd;border-left:4px solid #1565c0}
+.callout-warn{background:#fff3e0;border-left:4px solid #ef6c00}
+.callout-done{background:#e8f5e9;border-left:4px solid #2e7d32}
+.callout strong{font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88em;margin:16px 0}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eee}
+th{background:#f5f5f5;font-weight:600;color:#333}
+.status-run{color:#e65100;font-weight:600}
+.status-done{color:#2e7d32;font-weight:600}
+.status-next{color:#1565c0;font-weight:600}
+.source{font-size:.75em;color:#999;margin-top:24px;padding-top:12px;border-top:1px solid #eee}
+@media(max-width:900px){.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<aside class="sidebar">
+  <h3>Pipeline Steps</h3>
+  <div class="roadmap-mini">
+    <a href="step8.html">Step 8: Global PCA</a>
+    <a href="step11.html">Step 11: ADMIXTURE</a>
+    <a href="step6.html">Step 6: Final QC</a>
+    <a href="reference_panels_expansion.html" class="current">↳ Reference Panels</a>
+    <a href="next_steps.html">Next Steps</a>
+  </div>
+  <h3 style="margin-top:18px">Related</h3>
+  <div class="roadmap-mini">
+    <a href="https://toki-bio.github.io/uzbek-variant-frequency-explorer/" target="_blank" rel="noopener">Variant Frequency Explorer</a>
+    <a href="step12.html">Step 12: Annotation</a>
+  </div>
+</aside>
+
+<div class="main-content">
+  <div class="page-header">
+    <a href="next_steps.html" class="back">← Back to Next Steps</a>
+    <h1>Extended Reference Panels (gnomAD HGDP+1KG &amp; Kazakh GSA)</h1>
+    <p>Beyond 1000 Genomes: Central Asian and global diversity for PCA, ADMIXTURE, and frequency calibration</p>
+    <span class="step-badge">Started 2026-09-07</span>
+    <span class="step-badge">DRAGEN Biotech2024</span>
+  </div>
+
+  <div class="content">
+
+    <h2 id="overview">1. Why this branch</h2>
+    <p>
+      Current global comparisons use 1000 Genomes Phase 3 (2,548 samples). To place Uzbeks relative to
+      <strong>HGDP diversity</strong>, <strong>South/Central Asian WGS</strong>, and a <strong>Kazakh GSA</strong> chip-matched
+      neighbour cohort, we are adding gnomAD v3.1.2 HGDP+1KG joint callset and PRJEB89820 Kazakh genotypes.
+      This complements the clinical-frequency work in the
+      <a href="https://toki-bio.github.io/uzbek-variant-frequency-explorer/" target="_blank" rel="noopener">Variant Frequency Explorer</a>
+      (179-variant ClinVar Pathogenic/LP panel).
+    </p>
+
+    <div class="cards">
+      <div class="card"><div class="num">4,094</div><div class="label">gnomAD HGDP+1KG samples</div></div>
+      <div class="card"><div class="num">224</div><div class="label">Kazakh GSA samples</div></div>
+      <div class="card"><div class="num">122,242</div><div class="label">chr22 union sites requested (UZB∪KG)</div></div>
+      <div class="card"><div class="num">4,930</div><div class="label">UZB∩Kazakh pilot SNPs</div></div>
+    </div>
+
+    <h2 id="gnomad">2. gnomAD v3.1.2 HGDP + 1000 Genomes</h2>
+    <div class="callout callout-warn">
+      <strong>Do not download whole chromosomes.</strong> Each <code>chr{N}.vcf.bgz</code> is ~50–60&nbsp;GB.
+      Extract only sites overlapping UZB/KG arrays via <code>bcftools view -T</code> + remote tabix index.
+    </div>
+    <div class="callout callout-warn">
+      <strong>Update 2026-09-20 — the chr22 pilot extraction actually failed.</strong> Checked directly on
+      DRAGEN: the process that ran overnight on 2026-09-07 completed (no longer running), but
+      <code>hgdp_tgp.chr22.subset.vcf.gz</code> contains <strong>0 variants</strong> despite the 122,242-site
+      union request — the site count above was the input request, not a result. Most likely cause: a
+      contig-naming mismatch between the gnomAD file's contigs and the UZB/KG site list (e.g.
+      <code>chr22</code> vs <code>22</code>) that made every <code>bcftools view -T</code> region lookup miss.
+      Not yet root-caused or re-run. The 56&nbsp;GB orphan full-chromosome download has been deleted
+      (confirmed safe, freed <code>/staging</code> space).
+    </div>
+    <table>
+      <tr><th>Item</th><th>Value</th></tr>
+      <tr><td>DRAGEN root</td><td><code>/staging/ALSU-analysis/admixture_analysis/reference_panels/hgdp_tgp_v3.1.2/</code></td></tr>
+      <tr><td>URL</td><td><code>…/gnomad.genomes.v3.1.2.hgdp_tgp.chr{N}.vcf.bgz</code> (GCS public)</td></tr>
+      <tr><td>Chr22 pilot script</td><td><code>scripts/pilot_merge_chr22_subset.sh</code></td></tr>
+      <tr><td>Pilot status</td><td class="status-next">FAILED (silently) — 0 variants extracted; needs contig-naming fix and re-run</td></tr>
+      <tr><td>Cleanup</td><td class="status-done">DONE — orphan 56&nbsp;GB file deleted 2026-09-20</td></tr>
+    </table>
+
+    <h2 id="kazakh">3. Kazakh GSA — PRJEB89820</h2>
+    <table>
+      <tr><th>Item</th><th>Value</th></tr>
+      <tr><td>Access</td><td><a href="https://ftp.ebi.ac.uk/pub/databases/eva/PRJEB89820/" target="_blank" rel="noopener">EVA FTP</a> (CC BY-NC-ND)</td></tr>
+      <tr><td>DRAGEN root</td><td><code>/staging/ALSU-analysis/admixture_analysis/reference_panels/kazakh_gsa_prjeb89820/</code></td></tr>
+      <tr><td>Assay</td><td>Illumina GSA MG v2 (same class as UZB GSA-24 v3.0)</td></tr>
+      <tr><td>Pilot <code>sample_1</code></td><td class="status-done">DONE — 623,053 autosomal biallelic SNPs</td></tr>
+      <tr><td>UZB HQ overlap</td><td class="status-done">4,930 SNPs (IDs harmonized to <code>chr:pos:ref:alt</code>)</td></tr>
+      <tr><td>PLINK2 notes</td><td><code>--chr 1-22 --max-alleles 2 --new-id-max-allele-len 127 missing</code></td></tr>
+    </table>
+
+    <h2 id="merge-targets">4. ALSU merge targets (existing)</h2>
+    <table>
+      <tr><th>Dataset</th><th>Path on DRAGEN</th><th>N</th></tr>
+      <tr><td>UZB HQ</td><td><code>…/spring2026/post_imputation/UZB_imputed_HQ_clean</code></td><td>1,090</td></tr>
+      <tr><td>1000G common</td><td><code>…/spring2026/global_pca/KG_common</code></td><td>2,548</td></tr>
+      <tr><td>UZB+1KG merged</td><td><code>…/spring2026/global_pca/UZB_1kG_merged</code></td><td>3,595</td></tr>
+      <tr><td>Global admixture v2</td><td><code>…/admixture_analysis/global_admixture_v2/global_for_admixture_fixed_v2</code></td><td>3,595 × 54,718 SNPs</td></tr>
+    </table>
+    <div class="callout callout-info">
+      <strong>Open decision:</strong> UZB HQ bed is N=1,090; popgen canonical cohort is N=1,256 — confirm which bed to use for panel merges.
+    </div>
+
+    <h2 id="next">5. Next steps</h2>
+    <ol>
+      <li class="status-run">Finish chr22 gnomAD subset pilot → overlap counts vs UZB and KG</li>
+      <li class="status-next">If OK: <code>extract_hgdp_tgp_subset.sh</code> for chr 1–22 (site-list extraction only)</li>
+      <li class="status-next">Batch 224 Kazakh VCFs → PLINK → merge with UZB</li>
+      <li class="status-next">LD-prune extended panel; rerun global PCA / ADMIXTURE with HGDP+1KG anchors</li>
+      <li class="status-next">Optional: add Kazakh + extended refs to Variant Frequency Explorer comparisons</li>
+    </ol>
+
+    <div class="callout callout-done">
+      <strong>Repo state file:</strong> <code>scripts/reference_panels/SESSION_STATE.md</code> and
+      <code>LOG.md</code> in the local ALSU repo (<code>C:\work\alsu</code>).
+    </div>
+
+    <p class="source">
+      Verified on DRAGEN (Biotech2024) 2026-09-07. Scripts:
+      <code>scripts/reference_panels/</code> in ALSU-analysis repo.
+      Local mirror: <code>C:\work\alsu\scripts\reference_panels\</code>.
+    </p>
+  </div>
+</div>
+</body>
+</html>

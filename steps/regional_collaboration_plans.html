@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regional Collaboration Plans — ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:20px}
+.page-wrapper{display:flex;gap:20px;max-width:1300px;margin:0 auto}
+.sidebar{width:250px;flex-shrink:0;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);padding:20px;height:fit-content;position:sticky;top:20px}
+.sidebar h3{font-size:1em;color:#333;margin-bottom:12px;border-bottom:2px solid #888;padding-bottom:8px}
+.roadmap-mini{display:flex;flex-direction:column;gap:6px}
+.roadmap-mini a{padding:9px 12px;background:#f5f5f5;color:#333;text-decoration:none;border-radius:5px;border-left:4px solid transparent;font-size:.88em}
+.roadmap-mini a:hover{background:#ebebeb;border-left-color:#666}
+.roadmap-mini a.current{background:#1565c0;color:white;border-left-color:#0d47a1;font-weight:600}
+.main-content{flex:1;background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2);overflow:hidden}
+.page-header{background:linear-gradient(135deg,#0d47a1 0%,#1565c0 100%);color:white;padding:30px}
+.page-header a.back{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9em;display:inline-block;margin-bottom:12px}
+.page-header h1{font-size:1.9em;margin-bottom:8px}
+.page-header p{opacity:.9;font-size:.95em}
+.step-badge{display:inline-block;background:rgba(255,255,255,.2);padding:5px 14px;border-radius:20px;font-size:.85em;margin-top:10px;margin-right:6px}
+.content{padding:30px}
+h2{color:#333;font-size:1.35em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid #e0e0e0}
+h3{color:#444;margin:18px 0 8px;font-size:1.05em}
+p,li{color:#555;line-height:1.7;margin-bottom:10px}
+ul,ol{margin-left:22px}
+code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:.88em}
+.callout{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:.92em}
+.callout-info{background:#e3f2fd;border-left:4px solid #1565c0}
+.callout-warn{background:#fff3e0;border-left:4px solid #ef6c00}
+.callout-done{background:#e8f5e9;border-left:4px solid #2e7d32}
+.callout strong{font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88em;margin:16px 0}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eee}
+th{background:#f5f5f5;font-weight:600;color:#333}
+.status-run{color:#e65100;font-weight:600}
+.status-done{color:#2e7d32;font-weight:600}
+.status-next{color:#1565c0;font-weight:600}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.75em;font-weight:600;margin-left:6px}
+.tag-doc{background:#e8f5e9;color:#2e7d32}
+.tag-unk{background:#fff3e0;color:#e65100}
+.source{font-size:.75em;color:#999;margin-top:24px;padding-top:12px;border-top:1px solid #eee}
+@media(max-width:900px){.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<aside class="sidebar">
+  <h3>Pipeline Steps</h3>
+  <div class="roadmap-mini">
+    <a href="step8.html">Step 8: Global PCA</a>
+    <a href="step11.html">Step 11: ADMIXTURE</a>
+    <a href="reference_panels_expansion.html">Reference Panels</a>
+    <a href="regional_collaboration_plans.html" class="current">↳ Regional Collaboration</a>
+    <a href="next_steps.html">Next Steps</a>
+  </div>
+</aside>
+
+<div class="main-content">
+  <div class="page-header">
+    <a href="next_steps.html" class="back">← Back to Next Steps</a>
+    <h1>Regional Collaboration Plans</h1>
+    <p>Comparable-platform data from neighbouring Central Asian and Eurasian populations — evaluation, landscape, and priorities</p>
+    <span class="step-badge">Draft — 2026-09-20</span>
+    <span class="step-badge">Planning document, not yet contacted</span>
+  </div>
+
+  <div class="content">
+
+    <h2 id="question">1. The strategic question</h2>
+    <p>
+      Our pilot merge of the ALSU cohort with the public Kazakh GSA dataset and 1000 Genomes (see
+      <a href="reference_panels_expansion.html">Reference Panels</a>) produced results worth extending. The
+      goal is not to maximize genome count, but to obtain <strong>comparable</strong> data — ideally
+      array genotyping on the same or a closely related platform, so that merging does not introduce a
+      technical batch effect that is confounded with population structure.
+    </p>
+    <div class="callout callout-info">
+      <strong>What "comparable" actually requires.</strong> Same array platform only removes one of four
+      obstacles to a clean merge (the marker set). It does not remove differences in genome build/strand
+      orientation, in genotype-clustering parameters (each lab's own <code>.egt</code> cluster file — an
+      underrated source of batch effects), or in QC thresholds. The reliable path is to request raw
+      intensity data (IDAT, or at minimum GTC + the cluster file used) and re-cluster and re-call all
+      samples together under one shared QC protocol — not to treat "same chip" as sufficient by itself.
+    </div>
+    <p>
+      A WGS partner is not technically disqualified either — a full genome can be reduced to the array's
+      site list (extract-by-position) and merged cleanly on common markers, with a manageable batch effect
+      at common-variant frequencies. Platform match is a convenience, not a hard requirement.
+    </p>
+
+    <h2 id="access">2. Regulatory landscape (as of Sept 2026)</h2>
+    <p>
+      Russian Federal Law No. 43-FZ and Government Decree No. 750 entered into force <strong>1 September
+      2026</strong>, regulating cross-border transfer of human genetic data. The regulation applies by
+      the <em>content</em> of the data (any human genetic information), not by the technology used to
+      generate it — array genotypes are covered the same as whole-genome sequence. Data from
+      <strong>population-scale</strong> studies specifically face a stricter regime: transfer requires
+      government commission approval and is permitted only in exceptional cases.
+    </p>
+    <p>
+      Practical implication for outreach to Russian institutions: requesting data transfer directly is
+      likely to put a prospective collaborator in a position where they must decline. A
+      <strong>federated-analysis</strong> model — our analysis scripts run at the partner institution,
+      only summary statistics (allele frequencies, F<sub>ST</sub>, PCA projection coordinates, ADMIXTURE
+      Q-matrices) return to us — avoids this, and is standard practice in consortium GWAS meta-analysis.
+      Individual-level genotypes never cross the border under this model.
+    </p>
+
+    <h2 id="landscape">3. What is documented in the region</h2>
+
+    <h3>Kazakhstan — priority 1, already in progress</h3>
+    <table>
+      <tr><th>Item</th><th>Value</th></tr>
+      <tr><td>Cohort</td><td>224 healthy Kazakhs, Illumina GSA MG v2 (665,608 markers; 523,630 post-QC)</td></tr>
+      <tr><td>Source</td><td><em>Scientific Data</em> (2025), "Genomic landscape of the Great Steppe" — public: EVA <code>PRJEB89820</code>, GEO <code>GSE199322</code></td></tr>
+      <tr><td>Contacts</td><td>Ulykbek Kairov, Ainur Akilzhanova — Center for Life Sciences, National Laboratory Astana, Nazarbayev University</td></tr>
+      <tr><td>Status</td><td class="status-run">IN PROGRESS — see <a href="reference_panels_expansion.html">Reference Panels</a> (pilot overlap: 4,930 SNPs vs UZB, sample_1)</td></tr>
+    </table>
+    <p>Also documented: <strong>CAGDP</strong> (Central Asian Genomic Diversity Project) — 166 WGS across
+      20 groups, 5 Central Asian countries + Afghanistan; corresponding author Maxat Zhabagin (National
+      Center for Biotechnology, Kazakhstan) has the strongest regional expertise in fine-scale Kazakh
+      clan/jüz population structure.</p>
+
+    <h3>Estonia — priority 2, unexplored institutional link</h3>
+    <p>
+      Estonian Biocentre / Institute of Genomics, University of Tartu (Mait Metspalu) — long-standing
+      chip-genotyping work on Central Asian populations, including Afghan Uzbek and Tajik samples
+      (500+ individuals) and work on Turkic-speaking population history. Notably, the group has a
+      <strong>documented prior collaboration with the Laboratory of Genomics, Institute of Bioorganic
+      Chemistry, Tashkent</strong> — a warmer entry point than a cold approach. No Russian export
+      restrictions apply.
+    </p>
+
+    <h3>Russia — priority 3, contact but reframe the ask</h3>
+    <table>
+      <tr><th>Group</th><th>Platform</th><th>Note</th></tr>
+      <tr><td>"100,000+I" / Russian Genomes (sci. director K. Severinov)</td><td>MGI DNBSEQ T7 (WGS)</td><td>~50 ethnic populations among 30k medical/ethnic samples; Rosneft-funded to 2030; "controlled opening" via RSF grants for external researchers</td></tr>
+      <tr><td>MGNC (Bochkov Center), E. Balanovska</td><td>Infinium OmniExome (~4.5M markers)</td><td>47 populations incl. Nogais, Kazan Tatars, Chuvash — Nogais are the closest documented Russia-resident group to the Uzbek/Kazakh gene pool; ~5–10 individuals/population, too few for frequency estimation alone</td></tr>
+      <tr><td>IBG UFRC RAS, E. Khusnutdinova</td><td>Illumina PsychChip (~610k markers)</td><td>383 healthy Tatar controls genotyped (schizophrenia study); long-running Bashkir expedition sampling</td></tr>
+      <tr><td>Tomsk NRMC, V. Stepanov</td><td>unknown <span class="tag tag-unk">unverified</span></td><td>Siberian/North Asian ethnogenomics group</td></tr>
+    </table>
+    <div class="callout callout-warn">
+      <strong>No Russian GSA-family dataset has been located in public sources.</strong> Its absence from
+      what we could find is not evidence it doesn't exist — only that it isn't public. This is exactly
+      the kind of question that has to be asked directly, not inferred.
+    </div>
+
+    <h2 id="priorities">4. Priorities and next steps</h2>
+    <ol>
+      <li class="status-run">Kazakhstan: extend the pilot merge to the full Kairov/Akilzhanova dataset; request IDAT + extended metadata; propose co-authorship on a joint regional paper.</li>
+      <li class="status-next">Estonia: approach via the existing Tashkent–Tartu institutional link, not cold; ask about historical Central Asian chip data and chip-generation harmonization expertise.</li>
+      <li class="status-next">Russia: propose the federated-analysis model explicitly in any first contact, rather than requesting data transfer.</li>
+      <li class="status-next">Compute the marker intersection between GSA-24 v3.0 (654,027, manifest A2), GSA MG v2 (665,608), and Infinium OmniExome (~4.5M) — a concrete number strengthens any outreach and pre-empts the first objection.</li>
+    </ol>
+
+    <p class="source">
+      Internal detail (email templates, contact-by-contact priority order, full regulatory citations) is
+      kept in the project's private working notes, not reproduced here. This page reflects public
+      information only — cohort sizes, platforms, and corresponding authors are all sourced from
+      published papers or public repository records.
+    </p>
+  </div>
+</div>
+</div>
+</body>
+</html>
