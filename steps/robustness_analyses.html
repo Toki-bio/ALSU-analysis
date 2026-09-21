@@ -58,7 +58,7 @@ th{background:#f5f5f5;font-weight:600;color:#333}
   <div class="page-header">
     <a href="next_steps.html" class="back">&larr; Back to Next Steps</a>
     <h1>Robustness &amp; Sensitivity Analyses</h1>
-    <p>F<sub>ROH</sub> covariate GWAS rerun and bootstrap confidence intervals on the PBS candidates &mdash; closes Priority Roadmap items #1 and #12</p>
+    <p>F<sub>ROH</sub> covariate GWAS rerun, bootstrap CIs on the PBS candidates, and conditional analysis at the three lead loci &mdash; closes Priority Roadmap items #1, #4, and #12</p>
     <span class="step-badge">Run 2026-09-20</span>
     <span class="step-badge">DRAGEN Biotech2024</span>
   </div>
@@ -134,12 +134,33 @@ th{background:#f5f5f5;font-weight:600;color:#333}
       signal survives resampling.
     </div>
 
+    <h2 id="conditional">3. Conditional analysis at chr15, chr9, chr18</h2>
+    <p>
+      For each locus, the lead SNP from the primary GWAS is added as a covariate and the region
+      (&plusmn;~1&ndash;1.1&nbsp;Mb) is rescanned with the same model (AGE, BMI, PC1&ndash;3). This tests
+      whether the association signal is a single LD block collapsing to one effect, or whether
+      independent secondary signals exist within the locus once the lead SNP's effect is removed.
+    </p>
+    <table>
+      <tr><th>Locus</th><th>Lead SNP (conditioned on)</th><th>Unconditional top p</th><th>Best remaining p after conditioning</th><th>Interpretation</th></tr>
+      <tr><td>chr15:31.2&ndash;31.4&nbsp;Mb</td><td>rs8027539 (p=3.3&times;10&#8315;&#8311;)</td><td>3.3&times;10&#8315;&#8311;</td><td>3.6&times;10&#8315;&sup3; (609 obs)</td><td>Single block &mdash; no residual signal near suggestive threshold</td></tr>
+      <tr><td>chr9:114.8&ndash;116.9&nbsp;Mb</td><td>rs28446251 (p=4.6&times;10&#8315;&#8311;)</td><td>4.6&times;10&#8315;&#8311;</td><td>8.6&times;10&#8315;&#8309; (rs10983051, ~170&nbsp;kb away)</td><td>Mostly single block; one weak secondary SNP well short of suggestive (1&times;10&#8315;&#8309;)</td></tr>
+      <tr><td>chr18:69.4&ndash;71.5&nbsp;Mb</td><td>rs4891860 (p=3.2&times;10&#8315;&#8311;)</td><td>3.2&times;10&#8315;&#8311;</td><td>9.4&times;10&#8315;&#8308; (710 obs)</td><td>Single block &mdash; no residual signal near suggestive threshold</td></tr>
+    </table>
+    <div class="callout callout-done">
+      <strong>Result: all three loci behave as single LD blocks.</strong> Conditioning on the lead SNP
+      removes essentially all signal in the region at every locus &mdash; there is no evidence of a second,
+      independent causal variant hiding within any of the three windows. This is the expected, clean
+      outcome and simplifies rather than complicates the manuscript's interpretation of these loci.
+    </div>
+
     <p class="source">
       Computed on DRAGEN (Biotech2024, <code>copilot@100.104.25.22</code>) 2026-09-20.
       F<sub>ROH</sub> rerun: <code>/staging/ALSU-analysis/spring2026/gwas/froh_rerun/</code>, genome
       length normalized to 2,881,033 Kb (standard convention). PBS bootstrap: 1,000 resamples, seed 42,
-      script and full per-SNP results in <code>pbs_bootstrap_results.json</code> alongside the same
-      working directory tree.
+      script and full per-SNP results in <code>pbs_bootstrap_results.json</code>. Conditional analysis:
+      <code>/staging/ALSU-analysis/spring2026/gwas/conditional_2026-09/</code>
+      (<code>plink2 --condition</code>, same covariates as primary GWAS).
     </p>
   </div>
 </div>
