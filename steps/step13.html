@@ -59,6 +59,7 @@
     </style>
 </head>
 <body>
+<div style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;">Correction (2026-10-02): the PBS candidates tested on this page are artefacts of the 1000 Genomes GRCh38 reference file (batch-dependent genotypes at a few dozen sites). In addition, clumping used a 1 Mb window and r2 was computed within 5 Mb, so it could not test the chr12 loci (17-100 Mb apart) against each other; their independence was later confirmed directly (r2 about 0 in the Uzbek cohort). After excluding discordant reference sites, PBS yields no candidates.</div>
 <div class="page-wrapper">
     <aside class="sidebar">
         <h3>Pipeline Steps</h3>
@@ -378,4 +379,3 @@ document.getElementById('decay').innerHTML = DECAY.map(d => `
     </script>
 </body>
 </html>
-
