@@ -63,6 +63,8 @@ tr.pri{border-radius:6px}
 <h1>PBS Tier 1 Candidates</h1>
 <p class="sub">All 8 SNPs with PBS<sub>UZB</sub> &ge; 0.3 &nbsp;&middot;&nbsp; 79,767 tested &nbsp;&middot;&nbsp; 0 rsIDs in dbSNP</p>
 
+<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Correction (2026-10-02):</strong> The PBS candidates discussed on this page are artefacts of the 1000 Genomes GRCh38 reference file (ALL.chr*.shapeit2_integrated_v1a.GRCh38.20181129), in which the genotype at a few dozen sites depends on the sequencing batch of the sample (example: 12:22967890 has EUR 97% in that file versus about 2% in 1000 Genomes phase 3 and in gnomAD; Uzbek cohort 2%). PBS re-run after excluding the 285 discordant reference sites (cohort of 1,047) or 344 (expanded cohort of 1,256) gives no Tier 1, 2 or 3 candidates (maximum PBS 0.146). Statements on this page about linkage disequilibrium between these loci, ancestral retention, founder effects, or Uzbek-specific selection are withdrawn.</div>
+
 <div class="stats">
   <div class="stat hi"><div class="n">8</div><div class="l">Tier 1</div></div>
   <div class="stat ok"><div class="n">1</div><div class="l">Tier 1+2</div></div>
@@ -169,7 +171,7 @@ tr.pri{border-radius:6px}
 <div class="tier">
   <div class="tier-label">
     <span class="pill pC">Tier C</span>
-    <span class="tier-desc">Chr12 cluster &middot; PBS inflated by out-of-Africa split &middot; not Uzbek-specific</span>
+    <span class="tier-desc">Chr12 cluster &middot; PBS inflated by erroneous 1000G GRCh38 reference genotypes (see correction above) &middot; not Uzbek-specific</span>
   </div>
   <table>
     <tbody>
@@ -183,7 +185,7 @@ tr.pri{border-radius:6px}
           <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:45%"></div></div><div class="pv">22%</div></div>
           <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
         </div></td>
-        <td><div class="note dim">UZB &asymp; EUR &asymp; EAS &asymp; 2&ndash;4%. AFR ancestral retention artefact.</div></td>
+        <td><div class="note dim">UZB &asymp; EUR &asymp; EAS &asymp; 2&ndash;4%. Reference genotype artefact (1000G GRCh38 batch error).</div></td>
       </tr>
       <tr>
         <td><span class="snp">12:125520190 C&rarr;T</span></td>
@@ -195,7 +197,7 @@ tr.pri{border-radius:6px}
           <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:47%"></div></div><div class="pv">23%</div></div>
           <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
         </div></td>
-        <td><div class="note dim">Same pattern. Likely in LD with above.</div></td>
+        <td><div class="note dim">No LD: loci are 17-100 Mb apart; measured r2 in the Uzbek cohort is about 0. High PBS is a reference genotype artefact.</div></td>
       </tr>
       <tr>
         <td><span class="snp">12:5664803 T&rarr;G</span></td>
@@ -207,7 +209,7 @@ tr.pri{border-radius:6px}
           <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:50%"></div></div><div class="pv">24%</div></div>
           <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
         </div></td>
-        <td><div class="note dim">Same pattern. Likely in LD with above.</div></td>
+        <td><div class="note dim">No LD: loci are 17-100 Mb apart; measured r2 in the Uzbek cohort is about 0. High PBS is a reference genotype artefact.</div></td>
       </tr>
     </tbody>
   </table>
