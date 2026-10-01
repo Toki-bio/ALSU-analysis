@@ -60,6 +60,7 @@
     </style>
 </head>
 <body>
+<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Correction (2026-10-02):</strong> The PBS candidates discussed on this page are artefacts of the 1000 Genomes GRCh38 reference file (ALL.chr*.shapeit2_integrated_v1a.GRCh38.20181129), in which the genotype at a few dozen sites depends on the sequencing batch of the sample (example: 12:22967890 has EUR 97% in that file versus about 2% in 1000 Genomes phase 3 and in gnomAD; Uzbek cohort 2%). PBS re-run after excluding the 285 discordant reference sites (cohort of 1,047) or 344 (expanded cohort of 1,256) gives no Tier 1, 2 or 3 candidates (maximum PBS 0.146). Statements on this page about linkage disequilibrium between these loci, ancestral retention, founder effects, or Uzbek-specific selection are withdrawn.</div>
 <div class="page-wrapper">
     <aside class="sidebar">
         <h3>Pipeline Steps</h3>
@@ -373,7 +374,7 @@ Computing PBS...
                 selection. The remaining 3 candidates (PBS 0.36&ndash;0.53) are more biologically interesting: UZB
                 shows high MAF (~48&ndash;49%) diverging from other populations, most strikingly at 13:104524666
                 where UZB MAF (48.8%) contrasts with &lt;1% in every reference population — a near-private variant
-                pattern worth flagging for follow-up annotation (Step 12).
+                pattern worth flagging for follow-up annotation (Step 12). <strong>Correction (2026-10-02):</strong> the reference frequencies behind this paragraph come from erroneous genotypes in the 1000G GRCh38 file; these candidates are withdrawn. For 13:104524666 (rs72660963) the Ensembl-reported frequencies in 1000 Genomes phase 3 and gnomAD are far above 1% (gnomAD about 15%), so it is not a near-private variant; this site was not matched in the phase 3 VCF during the re-check and is flagged as unverified there.
             </div>
 
             <h2>5. Output Files</h2>
