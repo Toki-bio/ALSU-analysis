@@ -335,8 +335,8 @@
 </table>
 
 <div class="important">
-    <strong>K=2 by ethnicity: NOT significant</strong> (Kruskal-Wallis H=14.42, p=0.345, &eta;&sup2;=0.020).
-    <br>At K=2, all ethnic groups share the same two-component gradient &mdash; consistent with a shared admixture cline across Central Asian sub-populations.
+    <strong>K=2 by ethnicity: significant</strong> (corrected by sample ID, p&asymp;1e-23; the earlier p=0.345 came from a sample-matching error).
+    <br>Ethnic groups differ in their ancestry proportions (Russians/Tatars more European-like, Koreans East Asian-like); the table in this subsection predates the correction and is superseded.
     <br><br>However, at <strong>K=3: HIGHLY significant</strong> (H=68.88, p=6.67&times;10<sup>&minus;8</sup>, &eta;&sup2;=0.115) &mdash; the third component differentiates Koreans and Chinese (higher Q3) from the Uzbek/Tajik/Tatar core, matching the expected East Asian affinity.
 </div>
 
@@ -486,7 +486,7 @@
         </tr>
     </table>
     <div class="info">
-        <strong>Key finding:</strong> Even with 1000G references anchoring continental ancestry components, self-reported ethnicity remains <strong>completely non-significant</strong> across ALL K values and ALL components. Birthplace remains <strong>highly significant</strong> (p~10<sup>&minus;22</sup>) at every K. This definitively confirms that ADMIXTURE components capture <em>geographic structure within Uzbekistan</em>, not ethnic self-identification. The admixture cline is genuine and geographically driven.
+        <strong>Key finding (corrected 2026-10-02):</strong> self-reported ethnicity is strongly associated with the ancestry components at every K (sample-ID join; p down to 1e-46). The earlier &ldquo;completely non-significant&rdquo; result was a matching error. Birthplace is also highly significant.
     </div>
     <p>See <a href="step11.html">Step 11</a> for full interactive visualization of global ADMIXTURE results.</p>
 </div>

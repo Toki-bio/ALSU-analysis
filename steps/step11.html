@@ -1020,21 +1020,20 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))
             </p>
 
             <h3>6.1 Ethnicity</h3>
-            <table>
-                <tr><th>K</th><th>Components tested</th><th>Any significant?</th><th>Conclusion</th></tr>
-                <tr><td>2</td><td>Q1, Q2</td><td>No (all ns, p=0.37)</td><td rowspan="7" style="vertical-align:middle; background:#d4edda; font-weight:600;">
-                    Ethnicity is <em>completely non-significant</em> at every group-count, 2 through 8. Same
-                    conclusion as the original run &mdash; ADMIXTURE components do not reflect ethnic
-                    self-identification.</td></tr>
-                <tr><td>3</td><td>Q1&ndash;Q3</td><td>No (all ns, p&ge;0.31)</td></tr>
-                <tr><td>4</td><td>Q1&ndash;Q4</td><td>No (all ns, p&ge;0.26)</td></tr>
-                <tr><td>5</td><td>Q1&ndash;Q5</td><td>No (all ns, p&ge;0.22)</td></tr>
-                <tr><td>6</td><td>Q1&ndash;Q6</td><td>No (all ns, p&ge;0.16)</td></tr>
-                <tr><td>7</td><td>Q1&ndash;Q7</td><td>No (all ns, p&ge;0.13)</td></tr>
-                <tr><td>8</td><td>Q1&ndash;Q8</td><td>No (all ns, p&ge;0.12)</td></tr>
-            </table>
+<p><strong>Corrected 2026-10-02.</strong> The earlier version of this table (&ldquo;non-significant at every K&rdquo;) came from matching nationality codes to samples by line position. Below: Kruskal&ndash;Wallis by sample ID (phenotype sheet column &ldquo;Nationality of the subject&rdquo;), groups Uzbek, Tajik, Russian, Tatar, Korean, Kazakh (n&ge;10 each; 1,011 of 1,047 Uzbek-cohort samples matched), new NYGC 30x reference run, seed 11.</p>
+<table>
+<tr><th>K</th><th>Most significant component p</th><th>Components significant after Bonferroni</th></tr>
+<tr><td>2</td><td>1.5e-23</td><td>2 of 2</td></tr>
+<tr><td>3</td><td>2.0e-46</td><td>3 of 3</td></tr>
+<tr><td>4</td><td>5.1e-45</td><td>3 of 4</td></tr>
+<tr><td>5</td><td>2.1e-42</td><td>5 of 5</td></tr>
+<tr><td>6</td><td>2.2e-42</td><td>4 of 6</td></tr>
+<tr><td>7</td><td>1.5e-43</td><td>7 of 7</td></tr>
+<tr><td>8</td><td>1.6e-43</td><td>8 of 8</td></tr>
+</table>
+<p>Mean Q at K=4 (EUR-like, EAS-like, SAS-like, AFR-like): Uzbek 0.48/0.31/0.21/0.00, Tajik 0.55/0.22/0.23/0.00, Russian 0.85/0.09/0.06/0.00, Tatar 0.73/0.19/0.07/0.00, Korean 0.08/0.92/0.00/0.00. Tajiks are not clearly separable from Uzbeks.</p>
 
-            <h3>6.2 Birthplace (Geographic Origin)</h3>
+<h3>6.2 Birthplace (Geographic Origin)</h3>
             <table>
                 <tr><th>K</th><th>Most significant component</th><th>p-value</th><th>&eta;&sup2;</th></tr>
                 <tr><td>2</td><td>Q1 / Q2</td><td>1.06 &times; 10<sup>&minus;22</sup></td><td>0.080</td></tr>
@@ -1046,15 +1045,7 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))
                 <tr><td>8</td><td>Q1</td><td>5.68 &times; 10<sup>&minus;20</sup></td><td>0.076</td></tr>
             </table>
 
-            <div class="success">
-                <strong>Key finding:</strong> Even after removing the strand-ambiguous markers and linked-block
-                regions described in Section 2, self-reported ethnicity remains <strong>non-significant</strong>
-                at every group-count, 2 through 8. Birthplace (region within Uzbekistan) remains
-                <strong>highly significant</strong> (p &sim; 10<sup>&minus;20</sup> or smaller) at every group-count. This
-                reproduces the original analysis's conclusion exactly: the ancestry components reflect
-                <em>geographic origin</em>, not ethnic self-identification &mdash; and that holds true after the
-                marker cleanup too.
-            </div>
+            <div class="success"><strong>Key finding (corrected):</strong> self-reported ethnicity is strongly associated with the ancestry components at every K, and so is birthplace. Both should be treated as ancestry-related covariates; the earlier statement that ethnicity is not a confounder is withdrawn.</div>
 
             <!--
             LEGACY (original, unfixed panel; superseded, kept for reference):
@@ -1137,9 +1128,8 @@ cor_mat &lt;- abs(cor(snmf_Q, admixture_Q))
             </div>
 
             <div class="stat-box">
-                <span class="stat-label">Finding 4:</span>
-                <span class="stat-value">Ethnicity is NOT a confounder &mdash; all 56 Kruskal&ndash;Wallis tests
-                (7 K-values &times; up to 8 components each) returned <strong>non-significant</strong> p-values.</span>
+                <span class="stat-label">Finding 4 (corrected):</span>
+<span class="stat-value">Ethnicity IS associated with ancestry components (p down to 1e-46); the earlier &ldquo;56 non-significant tests&rdquo; came from a sample-matching error.</span>
             </div>
 
             <div class="stat-box">

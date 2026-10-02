@@ -272,7 +272,7 @@ Unmatched genotype: 36
         <li><strong>Q1 (ADMIXTURE K=2)</strong> &mdash; multicollinear with PC1 (variance inflation factor too high). PCs alone capture the structure adequately (&lambda;<sub>GC</sub>=0.978).</li>
         <li><strong>F<sub>ROH</sub></strong> &mdash; flagged in design but not joined to GWAS sample IDs at run-time. Sensitivity analysis with F<sub>ROH</sub> added is planned for v2.</li>
         <li><strong>Birthplace</strong> &mdash; collinear with Q1 and PCs; would absorb the same variance. PCs + Q1 are preferred (continuous, genome-derived).</li>
-        <li><strong>Ethnicity</strong> &mdash; not significant at any K (p=0.345 at K=2; see <a href="next_steps.html">&sect;2.3</a>).</li>
+        <li><strong>Ethnicity</strong> &mdash; strongly associated with ancestry components (p&lt;1e-20 at every K after correcting a sample-matching error); include as a covariate or rely on PCs; see <a href="next_steps.html">&sect;2.3</a>.</li>
         <li><strong>Gravidity</strong> &mdash; ascertainment bias: cases by definition have more pregnancies. Including it as a covariate could mask the signal.</li>
     </ul>
 </div>
