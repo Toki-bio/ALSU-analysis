@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cohorts and sample sets - ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:24px;color:#1f2937}
+.wrap{max-width:1150px;margin:0 auto;background:#fff;border-radius:10px;padding:28px 32px}
+h1{font-size:26px;margin-bottom:6px}h2{font-size:19px;margin:26px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:4px}
+p,li{font-size:14px;line-height:1.55;margin:6px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}th,td{border:1px solid #d1d5db;padding:6px 9px;text-align:left;vertical-align:top}th{background:#f3f4f6}
+.tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600}
+.ok{background:#d1fae5;color:#065f46}.st{background:#fef3c7;color:#92400e}.no{background:#fee2e2;color:#991b1b}
+a{color:#0d47a1}.back{font-size:13px}code{font-size:12px}
+</style></head>
+<body><div class="wrap">
+<p class="back"><a href="../index.html">&larr; Back to pipeline</a> &middot; <a href="deprecated_old_runs.html">Deprecated runs and pending updates</a></p>
+<h1>Cohorts and sample sets</h1>
+<p>Last updated 2026-10-02. The site quotes several sample counts (1,047, 1,090, 1,193, 1,256, 1,759 and others). They are different sets used by different analyses, not contradictions. Verification column: <span class="tag ok">verified</span> = count read from the named file on DRAGEN or locally on 2026-10-02; <span class="tag st">stated</span> = taken from a page or report, not re-counted; <span class="tag no">not found</span> = I could not find the file at the stated path.</p>
+
+<h2>1. Own cohort: from recruitment to analysis sets</h2>
+<table>
+<tr><th>N</th><th>What it is</th><th>Source / where</th><th>Used by</th><th>Status</th></tr>
+<tr><td>1,815</td><td>Rows in the phenotype sheet (questionnaire; includes people never genotyped or removed by QC)</td><td><code>GWAS от 27.08 - For_Plink.csv</code>, 1,815 data rows</td><td>Ethnicity, birthplace and phenotype look-ups (by sample ID)</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>1,485</td><td>Raw genotyped samples, all batches merged (original and 2026 batches)</td><td><code>full_expanded_cohort/FULL_MERGED.fam</code></td><td>Start of the expanded-cohort pipeline</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>1,268 &rarr; 1,256</td><td>Expanded cohort after QC (1,268) and after imputation (1,256)</td><td>Report text; 1,256 confirmed in <code>pbs_refqc_2026-10/expanded1256/keep_UZB.txt</code> and <code>step15_roh_ibd/UZB_expanded_ROH.hom.indiv</code></td><td>Expanded-cohort FST, PBS, ADMIXTURE, PCA (new and old runs), ROH</td><td>1,256 <span class="tag ok">verified</span>; 1,268 <span class="tag st">stated</span></td></tr>
+<tr><td>1,247 &rarr; 1,148 &rarr; 1,093 &rarr; 1,047</td><td>Original cohort QC funnel: recruited, call-rate filter, duplicate removal, final QC'd set</td><td>Deck slide 2 and report</td><td>Original cohort analyses</td><td>1,047 <span class="tag ok">verified</span> (<code>cohort1047/keep_UZB.txt</code>); earlier steps <span class="tag st">stated</span></td></tr>
+<tr><td>1,090</td><td>Post-imputation high-quality set used as input to the RPL GWAS and the FROH check (before phenotype filtering)</td><td><code>spring2026/post_imputation/UZB_imputed_HQ_clean.fam</code></td><td>GWAS; &ldquo;93/1,090 lack FROH&rdquo; (next_steps)</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>764 (743 at the lead variant)</td><td>Samples analysed in the primary RPL GWAS after phenotype (273 cases, 509 controls) and covariate filtering</td><td>PLINK2 output <code>OBS_CT</code> in <code>gwas_sens_2026-10</code></td><td>RPL GWAS (step16); 589 in the self-reported-Uzbek-only run</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>1,193 (1,098 ALSU + 95 GWAS2026)</td><td>Cross-cohort merge used for ancestry-aware relatedness</td><td>Stated on the relatedness page as <code>temp/dragen_array_test_20260513/cross_gwas2026_alsu_winter/merged.fam</code></td><td>admixture_aware_relatedness</td><td><span class="tag no">file not found at that path</span>; count <span class="tag st">stated</span></td></tr>
+<tr><td>1,759 (1,256 + 503)</td><td>Own FST check: expanded cohort plus 503 European reference samples, full unpruned marker set (5,358,904 markers)</td><td>step9 text; arithmetic 1,256 + 503 = 1,759</td><td>step9 &ldquo;Option-B&rdquo; cross-check of UZB&ndash;EUR FST</td><td><span class="tag st">stated</span> (arithmetic consistent)</td></tr>
+</table>
+
+<h2>2. Reference panels</h2>
+<table>
+<tr><th>N</th><th>What it is</th><th>Used by</th><th>Status</th></tr>
+<tr><td>2,548 (EUR 503, EAS 504, SAS 489, AFR 660; the remaining 392 are AMR and others, not itemised here)</td><td>1000 Genomes phase-3-era samples in the old merged panel</td><td>Old runs only: 3,595 = 1,047 + 2,548; 3,804 = 1,256 + 2,548. <strong>Deprecated</strong>, because the GRCh38 file had batch-dependent genotypes at some sites.</td><td>EUR/EAS/SAS/AFR counts <span class="tag ok">verified</span> from the old <code>.fam</code>; AMR share <span class="tag st">stated</span></td></tr>
+<tr><td>3,202</td><td>NYGC 1000 Genomes high-coverage GRCh38 call set; all 22 chromosome files checked against the official md5 manifest</td><td>Source of the current reference</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>2,712 (EUR 633, EAS 585, SAS 601, AFR 893)</td><td>NYGC samples used here; AMR not included</td><td>Current runs: 3,759 = 1,047 + 2,712 and 3,968 = 1,256 + 2,712</td><td><span class="tag ok">verified</span></td></tr>
+</table>
+
+<h2>3. Matched subsets (not separate cohorts)</h2>
+<table>
+<tr><th>N</th><th>What it is</th><th>Status</th></tr>
+<tr><td>1,011 of 1,047; 1,057 of 1,256</td><td>Uzbek-cohort samples matched by sample ID to a nationality code in the phenotype sheet (the 2026 batch largely lacks phenotype rows)</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>1,021</td><td>Samples with both an Uzbek-only PCA position and an ancestry estimate (used for the covariate re-check)</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>1,026 (old test), 992 (old map)</td><td>Matches used in the earlier, superseded ethnicity test and K=5 birthplace map</td><td><span class="tag st">stated</span>; deprecated</td></tr>
+</table>
+<p>Open item: confirm the exact definition of the 1,193 merge (the page names a path I could not find). If you know where <code>merged.fam</code> now lives, tell me and I will record it here.</p>
+</div></body></html>
