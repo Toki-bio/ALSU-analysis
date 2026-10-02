@@ -144,7 +144,17 @@
             <div class="content">
 
 <!-- ═══════════════════════════ OVERVIEW ═══════════════════════════ -->
-<h2>1. Current Status Summary</h2>
+<h2 style="border-bottom:3px solid #16a34a;">CURRENT STATUS (2026-10-02)</h2>
+<div class="info"><p>After the reference correction (NYGC 30x GRCh38 instead of the 1000G GRCh38 batch-affected file) and the ethnicity-join fix:</p>
+<ul>
+<li><strong>Selection (PBS):</strong> the earlier candidates do not replicate; the new PBS peaks are array/paralog artefacts or consistent with East/West ancestry mixture or undetermined (gnomAD v4 check). No selection candidates are supported.</li>
+<li><strong>Ancestry:</strong> Uzbeks at K=4 are about 50% European-like, 30% East Asian-like, 19% South Asian-like. CV error has no clear minimum (elbow K=4&ndash;5); K=7 gives an Uzbek-specific component, so the number of components and the mixture description depend on K and on the reference panel (no Central Asian references). Results are the same for 1,047 and 1,256 samples.</li>
+<li><strong>Covariates for the GWAS:</strong> self-reported ethnicity and birthplace are both strongly associated with ancestry components; include ancestry PCs and consider ethnicity and birthplace as covariates (to be confirmed on the new PCs).</li>
+<li><strong>Next work:</strong> add Central Asian reference populations; check the two undetermined PBS sites on a second array; regenerate figures; update the report.</li>
+</ul>
+<p><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-weight:600">pending update</span> Sections 1&ndash;3 below describe the deprecated old runs and are kept for the record; sections 4&ndash;6 have not yet been revised for the corrected reference and covariate findings. See <a href="deprecated_old_runs.html">deprecated old runs and pending updates</a>.</p></div>
+<h2 style="color:#991b1b;">1. Current Status Summary</h2>
+<p style="color:#991b1b;font-weight:600">DEPRECATED: sections 1&ndash;3 describe old runs.</p>
 
 <div class="success">
     <strong>Completed core pipeline (Steps 1&ndash;16):</strong>
