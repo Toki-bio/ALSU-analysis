@@ -167,3 +167,15 @@ Future audits should follow this procedure:
 3. Compare against documentation
 4. If discrepancy found, investigate chain of custody
 """)
+
+---
+## Oracle checks required before any result is published (added 2026-10-02)
+Integrity checks (md5, "text matches file") are NOT enough: the 1000G GRCh38 batch artefact and the ethnicity join bug both passed them.
+
+1. **Joins by ID only.** Any script combining two tables must join on sample/variant ID, print the match rate, and have a positive control (e.g. self-reported ethnicity must track PCA clusters) and a label-scramble test (shuffled labels must destroy the result).
+2. **Reference files.** Compare every reference/cohort file with an independent source at ALL shared sites (not a random sample): flag sites where the cohort frequency lies outside the range of all reference populations by more than 0.15, and sites where two references disagree. A random 400-site gnomAD sample cannot find sparse artefacts.
+3. **SNP-level comparisons across call sets** must first exclude sites with overlapping indel, multiallelic or SV records (within 1 bp) in the reference call set.
+4. **Extreme results** (p < 1e-20, "non-significant everywhere", FST > 0.9, PBS > 0.3) must be traced to raw genotypes at three sites and checked against gnomAD before use.
+5. **Numbers on pages come from result files** (JSON/TSV with checksum manifest and tool versions), not typed by hand.
+6. **Claim ledger:** every number/claim on the site has a source file and a recompute command; claims without one are marked unsupported.
+7. **Human reproduction:** a colleague reruns five headline numbers from raw data before anything is shared externally.
