@@ -5815,3 +5815,4 @@ CAT-221-MR	UZB_(no_phenotype)
 CAT-222-AD	UZB_(no_phenotype)
 M15-09	UZB_(no_phenotype)
 M15-14	UZB_(no_phenotype)
+NA12236	EUR

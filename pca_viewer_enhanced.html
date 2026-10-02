@@ -618,8 +618,8 @@
             });
             
             // Add hover event listeners using Plotly's event system
-            elements.plot.removeEventListener('plotly_hover', hoverHandler);
-            elements.plot.removeEventListener('plotly_unhover', unhoverHandler);
+            elements.plot.removeEventListener('plotly_hover', window.hoverHandler);
+            elements.plot.removeEventListener('plotly_unhover', window.unhoverHandler);
             
             window.hoverHandler = (data) => {
                 if (data.points && data.points.length > 0) {
