@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deprecated old runs and pending updates - ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:24px;color:#1f2937}
+.wrap{max-width:1100px;margin:0 auto;background:#fff;border-radius:10px;padding:28px 32px}
+h1{font-size:26px;margin-bottom:6px}h2{font-size:19px;margin:26px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:4px}
+p,li{font-size:14px;line-height:1.55;margin:6px 0}ul{margin-left:22px}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}th,td{border:1px solid #d1d5db;padding:6px 9px;text-align:left;vertical-align:top}th{background:#f3f4f6}
+.tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600}
+.ok{background:#d1fae5;color:#065f46}.dep{background:#fee2e2;color:#991b1b}.pend{background:#fef3c7;color:#92400e}
+a{color:#0d47a1}.back{font-size:13px}
+</style></head>
+<body><div class="wrap">
+<p class="back"><a href="../index.html">&larr; Back to pipeline</a></p>
+<h1>Deprecated old runs and pending updates</h1>
+<p>Last updated 2026-10-02. Results marked <span class="tag ok">current</span> use the NYGC 30x high-coverage GRCh38 reference. Everything in the second table is kept only for the record and should not be cited. Pages that still contain old numbers carry a banner and are listed as <span class="tag pend">pending update</span>.</p>
+
+<h2>1. Current results (NYGC 30x reference)</h2>
+<table>
+<tr><th>Analysis</th><th>Status</th><th>Summary</th></tr>
+<tr><td>Reference panel</td><td><span class="tag ok">current</span></td><td>1000 Genomes high-coverage (NYGC) GRCh38, 3,202 samples; all 22 chromosome files verified against the official md5 manifest. Used here: EUR, EAS, SAS, AFR (2,712 samples); AMR not included.</td></tr>
+<tr><td>PBS / FST, cohort of 1,047</td><td><span class="tag pend">pending verification</span></td><td>Previous Tier-1 candidates do not replicate (chr12 test site 12:22967890: EUR 2.6% in NYGC, 97% in the old file). Five new PBS peaks appear; at several of them the allele is fixed in all reference samples but polymorphic in the Uzbek array data, which points to array or paralog artefacts. They are not candidates until checked.</td></tr>
+<tr><td>PBS / FST, expanded cohort of 1,256</td><td><span class="tag pend">pending verification</span></td><td>Same picture: no previous candidates; five new peaks, under verification.</td></tr>
+<tr><td>ADMIXTURE and PCA, cohort of 1,047 (3,759 samples with reference; 60,019 LD-pruned SNPs; K=2&ndash;8, 3 seeds)</td><td><span class="tag ok">current</span></td><td>Reference populations separate cleanly at K=4. CV error has no clear minimum (elbow at K=4&ndash;5); at K=7 about half of the Uzbek ancestry forms a component absent from the references. Self-reported ethnicity and birthplace are both significantly associated with the ancestry components.</td></tr>
+<tr><td>ADMIXTURE and PCA, expanded cohort of 1,256</td><td><span class="tag pend">pending update</span></td><td>Run in progress.</td></tr>
+</table>
+
+<h2>2. Deprecated old runs</h2>
+<table>
+<tr><th>Old run / claim</th><th>Why deprecated</th><th>Pages that still show it</th></tr>
+<tr><td>PBS and FST computed against the 1000G GRCh38 file ALL.chr*.shapeit2_integrated_v1a.GRCh38 (all Tier-1/2/3 candidates, chr12 cluster, NELL1, BET1L/RIC8A etc.)</td><td>Genotypes at a few dozen sites in that file depend on the sequencing batch of the sample, not on population. Re-running after excluding them, or on NYGC 30x, gives no previous candidates.</td><td><a href="step9.html">step9</a>, <a href="step10.html">step10</a>, <a href="step10_pbs_candidates.html">step10_pbs_candidates</a>, <a href="step12.html">step12</a>, <a href="step13.html">step13</a>, <a href="step16.html">step16</a></td></tr>
+<tr><td>Statements on LD between the chr12 loci, &ldquo;ancestral retention in AFR&rdquo;, founder effects, Uzbek-specific selection</td><td>Based on the artefactual genotypes; the loci are 17&ndash;100 Mb apart with r&sup2; about 0.</td><td>step10_pbs_candidates, step12, step13</td></tr>
+<tr><td>Global ADMIXTURE and PCA on the older 1000G panel (2,548 reference samples incl. AMR; K=5 chosen; 54,718 markers)</td><td>Superseded by the NYGC run; K=5 was not uniquely supported; the 3-way continental mixture depends on K and on the reference panel.</td><td><a href="step11.html">step11</a>, <a href="next_steps.html">next_steps</a>, <a href="step16.html">step16</a></td></tr>
+<tr><td>&ldquo;Ethnicity is not significant / not a confounder&rdquo; (56 Kruskal&ndash;Wallis tests)</td><td>Sample matching used line position instead of sample ID. Corrected result: significant at every K.</td><td>step11 &sect;6.1, step16, next_steps (already corrected)</td></tr>
+</table>
+
+<h2>3. Pending update</h2>
+<ul>
+<li>step9 FST tables and the &ldquo;FST = 0.998&rdquo; loci (chr9 14.8 Mb, chr1 40.9 Mb): not reproduced yet; do not cite.</li>
+<li>step10, step12, step13: candidate lists and functional annotation of the old candidates.</li>
+<li>step11 and next_steps: full rewrite of the body text with the new SNP counts, K choice and covariate recommendation.</li>
+<li>step16: GWAS covariate recommendation (ancestry covariates, ethnicity and birthplace) to be confirmed on the new PCs.</li>
+<li>Verification of the new PBS peaks (gnomAD or another chip).</li>
+<li>Expanded cohort (1,256) ADMIXTURE and PCA.</li>
+<li>Final project report and presentation figures (regeneration).</li>
+</ul>
+</div></body></html>
