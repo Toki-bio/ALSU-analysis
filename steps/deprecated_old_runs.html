@@ -26,7 +26,7 @@ a{color:#0d47a1}.back{font-size:13px}
 <tr><td>PBS / FST, cohort of 1,047</td><td><span class="tag pend">pending verification</span></td><td>Previous Tier-1 candidates do not replicate (chr12 test site 12:22967890: EUR 2.6% in NYGC, 97% in the old file). Five new PBS peaks appear; at several of them the allele is fixed in all reference samples but polymorphic in the Uzbek array data, which points to array or paralog artefacts. They are not candidates until checked.</td></tr>
 <tr><td>PBS / FST, expanded cohort of 1,256</td><td><span class="tag pend">pending verification</span></td><td>Same picture: no previous candidates; five new peaks, under verification.</td></tr>
 <tr><td>ADMIXTURE and PCA, cohort of 1,047 (3,759 samples with reference; 60,019 LD-pruned SNPs; K=2&ndash;8, 3 seeds)</td><td><span class="tag ok">current</span></td><td>Reference populations separate cleanly at K=4. CV error has no clear minimum (elbow at K=4&ndash;5); at K=7 about half of the Uzbek ancestry forms a component absent from the references. Self-reported ethnicity and birthplace are both significantly associated with the ancestry components.</td></tr>
-<tr><td>ADMIXTURE and PCA, expanded cohort of 1,256</td><td><span class="tag pend">pending update</span></td><td>Run in progress.</td></tr>
+<tr><td>ADMIXTURE and PCA, expanded cohort of 1,256 (3,968 samples with reference; 64,959 LD-pruned SNPs; K=2&ndash;8, 2 seeds)</td><td><span class="tag ok">current</span></td><td>Same picture as the 1,047 cohort: Uzbek ancestry at K=4 about 50% EUR-like, 30% EAS-like, 19% SAS-like; ethnicity and birthplace significantly associated with the components. Figures not yet generated (pending update).</td></tr>
 </table>
 
 <h2>2. Deprecated old runs</h2>
@@ -42,10 +42,10 @@ a{color:#0d47a1}.back{font-size:13px}
 <ul>
 <li>step9 FST tables and the &ldquo;FST = 0.998&rdquo; loci (chr9 14.8 Mb, chr1 40.9 Mb): not reproduced yet; do not cite.</li>
 <li>step10, step12, step13: candidate lists and functional annotation of the old candidates.</li>
-<li>step11 and next_steps: full rewrite of the body text with the new SNP counts, K choice and covariate recommendation.</li>
+<li>step11: current results added at the top, old body kept below as deprecated. next_steps: body rewrite with the new SNP counts, K choice and covariate recommendation still pending.</li>
 <li>step16: GWAS covariate recommendation (ancestry covariates, ethnicity and birthplace) to be confirmed on the new PCs.</li>
 <li>Verification of the new PBS peaks (gnomAD or another chip).</li>
-<li>Expanded cohort (1,256) ADMIXTURE and PCA.</li>
+<li>Figures (ADMIXTURE bar plots, PCA plots) for the new runs.</li>
 <li>Final project report and presentation figures (regeneration).</li>
 </ul>
 </div></body></html>

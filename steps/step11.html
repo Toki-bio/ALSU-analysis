@@ -217,7 +217,28 @@ STILL OUTSTANDING (as of this writing):
         <div class="content">
 
             <!-- ═══════ EXPANDED COHORT RESULTS (Aug 2026) ═══════ -->
-            <h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
+            <h2 style="border-bottom:3px solid #16a34a;">CURRENT RESULTS (NYGC 30x reference, 2026-10-02)</h2>
+<p><strong>Reference:</strong> 1000 Genomes high-coverage (NYGC) GRCh38, EUR/EAS/SAS/AFR, 2,712 samples (AMR not included). The Uzbek-cohort sites were extracted from it, merged with the cohort, and filtered (call rate, MAF 1%, strand-ambiguous A/T and C/G SNPs removed, long-range LD regions removed, LD pruning 50/5/0.2). ADMIXTURE K=2&ndash;8, cross-validation 5-fold, 3 seeds (1,047 cohort) or 2 seeds (1,256 cohort); PCA 20 components.</p>
+<table>
+<tr><th></th><th>Cohort of 1,047</th><th>Expanded cohort of 1,256</th></tr>
+<tr><td>Samples (with reference)</td><td>3,759</td><td>3,968</td></tr>
+<tr><td>SNPs: input &rarr; QC &rarr; no ambiguous &rarr; no long-range LD &rarr; pruned</td><td>76,823 &rarr; 67,569 &rarr; 61,986 &rarr; 60,654 &rarr; 60,019</td><td>82,744 &rarr; 73,062 &rarr; 67,075 &rarr; 65,582 &rarr; 64,959</td></tr>
+<tr><td>PCA variance PC1 / PC2 / PC3</td><td>54.5% / 23.6% / 7.5%</td><td>55.0% / 23.4% / 7.4%</td></tr>
+<tr><td>CV error K=2 / 3 / 4 / 5 / 6 / 7 / 8</td><td>0.3379 / 0.3258 / 0.3224 / 0.3219 / 0.3217 / 0.3215 / 0.3213</td><td>0.3373 / 0.3256 / 0.3224 / 0.3219 / 0.3217 / 0.3215 / 0.3213&ndash;0.3216</td></tr>
+<tr><td>Uzbek mean ancestry at K=4 (EUR-like / EAS-like / SAS-like / AFR-like)</td><td>0.50 / 0.30 / 0.19 / 0.00</td><td>0.50 / 0.30 / 0.19 / 0.00</td></tr>
+<tr><td>Ethnicity vs components (Kruskal&ndash;Wallis, by sample ID)</td><td>p from 1.5e-23 (K=2) to 1e-43; 2&ndash;8 components significant</td><td>p from 2.2e-24 (K=2) to 1e-43; 2&ndash;8 components significant</td></tr>
+<tr><td>Birthplace within self-reported Uzbeks (K=4/5/7)</td><td>p 1e-21 to 1e-26 (11 regions)</td><td>p 1e-22 to 1e-26 (13 regions)</td></tr>
+</table>
+<ul>
+<li><strong>Reference check:</strong> at K=4 the reference superpopulations are almost pure (EUR 0.97, EAS 1.00, SAS 0.89, AFR 0.96).</li>
+<li><strong>Choice of K:</strong> the CV error has no clear minimum, only an elbow at K=4&ndash;5. K=4 is the clean continental view; K=5 adds a Central-Asian-like component. At K=7 about half of the Uzbek ancestry is a component that no reference population carries, so the &ldquo;three-way continental mixture&rdquo; depends on K and on the reference panel, which has no Central Asian populations.</li>
+<li><strong>Covariates:</strong> self-reported ethnicity (Russian and Tatar more European-like, Korean East Asian-like; Tajik not separable from Uzbek) and birthplace are both associated with ancestry. Phenotype data matched 1,011 of 1,047 and 1,057 of 1,256 samples by sample ID (the 2026 batch samples largely lack phenotype rows).</li>
+<li>Seeds agree to about 1e-5 in CV error. Output folders on DRAGEN: <code>full_expanded_cohort/nygc30x_adm</code> and <code>nygc30x_1256/adm</code>.</li>
+</ul>
+<p><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-weight:600">pending update</span> Figures (ADMIXTURE bar plots, PCA plots) for the new runs have not been generated yet; the plots further down this page are from the deprecated old run.</p>
+<h2 style="border-bottom:3px solid #dc2626;color:#991b1b;">DEPRECATED OLD RUNS &mdash; everything below is kept for the record and must not be cited</h2>
+<p>The sections below describe the older global runs (1000 Genomes GRCh38 phase-3-era panel with 2,548 reference samples, K=5, 54,718 markers) and the earlier ethnicity test with the sample-matching error. See <a href="deprecated_old_runs.html">deprecated old runs and pending updates</a>.</p>
+<h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
 
             <div class="success">
                 <strong>Full methodological parity achieved</strong> with the original cohort's verification standard:
