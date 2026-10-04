@@ -132,7 +132,7 @@
     </style>
 </head>
 <body>
-    <div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Pending update (2026-10-02):</strong> The global PCA on this page was built on the 1000 Genomes GRCh38 phase-3-era file (shapeit2_integrated_v1a), which has batch-dependent genotypes at some sites, and its reference panel includes AMR. It is superseded by the PCA on the NYGC 30x reference (see Step 11 and the PCA viewer). Numbers and figures here are the deprecated old run. <a href="deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+    <div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> rebuilt on the NYGC 30x reference. See the <a href="deprecated_old_runs.html">list of current and deprecated runs</a>.</div>
 <div class="page-wrapper">
         <!-- LEFT SIDEBAR -->
         <aside class="sidebar">
@@ -178,19 +178,86 @@
                 <a href="../pca_viewer_enhanced.html" style="display:inline-block;margin-left:12px;padding:6px 14px;background:#1976d2;color:white;border-radius:4px;text-decoration:none;font-size:0.9em;font-weight:600;">&#128269; Open Interactive PCA Viewer</a>
                 <h1>Step 8: Global PCA with 1000 Genomes Reference</h1>
                 <p>Establish ancestry context and compare Uzbek cohort to global populations</p>
-                <span class="step-badge">✓ Expanded cohort — August 2026 (1,256 Uzbek samples)</span>
-                <span class="step-badge step-badge-old">Spring 2026 (1,047 samples) — April 11, 2026</span>
+                <span class="step-badge">✓ NYGC 30x reference, expanded cohort (1,256 Uzbek samples) — rebuilt 2026-10-04</span>
+                
                 <a href="archive/step8_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
             </div>
-            <div class="info-box" style="margin:20px 30px 0;">
-                <strong>Cohort expansion (August 2026):</strong> This page now reflects the expanded cohort (original
-                1,047 Uzbek + 48redone + GWAS2026 wave 1 + GWAS2026-2 = 1,256 samples total). See
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">cohort expansion integration notes</a>
-                for full methodology. Original cohort results preserved at the archive link above.
-            </div>
+            
         
             <div class="content">
-                <div class="section">
+                <!--NYGC:step8:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2>1. Overview</h2>
+<p>Principal component analysis (PCA) of genotypes places each person on axes that summarise the main differences in ancestry. Here the 1,256 Uzbek samples are analysed together with 2,712 reference samples from the NYGC 30x 1000 Genomes data (EUR, EAS, SAS, AFR; AMR is not used), so that the position of the Uzbek cohort can be read against known continental groups.</p>
+<div class="box warn"><strong>This page was rebuilt on 2026-10-04.</strong> The earlier version used the 1000G phase 3 GRCh38 shapeit2 file (2,548 reference samples including AMR, 83,091 SNPs, August 2026). It is superseded: the new run uses the NYGC 30x reference. The first two components look the same, but all numbers on this page are new. The old pipeline text is kept collapsed at the bottom.</div>
+<div class="cards"><div class="card"><div class="num">3,968</div><div class="lab">samples in the PCA</div></div><div class="card"><div class="num">1,256</div><div class="lab">Uzbek cohort samples</div></div><div class="card"><div class="num">2,712</div><div class="lab">NYGC reference samples</div></div><div class="card"><div class="num">64,959</div><div class="lab">LD-pruned SNPs</div></div><div class="card"><div class="num">59.0% / 25.1%</div><div class="lab">PC1 / PC2 (of the first 10)</div></div></div>
+
+<h2>2. Data and method</h2>
+<ul>
+<li><strong>Samples:</strong> UZB 1,256; EUR 633; EAS 585; SAS 601; AFR 893 (NYGC superpopulation codes). Reference samples were not filtered for relatedness.</li>
+<li><strong>SNPs:</strong> 64,959 SNPs from the 82,744-SNP merged panel after LD pruning (the same input as the ADMIXTURE runs, <a href="step11.html">step 11</a>): <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/nygc30x_1256/adm/adm_in.*</code> on DRAGEN.</li>
+<li><strong>PCA:</strong> PLINK 1.9 <code>--pca 20</code> on that file (<code>pca.eigenvec</code>, <code>pca.eigenval</code> in the same directory). Percentages below are shares of the sum of the first 10 eigenvalues (PLINK&rsquo;s <code>--pca</code> does not report the total variance).</li>
+<li><strong>Nearest-reference label:</strong> for each Uzbek sample, the 25 nearest reference samples in PC1&ndash;PC4 (Euclidean) were found and the most frequent reference group was recorded. This is a descriptive label of where a sample lies; it is <em>not</em> an ancestry proportion (see <a href="step11.html">step 11</a> for ADMIXTURE).</li>
+<li>Figures and tables on this page were produced by <code>pca_analysis.py</code> from the DRAGEN files above (copy in <code>scripts/nygc_site_2026-10-04/</code>).</li>
+</ul>
+
+<h2>3. Results</h2>
+<img src="../images/nygc_global_pca_panels.png" alt="Global PCA. Black: Uzbek cohort. Coloured: NYGC reference groups. Upper right: the Eurasian part of PC1 vs PC2 enlarged."><p class="cap">Global PCA. Black: Uzbek cohort. Coloured: NYGC reference groups. Upper right: the Eurasian part of PC1 vs PC2 enlarged.</p>
+<h3>Eigenvalues</h3>
+<img src="../images/nygc_global_pca_scree.png" alt="Eigenvalues of the first 20 components (log scale)."><p class="cap">Eigenvalues of the first 20 components (log scale).</p>
+<table><thead><tr><th>PC</th><th>Eigenvalue</th><th>Share of the first 10</th></tr></thead><tbody><tr><td>1</td><td>214.11</td><td>59.0%</td></tr><tr><td>2</td><td>91.15</td><td>25.1%</td></tr><tr><td>3</td><td>28.67</td><td>7.9%</td></tr><tr><td>4</td><td>7.83</td><td>2.2%</td></tr><tr><td>5</td><td>5.25</td><td>1.4%</td></tr><tr><td>6</td><td>3.87</td><td>1.1%</td></tr><tr><td>7</td><td>3.44</td><td>0.9%</td></tr><tr><td>8</td><td>3.14</td><td>0.9%</td></tr><tr><td>9</td><td>2.98</td><td>0.8%</td></tr><tr><td>10</td><td>2.74</td><td>0.8%</td></tr><tr><td>11</td><td>2.67</td><td>&mdash;</td></tr><tr><td>12</td><td>2.65</td><td>&mdash;</td></tr></tbody></table>
+<p>Three components stand out (214, 91 and 29), PC4&ndash;PC10 are small (8 down to 2.7) and from PC11 the eigenvalues form a plateau near 2.6. Only the first few components therefore carry population structure in this panel.</p>
+<h3>Group means and spread (PC1&ndash;PC4)</h3>
+<table><thead><tr><th>Group</th><th>n</th><th>PC1</th><th>PC2</th><th>PC3</th><th>PC4</th></tr></thead><tbody><tr><td>EUR</td><td>633</td><td>-0.0098 &plusmn; 0.0008</td><td>+0.0225 &plusmn; 0.0016</td><td>+0.0164 &plusmn; 0.0018</td><td>-0.0168 &plusmn; 0.0059</td></tr><tr><td>SAS</td><td>601</td><td>-0.0067 &plusmn; 0.0005</td><td>+0.0026 &plusmn; 0.0031</td><td>-0.0346 &plusmn; 0.0047</td><td>-0.0091 &plusmn; 0.0057</td></tr><tr><td>EAS</td><td>585</td><td>-0.0083 &plusmn; 0.0003</td><td>-0.0321 &plusmn; 0.0009</td><td>+0.0103 &plusmn; 0.0016</td><td>-0.0125 &plusmn; 0.0163</td></tr><tr><td>AFR</td><td>893</td><td>+0.0292 &plusmn; 0.0035</td><td>+0.0008 &plusmn; 0.0016</td><td>+0.0017 &plusmn; 0.0014</td><td>+0.0004 &plusmn; 0.0022</td></tr><tr><td>ALSU cohort</td><td>1,256</td><td>-0.0089 &plusmn; 0.0011</td><td>+0.0018 &plusmn; 0.0069</td><td>+0.0024 &plusmn; 0.0040</td><td>+0.0187 &plusmn; 0.0058</td></tr></tbody></table>
+<div class="box key"><strong>What the components mean.</strong> PC1 separates AFR from all Eurasians (AFR mean +0.029; every other group near -0.010). PC2 separates EUR (+0.022) from EAS (-0.032), with SAS in between (+0.003). PC3 separates SAS from the rest. The Uzbek cohort has almost no spread on PC1 (SD 0.0011, i.e. almost no African-like ancestry) and a large spread on PC2 (SD 0.0069, mean +0.0018): it forms a band along the EUR&ndash;SAS&ndash;EAS axis, centred near SAS, and reaching both the European cluster and the East Asian cluster.</div>
+
+<div class="box info"><strong>PC4 separates the whole Uzbek cohort from every reference group.</strong> The cohort mean on PC4 is +0.0187 (SD 0.0058), while the reference groups lie between -0.0168 and +0.0004. Two explanations are possible and this analysis cannot separate them: (a) an ancestry component common in the Uzbek cohort and absent from the reference panel (ADMIXTURE at K=7 also finds an Uzbek-specific component, <a href='step11.html'>step 11</a>), or (b) a technical difference between the Uzbek data (array genotypes imputed to sequence level) and the sequencing-based reference. A test would be to project Uzbek-like samples genotyped on the same platform, or to add Central Asian reference genomes; neither is available in this project.</div>
+<h2>4. Where the Uzbek samples fall</h2>
+<table><thead><tr><th>Nearest-reference group</th><th>Uzbek samples</th><th>Share</th></tr></thead><tbody><tr><td>SAS</td><td>819</td><td>65.2%</td></tr><tr><td>EUR</td><td>172</td><td>13.7%</td></tr><tr><td>EAS</td><td>264</td><td>21.0%</td></tr><tr><td>AFR</td><td>1</td><td>0.1%</td></tr></tbody></table>
+<p>The label SAS is the largest class because the centre of the Uzbek band lies next to the South Asian cluster, not because most Uzbek people are of South Asian origin. 1,143 samples have neighbours from more than one reference group, which is the usual picture for an admixed sample.</p>
+<h3>Nearest-reference label by self-reported group</h3>
+<table><thead><tr><th>Self-reported group (phenotype sheet / mapping)</th><th>n</th><th>EUR</th><th>SAS</th><th>EAS</th><th>AFR</th></tr></thead><tbody><tr><td>self-reported Uzbek</td><td>836</td><td>50 (6%)</td><td>616 (74%)</td><td>170 (20%)</td><td>0 (0%)</td></tr><tr><td>Uzbek, mixed/unknown ethnicity</td><td>89</td><td>49 (55%)</td><td>26 (29%)</td><td>13 (15%)</td><td>1 (1%)</td></tr><tr><td>Uzbek cohort, no phenotype record</td><td>199</td><td>11 (6%)</td><td>148 (74%)</td><td>40 (20%)</td><td>0 (0%)</td></tr><tr><td>Tajik</td><td>24</td><td>4 (17%)</td><td>18 (75%)</td><td>2 (8%)</td><td>0 (0%)</td></tr><tr><td>Tatar</td><td>23</td><td>19 (83%)</td><td>2 (9%)</td><td>2 (9%)</td><td>0 (0%)</td></tr><tr><td>Russian</td><td>43</td><td>39 (91%)</td><td>4 (9%)</td><td>0 (0%)</td><td>0 (0%)</td></tr><tr><td>Kazakh</td><td>11</td><td>0 (0%)</td><td>1 (9%)</td><td>10 (91%)</td><td>0 (0%)</td></tr><tr><td>Karakalpak</td><td>9</td><td>0 (0%)</td><td>2 (22%)</td><td>7 (78%)</td><td>0 (0%)</td></tr><tr><td>Korean</td><td>22</td><td>0 (0%)</td><td>2 (9%)</td><td>20 (91%)</td><td>0 (0%)</td></tr></tbody></table>
+<p>Self-reported ethnicity and the PCA position agree in the expected direction: Russian and Tatar participants lie mostly in the European part, Tajik participants mostly in the South Asian part, Korean participants in the East Asian cluster, and the Uzbek groups spread across all three. The association between self-report, birthplace and ancestry components is tested formally on <a href="step11.html">step 11</a>.</p>
+<div class="box warn"><strong>One sample lies inside the African reference cluster.</strong> One Uzbek-cohort sample sits at PC1 = +0.026 among the AFR reference samples and has an ADMIXTURE K=4 African-like component of 0.90. No other cohort sample has PC1 &gt; 0.01. Possible explanations are a person of recent African ancestry, a sample mix-up, or a labelling error; the data on this page cannot tell which. It has not been excluded from any analysis; provenance should be checked against the sample sheet. (Its internal code is not shown on this public page.)</div>
+
+<h2>5. What this means for the rest of the project</h2>
+<ul>
+<li>The cohort is structured mainly along one axis (EUR&ndash;SAS&ndash;EAS), so population stratification is a real concern in association tests. GWAS covariates are the PCs from the <em>Uzbek-only</em> PCA (step 7), which do not depend on the reference panel (<a href="step16.html">step 16</a>).</li>
+<li>For ancestry proportions use ADMIXTURE (<a href="step11.html">step 11</a>); the PCA labels above are only a map.</li>
+</ul>
+<h2>6. What changed</h2>
+<table><thead><tr><th>Earlier version (August 2026)</th><th>Now</th></tr></thead><tbody><tr><td>3,804 samples (1,256 UZB + 2,548 1000G phase 3 including AMR); 83,091 SNPs; eigenvalues 173, 75, 25, 20, 7.9 &hellip;</td><td>3,968 samples (1,256 UZB + 2,712 NYGC without AMR); 64,959 SNPs; eigenvalues 214, 91, 29, 7.8, 5.3 &hellip;</td></tr><tr><td>Reference: ALL.chr*.shapeit2_integrated_v1a.GRCh38 (batch artefact at a few dozen sites)</td><td>Reference: NYGC 30x high-coverage GRCh38, md5-verified</td></tr><tr><td>No statement on individual outliers</td><td>One sample inside the African cluster flagged for provenance check</td></tr></tbody></table>
+<h2>7. Limitations</h2>
+<ul>
+<li>PCA is a projection; two or three components do not capture all structure, and the share of variance is relative to the first 10 components only.</li>
+<li>The reference panel has no Central Asian groups, so the position of the Uzbek band is described relative to EUR, SAS and EAS only.</li>
+<li>The reference group sizes differ and relatives are included in the reference; PCA axes are driven by the largest groups.</li>
+</ul>
+</div><!--NYGC:step8:END--><!--NYGC:step8:OLDBEGIN--><details class="nygc-old"><summary>ARCHIVED, not current: previous version of this page (August 2026; 1000G phase 3 file, 2,548 reference samples incl. AMR, 83,091 SNPs). Superseded; do not cite its numbers.</summary><div class="section">
                     <h2 class="section-header">1. Overview</h2>
                     <div class="section-content">
                         <p>
@@ -568,7 +635,7 @@ ggsave("Global_PCA_UZB_expanded.png", width = 10, height = 7, dpi = 300)
                     <li><strong>Fine-Mapping:</strong> Use global PCA to assess LD patterns and refine causal variant identification</li>
                     <li><strong>Meta-Analysis:</strong> Compare results with 1000G populations for cross-population generalizability</li>
                 </ul>
-            </div>
+            </details><!--NYGC:step8:OLDEND--></div>
         </div>
     </div>
     
@@ -581,7 +648,11 @@ ggsave("Global_PCA_UZB_expanded.png", width = 10, height = 7, dpi = 300)
                 resultsDiv.classList.add('active');
                 resultsDiv.innerHTML = `<p>Search functionality for: "${input}" - <a href="../index.html#steps">View all steps</a></p>`;
             } else {
-// Edit Mode Functionality
+                resultsDiv.classList.remove('active');
+            }
+        }
+
+        // Edit Mode Functionality
         let isEditMode = false;
         let originalContent = {};
         
