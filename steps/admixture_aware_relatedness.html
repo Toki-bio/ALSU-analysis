@@ -9,7 +9,7 @@
 </style>
 </head>
 <body>
-<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Pending update (2026-10-02):</strong> The ancestry distances on this page use the deprecated Step 11 global K=5 run (3,595-sample panel, older 1000G reference). Robustness check: the pairwise ancestry distances among 1,021 Uzbek samples from the old K=5 run and from the NYGC-reference K=5 run correlate at r = 0.988, so the kinship conclusions are expected to be unchanged; the page text and figures themselves were not regenerated. <a href="deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+<div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> the ancestry distances were recomputed on the NYGC-reference K=4 ancestry and the main finding was revised (the PI_HAT-only discordance is dominated by five poor-quality samples that are not in the final cohort). See the update below the summary cards; text further down is kept for the record. <a href="deprecated_old_runs.html">List of current and deprecated runs</a>.</div>
 <div class="page">
 <aside class="sidebar"><h3>Report Links</h3><a href="../index.html">&#127968; Home / Roadmap</a>
 <a href="step15.html">Step 15: ROH &amp; IBD</a>
@@ -34,7 +34,62 @@
   <div class="card"><strong>1,021</strong>samples mapped by birthplace (expanded cohort; 992 in the superseded Spring run)</div>
 </div>
 <div class="callout"><strong>Current recommendation:</strong> keep KING as the conservative operational screen, use PC-Relate and RelateAdmix as ancestry-aware validation layers, and do not remove samples solely on PI_HAT-only calls in this admixed merged dataset.</div>
-<div class="figure">
+<!--NYGC:relate:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2 style="border-bottom:3px solid #16a34a;color:#1b5e20">UPDATE 2026-10-04: what the PI_HAT&ndash;KING discordance is made of</h2>
+<div class="box warn"><strong>Two corrections to the analysis below.</strong> (1) The ancestry distances were taken from the deprecated global K=5 run; they were recomputed on the NYGC-reference K=4 ancestry for all 1,193 samples. (2) Doing so exposed that the discordance is dominated by a handful of low-quality samples, not by ancestry. The sections below are kept for the record; where they conflict with this update, this update applies.</div>
+
+<h3>1. Five samples explain almost all flagged pairs</h3>
+<p>Of the 6,228 pairs with PI_HAT &ge; 0.185, 6,110 (98.1%) contain at least one of 6 samples, and 5 of them (ALSU_0242, ALSU_0402, ALSU_0499, ALSU_1030, GWAS2026_0016) appear in <strong>1,184 pairs each</strong>, i.e. they exceed PI_HAT 0.185 with nearly every other sample in the merged data set (1,192 samples are involved in total). A person is not a close relative of 1,184 others; this is a data-quality signature. Only 118 pairs involve none of these samples.</p>
+<table><thead><tr><th>Sample (alias)</th><th>Pairs flagged</th><th>Mean PI_HAT in those pairs</th><th>Share discordant (PI_HAT-only)</th><th>Missing genotypes</th><th>Inbreeding coefficient F</th><th>In final 1,256 cohort</th></tr></thead><tbody><tr><td>ALSU_0242</td><td>1184</td><td>0.317</td><td>85%</td><td>11.6%</td><td>-0.37</td><td>no</td></tr><tr><td>GWAS2026_0016</td><td>1184</td><td>0.312</td><td>43%</td><td>17.6%</td><td>-0.19</td><td>no</td></tr><tr><td>ALSU_0402</td><td>1184</td><td>0.337</td><td>66%</td><td>12.7%</td><td>-0.42</td><td>no</td></tr><tr><td>ALSU_0499</td><td>1184</td><td>0.342</td><td>70%</td><td>11.5%</td><td>-0.45</td><td>no</td></tr><tr><td>ALSU_1030</td><td>1184</td><td>0.297</td><td>91%</td><td>17.2%</td><td>-0.38</td><td>no</td></tr><tr><td>ALSU_0001</td><td>205</td><td>0.203</td><td>98%</td><td>16.4%</td><td>-0.68</td><td>no</td></tr></tbody></table>
+<p>For comparison, over all 1,193 samples the median missingness is 0.08% (mean 1.3%) and the median F is +0.02. The six samples have 11&ndash;18% missing genotypes and a strongly negative F, i.e. far more heterozygous genotypes than expected. High missingness together with excess heterozygosity is typical of poor-quality or mixed DNA, and it inflates PLINK&rsquo;s PI_HAT against everyone. This is consistent with, but does not prove, the cause; the original array QC used a call-rate cut-off of 20% missing, which these samples pass. (QC measured on the 104,411 LD-pruned SNPs of the merged set; script <code>hub.sh</code>, DRAGEN <code>/staging/tmp/scratch/hub_check/</code>.)</p>
+<div class="box key"><strong>None of the six samples is in the final cohort of 1,256</strong> (the final QC of step 7 applies a 5% missingness limit, which samples with 11&ndash;18% missing genotypes would not pass), and only 4 of the 6,228 flagged pairs have both members in the final cohort. The discordance study therefore describes a pre-QC array data set. For the final cohort, relatedness is minimal (11 pairs at second degree or closer; <a href='step15.html'>step 15</a>).</div>
+<p><strong>Consequence for the pair supported by both PC-Relate and RelateAdmix:</strong> ALSU_0218 / ALSU_0242 (PC-Relate 0.153, RelateAdmix 0.233) involves ALSU_0242, one of the five poor-quality samples. It should not be treated as a trustworthy relative pair without re-genotyping or a check of the sample.</p>
+
+<h3>2. Ancestry distances recomputed on the NYGC reference (K=4)</h3>
+<p>The 1,193 samples of the relatedness set were projected onto the fixed allele frequencies of the NYGC K=4 ADMIXTURE run (<code>admixture -P</code> with <code>adm_in.4.P</code>) on the 17,484 SNPs present in both data sets with identical alleles; script <code>/staging/tmp/proj_k4.sh</code>, output <code>/staging/tmp/scratch/proj_k4/</code>. This gives ancestry for all 1,193 samples; the earlier K=5 distances existed for only 1,181 of the 6,228 pairs. Validation: for the 1,096 samples that are also in the full K=4 run the projected and the full-run components agree as follows.</p>
+<table><thead><tr><th>Component</th><th>Correlation</th><th>RMSE</th></tr></thead><tbody><tr><td>EUR</td><td>0.987</td><td>0.024</td></tr><tr><td>EAS</td><td>0.991</td><td>0.020</td></tr><tr><td>SAS</td><td>0.943</td><td>0.026</td></tr><tr><td>AFR</td><td>0.957</td><td>0.011</td></tr></tbody></table>
+<p>Mean Euclidean K=4 distance between the two members of a pair: <strong>0.151</strong> for KING-and-PI_HAT concordant pairs (n = 1,734) and <strong>0.221</strong> for PI_HAT-only discordant pairs (n = 4,494). The direction matches the earlier K=5 result (0.130 vs 0.160 on the 1,181 pairs that had it; on those same pairs the new distances are 0.140 vs 0.165, and the two distance sets correlate at r = 0.93). By tertile of distance:</p>
+<table><thead><tr><th>Distance tertile</th><th>K=4 distance</th><th>Pairs</th><th>Concordant</th><th>Discordant</th><th>Discordance rate</th></tr></thead><tbody><tr><td>low</td><td>0.00&ndash;0.10</td><td>2,076</td><td>618</td><td>1,458</td><td>70%</td></tr><tr><td>mid</td><td>0.10&ndash;0.22</td><td>2,076</td><td>797</td><td>1,279</td><td>62%</td></tr><tr><td>high</td><td>0.22&ndash;1.10</td><td>2,076</td><td>319</td><td>1,757</td><td>85%</td></tr></tbody></table>
+<div class="box info"><strong>The ancestry effect is much weaker than the earlier text claimed.</strong> The naive Mann&ndash;Whitney test (p = 4e-31) treats 6,228 pairs as independent, but they are built from 1,192 samples of which ten account for 50% of all pair slots. A permutation test that reassigns whole ancestry vectors among samples gives a difference of 0.070 against a null of 0.001 &plusmn; 0.044 (one-sided p = 0.044, 2,000 permutations): borderline at best. The discordance rate is not monotone across tertiles (70%, 62%, 85%; the earlier K=5 table read 83%, 90%, 93%). The statement &ldquo;direct K=5 distance did explain discordance&rdquo; is therefore withdrawn; the poor-quality samples are a far stronger explanation.</div>
+
+<h3>3. RelateAdmix and PC-Relate do not need re-running on the NYGC reference</h3>
+<p>RelateAdmix received its ancestry input from an ADMIXTURE K=5 run on the merged 1,193-sample LD-pruned file itself (<code>merged_pruned.5.Q/.P</code>; script <code>scripts/remote_relateadmix_run.sh</code>), and PC-Relate uses PCs of the same file. Neither used the deprecated global 1000G run, so their results (27 pairs with RelateAdmix kinship-equivalent &ge; 0.0884; 48 with PC-Relate &ge; 0.0884; 1 resp. 5 of the PI_HAT-only pairs) are unaffected by the reference change. Only the &ldquo;Step 11 K=5 distance&rdquo; analysis and the birthplace map depended on the deprecated run, and both are replaced here.</p>
+
+<h3>4. Revised recommendation</h3>
+<ul>
+<li>Do not use PI_HAT &ge; 0.185 lists from the merged pre-QC array data to remove samples. Check per-sample missingness and heterozygosity first: a sample with PI_HAT above threshold against hundreds of others is a QC failure.</li>
+<li>Re-check the QC cut-offs of the original array pipeline (20% missingness) in the light of these samples; the final cohort already excludes them.</li>
+<li>Keep KING as the operational screen and PC-Relate/RelateAdmix as validation, on samples that passed QC.</li>
+</ul>
+<h3>5. Birthplace map on the NYGC reference</h3>
+<img src="../images/alsu_uzbekistan_k4_nygc_birthplace_map.png" alt="Mean K=4 ADMIXTURE proportions (expanded cohort + NYGC 30x reference) by Uzbekistan birthplace region; pies sized by &amp;radic;N; 1,021 mapped samples. Component names come from the reference means (EUR 0.97, EAS 1.00, SAS 0.89, AFR 0.96). Values: data/alsu_uzbekistan_k4_nygc_birthplace_summary.tsv; script scripts/build_uzbekistan_admixture_map_nygc.py."><p class="cap">Mean K=4 ADMIXTURE proportions (expanded cohort + NYGC 30x reference) by Uzbekistan birthplace region; pies sized by &radic;N; 1,021 mapped samples. Component names come from the reference means (EUR 0.97, EAS 1.00, SAS 0.89, AFR 0.96). Values: data/alsu_uzbekistan_k4_nygc_birthplace_summary.tsv; script scripts/build_uzbekistan_admixture_map_nygc.py.</p>
+<p>The regional pattern is flat: mean EUR-like shares range from 0.44 to 0.54 and EAS-like shares from 0.20 to 0.38 across regions, with small-sample regions (n &lt; 30) noisy. The statistical test is on <a href="step11.html">step 11</a>.</p>
+</div><!--NYGC:relate:END--><!--NYGC:relate:OLDFIG--><details style="margin:14px 0"><summary style="cursor:pointer"><strong>Superseded: August 2026 map on the deprecated global K=5 run (kept for the record)</strong></summary><div class="figure">
   <img src="../images/alsu_uzbekistan_k5_birthplace_map_expanded.png"
        alt="K=5 ADMIXTURE by Uzbekistan birthplace region, expanded August 2026 cohort">
   <div class="caption"><strong>Current (expanded cohort, August 2026).</strong>
@@ -49,7 +104,7 @@
   </div>
 </div>
 
-<details style="margin:14px 0">
+</details><details style="margin:14px 0">
   <summary style="cursor:pointer"><strong>Previous version (Spring 2026 run, UZB n = 1,047) &mdash; kept for reference</strong></summary>
   <div class="figure" style="margin-top:12px">
     <img src="../images/alsu_uzbekistan_k5_birthplace_map.png"
@@ -365,7 +420,7 @@ RelateAdmix kinship-equivalent = (k2 + 0.5 * k1) / 2</code></pre>
 <li>PI_HAT-only discordant pairs: 0.074798.</li>
 </ul>
 <p>This was not the expected direction if broad PCA distance alone were the main driver. PC10 distance is therefore too blunt a proxy for the specific ancestry differences affecting PI_HAT/KING discordance.</p>
-<h3 id="direct-step-11-k-5-distance-did-explain-discordance">Direct Step 11 K=5 distance did explain discordance</h3>
+<h3 id="direct-step-11-k-5-distance-did-explain-discordance">Direct Step 11 K=5 distance did explain discordance <span style="color:#991b1b;font-size:.8em">[WITHDRAWN 2026-10-04: deprecated K=5 run; effect weak and confounded by five poor-quality samples, see the update at the top]</span></h3>
 <p>Mean K=5 Q-vector distance:</p>
 <ul>
 <li>KING+PI_HAT concordant pairs: 0.130331.</li>
@@ -465,7 +520,7 @@ RelateAdmix kinship-equivalent = (k2 + 0.5 * k1) / 2</code></pre>
 <li>PC-AiR/PC-Relate was applied successfully to the LD-pruned merged ALSU+GWAS2026 dataset.</li>
 </ul>
 <p>The practical result is clear: PC-Relate supports only 5 of 4,494 PI_HAT-only discordant pairs at kinship &ge; 0.0884. Therefore PC-Relate is suitable here and strengthens the conclusion that PI_HAT-only calls should not drive sample removal in this admixed dataset.</p>
-<h2 id="draft-discussion">Draft Discussion</h2>
+<h2 id="draft-discussion">Draft Discussion</h2><div class="callout" style="background:#fff4e5;border-left:4px solid #d97706"><strong>Correction 2026-10-04:</strong> statements below that ancestry (Step 11 K=5 distance) explains the PI_HAT&ndash;KING discordance are withdrawn; see the update at the top of the page. The discordance is dominated by five poor-quality samples absent from the final cohort.</div>
 <p>The Step 11 admixture analysis confirms that Uzbek samples in ALSU are strongly admixed, with a major European / West Eurasian component, a large East Asian component, and a substantial South Asian component. This is not a minor nuisance variable; it is a central feature of the cohort. Relatedness estimation methods that assume a relatively homogeneous allele-frequency background can therefore behave differently across pairs with different ancestry profiles.</p>
 <p>The current results show a large discordance between PLINK PI_HAT and KING in the merged ALSU+GWAS2026 GSA dataset. Among 6,228 pairs with PI_HAT &ge; 0.185, only 1,734 were also reported by KING at kinship &ge; 0.0884, leaving 4,494 PI_HAT-only discordant pairs. The direct Step 11 K=5 analysis gives evidence that ancestry divergence contributes to this discordance: PI_HAT-only discordant pairs have higher mean K=5 Q-vector distance than KING+PI_HAT concordant pairs, and the discordance rate rises across K=5 Q-distance strata.</p>
 <p>The PCA-only result is more nuanced. PC10 Euclidean distance was not higher in PI_HAT-only discordant pairs. This suggests that the relevant ancestry effect is not captured well by a simple distance in the first ten PCs, at least not in this merged dataset. Direct supervised interpretation of K=5 ADMIXTURE components was more informative. This also argues against using a single PCA distance cutoff as the only correction for relatedness estimation.</p>
