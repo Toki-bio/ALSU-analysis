@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PBS Tier 1 Candidates</title>
+<title>PBS candidates (earlier Tier 1 list withdrawn) - ALSU Pipeline</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#f7f7f7;padding:32px;color:#222}
@@ -38,6 +38,9 @@ td{padding:7px 8px 7px 0;vertical-align:middle;border-bottom:1px solid #f0f0f0}
 tr:last-child td{border-bottom:none}
 tr.pri td{background:#f0f6ff}
 tr.pri{border-radius:6px}
+h2{font-weight:600;color:#333}
+th.r{text-align:right}
+code{background:#f3f3f3;padding:1px 4px;border-radius:3px;font-size:.9em}
 
 .snp{font-family:Consolas,monospace;font-size:.8em;white-space:nowrap}
 .badge{display:inline-block;background:#1565c0;color:#fff;font-size:.6em;padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:middle;font-family:'Segoe UI',sans-serif;white-space:nowrap}
@@ -60,160 +63,58 @@ tr.pri{border-radius:6px}
 <body>
 
 <p><a href="step10.html" style="color:#555;text-decoration:none;">&larr; Back to Step 10: Multi-Population PBS Analysis</a></p>
-<h1>PBS Tier 1 Candidates</h1>
-<p class="sub">All 8 SNPs with PBS<sub>UZB</sub> &ge; 0.3 &nbsp;&middot;&nbsp; 79,767 tested &nbsp;&middot;&nbsp; 0 rsIDs in dbSNP</p>
+<h1>PBS candidates: the earlier Tier 1 list (withdrawn) and the current result</h1>
+<p class="sub">NYGC 30x reference &nbsp;&middot;&nbsp; 74,171 SNPs tested &nbsp;&middot;&nbsp; rebuilt 2026-10-04</p>
 
-<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Correction (2026-10-02):</strong> The PBS candidates discussed on this page are artefacts of the 1000 Genomes GRCh38 reference file (ALL.chr*.shapeit2_integrated_v1a.GRCh38.20181129), in which the genotype at a few dozen sites depends on the sequencing batch of the sample (example: 12:22967890 has EUR 97% in that file versus about 2% in 1000 Genomes phase 3 and in gnomAD; Uzbek cohort 2%). PBS re-run after excluding the 285 discordant reference sites (cohort of 1,047) or 344 (expanded cohort of 1,256) gives no Tier 1, 2 or 3 candidates (maximum PBS 0.146). Statements on this page about linkage disequilibrium between these loci, ancestral retention, founder effects, or Uzbek-specific selection are withdrawn. <a href="deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Result.</strong> On the NYGC 30x reference no SNP reaches Tier 1, 2 or 3 and the highest PBS<sub>UZB</sub> is 0.070 (Tier 1 needs 0.3). The eight &ldquo;Tier 1 candidates&rdquo; listed on this page until 2026-10-04 were artefacts of the old 1000G GRCh38 reference file; their claimed biology (founder effect, ancestral retention in Africa, Uzbek-specific selection, the rs56186913 / uterine leiomyoma story) is withdrawn. The full analysis is on <a href="step10.html">step 10</a>.</div>
 
 <div class="stats">
-  <div class="stat hi"><div class="n">8</div><div class="l">Tier 1</div></div>
-  <div class="stat ok"><div class="n">1</div><div class="l">Tier 1+2</div></div>
-  <div class="stat dim"><div class="n">0</div><div class="l">in dbSNP</div></div>
+  <div class="stat ok"><div class="n">0</div><div class="l">Tier 1</div></div>
+  <div class="stat ok"><div class="n">0</div><div class="l">Tier 2</div></div>
+  <div class="stat ok"><div class="n">0</div><div class="l">Tier 3</div></div>
+  <div class="stat hi"><div class="n">0.070</div><div class="l">max PBS</div></div>
+  <div class="stat dim"><div class="n">74,171</div><div class="l">SNPs tested</div></div>
 </div>
 
-<div class="legend">
-  <span><i class="dot uzb"></i>UZB</span>
-  <span><i class="dot eur"></i>EUR</span>
-  <span><i class="dot eas"></i>EAS</span>
-  <span><i class="dot sas"></i>SAS</span>
-  <span><i class="dot afr"></i>AFR</span>
-  <span style="margin-left:6px;font-style:italic;color:#bbb">bar height = allele freq, scale max 49%</span>
-</div>
+<h2 style="font-size:1.05em;margin:22px 0 8px;">1. What the eight earlier candidates look like on the NYGC reference</h2>
+<p style="font-size:.88em;color:#555;line-height:1.5;margin-bottom:10px">&ldquo;Old file&rdquo; is what this page showed before (frequencies from the 1000G GRCh38 shapeit2 file; as printed then, for the allele after &gt;). &ldquo;NYGC&rdquo; is the frequency of the same allele computed directly from the NYGC 30x VCFs (bcftools, SNV record at that position). &ldquo;Uzbek array&rdquo; is the frequency of the same allele in the raw array data (1,247 samples, PLINK <code>--freq</code>, strand-converted where needed); it is n/a for the four sites that are present only in the imputed data.</p>
+<table>
+<thead><tr><th>SNP, alleles</th><th class="r">old PBS</th><th>Old file (%)</th><th>NYGC (all four references)</th><th>Uzbek array</th></tr></thead>
+<tbody>
+<tr><td class="snp">11:207698 C>T</td><td class="pbs dim">0.38</td><td>UZB 48% &middot; EUR 9% &middot; EAS 3% &middot; SAS 12% &middot; AFR 2%</td><td>EUR 59.2% &middot; EAS 21.9% &middot; SAS 59.6% &middot; AFR 26.8%</td><td>n/a</td></tr>
+<tr><td class="snp">5:53879140 C>A</td><td class="pbs dim">0.53</td><td>UZB 49% &middot; EUR 1% &middot; EAS 3% &middot; SAS 46% &middot; AFR 33%</td><td>EUR 53.1% &middot; EAS 28.6% &middot; SAS 39.4% &middot; AFR 32.9%</td><td>48.6%</td></tr>
+<tr><td class="snp">3:133749168 A>G</td><td class="pbs dim">0.49</td><td>UZB 48% &middot; EUR 1% &middot; EAS 2% &middot; SAS 39% &middot; AFR 16%</td><td>EUR 44.0% &middot; EAS 46.2% &middot; SAS 49.4% &middot; AFR 33.3%</td><td>n/a</td></tr>
+<tr><td class="snp">10:8512594 G>A</td><td class="pbs dim">0.32</td><td>UZB 48% &middot; EUR 12% &middot; EAS 6% &middot; SAS 16% &middot; AFR 32%</td><td>EUR 46.8% &middot; EAS 63.0% &middot; SAS 50.5% &middot; AFR 44.6%</td><td>47.1%</td></tr>
+<tr><td class="snp">11:20665570 T>G</td><td class="pbs dim">1.14</td><td>UZB 2% &middot; EUR 49% &middot; EAS 22% &middot; SAS 16% &middot; AFR 17%</td><td>EUR 2.5% &middot; EAS 0.0% &middot; SAS 0.6% &middot; AFR 0.1%</td><td>n/a</td></tr>
+<tr><td class="snp">12:22967890 G>T</td><td class="pbs dim">2.99</td><td>UZB 2% &middot; EUR 3% &middot; EAS 4% &middot; SAS 22% &middot; AFR 49%</td><td>EUR 2.6% &middot; EAS 0.1% &middot; SAS 0.4% &middot; AFR 0.1%</td><td>4.8%</td></tr>
+<tr><td class="snp">12:125520190 C>T</td><td class="pbs dim">2.69</td><td>UZB 3% &middot; EUR 3% &middot; EAS 4% &middot; SAS 23% &middot; AFR 49%</td><td>EUR 3.5% &middot; EAS 0.0% &middot; SAS 1.3% &middot; AFR 0.1%</td><td>3.9%</td></tr>
+<tr><td class="snp">12:5664803 T>G</td><td class="pbs dim">2.67</td><td>UZB 3% &middot; EUR 3% &middot; EAS 4% &middot; SAS 24% &middot; AFR 49%</td><td>EUR 4.3% &middot; EAS 0.2% &middot; SAS 3.5% &middot; AFR 0.4%</td><td>n/a</td></tr>
+</tbody>
+</table>
+<p class="note" style="margin-top:10px"><b>Reading.</b> Where an Uzbek array frequency exists it agrees with the old value (5:53879140: 49% then, 48.6% now; 10:8512594: 48% then, 47.1% now), so the Uzbek side was not the problem. The reference side was: in the old file EUR carried 1% at 5:53879140 and 3:133749168, whereas NYGC has 53% and 44%; at the three chr12 sites the old file gave AFR 49% and SAS 22&ndash;24%, whereas NYGC has AFR 0.1&ndash;0.4% and SAS 0.4&ndash;3.5%. For 11:20665570 the old file gave EUR 49%, NYGC 2.5%. On NYGC none of the eight sites is differentiated between the Uzbek cohort and the references: three of the four sites with Uzbek array data lie inside the range spanned by the references, and 12:22967890 is 2.2 percentage points above the highest reference value (4.8% vs 2.6% in EUR). For the other four sites (present only in the imputed data) no Uzbek frequency was recomputed here, so only the reference side is shown. Three sites also have an indel or duplication record at the same position in the NYGC call set (10:8512594 CTG&gt;C, 11:20665570 GAT&gt;G, 11:207698 a DUP record), the kind of site that was excluded from the PBS run.</p>
 
-<!-- TIER A -->
-<div class="tier">
-  <div class="tier-label">
-    <span class="pill pA">Tier A</span>
-    <span class="tier-desc">Uzbek-enriched &middot; biologically informative</span>
-  </div>
-  <table>
-    <thead><tr>
-      <th>SNP</th><th class="r">PBS</th><th>Allele frequency</th><th>Pattern</th>
-    </tr></thead>
-    <tbody>
-      <tr class="pri">
-        <td><span class="snp">11:207698 C&rarr;T</span><span class="badge">&#9733; T1+T2</span></td>
-        <td class="pbs" style="color:#1565c0">0.38</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:98%"></div></div><div class="pv">48%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:18%"></div></div><div class="pv">9%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:6%"></div></div><div class="pv">3%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:24%"></div></div><div class="pv">12%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:3%"></div></div><div class="pv">2%</div></div>
-        </div></td>
-        <td><div class="note"><b>Uniquely Uzbek.</b> No parallel in any ref pop. &Delta;AF&nbsp;=&nbsp;36%.</div></td>
-      </tr>
-      <tr>
-        <td><span class="snp">5:53879140 C&rarr;A</span></td>
-        <td class="pbs">0.53</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:100%"></div></div><div class="pv">49%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:2%"></div></div><div class="pv">1%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:5%"></div></div><div class="pv">3%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:94%"></div></div><div class="pv">46%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:68%"></div></div><div class="pv">33%</div></div>
-        </div></td>
-        <td><div class="note">Shared UZB + SAS signal. Absent EUR &amp; EAS.</div></td>
-      </tr>
-      <tr>
-        <td><span class="snp">3:133749168 A&rarr;G</span></td>
-        <td class="pbs">0.49</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:98%"></div></div><div class="pv">48%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:2%"></div></div><div class="pv">1%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:4%"></div></div><div class="pv">2%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:79%"></div></div><div class="pv">39%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:33%"></div></div><div class="pv">16%</div></div>
-        </div></td>
-        <td><div class="note">Shared UZB + SAS signal.</div></td>
-      </tr>
-      <tr>
-        <td><span class="snp">10:8512594 G&rarr;A</span></td>
-        <td class="pbs">0.32</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:99%"></div></div><div class="pv">48%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:25%"></div></div><div class="pv">12%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:13%"></div></div><div class="pv">6%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:33%"></div></div><div class="pv">16%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:66%"></div></div><div class="pv">32%</div></div>
-        </div></td>
-        <td><div class="note">Moderate Uzbek enrichment.</div></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- TIER B -->
-<div class="tier">
-  <div class="tier-label">
-    <span class="pill pB">Tier B</span>
-    <span class="tier-desc">Inverted &mdash; UZB has lost a common allele</span>
-  </div>
-  <table>
-    <tbody>
-      <tr>
-        <td><span class="snp">11:20665570 T&rarr;G</span></td>
-        <td class="pbs">1.14</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:3%"></div></div><div class="pv">2%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:100%"></div></div><div class="pv">49%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:44%"></div></div><div class="pv">22%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:33%"></div></div><div class="pv">16%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:34%"></div></div><div class="pv">17%</div></div>
-        </div></td>
-        <td><div class="note">UZB 2% vs EUR 49%. Possible founder effect. Chr11p13.</div></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- TIER C -->
-<div class="tier">
-  <div class="tier-label">
-    <span class="pill pC">Tier C</span>
-    <span class="tier-desc">Chr12 cluster &middot; PBS inflated by erroneous 1000G GRCh38 reference genotypes (see correction above) &middot; not Uzbek-specific</span>
-  </div>
-  <table>
-    <tbody>
-      <tr>
-        <td><span class="snp">12:22967890 G&rarr;T</span></td>
-        <td class="pbs dim">2.99</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:4%"></div></div><div class="pv">2%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:6%"></div></div><div class="pv">3%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:8%"></div></div><div class="pv">4%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:45%"></div></div><div class="pv">22%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
-        </div></td>
-        <td><div class="note dim">UZB &asymp; EUR &asymp; EAS &asymp; 2&ndash;4%. Reference genotype artefact (1000G GRCh38 batch error).</div></td>
-      </tr>
-      <tr>
-        <td><span class="snp">12:125520190 C&rarr;T</span></td>
-        <td class="pbs dim">2.69</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:7%"></div></div><div class="pv">3%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:6%"></div></div><div class="pv">3%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:8%"></div></div><div class="pv">4%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:47%"></div></div><div class="pv">23%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
-        </div></td>
-        <td><div class="note dim">No LD: loci are 17-100 Mb apart; measured r2 in the Uzbek cohort is about 0. High PBS is a reference genotype artefact.</div></td>
-      </tr>
-      <tr>
-        <td><span class="snp">12:5664803 T&rarr;G</span></td>
-        <td class="pbs dim">2.67</td>
-        <td><div class="bars">
-          <div class="pc"><div class="pl">UZB</div><div class="bg"><div class="b uzb" style="height:7%"></div></div><div class="pv">3%</div></div>
-          <div class="pc"><div class="pl">EUR</div><div class="bg"><div class="b eur" style="height:6%"></div></div><div class="pv">3%</div></div>
-          <div class="pc"><div class="pl">EAS</div><div class="bg"><div class="b eas" style="height:8%"></div></div><div class="pv">4%</div></div>
-          <div class="pc"><div class="pl">SAS</div><div class="bg"><div class="b sas" style="height:50%"></div></div><div class="pv">24%</div></div>
-          <div class="pc"><div class="pl">AFR</div><div class="bg"><div class="b afr" style="height:100%"></div></div><div class="pv">49%</div></div>
-        </div></td>
-        <td><div class="note dim">No LD: loci are 17-100 Mb apart; measured r2 in the Uzbek cohort is about 0. High PBS is a reference genotype artefact.</div></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<h2 style="font-size:1.05em;margin:22px 0 8px;">2. The 15 highest PBS<sub>UZB</sub> values on NYGC (none is a candidate)</h2>
+<table>
+<thead><tr><th>#</th><th>SNP (GRCh38)</th><th class="r">PBS</th><th>Allele frequencies (Uzbek minor allele)</th><th>Gene overlap</th></tr></thead>
+<tbody>
+<tr><td>1</td><td class="snp">16:17179162</td><td class="pbs">0.070</td><td>UZB 0.50 &middot; EUR 0.30 &middot; EAS 0.32 &middot; SAS 0.68 &middot; AFR 0.68</td><td>XYLT1</td></tr>
+<tr><td>2</td><td class="snp">16:12785951</td><td class="pbs">0.064</td><td>UZB 0.05 &middot; EUR 0.11 &middot; EAS 0.19 &middot; SAS 0.06 &middot; AFR 0.19</td><td>CPPED1</td></tr>
+<tr><td>3</td><td class="snp">20:55769015</td><td class="pbs">0.060</td><td>UZB 0.24 &middot; EUR 0.33 &middot; EAS 0.50 &middot; SAS 0.19 &middot; AFR 0.14</td><td>no gene overlap</td></tr>
+<tr><td>4</td><td class="snp">16:79713988</td><td class="pbs">0.056</td><td>UZB 0.48 &middot; EUR 0.61 &middot; EAS 0.70 &middot; SAS 0.51 &middot; AFR 0.62</td><td>LINC01229, MAFTRR</td></tr>
+<tr><td>5</td><td class="snp">15:26369365</td><td class="pbs">0.055</td><td>UZB 0.50 &middot; EUR 0.73 &middot; EAS 0.62 &middot; SAS 0.53 &middot; AFR 0.40</td><td>no gene overlap</td></tr>
+<tr><td>6</td><td class="snp">2:7161301</td><td class="pbs">0.051</td><td>UZB 0.48 &middot; EUR 0.66 &middot; EAS 0.63 &middot; SAS 0.46 &middot; AFR 0.91</td><td>no gene overlap</td></tr>
+<tr><td>7</td><td class="snp">12:127315545</td><td class="pbs">0.051</td><td>UZB 0.48 &middot; EUR 0.58 &middot; EAS 0.76 &middot; SAS 0.51 &middot; AFR 0.09</td><td>no gene overlap</td></tr>
+<tr><td>8</td><td class="snp">15:48955804</td><td class="pbs">0.049</td><td>UZB 0.07 &middot; EUR 0.10 &middot; EAS 0.32 &middot; SAS 0.05 &middot; AFR 0.58</td><td>SHC4</td></tr>
+<tr><td>9</td><td class="snp">13:94254283</td><td class="pbs">0.048</td><td>UZB 0.45 &middot; EUR 0.54 &middot; EAS 0.71 &middot; SAS 0.48 &middot; AFR 0.74</td><td>GPC6</td></tr>
+<tr><td>10</td><td class="snp">1:10941367</td><td class="pbs">0.048</td><td>UZB 0.33 &middot; EUR 0.18 &middot; EAS 0.21 &middot; SAS 0.45 &middot; AFR 0.05</td><td>no gene overlap</td></tr>
+<tr><td>11</td><td class="snp">22:50007172</td><td class="pbs">0.048</td><td>UZB 0.32 &middot; EUR 0.48 &middot; EAS 0.46 &middot; SAS 0.23 &middot; AFR 0.38</td><td>IL17REL</td></tr>
+<tr><td>12</td><td class="snp">10:49549458</td><td class="pbs">0.045</td><td>UZB 0.49 &middot; EUR 0.41 &middot; EAS 0.20 &middot; SAS 0.61 &middot; AFR 0.52</td><td>no gene overlap</td></tr>
+<tr><td>13</td><td class="snp">4:98750184</td><td class="pbs">0.045</td><td>UZB 0.44 &middot; EUR 0.33 &middot; EAS 0.23 &middot; SAS 0.52 &middot; AFR 0.27</td><td>no gene overlap</td></tr>
+<tr><td>14</td><td class="snp">22:41812668</td><td class="pbs">0.045</td><td>UZB 0.45 &middot; EUR 0.34 &middot; EAS 0.23 &middot; SAS 0.44 &middot; AFR 0.72</td><td>CCDC134</td></tr>
+<tr><td>15</td><td class="snp">10:125576346</td><td class="pbs">0.045</td><td>UZB 0.04 &middot; EUR 0.09 &middot; EAS 0.18 &middot; SAS 0.02 &middot; AFR 0.00</td><td>TEX36-AS1</td></tr>
+</tbody>
+</table>
+<p class="note" style="margin-top:10px">&Delta;AF (the smallest difference between the Uzbek frequency and any single reference group) is at most 0.176 among these 15, against a Tier 2 cut-off of 0.3; the Uzbek frequency lies inside the range spanned by the four references at 12 of the 15 SNPs. Annotation (rsID, consequence, GWAS Catalog traits) is on <a href="step12.html">step 12</a>.</p>
 
 </body>
 </html>
