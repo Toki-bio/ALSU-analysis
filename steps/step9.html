@@ -134,7 +134,7 @@
     </style>
 </head>
 <body>
-    <div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Pending update (2026-10-02):</strong> the FST tables and top-FST loci on this page were computed against the 1000 Genomes GRCh38 reference file whose genotypes at some sites depend on sequencing batch. They have not been re-verified on the NYGC 30x reference and should not be cited (in particular the &ldquo;FST = 0.998&rdquo; loci: 9:14776145 is not a variant in the NYGC 30x call set and 1:40954877 appears there only as a structural-variant deletion record; neither is present in the Uzbek imputed data or in the merged SNP panel, so the claim could not be reproduced and is most likely an artefact). <a href="deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+    <div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> this page was rebuilt on the NYGC 30x reference. The previous banner (tables not yet re-verified) no longer applies. See the <a href="deprecated_old_runs.html">list of current and deprecated runs</a>.</div>
 <div class="page-wrapper">
         <!-- LEFT SIDEBAR -->
         <aside class="sidebar">
@@ -177,72 +177,94 @@
             
             <div class="header">
                 <a href="../index.html" class="back-link">← Back to Roadmap</a>
-                <h1>Step 9: Genome-Wide F<sub>ST</sub> Analysis (Uzbek vs EUR)</h1>
-                <p>Quantify population differentiation between Uzbek cohort and 1000 Genomes European reference</p>
-                <span class="step-badge">✓ Expanded cohort, GRCh38 canonical — August 2026 (1,256 samples)</span>
-                <span class="step-badge step-badge-old">Spring 2026 (1,047 samples) — April 11, 2026</span>
+                <h1>Step 9: Genome-Wide F<sub>ST</sub> Analysis (Uzbek vs reference populations)</h1>
+                <p>Quantify population differentiation between the Uzbek cohort and NYGC 1000 Genomes reference populations</p>
+                <span class="step-badge">✓ NYGC 30x reference, expanded cohort (1,256 samples) — rebuilt 2026-10-04</span>
+                
                 <a href="archive/step9_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
             </div>
-            <div class="info-box" style="margin:20px 30px 0;">
-                <strong>Cohort expansion + methodology update (August 2026):</strong> This page reflects the expanded
-                cohort (1,256 Uzbek samples) using <strong>GRCh38 as the sole canonical build going forward</strong>.
-                A hg19-based Fst pipeline (Sections 3&ndash;10 below) was used historically because a GRCh38 1000G panel
-                wasn't available when this step was first run; a GRCh38 panel was later found and adopted. During this
-                session, a real bug was also found and fixed in the original hg19 flip/exclude logic (it discarded every
-                SNP it "fixed," roughly halving usable markers) &mdash; see
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">integration notes</a> for the isolated proof.
-                hg19 is retained only as a one-time bridge comparison to the originally published number (Section 3&ndash;10,
-                clearly marked historical below); GRCh38 is canonical for all new work. See
-                <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">cohort expansion integration notes</a> for full methodology.
-            </div>
+            
         
             <div class="content">
-                <!-- ==================== OVERVIEW ==================== -->
-                <div class="section">
-                    <h2 class="section-header">1. Overview</h2>
-                    <div class="section-content">
-                        <p>
-                            <strong>F<sub>ST</sub></strong> (fixation index) measures allele frequency differentiation between populations. Values range from 0 (no differentiation — identical allele frequencies) to 1 (complete fixation of different alleles). This step computes genome-wide Weir &amp; Cockerham F<sub>ST</sub> between our Uzbek cohort and 1000 Genomes Phase 3 European (EUR) samples to:
-                        </p>
-                        <ul>
-                            <li><strong>Quantify genetic distance</strong> — how differentiated are Uzbek samples from Europeans?</li>
-                            <li><strong>Identify highly differentiated loci</strong> — SNPs with extreme F<sub>ST</sub> may be under population-specific selection or linked to ancestry-informative markers</li>
-                            <li><strong>Contextualize GWAS findings</strong> — if a GWAS hit has high F<sub>ST</sub>, it may reflect population stratification rather than true disease association</li>
-                        </ul>
-                        <h3>Interpretation Guide</h3>
-                        <table>
-                            <tr><th>F<sub>ST</sub> Range</th><th>Interpretation</th><th>Example</th></tr>
-                            <tr><td>0.00–0.05</td><td>Little differentiation</td><td>Populations within same continental group</td></tr>
-                            <tr><td>0.05–0.15</td><td>Moderate differentiation</td><td>EUR vs SAS (~0.05), EUR vs AMR (~0.06)</td></tr>
-                            <tr><td>0.15–0.25</td><td>Great differentiation</td><td>EUR vs EAS (~0.11), EUR vs AFR (~0.15)</td></tr>
-                            <tr><td>>0.25</td><td>Very great differentiation</td><td>Extreme outlier loci under selection</td></tr>
-                        </table>
+                <!--NYGC:step9:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2>1. Overview</h2>
+<p><strong>F<sub>ST</sub></strong> measures how much allele frequencies differ between two populations: 0 means identical frequencies, 1 means fixed different alleles. This step estimates it for the Uzbek cohort against four continental reference groups and uses the per-SNP values to ask two questions: how far is the Uzbek cohort from each reference, and does any single locus differ much more than the genome-wide level would predict.</p>
+<div class="box warn"><strong>This page was rebuilt on 2026-10-04.</strong> All numbers below come from the NYGC 30x high-coverage GRCh38 reference (md5-verified) and the expanded cohort of 1,256 Uzbek samples. The earlier hg19 pipeline (2025), the August 2026 run on the old GRCh38 reference file, and the &ldquo;256 loci with F<sub>ST</sub> &gt; 0.5&rdquo; are withdrawn; the hg19 pipeline is kept collapsed at the bottom for provenance only.</div>
+<div class="cards"><div class="card"><div class="num">1,256</div><div class="lab">Uzbek samples</div></div><div class="card"><div class="num">2,712</div><div class="lab">NYGC reference (EUR 633, EAS 585, SAS 601, AFR 893)</div></div><div class="card"><div class="num">82,744</div><div class="lab">SNPs, all ten pairs</div></div><div class="card"><div class="num">74,171</div><div class="lab">SNPs after indel filter</div></div><div class="card"><div class="num">0.0152</div><div class="lab">UZB vs EUR weighted F<sub>ST</sub></div></div><div class="card"><div class="num">0.240</div><div class="lab">highest single-SNP F<sub>ST</sub></div></div></div>
+<h3>How to read an F<sub>ST</sub> value</h3>
+<table><thead><tr><th>F<sub>ST</sub></th><th>Reading</th><th>This analysis</th></tr></thead><tbody><tr><td>0.00&ndash;0.05</td><td>little differentiation (same continental group)</td><td>UZB vs SAS, UZB vs EUR, UZB vs EAS (0.014&ndash;0.040); EUR vs SAS (0.031)</td></tr><tr><td>0.05&ndash;0.15</td><td>moderate</td><td>EAS vs SAS (0.057), EUR vs EAS (0.087), UZB vs AFR and SAS vs AFR (about 0.13)</td></tr><tr><td>0.15&ndash;0.25</td><td>great</td><td>EAS vs AFR (0.167)</td></tr><tr><td>&gt;0.25</td><td>very great</td><td>no pair; no single SNP reaches 0.25</td></tr></tbody></table>
 
-                        <h3 style="margin-top: 20px; color: #333;">Expanded Cohort F<sub>ST</sub> Results (GRCh38, canonical)</h3>
-                        <div class="info-box">
-                            <strong>Multi-population F<sub>ST</sub></strong> computed on the GRCh38 1000G panel using
-                            UZB (1,256), EUR (503), EAS (504), SAS (489), AFR (660) samples (verified directly from
-                            DRAGEN logs, Aug 13 2026). Cross-validated: the dedicated Option-B GRCh38 pipeline
-                            (1,759 samples, 5,358,904 markers &mdash; full unpruned set, no LD/intersection
-                            restriction) independently reproduced UZB vs EUR Weighted F<sub>ST</sub> = 0.0150
-                            &mdash; an exact match to this multi-population run (83,091 LD-pruned markers), despite
-                            using a very different marker set.
-                        </div>
-                        <table>
-                            <tr><th>Comparison</th><th>Weighted F<sub>ST</sub></th><th>Mean F<sub>ST</sub></th></tr>
-                            <tr><td>UZB vs EUR</td><td>0.01498</td><td>0.01028</td></tr>
-                            <tr><td>UZB vs EAS</td><td>0.03963</td><td>0.02349</td></tr>
-                            <tr><td>UZB vs SAS</td><td>0.01445</td><td>0.00989</td></tr>
-                            <tr><td>UZB vs AFR</td><td>0.12830</td><td>0.06114</td></tr>
-                            <tr><td>EUR vs EAS</td><td>0.08661</td><td>0.05086</td></tr>
-                        </table>
-                        <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 3px;">
-                            <strong>Consistent with original cohort:</strong> UZB closest to EUR (0.0150) and SAS (0.0145), moderately distant from EAS (0.0396), most distant from AFR (0.1283). All values within 0.002 of the original 1,047-sample run, confirming reproducibility after cohort expansion. See <a href="step14.html">Step 14</a> for the full 10-pair pairwise matrix.
-                        </div>
-                    </div>
-                </div>
+<h2>2. Data and method</h2>
+<ul>
+<li><strong>Cohort:</strong> expanded ALSU Uzbek cohort, 1,256 samples (array, imputed; see <a href="cohorts_and_sample_sets.html">cohorts and sample sets</a>).</li>
+<li><strong>Reference:</strong> 1000 Genomes high-coverage (NYGC) GRCh38, 3,202 samples, all 22 chromosome files verified against the official md5 manifest. Superpopulations used: EUR, EAS, SAS, AFR. AMR is not used. Reference samples were not filtered for relatedness.</li>
+<li><strong>Markers:</strong> 82,744 LD-pruned SNPs present in both data sets, merged by position and alleles (<code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/nygc30x_1256/merged_nygc.bim</code> on DRAGEN). A second, stricter set drops the 8,573 sites where the NYGC call set has an overlapping indel, multiallelic or structural-variant record within 1 bp, because single-base comparisons are not reliable there (list: <code>nygc30x_1256_filt/flagged_overlap.txt</code>). This leaves 74,171 sites for the UZB pairs. The number of SNPs per pair in the table can be smaller because PLINK drops sites that are monomorphic in both groups.</li>
+<li><strong>Estimator:</strong> PLINK 1.9 <code>--fst --within</code>, Weir &amp; Cockerham. &ldquo;Weighted&rdquo; is the ratio of summed numerators to summed denominators over all SNPs (the standard genome-wide value); &ldquo;mean&rdquo; is the plain average of per-SNP values. The &plusmn; is a leave-one-chromosome-out jackknife standard error of the mean per-SNP value (22 blocks), so it reflects variation between chromosomes.</li>
+</ul>
 
-                <!-- ==================== HISTORICAL HG19 PIPELINE (SECTIONS 2-10) ==================== -->
+<h2>3. Pairwise F<sub>ST</sub>, all ten pairs</h2>
+<table><thead><tr><th>Pair</th><th>Weighted F<sub>ST</sub>, 82,744 SNPs</th><th>Weighted F<sub>ST</sub>, indel-filtered</th><th>Mean per-SNP F<sub>ST</sub> &plusmn; jackknife SE</th><th>SNPs (filtered)</th></tr></thead><tbody><tr><td>UZB vs SAS</td><td>0.0143</td><td>0.0141</td><td>0.0097 &plusmn; 0.0001</td><td>74,171</td></tr><tr><td>UZB vs EUR</td><td>0.0152</td><td>0.0152</td><td>0.0106 &plusmn; 0.0001</td><td>74,171</td></tr><tr><td>UZB vs EAS</td><td>0.0400</td><td>0.0401</td><td>0.0240 &plusmn; 0.0001</td><td>74,171</td></tr><tr><td>UZB vs AFR</td><td>0.1310</td><td>0.1307</td><td>0.0615 &plusmn; 0.0006</td><td>74,171</td></tr><tr><td>EUR vs SAS</td><td>0.0314</td><td>0.0313</td><td>0.0207 &plusmn; 0.0002</td><td>73,166</td></tr><tr><td>EAS vs SAS</td><td>0.0570</td><td>0.0572</td><td>0.0339 &plusmn; 0.0002</td><td>73,878</td></tr><tr><td>EUR vs EAS</td><td>0.0872</td><td>0.0875</td><td>0.0515 &plusmn; 0.0002</td><td>74,149</td></tr><tr><td>AFR vs SAS</td><td>0.1294</td><td>0.1291</td><td>0.0616 &plusmn; 0.0006</td><td>72,707</td></tr><tr><td>AFR vs EUR</td><td>0.1414</td><td>0.1411</td><td>0.0736 &plusmn; 0.0007</td><td>71,303</td></tr><tr><td>AFR vs EAS</td><td>0.1668</td><td>0.1665</td><td>0.0756 &plusmn; 0.0007</td><td>69,859</td></tr></tbody></table>
+<div class="box key"><strong>Result.</strong> The Uzbek cohort is about equally close to South Asians (0.0143) and Europeans (0.0152), clearly farther from East Asians (0.0400) and farthest from Africans (0.1310). The ranking is the same with or without the 8,573 flagged sites; no weighted value moves by more than 0.0005. The UZB&ndash;AFR distance (0.1310) is almost identical to SAS&ndash;AFR (0.1294). The matrix, heatmap and MDS are on <a href='step14.html'>step 14</a>.</div>
+<p>The UZB&ndash;SAS and UZB&ndash;EUR values differ by only 0.0010, which is about 7 jackknife standard errors of the mean per-SNP value, so the difference is measurable, but both distances are small. &ldquo;Closer to SAS or to EUR&rdquo; should not be over-read: it depends on the reference panel, which has no Central Asian populations.</p>
+
+<h2>4. Distribution of per-SNP F<sub>ST</sub>, UZB vs EUR</h2>
+<img src="../images/nygc_fst_uzb_eur_hist.png" alt="Per-SNP F&lt;sub&gt;ST&lt;/sub&gt;, UZB vs EUR, 74,171 SNPs after the indel filter. Log scale on the y-axis; the dashed line is the mean."><p class="cap">Per-SNP F<sub>ST</sub>, UZB vs EUR, 74,171 SNPs after the indel filter. Log scale on the y-axis; the dashed line is the mean.</p>
+<table><thead><tr><th>F<sub>ST</sub> bin</th><th>SNPs</th><th>Share</th></tr></thead><tbody><tr><td>[0.0, 0.005)</td><td>35,012</td><td>47.2%</td></tr><tr><td>[0.005, 0.01)</td><td>13,606</td><td>18.3%</td></tr><tr><td>[0.01, 0.02)</td><td>13,852</td><td>18.7%</td></tr><tr><td>[0.02, 0.03)</td><td>5,350</td><td>7.2%</td></tr><tr><td>[0.03, 0.05)</td><td>4,211</td><td>5.7%</td></tr><tr><td>[0.05, 0.1)</td><td>1,903</td><td>2.6%</td></tr><tr><td>[0.1, 0.2)</td><td>233</td><td>0.3%</td></tr><tr><td>[0.2, 1.01)</td><td>4</td><td>0.0%</td></tr></tbody></table>
+<p>Median 0.0057, mean 0.0106, 95th percentile 0.040, 99th 0.073, 99.9th 0.127, maximum 0.240. 237 SNPs exceed 0.10, 4 exceed 0.20 and none exceeds 0.30. A tail towards 0.5&ndash;1 would indicate fixed or near-fixed differences; here the tail ends at 0.24.</p>
+<img src="../images/nygc_fst_uzb_eur_manhattan.png" alt="Per-SNP F&lt;sub&gt;ST&lt;/sub&gt; along the genome, UZB vs EUR. No chromosome or region stands out."><p class="cap">Per-SNP F<sub>ST</sub> along the genome, UZB vs EUR. No chromosome or region stands out.</p>
+
+<h2>5. The 30 most differentiated SNPs, and why they are not selection candidates</h2>
+<table><thead><tr><th>#</th><th>SNP (GRCh38)</th><th>F<sub>ST</sub></th><th>UZB</th><th>EUR</th><th>EAS</th><th>SAS</th><th>AFR</th><th>Gene overlap (Ensembl)</th></tr></thead><tbody><tr><td>1</td><td>15:28037595</td><td>0.240</td><td>0.49</td><td>0.85</td><td>0.12</td><td>0.63</td><td>0.86</td><td>OCA2</td></tr><tr><td>2</td><td>1:1395346</td><td>0.211</td><td>0.48</td><td>0.82</td><td>0.02</td><td>0.33</td><td>0.07</td><td>CCNL2</td></tr><tr><td>3</td><td>2:16996394</td><td>0.207</td><td>0.50</td><td>0.83</td><td>0.20</td><td>0.49</td><td>0.51</td><td>no gene overlap</td></tr><tr><td>4</td><td>14:94924457</td><td>0.200</td><td>0.50</td><td>0.83</td><td>0.21</td><td>0.38</td><td>0.30</td><td>no gene overlap</td></tr><tr><td>5</td><td>8:61260109</td><td>0.198</td><td>0.50</td><td>0.83</td><td>0.14</td><td>0.34</td><td>0.12</td><td>CLVS1</td></tr><tr><td>6</td><td>17:19291499</td><td>0.181</td><td>0.50</td><td>0.81</td><td>0.01</td><td>0.36</td><td>0.22</td><td>EPN2</td></tr><tr><td>7</td><td>3:71472343</td><td>0.178</td><td>0.50</td><td>0.81</td><td>0.05</td><td>0.50</td><td>0.68</td><td>FOXP1</td></tr><tr><td>8</td><td>9:88585098</td><td>0.177</td><td>0.45</td><td>0.16</td><td>0.88</td><td>0.46</td><td>0.66</td><td>no gene overlap</td></tr><tr><td>9</td><td>7:144467676</td><td>0.171</td><td>0.49</td><td>0.19</td><td>0.83</td><td>0.41</td><td>0.54</td><td>TPK1</td></tr><tr><td>10</td><td>2:241199075</td><td>0.169</td><td>0.49</td><td>0.20</td><td>0.86</td><td>0.46</td><td>0.40</td><td>ANO7</td></tr><tr><td>11</td><td>11:61956231</td><td>0.169</td><td>0.47</td><td>0.77</td><td>0.14</td><td>0.30</td><td>0.44</td><td>BEST1</td></tr><tr><td>12</td><td>6:90733330</td><td>0.167</td><td>0.49</td><td>0.19</td><td>0.76</td><td>0.50</td><td>0.31</td><td>Ensembl gene without symbol</td></tr><tr><td>13</td><td>5:4938017</td><td>0.166</td><td>0.49</td><td>0.19</td><td>0.97</td><td>0.51</td><td>0.32</td><td>no gene overlap</td></tr><tr><td>14</td><td>22:22908567</td><td>0.164</td><td>0.49</td><td>0.78</td><td>0.10</td><td>0.52</td><td>0.52</td><td>no gene overlap</td></tr><tr><td>15</td><td>12:22515385</td><td>0.163</td><td>0.50</td><td>0.79</td><td>0.05</td><td>0.61</td><td>0.19</td><td>C2CD5, C2CD5-AS1</td></tr><tr><td>16</td><td>5:77826000</td><td>0.162</td><td>0.43</td><td>0.15</td><td>0.83</td><td>0.55</td><td>0.77</td><td>TBCA</td></tr><tr><td>17</td><td>13:98100471</td><td>0.161</td><td>0.50</td><td>0.21</td><td>0.92</td><td>0.57</td><td>0.53</td><td>Ensembl gene without symbol</td></tr><tr><td>18</td><td>2:162485382</td><td>0.158</td><td>0.47</td><td>0.76</td><td>0.25</td><td>0.48</td><td>0.16</td><td>KCNH7</td></tr><tr><td>19</td><td>9:16822801</td><td>0.157</td><td>0.50</td><td>0.21</td><td>0.86</td><td>0.59</td><td>0.32</td><td>BNC2</td></tr><tr><td>20</td><td>2:172397611</td><td>0.155</td><td>0.50</td><td>0.21</td><td>0.91</td><td>0.48</td><td>0.39</td><td>ITGA6</td></tr><tr><td>21</td><td>5:123069864</td><td>0.155</td><td>0.47</td><td>0.76</td><td>0.13</td><td>0.42</td><td>0.67</td><td>no gene overlap</td></tr><tr><td>22</td><td>10:81903459</td><td>0.151</td><td>0.49</td><td>0.77</td><td>0.21</td><td>0.45</td><td>0.29</td><td>NRG3</td></tr><tr><td>23</td><td>1:165658651</td><td>0.148</td><td>0.45</td><td>0.18</td><td>0.85</td><td>0.51</td><td>0.41</td><td>MGST3</td></tr><tr><td>24</td><td>5:170729528</td><td>0.147</td><td>0.43</td><td>0.16</td><td>0.82</td><td>0.45</td><td>0.28</td><td>KCNIP1</td></tr><tr><td>25</td><td>16:81327689</td><td>0.147</td><td>0.49</td><td>0.77</td><td>0.18</td><td>0.48</td><td>0.53</td><td>GAN</td></tr><tr><td>26</td><td>14:53720346</td><td>0.147</td><td>0.46</td><td>0.74</td><td>0.09</td><td>0.46</td><td>0.47</td><td>DDHD1-DT, LINC02331</td></tr><tr><td>27</td><td>8:69492913</td><td>0.146</td><td>0.50</td><td>0.78</td><td>0.28</td><td>0.51</td><td>0.73</td><td>LINC01603, SULF1</td></tr><tr><td>28</td><td>17:66222489</td><td>0.146</td><td>0.50</td><td>0.22</td><td>0.75</td><td>0.63</td><td>0.47</td><td>APOH</td></tr><tr><td>29</td><td>10:3514402</td><td>0.146</td><td>0.48</td><td>0.20</td><td>0.81</td><td>0.31</td><td>0.14</td><td>LINC02669</td></tr><tr><td>30</td><td>14:100668647</td><td>0.146</td><td>0.48</td><td>0.76</td><td>0.08</td><td>0.41</td><td>0.32</td><td>LINC00523</td></tr></tbody></table>
+<p>Frequencies are for the allele that is the Uzbek minor allele. Gene overlap was looked up by position in Ensembl on 2026-10-04; &ldquo;no gene overlap&rdquo; means no annotated gene covers the position.</p>
+<div class="box info"><strong>What the pattern says.</strong> In all 30 SNPs the Uzbek frequency lies between the EUR and EAS frequencies, near 0.5 (0.43&ndash;0.50), while EUR and EAS sit at opposite ends. That is what a population made of roughly equal parts of two differentiated sources looks like, and it is why these SNPs rank highest for UZB vs EUR. As a direct test, a non-negative least-squares fit of the Uzbek frequency as a mixture of the four references gives EUR 49%, EAS 28%, SAS 23%, AFR 0%, close to the ADMIXTURE K=4 result (about 50% / 30% / 19% / 0%, <a href='step11.html'>step 11</a>), and predicts the observed Uzbek frequency at all 74,171 SNPs with r = 0.994 (RMSE 0.021). The 30 top SNPs are predicted to within 0.11 at most (mean 0.037). Only 0.12% of all SNPs deviate from the mixture prediction by more than 0.10, and the largest deviation is 0.15.</div>
+<img src="../images/nygc_mixture_fit.png" alt="Observed Uzbek allele frequency against the frequency predicted from a fitted mixture of the references. Alleles are oriented to the Uzbek minor allele, so observed values do not exceed 0.5."><p class="cap">Observed Uzbek allele frequency against the frequency predicted from a fitted mixture of the references. Alleles are oriented to the Uzbek minor allele, so observed values do not exceed 0.5.</p>
+<p>The list contains known pigmentation loci (for example <em>OCA2</em>, <em>BNC2</em>), which differ strongly between Europeans and East Asians and are therefore expected near the top of the F<sub>ST</sub> ranking of any population with ancestry from both. Nothing in this list needs a selection explanation, and none was tested for one.</p>
+
+<h2>6. F<sub>ST</sub> by chromosome (UZB vs EUR)</h2>
+<table><thead><tr><th>Chr</th><th>SNPs</th><th>Mean</th><th>Median</th><th>Max</th></tr></thead><tbody><tr><td>1</td><td>6,033</td><td>0.0104</td><td>0.0057</td><td>0.211</td></tr><tr><td>2</td><td>5,809</td><td>0.0107</td><td>0.0058</td><td>0.207</td></tr><tr><td>3</td><td>5,082</td><td>0.0105</td><td>0.0055</td><td>0.178</td></tr><tr><td>4</td><td>4,819</td><td>0.0109</td><td>0.0063</td><td>0.142</td></tr><tr><td>5</td><td>4,533</td><td>0.0099</td><td>0.0054</td><td>0.166</td></tr><tr><td>6</td><td>4,162</td><td>0.0104</td><td>0.0057</td><td>0.167</td></tr><tr><td>7</td><td>3,888</td><td>0.0109</td><td>0.0059</td><td>0.171</td></tr><tr><td>8</td><td>3,762</td><td>0.0108</td><td>0.0059</td><td>0.198</td></tr><tr><td>9</td><td>3,314</td><td>0.0103</td><td>0.0053</td><td>0.177</td></tr><tr><td>10</td><td>3,799</td><td>0.0106</td><td>0.0061</td><td>0.151</td></tr><tr><td>11</td><td>3,646</td><td>0.0113</td><td>0.0061</td><td>0.169</td></tr><tr><td>12</td><td>3,636</td><td>0.0107</td><td>0.0057</td><td>0.163</td></tr><tr><td>13</td><td>2,721</td><td>0.0103</td><td>0.0056</td><td>0.161</td></tr><tr><td>14</td><td>2,524</td><td>0.0102</td><td>0.0057</td><td>0.200</td></tr><tr><td>15</td><td>2,364</td><td>0.0104</td><td>0.0053</td><td>0.240</td></tr><tr><td>16</td><td>2,656</td><td>0.0108</td><td>0.0057</td><td>0.147</td></tr><tr><td>17</td><td>2,559</td><td>0.0107</td><td>0.0057</td><td>0.181</td></tr><tr><td>18</td><td>2,439</td><td>0.0109</td><td>0.0058</td><td>0.132</td></tr><tr><td>19</td><td>1,963</td><td>0.0103</td><td>0.0054</td><td>0.118</td></tr><tr><td>20</td><td>2,109</td><td>0.0100</td><td>0.0050</td><td>0.125</td></tr><tr><td>21</td><td>1,143</td><td>0.0107</td><td>0.0056</td><td>0.146</td></tr><tr><td>22</td><td>1,210</td><td>0.0107</td><td>0.0054</td><td>0.164</td></tr></tbody></table>
+<p>Chromosome means range from 0.0099 to 0.0113, around the genome-wide mean of 0.0106; no chromosome is an outlier.</p>
+
+<h2>7. What changed relative to earlier versions of this page</h2>
+<table><thead><tr><th>Earlier statement</th><th>Status now</th></tr></thead><tbody><tr><td>UZB vs EUR weighted F<sub>ST</sub> 0.0150; UZB vs EAS 0.0396; UZB vs SAS 0.0145; UZB vs AFR 0.1283 (August 2026, old reference)</td><td>Replicated on NYGC: 0.0152, 0.0400, 0.0143, 0.1310. Same ranking, differences up to 0.0027.</td></tr><tr><td>256 loci with F<sub>ST</sub> &gt; 0.5; loci with F<sub>ST</sub> = 0.998 (chr9 14.8 Mb, chr1 40.9 Mb) (hg19 run, 2025)</td><td>Not reproducible: the highest per-SNP F<sub>ST</sub> on NYGC is 0.240. The earlier values came from the old reference file and the 2025 pipeline; do not cite.</td></tr><tr><td>&ldquo;Annotate the 256 extreme loci&rdquo;, &ldquo;highly differentiated loci: potential biology&rdquo;</td><td>Withdrawn. Replaced by section 5 (the top SNPs are admixture-informative, not selection signals).</td></tr><tr><td>Reference sizes EUR 503 / EAS 504 / SAS 489 / AFR 660 (1000G phase 3)</td><td>NYGC high-coverage sizes: EUR 633 / EAS 585 / SAS 601 / AFR 893.</td></tr></tbody></table>
+
+<h2>8. Files</h2>
+<ul>
+<li>DRAGEN, all pairs and logs: <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/pbs_refqc_2026-10/fst_all_pairs_2026-10-04/</code> (<code>all_*.fst</code> for 82,744 SNPs, <code>filt_*.fst</code> for the indel-filtered set); script <code>/staging/tmp/scratch/alsu_fst_all.sh</code>.</li>
+<li>Tables and figures on this page were produced from those files by <code>analysis.py</code> and <code>figs.py</code> (project folder <code>C:\work\alsu\nygc_site_2026-10-04\</code>, copied into the repository under <code>scripts/nygc_site_2026-10-04/</code>).</li>
+</ul>
+<h2>9. Limitations</h2>
+<ul>
+<li>The SNP set is an LD-pruned array-based panel; it has no power to find narrow selection signals and is not a catalogue of all differences.</li>
+<li>The reference panel has no Central Asian populations, so &ldquo;closest&rdquo; means closest among EUR, SAS, EAS and AFR.</li>
+<li>Reference individuals were not filtered for relatedness; the effect on the weighted values was not tested (the values changed by at most 0.0027 between two quite different reference files, so a large effect is unlikely).</li>
+<li>The jackknife standard error is for the mean per-SNP value; PLINK does not give one for the weighted value.</li>
+</ul>
+</div><!--NYGC:step9:END--><!--NYGC:step9:OLDBEGIN--><details class="nygc-old"><summary>ARCHIVED, not current: original hg19 pipeline of 2025 (1,047/1,199 samples, 1000G phase 3). Superseded; kept for provenance only. Do not cite its numbers.</summary><!-- ==================== HISTORICAL HG19 PIPELINE (SECTIONS 2-10) ==================== -->
                 <div class="warning" style="margin: 30px 0;">
                     <strong>Sections 2&ndash;10 below are historical and superseded.</strong> They document the original
                     hg19-based Fst pipeline (inputs, liftover, chr22 pilot, genome-wide hg19 processing, results, and
@@ -958,7 +980,7 @@ CHR     SNP     POS     NMISS   FST
                     </div>
                 </div>
 
-            </div>
+            </details><!--NYGC:step9:OLDEND--></div>
         </div>
     </div>
     
