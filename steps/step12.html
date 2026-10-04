@@ -59,7 +59,7 @@
     </style>
 </head>
 <body>
-<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Correction (2026-10-02):</strong> The PBS candidates discussed on this page are artefacts of the 1000 Genomes GRCh38 reference file (ALL.chr*.shapeit2_integrated_v1a.GRCh38.20181129), in which the genotype at a few dozen sites depends on the sequencing batch of the sample (example: 12:22967890 has EUR 97% in that file versus about 2% in 1000 Genomes phase 3 and in gnomAD; Uzbek cohort 2%). PBS re-run after excluding the 285 discordant reference sites (cohort of 1,047) or 344 (expanded cohort of 1,256) gives no Tier 1, 2 or 3 candidates (maximum PBS 0.146). Statements on this page about linkage disequilibrium between these loci, ancestral retention, founder effects, or Uzbek-specific selection are withdrawn. <a href="deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+<div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> the PBS candidates that this step used to annotate are withdrawn; the step now annotates the highest-ranking SNPs on the NYGC reference. <a href="deprecated_old_runs.html">Current and deprecated runs</a>.</div>
 <div class="page-wrapper">
     <aside class="sidebar">
         <h3>Pipeline Steps</h3>
@@ -101,15 +101,71 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 12: PBS Functional Annotation</h1>
             <p>Annotate PBS candidate SNPs using Ensembl VEP, GWAS Catalog, ClinVar, and GTEx</p>
-            <span class="step-badge" style="background:#28a745;color:white;">&#9989; Expanded cohort — August 2026 (5 candidates)</span>
-            <span class="step-badge step-badge-old">Original cohort (8 candidates) — March 2026</span>
+            <span class="step-badge" style="background:#28a745;color:white;">&#9989; NYGC 30x reference — rebuilt 2026-10-04 (top-ranking SNPs)</span>
+            
             <a href="archive/step12_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:8px;color:rgba(255,255,255,0.8);font-size:0.85em;text-decoration:underline;">&#8592; View original 8-candidate annotation (archived)</a>
         </div>
 
         <div class="content">
 
             <!-- ═══════ EXPANDED COHORT RESULTS (Aug 2026) ═══════ -->
-            <h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
+            <!--NYGC:step12:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2 style="border-bottom:3px solid #16a34a;">Annotation of the highest-ranking SNPs on the NYGC reference (rebuilt 2026-10-04)</h2>
+<div class="box warn" style="background:#fff3e0;border-left:4px solid #ef6c00;padding:13px 17px;margin:14px 0;border-radius:8px"><strong>What changed.</strong> This step used to annotate the PBS &ldquo;candidates&rdquo; (8 in the original cohort, 5 in the expanded cohort, with the highlighted rs56186913 / uterine leiomyoma lookup). Those SNPs were artefacts of the old 1000G reference file; on the NYGC 30x reference there are no PBS candidates (maximum PBS<sub>UZB</sub> 0.070; <a href="step10.html">step 10</a>). Annotating nothing would be the honest minimum; instead the same four-source approach is applied to the SNPs that rank highest on the new data, so that the reader can see what they are. None of them is a selection candidate; see the discussion below.</div>
+
+<h3>1. Method</h3>
+<ul>
+<li><strong>Positions and genes:</strong> Ensembl REST (<code>overlap/region</code>, GRCh38, queried 2026-10-04): overlapping genes, rsIDs and the dbSNP consequence type of the variant at exactly that position.</li>
+<li><strong>GWAS Catalog:</strong> EBI GWAS Catalog REST (<code>singleNucleotidePolymorphisms/&lt;rsID&gt;/associations</code>), up to two rsIDs per SNP. The query helper was checked with a positive control (rs1800414, a known pigmentation SNP, must return associations) before use, and every lookup records whether the call succeeded, so that &ldquo;none listed&rdquo; never stands for a failed request. 45 of 45 SNP lookups completed.</li>
+<li><strong>ClinVar:</strong> the clinical-significance field returned by Ensembl for the same variant.</li>
+<li><strong>Not done here:</strong> VEP consequence prediction with SIFT/PolyPhen, and GTEx eQTL lookups (done earlier for the withdrawn candidates). For a list of ancestry-informative SNPs they would add nothing a reader could interpret.</li>
+</ul>
+
+<h3>2. The 15 highest PBS<sub>UZB</sub> values</h3>
+<table><thead><tr><th>#</th><th>SNP (GRCh38)</th><th>PBS</th><th>rsID</th><th>Gene overlap</th><th>Consequence (dbSNP)</th><th>GWAS Catalog</th><th>ClinVar</th></tr></thead><tbody><tr><td>1</td><td>16:17179162</td><td>0.070</td><td>rs7201659</td><td>XYLT1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>2</td><td>16:12785951</td><td>0.064</td><td>rs188695014, rs1277893003</td><td>CPPED1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>3</td><td>20:55769015</td><td>0.060</td><td>rs6024396</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>4</td><td>16:79713988</td><td>0.056</td><td>rs4329928</td><td>LINC01229, MAFTRR</td><td>non_coding_transcript_exon_variant</td><td>none listed</td><td>none</td></tr><tr><td>5</td><td>15:26369365</td><td>0.055</td><td>rs12915570</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>6</td><td>2:7161301</td><td>0.051</td><td>rs1917681</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>7</td><td>12:127315545</td><td>0.051</td><td>rs1700372</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>8</td><td>15:48955804</td><td>0.049</td><td>rs28392847</td><td>SHC4</td><td>intron_variant</td><td>2 association(s): aging rate</td><td>none</td></tr><tr><td>9</td><td>13:94254283</td><td>0.048</td><td>rs1537418</td><td>GPC6</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>10</td><td>1:10941367</td><td>0.048</td><td>rs59494995</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>11</td><td>22:50007172</td><td>0.048</td><td>rs137858</td><td>IL17REL</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>12</td><td>10:49549458</td><td>0.045</td><td>rs2377902</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>13</td><td>4:98750184</td><td>0.045</td><td>rs1812916</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>14</td><td>22:41812668</td><td>0.045</td><td>rs6002503</td><td>CCDC134</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>15</td><td>10:125576346</td><td>0.045</td><td>rs2304264</td><td>TEX36-AS1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr></tbody></table>
+<h3>3. The 30 highest UZB&ndash;EUR F<sub>ST</sub> values</h3>
+<table><thead><tr><th>#</th><th>SNP (GRCh38)</th><th>F<sub>ST</sub></th><th>rsID</th><th>Gene overlap</th><th>Consequence (dbSNP)</th><th>GWAS Catalog</th><th>ClinVar</th></tr></thead><tbody><tr><td>1</td><td>15:28037595</td><td>0.240</td><td>rs1448485</td><td>OCA2</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>2</td><td>1:1395346</td><td>0.211</td><td>rs1240746</td><td>CCNL2</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>3</td><td>2:16996394</td><td>0.207</td><td>rs2203532</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>4</td><td>14:94924457</td><td>0.200</td><td>rs3861665</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>5</td><td>8:61260109</td><td>0.198</td><td>rs1866694</td><td>CLVS1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>6</td><td>17:19291499</td><td>0.181</td><td>rs1969161</td><td>EPN2</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>7</td><td>3:71472343</td><td>0.178</td><td>rs7617596</td><td>FOXP1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>8</td><td>9:88585098</td><td>0.177</td><td>rs4877454</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>9</td><td>7:144467676</td><td>0.171</td><td>rs10271250</td><td>TPK1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>10</td><td>2:241199075</td><td>0.169</td><td>rs11674264</td><td>ANO7</td><td>intron_variant</td><td>none listed</td><td>benign</td></tr><tr><td>11</td><td>11:61956231</td><td>0.169</td><td>rs909268</td><td>BEST1</td><td>intron_variant</td><td>none listed</td><td>benign</td></tr><tr><td>12</td><td>6:90733330</td><td>0.167</td><td>rs1220981</td><td>gene without symbol</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>13</td><td>5:4938017</td><td>0.166</td><td>rs609096</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>14</td><td>22:22908567</td><td>0.164</td><td>rs1475930</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>15</td><td>12:22515385</td><td>0.163</td><td>rs10842031</td><td>C2CD5, C2CD5-AS1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>16</td><td>5:77826000</td><td>0.162</td><td>rs1396612</td><td>TBCA</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>17</td><td>13:98100471</td><td>0.161</td><td>rs9513354</td><td>gene without symbol</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>18</td><td>2:162485382</td><td>0.158</td><td>rs7568839</td><td>KCNH7</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>19</td><td>9:16822801</td><td>0.157</td><td>rs4568695</td><td>BNC2</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>20</td><td>2:172397611</td><td>0.155</td><td>rs12373564</td><td>ITGA6</td><td>regulatory_region_variant</td><td>none listed</td><td>none</td></tr><tr><td>21</td><td>5:123069864</td><td>0.155</td><td>rs7701105</td><td>no gene overlap</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>22</td><td>10:81903459</td><td>0.151</td><td>rs6584402</td><td>NRG3</td><td>intron_variant</td><td>1 association(s): acute myeloid leukemia</td><td>none</td></tr><tr><td>23</td><td>1:165658651</td><td>0.148</td><td>rs10800124</td><td>MGST3</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>24</td><td>5:170729528</td><td>0.147</td><td>rs10475952</td><td>KCNIP1</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>25</td><td>16:81327689</td><td>0.147</td><td>rs7197360</td><td>GAN</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>26</td><td>14:53720346</td><td>0.147</td><td>rs7155858</td><td>DDHD1-DT, LINC02331</td><td>intron_variant</td><td>none listed</td><td>none</td></tr><tr><td>27</td><td>8:69492913</td><td>0.146</td><td>rs2725092</td><td>LINC01603, SULF1</td><td>5_prime_UTR_variant</td><td>none listed</td><td>none</td></tr><tr><td>28</td><td>17:66222489</td><td>0.146</td><td>rs8178843</td><td>APOH</td><td>intron_variant</td><td>2 association(s): blood protein amount; receptor-type tyrosine-protein phosphatase R measurement</td><td>none</td></tr><tr><td>29</td><td>10:3514402</td><td>0.146</td><td>rs11251927</td><td>LINC02669</td><td>intergenic_variant</td><td>none listed</td><td>none</td></tr><tr><td>30</td><td>14:100668647</td><td>0.146</td><td>rs4905990</td><td>LINC00523</td><td>intron_variant</td><td>none listed</td><td>none</td></tr></tbody></table>
+<h3>4. Summary</h3>
+<ul>
+<li>Of the 45 SNPs, 3 have a GWAS Catalog association listed: 10:81903459 (rs6584402): acute myeloid leukemia; 17:66222489 (rs8178843): blood protein amount, receptor-type tyrosine-protein phosphatase R measurement; 15:48955804 (rs28392847): aging rate.</li>
+<li>Consequence types among the 45 SNPs (a SNP can have more than one): intron_variant 27, intergenic_variant 15, regulatory_region_variant 1, 5_prime_UTR_variant 1, non_coding_transcript_exon_variant 1. No SNP is annotated as missense or loss of function. 2 have a ClinVar-significance value in Ensembl (benign); none is pathogenic.</li>
+<li><strong>Interpretation.</strong> The top F<sub>ST</sub> SNPs are ancestry-informative markers (Uzbek frequency between EUR and EAS; <a href="step9.html">step 9</a>), and the top PBS SNPs have maximum PBS 0.070; a gene annotation does not turn either into a selection finding. The mostly intronic and intergenic consequences are what one expects of common neutral variants.</li>
+</ul>
+
+<h3>5. What became of the earlier annotation claims</h3>
+<table><thead><tr><th>Earlier claim</th><th>Status</th></tr></thead><tbody><tr><td>rs56186913 (11:207698, BET1L/RIC8A 5&prime; UTR) is genome-wide significant for uterine leiomyoma and age at menarche and is &ldquo;the most biologically interesting of the 5 candidates&rdquo;</td><td>Withdrawn as a PBS candidate. The GWAS association of the variant itself is a property of the variant and is not in question, but the premise (UZB MAF 47.8% vs &le; 9.1% in every reference) was wrong: on NYGC the allele is at 59% in EUR, 60% in SAS, 22% in EAS and 27% in AFR (<a href='step10_pbs_candidates.html'>PBS candidates</a>); the Uzbek frequency was not recomputed here because the site is only in the imputed data.</td></tr><tr><td>Annotation of the 8 / 5 candidates: no GWAS Catalog, ClinVar or GTEx hits for the other SNPs</td><td>Not carried over; the SNPs are artefacts.</td></tr><tr><td>&ldquo;Annotate the 490 relaxed candidates&rdquo; (initial run)</td><td>Stale V1 result; not supported by any current data.</td></tr></tbody></table>
+<h3>6. Limitations</h3>
+<ul>
+<li>The lists are a small slice of the ranking, chosen by rank; annotation of a ranked top list is descriptive, not a test of enrichment.</li>
+<li>Ensembl and the GWAS Catalog were queried on 2026-10-04; their content changes over time. Results are stored with the query date in the project folder (<code>annot_cache.json</code>, scripts <code>annotate.py</code> and <code>annotate_gwas.py</code>).</li>
+<li>The GWAS Catalog lookup used rsIDs found at the exact position; SNPs without an rsID or with several overlapping records may be under-annotated.</li>
+</ul>
+</div><!--NYGC:step12:END--><!--NYGC:step12:OLDBEGIN--><details class="nygc-old"><summary>ARCHIVED, not current: previous version of this page (annotation of the withdrawn PBS candidates, March and August 2026). Do not cite.</summary><h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
 
             <div class="info-box">
                 <strong>Methodology note:</strong> This round was run via <code>curl</code> directly from the
@@ -319,7 +375,7 @@ Annotation complete. Output: uzbek_snp_annotations.json</div>
             <ul>
                 <li><a href="step13.html">Step 13: LD Analysis</a> &mdash; LD clumping and decay analysis of PBS candidates.</li>
                 <li><a href="step14.html">Step 14: Fst &amp; MDS</a> &mdash; Pairwise F<sub>ST</sub> matrix and multidimensional scaling.</li>
-            </ul>
+            </ul></details><!--NYGC:step12:OLDEND-->
 
         </div>
     </div>
