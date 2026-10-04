@@ -60,7 +60,7 @@
     </style>
 </head>
 <body>
-<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Correction (2026-10-02):</strong> The PBS candidates discussed on this page are artefacts of the 1000 Genomes GRCh38 reference file (ALL.chr*.shapeit2_integrated_v1a.GRCh38.20181129), in which the genotype at a few dozen sites depends on the sequencing batch of the sample (example: 12:22967890 has EUR 97% in that file versus about 2% in 1000 Genomes phase 3 and in gnomAD; Uzbek cohort 2%). PBS re-run after excluding the 285 discordant reference sites (cohort of 1,047) or 344 (expanded cohort of 1,256) gives no Tier 1, 2 or 3 candidates (maximum PBS 0.146). Statements on this page about linkage disequilibrium between these loci, ancestral retention, founder effects, or Uzbek-specific selection are withdrawn. <a href="deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+<div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> rebuilt on the NYGC 30x reference; the earlier &ldquo;Tier 1 candidates&rdquo; are withdrawn. See the <a href="deprecated_old_runs.html">list of current and deprecated runs</a>.</div>
 <div class="page-wrapper">
     <aside class="sidebar">
         <h3>Pipeline Steps</h3>
@@ -102,23 +102,84 @@
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 10: Multi-Population PBS Analysis</h1>
             <p>Population Branch Statistic to identify Uzbek-specific allele frequency shifts</p>
-            <span class="step-badge">✓ Expanded cohort — August 2026 (1,256 samples)</span>
-            <span class="step-badge step-badge-old">Spring 2026 (1,047 samples) — April 11, 2026</span>
+            <span class="step-badge">✓ NYGC 30x reference, expanded cohort (1,256 samples) — rebuilt 2026-10-04</span>
+            
             <a href="archive/step10_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
         </div>
-        <div class="info-box" style="margin:20px 30px 0;">
-            <strong>Cohort expansion (August 2026):</strong> This page reflects the expanded cohort (1,256 Uzbek
-            samples). A real bug was also found and fixed this round: the cluster-building script's fallback logic
-            silently classified 45 unmapped 1000G samples as "UZB" rather than excluding them, inflating the UZB
-            group. Fixed with an explicit membership check (excluded entirely, never defaulted). See
-            <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">integration notes</a> for details. Numbers
-            below are the corrected values, verified directly against DRAGEN's actual keep-list/frequency files
-            (not just script log text — one downstream summary file was found to have a stale hardcoded population
-            count left over from before the fix; the underlying computed statistics were confirmed correct).
-        </div>
+        
 
         <div class="content">
+<!--NYGC:step10:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2>1. Overview</h2>
+<p>The <strong>Population Branch Statistic (PBS)</strong> measures how much allele frequencies have changed along one population&rsquo;s own branch of a three-population tree. For the Uzbek branch the tree is UZB&ndash;EUR&ndash;EAS. Each pairwise F<sub>ST</sub> is turned into a branch length T = &minus;ln(1 &minus; F<sub>ST</sub>) and
+PBS<sub>UZB</sub> = (T<sub>UZB-EUR</sub> + T<sub>UZB-EAS</sub> &minus; T<sub>EUR-EAS</sub>) / 2. A large value means that the Uzbek frequency has moved away from <em>both</em> outgroups, which is expected under local selection, strong drift, or an allele that arose in the lineage.</p>
+<div class="box warn"><strong>This page was rebuilt on 2026-10-04.</strong> The &ldquo;PBS Tier 1&rdquo; candidates reported earlier (8 SNPs, then 5 in the expanded cohort) came from the old 1000G GRCh38 reference file and do not exist on the NYGC 30x reference. On NYGC no SNP reaches any tier, and the highest PBS is 0.070. Conclusion: <strong>no population-specific selection signal is supported by this analysis.</strong> Details of the earlier candidates are on <a href='step10_pbs_candidates.html'>step10_pbs_candidates</a>.</div>
+<div class="cards"><div class="card"><div class="num">74,171</div><div class="lab">SNPs analysed</div></div><div class="card"><div class="num">0.070</div><div class="lab">maximum PBS<sub>UZB</sub></div></div><div class="card"><div class="num">-0.0102</div><div class="lab">mean PBS<sub>UZB</sub></div></div><div class="card"><div class="num">0 / 0 / 0</div><div class="lab">Tier 1 / 2 / 3 SNPs</div></div><div class="card"><div class="num">0</div><div class="lab">near-private alleles</div></div></div>
+<h3>Tier definitions (unchanged from the earlier version)</h3>
+<table><thead><tr><th>Tier</th><th>Rule</th><th>SNPs on NYGC</th></tr></thead><tbody><tr><td>1</td><td>PBS<sub>UZB</sub> &ge; 0.3</td><td>0</td></tr><tr><td>2</td><td>smallest allele-frequency difference between UZB and any reference group &ge; 0.3 (&Delta;AF)</td><td>0 (largest &Delta;AF in the panel: 0.214)</td></tr><tr><td>3</td><td>near-private: Uzbek MAF &ge; 5% and all four references &le; 1%</td><td>0</td></tr></tbody></table>
 
+<h2>2. Data and method</h2>
+<ul>
+<li><strong>Samples and markers:</strong> the same as <a href="step9.html">step 9</a>: UZB 1,256, EUR 633, EAS 585, SAS 601, AFR 893; 82,744 LD-pruned SNPs shared with the NYGC 30x GRCh38 reference, of which 74,171 remain after dropping the 8,573 sites with an overlapping indel, multiallelic or structural-variant record in the NYGC call set (list on DRAGEN: <code>nygc30x_1256_filt/flagged_overlap.txt</code>).</li>
+<li><strong>Frequencies:</strong> PLINK 1.9 <code>--freq --keep-allele-order</code> per group, so the same allele is compared in every population. In the tables the allele shown is the Uzbek minor allele.</li>
+<li><strong>F<sub>ST</sub>:</strong> per-SNP Weir &amp; Cockerham for UZB&ndash;EUR, UZB&ndash;EAS and EUR&ndash;EAS (<code>--fst --within</code>); negative values are set to 0 before the transform and F<sub>ST</sub> is capped at 0.999.</li>
+<li><strong>PBS and tiers:</strong> script <code>pbs_refqc.py</code>. SAS and AFR are not part of the tree; they enter only the tier 2 and 3 rules.</li>
+<li><strong>Run:</strong> <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/nygc30x_1256_filt/run/</code> on DRAGEN (<code>pbs_all.tsv</code>, <code>pbs_stats.json</code>, per-SNP F<sub>ST</sub> and frequency files); scripts <code>pbs_refqc.py</code>, <code>pbs_refqc_run.sh</code> in <code>pbs_refqc_2026-10/</code> and <code>/staging/tmp/scratch/filt.sh</code>.</li>
+</ul>
+
+<h2>3. Results</h2>
+<img src="../images/nygc_pbs_manhattan.png" alt="PBS of the Uzbek branch for each SNP. The red line is the Tier 1 threshold (0.3); every SNP lies far below it."><p class="cap">PBS of the Uzbek branch for each SNP. The red line is the Tier 1 threshold (0.3); every SNP lies far below it.</p>
+<table><thead><tr><th>Statistic</th><th>Value</th></tr></thead><tbody><tr><td>SNPs</td><td>74,171</td></tr><tr><td>Mean</td><td>-0.01015</td></tr><tr><td>Median</td><td>-0.00589</td></tr><tr><td>Standard deviation</td><td>0.0201</td></tr><tr><td>95th / 99th / 99.9th percentile</td><td>0.0047 / 0.0133 / 0.0289</td></tr><tr><td>Maximum</td><td>0.06992</td></tr><tr><td>SNPs with PBS &ge; 0.02 / 0.03 / 0.05 / 0.07</td><td>252 / 62 / 7 / 0</td></tr><tr><td>SNPs with PBS &ge; 0.1, &ge; 0.15, &ge; 0.3</td><td>0 / 0 / 0</td></tr></tbody></table>
+<div class="box key"><strong>How far is the maximum from what chance alone produces?</strong> The highest PBS is 0.070, which is 4.0 standard deviations above the mean. For 74,171 values drawn from a normal distribution with the same mean and standard deviation the expected maximum is about 4.2 standard deviations, i.e. 0.074. The observed maximum is where the bulk of the distribution would put it; there is no outlier tail. (PBS is not exactly normal, so this is a rough yardstick, not a p-value.)</div>
+<h3>The 15 highest PBS<sub>UZB</sub> values</h3>
+<table><thead><tr><th>#</th><th>SNP (GRCh38)</th><th>PBS</th><th>UZB</th><th>EUR</th><th>EAS</th><th>SAS</th><th>AFR</th><th>&Delta;AF</th><th>Gene overlap (Ensembl)</th></tr></thead><tbody><tr><td>1</td><td>16:17179162</td><td>0.070</td><td>0.50</td><td>0.30</td><td>0.32</td><td>0.68</td><td>0.68</td><td>0.176</td><td>XYLT1</td></tr><tr><td>2</td><td>16:12785951</td><td>0.064</td><td>0.05</td><td>0.11</td><td>0.19</td><td>0.06</td><td>0.19</td><td>0.010</td><td>CPPED1</td></tr><tr><td>3</td><td>20:55769015</td><td>0.060</td><td>0.24</td><td>0.33</td><td>0.50</td><td>0.19</td><td>0.14</td><td>0.045</td><td>no gene overlap</td></tr><tr><td>4</td><td>16:79713988</td><td>0.056</td><td>0.48</td><td>0.61</td><td>0.70</td><td>0.51</td><td>0.62</td><td>0.032</td><td>LINC01229, MAFTRR</td></tr><tr><td>5</td><td>15:26369365</td><td>0.055</td><td>0.50</td><td>0.73</td><td>0.62</td><td>0.53</td><td>0.40</td><td>0.034</td><td>no gene overlap</td></tr><tr><td>6</td><td>2:7161301</td><td>0.051</td><td>0.48</td><td>0.66</td><td>0.63</td><td>0.46</td><td>0.91</td><td>0.018</td><td>no gene overlap</td></tr><tr><td>7</td><td>12:127315545</td><td>0.051</td><td>0.48</td><td>0.58</td><td>0.76</td><td>0.51</td><td>0.09</td><td>0.034</td><td>no gene overlap</td></tr><tr><td>8</td><td>15:48955804</td><td>0.049</td><td>0.07</td><td>0.10</td><td>0.32</td><td>0.05</td><td>0.58</td><td>0.015</td><td>SHC4</td></tr><tr><td>9</td><td>13:94254283</td><td>0.048</td><td>0.45</td><td>0.54</td><td>0.71</td><td>0.48</td><td>0.74</td><td>0.030</td><td>GPC6</td></tr><tr><td>10</td><td>1:10941367</td><td>0.048</td><td>0.33</td><td>0.18</td><td>0.21</td><td>0.45</td><td>0.05</td><td>0.115</td><td>no gene overlap</td></tr><tr><td>11</td><td>22:50007172</td><td>0.048</td><td>0.32</td><td>0.48</td><td>0.46</td><td>0.23</td><td>0.38</td><td>0.056</td><td>IL17REL</td></tr><tr><td>12</td><td>10:49549458</td><td>0.045</td><td>0.49</td><td>0.41</td><td>0.20</td><td>0.61</td><td>0.52</td><td>0.027</td><td>no gene overlap</td></tr><tr><td>13</td><td>4:98750184</td><td>0.045</td><td>0.44</td><td>0.33</td><td>0.23</td><td>0.52</td><td>0.27</td><td>0.085</td><td>no gene overlap</td></tr><tr><td>14</td><td>22:41812668</td><td>0.045</td><td>0.45</td><td>0.34</td><td>0.23</td><td>0.44</td><td>0.72</td><td>0.008</td><td>CCDC134</td></tr><tr><td>15</td><td>10:125576346</td><td>0.045</td><td>0.04</td><td>0.09</td><td>0.18</td><td>0.02</td><td>0.00</td><td>0.021</td><td>TEX36-AS1</td></tr></tbody></table>
+<p>None of these is a candidate: the largest frequency difference to any reference group is 0.176. Functional annotation of this list is on <a href="step12.html">step 12</a>.</p>
+
+<h2>4. Does the pipeline produce large values when a population is really differentiated?</h2>
+<p>As a check on dynamic range, PBS was computed for the other two branches of the same tree from the same files. The East Asian branch reaches 0.988 and the European branch 0.660 in this panel, against 0.070 for the Uzbek branch.</p>
+<table><thead><tr><th>Branch</th><th>SNP</th><th>PBS</th><th>UZB</th><th>EUR</th><th>EAS</th><th>Gene overlap</th></tr></thead><tbody><tr><td>East Asian branch</td><td>15:48340956</td><td>0.988</td><td>0.43</td><td>0.24</td><td>1.00</td><td>DUT</td></tr><tr><td>East Asian branch</td><td>17:19291499</td><td>0.947</td><td>0.50</td><td>0.81</td><td>0.01</td><td>EPN2</td></tr><tr><td>East Asian branch</td><td>1:1395346</td><td>0.893</td><td>0.48</td><td>0.82</td><td>0.02</td><td>CCNL2</td></tr><tr><td>East Asian branch</td><td>5:4938017</td><td>0.860</td><td>0.49</td><td>0.19</td><td>0.97</td><td>no gene overlap</td></tr><tr><td>East Asian branch</td><td>4:134216805</td><td>0.823</td><td>0.50</td><td>0.23</td><td>0.98</td><td>gene without symbol</td></tr><tr><td>European branch</td><td>1:1395346</td><td>0.660</td><td>0.48</td><td>0.82</td><td>0.02</td><td>CCNL2</td></tr><tr><td>European branch</td><td>17:19291499</td><td>0.617</td><td>0.50</td><td>0.81</td><td>0.01</td><td>EPN2</td></tr><tr><td>European branch</td><td>15:28037595</td><td>0.593</td><td>0.49</td><td>0.85</td><td>0.12</td><td>OCA2</td></tr><tr><td>European branch</td><td>3:71472343</td><td>0.548</td><td>0.50</td><td>0.81</td><td>0.05</td><td>FOXP1</td></tr><tr><td>European branch</td><td>5:4938017</td><td>0.548</td><td>0.49</td><td>0.19</td><td>0.97</td><td>no gene overlap</td></tr></tbody></table>
+<p>These large values are not selection findings either: they are SNPs on which EUR and EAS have opposite frequencies and Uzbeks sit in between, so both outgroup branches look long (the same SNPs head the F<sub>ST</sub> ranking on <a href="step9.html">step 9</a>). The check shows that the pipeline returns large PBS wherever a lineage-specific frequency difference exists in this panel. It is <em>not</em> a power calculation for selection on the Uzbek lineage, and the statistic by construction cannot flag anything that is simply an intermediate frequency between the two outgroups, which is what admixture produces.</p>
+
+<h2>5. How the earlier &ldquo;candidates&rdquo; arose, in two stages</h2>
+<table><thead><tr><th>Stage</th><th>What happened</th><th>Result</th></tr></thead><tbody><tr><td>1. Old reference file (until 2026-10-02)</td><td>In <code>ALL.chr*.shapeit2_integrated_v1a.GRCh38</code> the genotype at a few dozen sites depends on the sequencing batch of the sample, not on population (for example 12:22967890: EUR 97% in that file, about 2.6% in NYGC and in gnomAD).</td><td>Fake PBS up to 3.0; Tier 1 lists of 8 (original) and 5 (expanded) SNPs; &ldquo;chr12 cluster&rdquo;.</td></tr><tr><td>2. First NYGC run (2026-10-02)</td><td>Five new PBS peaks appeared. They were artefacts of my own extraction: single-base records were compared at repeat or indel sites where the NYGC call set has overlapping records (for example CA-repeat deletions at 2:30673774, a 12-bp insertion at 22:48293814); the Uzbek array and 1000G phase 3 agree with each other at these sites.</td><td>Removed by excluding all 8,573 sites with an overlapping indel, multiallelic or SV record within 1 bp.</td></tr><tr><td>3. Current result</td><td>All-site check on the filtered panel: the Uzbek frequency lies outside the range spanned by the four reference groups by more than 0.05 at 66 of 74,171 SNPs, by more than 0.08 at 6, by more than 0.10 at 2 (largest margin 0.11), and by more than 0.15 at none.</td><td>No Tier 1, 2 or 3 SNP; maximum PBS 0.070.</td></tr></tbody></table>
+
+<h2>6. Limitations</h2>
+<ul>
+<li>The panel is an LD-pruned set of about 74,000 array SNPs. It samples the genome sparsely and can miss a selected locus that no panel SNP tags. &ldquo;No signal in this panel&rdquo; is not &ldquo;no selection&rdquo;.</li>
+<li>PBS with an admixed focal population is hard to interpret: if the Uzbek ancestry is a mixture of the two outgroups, PBS<sub>UZB</sub> is close to zero or negative almost everywhere (mean -0.010), and the statistic is least sensitive exactly where selection would matter for the admixed gene pool. Methods that model admixture (for example local-ancestry-based tests) were not run.</li>
+<li>Reference individuals were not filtered for relatedness; the effect on per-SNP F<sub>ST</sub> was not tested.</li>
+</ul>
+<h2>7. Next steps (status)</h2>
+<ul>
+<li>Functional annotation of the new top list: <a href="step12.html">done (step 12)</a>.</li>
+<li>Selection analysis that models admixture: not done; see the list of open items in <a href="next_steps.html">next steps</a>.</li>
+</ul>
+</div><!--NYGC:step10:END--><!--NYGC:step10:OLDBEGIN--><details class="nygc-old"><summary>ARCHIVED, not current: previous version of this page (August 2026, old 1000G reference; &ldquo;8 / 5 Tier-1 candidates&rdquo;). Withdrawn; do not cite.</summary>
             <h2>1. Overview</h2>
             <p>
                 The Population Branch Statistic (PBS) measures allele frequency divergence along a specific
@@ -393,7 +454,7 @@ Computing PBS...
                 <li><a href="step11.html">Step 11: ADMIXTURE</a> &mdash; Continental ancestry decomposition using the same merged dataset.</li>
                 <li><a href="step12.html">Step 12: PBS Annotation</a> &mdash; Functional annotation of the 8 PBS candidates.</li>
                 <li><a href="step13.html">Step 13: LD Analysis</a> &mdash; LD clumping and decay analysis of PBS candidates.</li>
-            </ul>
+            </ul></details><!--NYGC:step10:OLDEND-->
 
         </div>
     </div>
