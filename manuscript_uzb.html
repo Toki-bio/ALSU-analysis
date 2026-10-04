@@ -75,7 +75,7 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 </style>
 </head>
 <body>
-<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Pending rewrite (2026-10-02):</strong> The PBS candidate claims in this draft (section 2.5, 3.4) are withdrawn: the candidates were artefacts of the 1000 Genomes GRCh38 reference file and do not replicate on the NYGC 30x reference. ADMIXTURE results quoted here (K=5, 3-way continental mixture, ethnicity not significant) come from deprecated runs; corrected results are on Step 11. The statement that 490 relaxed PBS candidates enrich HLA/MHC genes (chr 6, 33.7% of loci) is also withdrawn: it comes from the earlier V1 run on stale data; in the V2 table only 9 of 79,767 SNPs reach PBS &ge; 0.15 and none lies on chr 6 or in the MHC region (45 MHC SNPs tested), and on the NYGC reference no SNP reaches 0.15. <a href="steps/deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+<div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> the analysis sections of this draft were rewritten on the NYGC 30x reference. The PBS-candidate and &ldquo;490 HLA candidates&rdquo; claims are withdrawn. The cohort-flow numbers in sections 2.2&ndash;2.3 and 3.1 (1,247 genotyped, 1,074, 1,047) still describe the original cohort and must be replaced by the expanded-cohort flow (see <a href="steps/cohorts_and_sample_sets.html">cohorts and sample sets</a>) before submission. <a href="steps/deprecated_old_runs.html">Current and deprecated runs</a>.</div>
 <div class="page-wrapper">
 
 <!-- ── SIDEBAR ──────────────────────────────── -->
@@ -134,7 +134,7 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 <h3>Working title</h3>
 <p>
     <em>&ldquo;Genome-wide characterisation of the Uzbek population reveals South-Asian/East-European
-    admixture, low inbreeding, and selection signatures at immune and metabolic loci&rdquo;</em>
+    European, South Asian and East Asian ancestry and low inbreeding in an array-based population-genetic survey&rdquo;</em>
 </p>
 
 <h3>Abstract (250 words, structured)</h3>
@@ -150,35 +150,17 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 
 <h4>Methods</h4>
 <p>
-    We genotyped 1,247 Uzbek individuals on a custom Illumina array, applied a multi-stage QC pipeline
-    (sample missingness, IBD deduplication, variant call rate, HWE), imputed against the TOPMed&nbsp;r2
-    reference (Michigan Imputation Server, Eagle&nbsp;v2.4 + Minimac4), and merged the resulting 1,074-sample
-    high-quality dataset with all 2,548 samples of the 1000 Genomes Phase&nbsp;3 release. We ran principal
-    component analysis, ADMIXTURE (K=2&ndash;8), unsupervised sNMF (validation), pairwise Weir &amp;
-    Cockerham F<sub>ST</sub>, classical multidimensional scaling, the Population Branch Statistic
-    (PBS), Ensembl Variant Effect Predictor annotation, runs-of-homozygosity analysis, and IBD-based
-    relatedness.
+    We analysed an expanded cohort of 1,256 quality-controlled, imputed Uzbek samples (custom Illumina array, imputed against TOPMed r2) together with 2,712 reference samples (EUR, EAS, SAS, AFR) of the 1000 Genomes high-coverage (NYGC 30x, GRCh38) release. We ran principal component analysis, ADMIXTURE (K=2&ndash;8), pairwise Weir &amp; Cockerham F<sub>ST</sub> for all ten population pairs, classical multidimensional scaling, the Population Branch Statistic (PBS), runs-of-homozygosity analysis and relatedness estimation. Findings were cross-checked with independent calculations (allele-frequency mixture fit, unascertained-SNP F<sub>ST</sub> on chromosome 22, permutation and positive controls).
 </p>
 
 <h4>Results</h4>
 <p>
-    Uzbeks form a single genetic cluster intermediate between European and South Asian populations,
-    with weighted F<sub>ST</sub>=0.018 against SAS and 0.020 against EUR; F<sub>ST</sub>=0.060 vs AFR.
-    ADMIXTURE K=5 best partitions the global panel; within Uzbeks, K=2 is parsimonious and follows
-    a geographic East&ndash;West cline that explains 8.2% of variance. <del style="color:#991b1b;text-decoration:line-through" title="Deprecated 2026-10-02: based on withdrawn PBS candidates (reference-file artefact); see deprecated runs page">PBS analysis identifies 8 lead
-    variants</del> (PBS&nbsp;&ge;&nbsp;0.3) and <del style="color:#991b1b;text-decoration:line-through" title="Deprecated 2026-10-02: based on withdrawn PBS candidates (reference-file artefact); see deprecated runs page">490 candidates after relaxation, enriching for HLA/MHC genes</del>
-    (chr&nbsp;6 &mdash; 33.7% of independent loci) and immune/metabolic functions; 5 are missense including
-    damaging variants in <em>SPI1</em> and <em>SLC6A2</em>. Median F<sub>ROH</sub>=0.015, comparable
-    to outbred European populations and distinctly lower than reported values for some other Central
-    Asian groups; only 0.08% of pairs exceed PI_HAT&nbsp;0.0884.
+    Uzbeks form a cline between European, South Asian and East Asian reference groups. Weighted F<sub>ST</sub> was 0.0143 against SAS, 0.0152 against EUR, 0.0400 against EAS and 0.1310 against AFR. At ADMIXTURE K=4 the Uzbek cohort was on average about 50% EUR-like, 30% EAS-like and 19% SAS-like (an allele-frequency mixture fit gave 49/28/23%); cross-validation error had no clear minimum, and at K=7 about half of the Uzbek ancestry formed a component absent from every reference. Self-reported ethnicity and birthplace were significantly associated with ancestry. A PBS scan of 74,171 SNPs found no candidate (maximum PBS<sub>UZB</sub> 0.070; Tier 1 requires 0.3), so no population-specific selection signal is supported in this panel. Median F<sub>ROH</sub> was 0.0147, with 35 of 1,256 individuals above 0.0625; 0.078% of pairs exceeded PI_HAT 0.0884.
 </p>
 
 <h4>Conclusion</h4>
 <p>
-    This work establishes the first medium-scale, openly described autosomal reference for Uzbeks,
-    refines their position within global human genetic variation, identifies population-specific
-    selection candidates, and provides imputation-quality summary statistics for downstream
-    biomedical genomics in Central Asia.
+    This work provides a medium-scale, openly described autosomal reference for Uzbeks, locates the cohort relative to global reference groups, and documents that an LD-pruned array panel does not support population-specific selection candidates. It also reports the limits of the approach (no Central Asian reference groups, array ascertainment of the SNP panel).
 </p>
 
 
@@ -217,11 +199,11 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 
 <h3>1.3. Aims</h3>
 <ol>
-    <li>Provide a publicly described 1,047-sample autosomal reference for Uzbeks at imputation-grade
+    <li>Provide a publicly described autosomal reference of 1,256 Uzbek samples for Uzbeks at imputation-grade
         SNP density (post-imputation 9.9M well-imputed variants).</li>
     <li>Position the Uzbek genetic background in global ancestry space using PCA, F<sub>ST</sub>, and
         ADMIXTURE.</li>
-    <li>Identify population-specific selection signatures using PBS with EUR + EAS outgroups.</li>
+    <li>Test for population-specific selection signatures using PBS with EUR + EAS outgroups (result: none supported).</li>
     <li>Quantify endogamy and relatedness via ROH and IBD.</li>
 </ol>
 
@@ -257,33 +239,22 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 
 <h3>2.4. Reference panel merging</h3>
 <p>
-    Variants were intersected by chromosomal position with the 1000 Genomes Phase&nbsp;3 reference
-    (2,548 samples after liftover to GRCh38), restricted to overlapping bi-allelic SNPs and
-    LD-pruned (PLINK <code>--indep-pairwise 50 5 0.2</code>) yielding ~376,000 SNPs for ADMIXTURE
-    and ~88,000 for population statistics.
+    Uzbek variants were intersected by chromosomal position and alleles with the 1000 Genomes high-coverage NYGC GRCh38 reference (3,202 samples, md5-verified; EUR, EAS, SAS and AFR used, 2,712 samples; AMR not used), restricted to biallelic SNPs, and LD-pruned (PLINK <code>--indep-pairwise 50 5 0.2</code>, long-range LD regions removed) yielding 82,744 SNPs shared with the Uzbek data for F<sub>ST</sub>, 64,959 for ADMIXTURE and PCA, and 74,171 after excluding 8,573 sites with an overlapping indel, multiallelic or structural-variant record for per-SNP F<sub>ST</sub> and PBS.
 </p>
 
 <h3>2.5. PCA &amp; ADMIXTURE</h3>
 <p>
-    PCA was computed with PLINK2; the first two PCs separate Uzbeks from EUR/SAS/EAS axes.
-    ADMIXTURE 1.3 was run for K=2&ndash;8 with 10-fold cross-validation; sNMF (Frichot et al. 2014)
-    was used as a model-class robustness check. Within-Uzbek structure was assessed at K=2&ndash;5
-    on the Uzbek-only LD-pruned subset.
+    PCA used PLINK 1.9 <code>--pca 20</code> on the 64,959-SNP merged data set (3,968 samples). ADMIXTURE 1.3 was run for K=2&ndash;8 with 5-fold cross-validation and 2 independent seeds. Component names were assigned from the mean membership of the reference superpopulations. Associations with self-reported nationality and birthplace were tested by Kruskal&ndash;Wallis with sample-ID-keyed joins, a label-permutation control and a positive control on the reference labels.
 </p>
 
 <h3>2.6. F<sub>ST</sub> &amp; MDS</h3>
 <p>
-    Pairwise Weir &amp; Cockerham F<sub>ST</sub> (Weir &amp; Cockerham 1984) was estimated with
-    PLINK&nbsp;<code>--fst</code> across 5 super-populations (UZB, EUR, EAS, SAS, AFR);
-    MDS in 2 dimensions was computed on the F<sub>ST</sub> distance matrix.
+    Pairwise Weir &amp; Cockerham F<sub>ST</sub> (PLINK 1.9 <code>--fst --within</code>) was estimated for all ten pairs among five populations (UZB, EUR, EAS, SAS, AFR); the leave-one-chromosome-out jackknife standard error of the mean per-SNP value was computed; classical MDS in two dimensions was computed on the F<sub>ST</sub> matrix. As an independent check, F<sub>ST</sub> was recomputed on chromosome 22 from all common biallelic SNVs (PLINK for reference pairs, Hudson&rsquo;s estimator from allele frequencies for the Uzbek pairs).
 </p>
 
 <h3>2.7. PBS &amp; functional annotation</h3>
 <p>
-    PBS (Yi et al. 2010) was computed with EUR and EAS as outgroups, treating Uzbek as the focal
-    branch. <del style="color:#991b1b;text-decoration:line-through" title="Deprecated 2026-10-02: based on withdrawn PBS candidates (reference-file artefact); see deprecated runs page">The 8 SNPs with PBS</del> &ge; 0.3 (and <del style="color:#991b1b;text-decoration:line-through" title="Deprecated 2026-10-02: based on withdrawn PBS candidates (reference-file artefact); see deprecated runs page">490 with PBS</del> &ge; 0.15 after pruning) were annotated
-    with Ensembl VEP 110 against GENCODE 44 and cross-referenced to GTEx v8 eQTLs and the GWAS
-    Catalog.
+    PBS (Yi et al. 2010) was computed with EUR and EAS as outgroups, treating Uzbek as the focal branch, with Tier 1 defined as PBS &ge; 0.3, Tier 2 as a minimum allele-frequency difference of 0.3 to every reference group and Tier 3 as near-private alleles. The highest-ranking SNPs were annotated by Ensembl overlap and variant lookup and by GWAS Catalog queries. A non-negative least-squares fit of Uzbek allele frequencies as a mixture of the references tested whether top-ranking SNPs are explained by admixture.
 </p>
 
 <h3>2.8. Runs of homozygosity &amp; relatedness</h3>
@@ -308,23 +279,14 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 
 <h3>3.2. PCA &amp; global F<sub>ST</sub></h3>
 <p>
-    Projected onto the 1000 Genomes PC space, Uzbeks form a tight cluster intermediate between
-    EUR and SAS along PC1, with mild spread along PC2 toward EAS. Pairwise F<sub>ST</sub> places UZB
-    closest to SAS (0.018), then EUR (0.020), EAS (0.039), and AFR (0.060) &mdash; values within
-    published ranges for between-continent comparisons (1000 Genomes Consortium 2015).
+    In the global PCA the first three components carry the structure (eigenvalues 214, 91, 29, then a plateau); PC1 separates AFR, PC2 separates EUR from EAS, and the Uzbek samples form a band along the EUR&ndash;SAS&ndash;EAS axis centred near SAS. Pairwise F<sub>ST</sub> places UZB closest to SAS (0.0143) and EUR (0.0152), then EAS (0.0400) and AFR (0.1310); the UZB&ndash;EAS distance is less than half of EUR&ndash;EAS (0.0872). The ranking is unchanged on chromosome 22 using all common SNVs, although the absolute values of the array-based panel are smaller between Eurasian groups (for example EUR&ndash;EAS 0.087 vs 0.104), an effect of SNP ascertainment.
 </p>
 
 <div class="placeholder">[Insert Fig. 1: global PCA scatter; Fig. 2: F<sub>ST</sub> heatmap + MDS]</div>
 
 <h3>3.3. ADMIXTURE</h3>
 <p>
-    Cross-validation supports K=5 as the most parsimonious global model
-    (CV<sub>K=5</sub>=0.294, plateau through K=8). Uzbeks consistently express a mixture of
-    a Western (EUR-like) and an Eastern (CAS/SAS-like) component, with smaller fractions of
-    East-Asian and African ancestry. Within Uzbeks alone, K=2 is best (CV monotonically increases
-    K=2&rarr;8); the K=2 Western component (Q1) varies smoothly across geographic regions and
-    explains 8.2% of birthplace variance (ANOVA, <em>p</em>&nbsp;&lt;&nbsp;10<sup>&minus;15</sup>),
-    refuting the hypothesis of discrete sub-populations.
+    Cross-validation error fell from 0.337 (K=2) to 0.322 (K=4) and then plateaued (0.3213&ndash;0.3219 for K=5&ndash;8); there is no clear minimum. At K=4 the reference superpopulations are almost pure (EUR 0.97, EAS 1.00, SAS 0.89, AFR 0.96) and the Uzbek cohort averages 0.50 EUR-like, 0.30 EAS-like, 0.19 SAS-like and 0.00 AFR-like. At K=7 about half of the Uzbek ancestry forms a component that no reference group carries, so the three-way description depends on K and on the reference panel (which has no Central Asian groups). Self-reported ethnicity (Kruskal&ndash;Wallis p &lt; 10<sup>&minus;40</sup> for each component, with a permuted-label control behaving as expected) and birthplace among self-reported Uzbeks (p &lt; 10<sup>&minus;15</sup>) are associated with ancestry, but regional differences are small in absolute terms (regional mean EUR-like share 0.44&ndash;0.54).
 </p>
 
 <div class="placeholder">[Insert Fig. 3: stacked-bar ADMIXTURE plots K=2&ndash;5;
@@ -332,23 +294,14 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 
 <h3>3.4. PBS selection candidates</h3>
 <p>
-    <del style="color:#991b1b;text-decoration:line-through" title="Deprecated 2026-10-02: based on withdrawn PBS candidates (reference-file artefact); see deprecated runs page">Eight lead variants had PBS</del> &ge; 0.3 (Table&nbsp;2). After LD clumping
-    (<a href="steps/step13.html">Step 13</a>) the broader candidate set (PBS &ge; 0.15)
-    contained 401 independent loci across all 22 autosomes; 33.7% (135) localised to chr&nbsp;6
-    (HLA/MHC). Five candidates were missense (SPI1, SLC6A2, TNXB, two further in HLA region);
-    four were predicted damaging by SIFT &amp; PolyPhen. Twelve candidates overlapped GTEx
-    eQTLs in immune tissues. None of the 8 lead PBS variants had a prior GWAS Catalog or ClinVar
-    entry.
+    No SNP reached any tier. Of 74,171 SNPs, the maximum PBS<sub>UZB</sub> was 0.070 (mean -0.010, SD 0.020), which is where the bulk of the distribution places the maximum of that many values; the largest minimum allele-frequency difference to any reference group was 0.21. The 30 most differentiated SNPs between UZB and EUR all have Uzbek frequencies between the EUR and EAS values and are predicted by an admixture mixture model (r = 0.994 over all SNPs), i.e. they are ancestry-informative rather than selection signals. Earlier candidate lists (8 Tier 1 SNPs; a relaxed set of 490 enriched for HLA/MHC) came from batch-dependent genotypes in an older reference file and from extraction artefacts at indel-overlapping sites, and are withdrawn.
 </p>
 
-<div class="placeholder">[Insert Fig. 5: PBS Manhattan; Table 2: top 8 PBS candidates with annotation]</div>
+<div class="placeholder">[Insert Fig. 5: PBS Manhattan (site step 10); Table 2: highest PBS values with annotation (site step 12) &mdash; no candidates]</div>
 
 <h3>3.5. ROH &amp; relatedness</h3>
 <p>
-    36,702 ROH segments &ge; 1 Mb were detected across 1,047 individuals; median F<sub>ROH</sub>=0.015,
-    consistent with outbred populations and distinctly lower than ROH-rich groups such as
-    isolated Pakistani or Saudi cohorts (Pemberton et al. 2012). PI_HAT &gt; 0.0884 was observed for
-    only 0.08% of all pairs (428 of 547,581), supporting the use of an unrelated subset for GWAS.
+    44,938 ROH segments &ge; 1 Mb were detected across 1,256 individuals; median F<sub>ROH</sub> was 0.0147 (mean 0.0188) and 35 individuals (2.8%) had F<sub>ROH</sub> above 0.0625. F<sub>ROH</sub> was weakly related to ancestry (Spearman &rho; = &minus;0.17 with the EUR-like and +0.17 with the EAS-like component). PI_HAT &gt; 0.0884 was observed for 613 of 788,140 pairs (0.078%), 11 of them at second degree or closer, supporting the use of a nearly unrelated sample for GWAS. In a pre-QC merged array data set, PI_HAT-based relatedness lists were dominated by five poor-quality samples that are not in the final cohort.
 </p>
 
 
@@ -357,32 +310,22 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 
 <h3>4.1. Position of Uzbeks in global variation</h3>
 <p>
-    Our F<sub>ST</sub> estimates and admixture proportions reproduce the East&ndash;West gradient
-    described in earlier sparse-marker studies (Yunusbayev et al. 2012; Jeong et al. 2019) at
-    higher resolution. The proximity to South Asians (F<sub>ST</sub>=0.018) is closer than the
-    long-standing assumption that Central Asia is primarily &ldquo;between EUR and EAS&rdquo;, and is
-    consistent with archaeogenomic evidence of Indo-Iranian gene flow (Narasimhan et al. 2019).
+    The F<sub>ST</sub> estimates and admixture proportions reproduce the East&ndash;West gradient described in earlier sparse-marker studies (Yunusbayev et al. 2012; Jeong et al. 2019). Uzbeks are about equally close to South Asians and Europeans and clearly closer to East Asians than either of those groups is; which of SAS or EUR is closer is within the uncertainty of the panel and not a finding. Links to Indo-Iranian gene flow (Narasimhan et al. 2019) are plausible context but were not tested: the reference panel has no ancient or Central Asian samples.
 </p>
 
 <h3>4.2. Selection signatures</h3>
 <p>
-    HLA/MHC enrichment among PBS candidates is a recurring feature of selection scans in
-    inter-cluster human populations (Sabeti et al. 2007; Bersaglieri et al. 2004) and consistent
-    with pathogen-driven balancing selection. The non-HLA candidates &mdash; <em>SPI1</em>
-    (haematopoiesis), <em>SLC6A2</em> (norepinephrine transporter), <em>SLC6A3</em>, <em>TNXB</em>
-    &mdash; nominate immune and metabolic processes for follow-up.
+    This array-based scan does not support population-specific selection in the Uzbek lineage. The panel is sparse (about 74,000 LD-pruned SNPs) and PBS is least sensitive for an admixed focal population, whose frequencies sit between those of its outgroups, so absence of a signal here is not evidence of absence. SNPs that rank highest by F<sub>ST</sub> (including known pigmentation loci such as <em>OCA2</em>) are explained by the European/East Asian ancestry mixture. A selection analysis that models admixture, ideally on sequence data, is the logical follow-up.
 </p>
 
 <h3>4.3. Endogamy</h3>
 <p>
-    The low F<sub>ROH</sub> contrasts with anecdotal expectations of high consanguinity in Central Asia
-    and parallels the urban/peri-urban recruitment of this cohort. Geographic stratification of
-    F<sub>ROH</sub> within Uzbekistan is likely and should be the subject of a focused follow-up.
+    Median F<sub>ROH</sub> of 0.0147 is almost unchanged between the original and the expanded cohort, with a tail of 35 individuals above 0.0625 (parents at least first cousins in expectation). No pedigree or marriage data were analysed, so the tail is not attributed to endogamous customs. F<sub>ROH</sub> weakly tracks ancestry, which should be modelled alongside it in downstream analyses; geographic stratification of F<sub>ROH</sub> within Uzbekistan was not tested.
 </p>
 
 <h3>4.4. Limitations</h3>
 <ul>
-    <li>Single-array genotyping introduces ascertainment bias; whole-genome sequencing of a subset
+    <li>Single-array genotyping introduces ascertainment bias (measured here: array-based F<sub>ST</sub> between Eurasian groups is about 15% smaller than on all common SNVs); whole-genome sequencing of a subset
         is the obvious next step.</li>
     <li>Recruitment from a limited number of clinical sites may not capture rural diversity.</li>
     <li>Imputation against TOPMed (Anglo-American-dominant reference) inflates uncertainty for
@@ -391,7 +334,7 @@ code { background:#f5f5f5; padding:2px 5px; border-radius:3px;
 
 <h3>4.5. Resources released with this paper</h3>
 <ul>
-    <li>1,047-sample LD-pruned PLINK BFILE for population genomic re-use (controlled access).</li>
+    <li>LD-pruned PLINK BFILE of the 1,256-sample cohort for population genomic re-use (controlled access).</li>
     <li>Per-variant allele frequency table for 9.9M imputed SNPs.</li>
     <li>ADMIXTURE Q-matrices K=2&ndash;8 (whole-cohort and Uzbek-only).</li>
     <li>F<sub>ST</sub> and PBS summary statistics in standard formats.</li>
