@@ -17,7 +17,7 @@ a{color:#0d47a1}.back{font-size:13px}code{font-size:12px}
 <body><div class="wrap">
 <p class="back"><a href="../index.html">&larr; Back to pipeline</a> &middot; <a href="deprecated_old_runs.html">Deprecated runs and pending updates</a></p>
 <h1>Cohorts and sample sets</h1>
-<p>Last updated 2026-10-02. The site quotes several sample counts (1,047, 1,090, 1,193, 1,256, 1,759 and others). They are different sets used by different analyses, not contradictions. Verification column: <span class="tag ok">verified</span> = count read from the named file on DRAGEN or locally on 2026-10-02; <span class="tag st">stated</span> = taken from a page or report, not re-counted; <span class="tag no">not found</span> = I could not find the file at the stated path.</p>
+<p>Last updated 2026-10-04. The site quotes several sample counts (1,047, 1,090, 1,193, 1,256, 1,759 and others). They are different sets used by different analyses, not contradictions. Verification column: <span class="tag ok">verified</span> = count read from the named file on DRAGEN or locally on 2026-10-02; <span class="tag st">stated</span> = taken from a page or report, not re-counted; <span class="tag no">not found</span> = I could not find the file at the stated path.</p>
 
 <h2>1. Own cohort: from recruitment to analysis sets</h2>
 <table>
@@ -28,7 +28,7 @@ a{color:#0d47a1}.back{font-size:13px}code{font-size:12px}
 <tr><td>1,247 &rarr; 1,148 &rarr; 1,093 &rarr; 1,047</td><td>Original cohort QC funnel: recruited, call-rate filter, duplicate removal, final QC'd set</td><td>Deck slide 2 and report</td><td>Original cohort analyses</td><td>1,047 <span class="tag ok">verified</span> (<code>cohort1047/keep_UZB.txt</code>); earlier steps <span class="tag st">stated</span></td></tr>
 <tr><td>1,090</td><td>Post-imputation high-quality set used as input to the RPL GWAS and the FROH check (before phenotype filtering)</td><td><code>spring2026/post_imputation/UZB_imputed_HQ_clean.fam</code></td><td>GWAS; &ldquo;93/1,090 lack FROH&rdquo; (next_steps)</td><td><span class="tag ok">verified</span></td></tr>
 <tr><td>764 (743 at the lead variant)</td><td>Samples analysed in the primary RPL GWAS after phenotype (273 cases, 509 controls) and covariate filtering</td><td>PLINK2 output <code>OBS_CT</code> in <code>gwas_sens_2026-10</code></td><td>RPL GWAS (step16); 589 in the self-reported-Uzbek-only run</td><td><span class="tag ok">verified</span></td></tr>
-<tr><td>1,193 (1,098 ALSU + 95 GWAS2026)</td><td>Cross-cohort merge used for ancestry-aware relatedness</td><td>Stated on the relatedness page as <code>temp/dragen_array_test_20260513/cross_gwas2026_alsu_winter/merged.fam</code></td><td>admixture_aware_relatedness</td><td><span class="tag no">file not found at that path</span>; count <span class="tag st">stated</span></td></tr>
+<tr><td>1,193 (1,098 ALSU + 95 GWAS2026)</td><td>Cross-cohort merge used for ancestry-aware relatedness</td><td><code>/staging/ALSU-analysis/admixture_analysis/temp/dragen_array_test_20260513/cross_gwas2026_alsu_winter/merged.fam</code> (1,193 lines) = <code>alsu_common.fam</code> (1,098) + <code>gwas2026_common.fam</code> (95), same folder; also <code>pcrelate_env/run/merged_pruned.fam</code> (1,193)</td><td>admixture_aware_relatedness</td><td><span class="tag ok">verified</span> 2026-10-04 (the 2026-10-02 &ldquo;not found&rdquo; was my error: the file was at the path the page gives)</td></tr>
 <tr><td>1,759 (1,256 + 503)</td><td>Own FST check: expanded cohort plus 503 European reference samples, full unpruned marker set (5,358,904 markers)</td><td>step9 text; arithmetic 1,256 + 503 = 1,759</td><td>step9 &ldquo;Option-B&rdquo; cross-check of UZB&ndash;EUR FST</td><td><span class="tag st">stated</span> (arithmetic consistent)</td></tr>
 </table>
 
@@ -47,5 +47,5 @@ a{color:#0d47a1}.back{font-size:13px}code{font-size:12px}
 <tr><td>1,021</td><td>Samples with both an Uzbek-only PCA position and an ancestry estimate (used for the covariate re-check)</td><td><span class="tag ok">verified</span></td></tr>
 <tr><td>1,026 (old test), 992 (old map)</td><td>Matches used in the earlier, superseded ethnicity test and K=5 birthplace map</td><td><span class="tag st">stated</span>; deprecated</td></tr>
 </table>
-<p>Open item: confirm the exact definition of the 1,193 merge (the page names a path I could not find). If you know where <code>merged.fam</code> now lives, tell me and I will record it here.</p>
+<p>The 1,193 merge was confirmed on 2026-10-04: <code>merged.fam</code> is at the path the relatedness page gives, with 1,098 ALSU and 95 GWAS2026 samples.</p>
 </div></body></html>
