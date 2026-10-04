@@ -111,251 +111,124 @@ canvas{display:block;margin:0 auto;max-width:100%}
   <a href="../index.html" class="back">← Back to Home</a>
   <h1>Step 14: Pairwise F<sub>ST</sub> &amp; MDS</h1>
   <p>Genome-wide population differentiation — interactive heatmap and classical multidimensional scaling</p>
-  <span class="step-badge">🧬 Expanded cohort &bull; 5 populations &bull; 83,091 SNPs &bull; August 2026</span>
+  <span class="step-badge">🧬 NYGC 30x reference &bull; 5 populations &bull; 82,744 SNPs &bull; rebuilt 2026-10-04</span>
   <a href="archive/step14_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:8px;color:rgba(0,0,0,0.55);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
 </div>
 
 <div class="content">
 
-<h2 style="border-bottom:3px solid #16a34a;">CURRENT RESULTS (NYGC 30x reference, 2026-10-04)</h2>
-<p><strong>All ten pairs recomputed</strong> on the 1000 Genomes high-coverage (NYGC) GRCh38 reference merged with the expanded Uzbek cohort: 82,744 SNPs, 3,968 samples (UZB 1,256; EUR 633; EAS 585; SAS 601; AFR 893; AMR not included). Method identical to the 2026-10-02 replication (PLINK 1.9 <code>--fst --within</code>, weighted Weir &amp; Cockerham). Check: the three pairs published on 2026-10-02 (UZB&ndash;EUR, UZB&ndash;EAS, EUR&ndash;EAS) come out identical to the last digit. Removing the 8,573 sites that overlap indel, multiallelic or SV records changes every value by less than 0.0005.</p>
-<table>
-<tr><th></th><th>UZB</th><th>SAS</th><th>EUR</th><th>EAS</th><th>AFR</th></tr>
-<tr><td><strong>UZB</strong></td><td>&mdash;</td><td>0.0143</td><td>0.0152</td><td>0.0400</td><td>0.1310</td></tr>
-<tr><td><strong>SAS</strong></td><td>0.0143</td><td>&mdash;</td><td>0.0314</td><td>0.0570</td><td>0.1294</td></tr>
-<tr><td><strong>EUR</strong></td><td>0.0152</td><td>0.0314</td><td>&mdash;</td><td>0.0872</td><td>0.1414</td></tr>
-<tr><td><strong>EAS</strong></td><td>0.0400</td><td>0.0570</td><td>0.0872</td><td>&mdash;</td><td>0.1668</td></tr>
-<tr><td><strong>AFR</strong></td><td>0.1310</td><td>0.1294</td><td>0.1414</td><td>0.1668</td><td>&mdash;</td></tr>
-</table>
-<p>The August picture below (old reference) holds. Uzbeks are about equally close to South Asians and Europeans, farther from East Asians, and farthest from Africans. Every pair differs from the August matrix by at most 0.0027 (largest change: UZB&ndash;AFR 0.1283 &rarr; 0.1310), and both rankings are unchanged. Files on DRAGEN: <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/pbs_refqc_2026-10/fst_all_pairs_2026-10-04/</code> (<code>fst_all_pairs.tsv</code> and per-pair logs; script <code>/staging/tmp/scratch/alsu_fst_all.sh</code>). The heatmap, MDS and ranking sections below still show the August values.</p>
+<!--NYGC:step14:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2 id="current" style="border-bottom:3px solid #16a34a;">CURRENT RESULTS (NYGC 30x reference; rebuilt 2026-10-04)</h2>
+<div class="box warn"><strong>Everything on this page now refers to the NYGC 30x high-coverage reference.</strong> The August 2026 matrix (old 1000G file), the &ldquo;published F<sub>ST</sub> values&rdquo; table (never sourced) and the old sample sizes are withdrawn; the interactive heatmap and MDS below are drawn from the new matrix.</div>
 
-<!-- ════════════════════ 1. OVERVIEW ════════════════════ -->
 <h2 id="overview">1. Overview</h2>
-
-<div class="callout callout-info">
-  <strong>Cohort expansion + GRCh38 canonical (August 2026):</strong> This page reflects the expanded cohort
-  (1,256 Uzbek samples) on the corrected, B2/B4-filtered, GRCh38 SNP set (83,091 markers) — see
-  <a href="../COHORT_EXPANSION_2026_08_INTEGRATION_NOTES.md">integration notes</a> for full methodology. This
-  supersedes the "in progress" B2/B4 correction note from the original page below.
-</div>
-
-<p>
-  Weir &amp; Cockerham's F<sub>ST</sub> estimates (via PLINK 1.9) measure allele frequency differentiation
-  between all 10 pairwise combinations of 5 populations: <strong>UZB</strong> (Uzbek, n=1,256),
-  <strong>EUR</strong> (European, n=503), <strong>SAS</strong> (South Asian, n=489),
-  <strong>EAS</strong> (East Asian, n=504), and <strong>AFR</strong> (African, n=660).
-  All computations use the same LD-pruned, B2/B4-corrected SNP set (83,091 markers) from the global merged dataset.
-</p>
-
-<div class="cards">
-  <div class="card"><div class="num" style="color:#2e7d32">10</div><div class="label">Population pairs</div></div>
-  <div class="card"><div class="num" style="color:#1565c0">83,091</div><div class="label">LD-pruned SNPs</div></div>
-  <div class="card"><div class="num" style="color:#5e35b1">3,412</div><div class="label">Total samples</div></div>
-  <div class="card"><div class="num" style="color:#c62828">0.0145</div><div class="label">Min F<sub>ST</sub> (UZB–SAS)</div></div>
-</div>
-
-<div class="callout callout-key">
-  <strong>Key finding:</strong> Uzbek population is equidistant from South Asians (F<sub>ST</sub> = 0.0145)
-  and Europeans (0.0150), consistent with its position at the crossroads of Indo-Iranian and European ancestry.
-  UZB–EAS distance (0.0396) is less than half of EUR–EAS (0.0866), confirming Uzbek as a genuine
-  admixture between European and East Asian gene pools. All values within 0.002 of the original cohort,
-  confirming reproducibility after expansion.
-</div>
-
+<p>F<sub>ST</sub> between each of the ten pairs of five populations: <strong>UZB</strong> (Uzbek, n = 1,256), <strong>EUR</strong> (633), <strong>SAS</strong> (601), <strong>EAS</strong> (585) and <strong>AFR</strong> (893), computed with PLINK 1.9 (Weir &amp; Cockerham, <code>--fst --within</code>) on 82,744 LD-pruned SNPs shared between the Uzbek cohort and the NYGC 30x GRCh38 reference (AMR not used). The per-SNP analysis, top loci and the genome-wide distribution are on <a href="step9.html">step 9</a>; this page presents the matrix, its geometry and a check against unascertained SNPs.</p>
+<div class="cards"><div class="card"><div class="num">10</div><div class="lab">population pairs</div></div><div class="card"><div class="num">82,744</div><div class="lab">LD-pruned SNPs</div></div><div class="card"><div class="num">3,968</div><div class="lab">samples</div></div><div class="card"><div class="num">0.0143</div><div class="lab">min F<sub>ST</sub> (UZB&ndash;SAS)</div></div><div class="card"><div class="num">0.1668</div><div class="lab">max F<sub>ST</sub> (EAS&ndash;AFR)</div></div></div>
+<div class="box key"><strong>Key finding.</strong> The Uzbek cohort is about equally close to South Asians (0.0143) and Europeans (0.0152); the distance to East Asians (0.0400) is 46% of EUR&ndash;EAS (0.0872) and 70% of SAS&ndash;EAS (0.0570), so Uzbeks lie between the Western Eurasian groups and East Asians. The distance to Africans (0.1310) is almost the same as SAS&ndash;AFR (0.1294). This agrees with ADMIXTURE K=4 (about 50% EUR-like, 30% EAS-like, 19% SAS-like; <a href='step11.html'>step 11</a>) and with a non-negative fit of Uzbek allele frequencies as a mixture of the references (EUR 49%, EAS 28%, SAS 23%; <a href='step9.html'>step 9</a>).</div>
 
 <!-- ════════════════════ 2. HEATMAP ════════════════════ -->
 <h2 id="heatmap">2. Interactive F<sub>ST</sub> Heatmap</h2>
-
-<p>
-  Hover over cells to see the population pair and exact weighted F<sub>ST</sub>.
-  Color scale: <strong style="color:#2e7d32">green</strong> (low differentiation, F<sub>ST</sub> &lt; 0.05)
-  → <strong style="color:#e65100">orange</strong> (moderate, 0.05–0.10)
-  → <strong style="color:#c62828">red</strong> (high, &gt; 0.10).
-</p>
-
+<p>Hover over cells to see the population pair and exact weighted F<sub>ST</sub>. Color scale: <strong style="color:#2e7d32">green</strong> (F<sub>ST</sub> &lt; 0.05) &rarr; <strong style="color:#e65100">orange</strong> (0.05&ndash;0.10) &rarr; <strong style="color:#c62828">red</strong> (&gt; 0.10).</p>
 <div class="chart-wrap" style="position:relative">
   <canvas id="heatmapCanvas" width="620" height="560"></canvas>
   <div class="tooltip" id="heatmapTip"></div>
 </div>
 
-
 <!-- ════════════════════ 3. FULL MATRIX ════════════════════ -->
 <h2 id="matrix">3. Full F<sub>ST</sub> Matrix</h2>
-
-<table id="fstTable">
-  <thead>
-    <tr>
-      <th></th><th>UZB</th><th>SAS</th><th>EUR</th><th>EAS</th><th>AFR</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td><strong>UZB</strong></td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0145</td><td>0.0150</td><td>0.0396</td><td>0.1283</td></tr>
-    <tr><td><strong>SAS</strong></td><td>0.0145</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0313</td><td>0.0574</td><td>0.1273</td></tr>
-    <tr><td><strong>EUR</strong></td><td>0.0150</td><td>0.0313</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.0866</td><td>0.1389</td></tr>
-    <tr><td><strong>EAS</strong></td><td>0.0396</td><td>0.0574</td><td>0.0866</td><td style="background:#e8e8e8;text-align:center">—</td><td>0.1648</td></tr>
-    <tr><td><strong>AFR</strong></td><td>0.1283</td><td>0.1273</td><td>0.1389</td><td>0.1648</td><td style="background:#e8e8e8;text-align:center">—</td></tr>
-  </tbody>
-</table>
-
-<div class="callout callout-info">
-  <strong>Reading the matrix:</strong> Values are weighted F<sub>ST</sub> (Weir &amp; Cockerham).
-  The matrix is symmetric — F<sub>ST</sub>(A,B) = F<sub>ST</sub>(B,A). Populations are sorted by
-  genetic distance from UZB (closest → farthest). All values are genome-wide averages across 83,091
-  markers with valid estimates (expanded cohort, B2/B4-corrected GRCh38 panel).
-</div>
-
+<table id="fstTable"><thead><tr><th></th><th>UZB</th><th>SAS</th><th>EUR</th><th>EAS</th><th>AFR</th></tr></thead><tbody><tr><td><strong>UZB</strong></td><td style="background:#e8e8e8;text-align:center">&mdash;</td><td>0.0143</td><td>0.0152</td><td>0.0400</td><td>0.1310</td></tr><tr><td><strong>SAS</strong></td><td>0.0143</td><td style="background:#e8e8e8;text-align:center">&mdash;</td><td>0.0314</td><td>0.0570</td><td>0.1294</td></tr><tr><td><strong>EUR</strong></td><td>0.0152</td><td>0.0314</td><td style="background:#e8e8e8;text-align:center">&mdash;</td><td>0.0872</td><td>0.1414</td></tr><tr><td><strong>EAS</strong></td><td>0.0400</td><td>0.0570</td><td>0.0872</td><td style="background:#e8e8e8;text-align:center">&mdash;</td><td>0.1668</td></tr><tr><td><strong>AFR</strong></td><td>0.1310</td><td>0.1294</td><td>0.1414</td><td>0.1668</td><td style="background:#e8e8e8;text-align:center">&mdash;</td></tr></tbody></table>
+<div class="box info"><strong>Reading the matrix.</strong> Weighted F<sub>ST</sub> (ratio of summed numerators to summed denominators over all SNPs). Symmetric. Populations are ordered by distance from UZB. The matrix uses all 82,744 SNPs; on the stricter set without the 8,573 sites with overlapping indel records no value differs by more than 0.0005 (<a href='step9.html'>step 9</a>, section 3).</div>
 
 <!-- ════════════════════ 4. MDS PLOT ════════════════════ -->
 <h2 id="mds">4. Classical MDS from F<sub>ST</sub> Distance Matrix</h2>
-
-<p>
-  Classical (metric) multidimensional scaling projects the 5 × 5 F<sub>ST</sub> distance matrix
-  into 2D, preserving inter-population distances as faithfully as possible. This is analogous
-  to PCA on allele frequencies but operates directly on the Fst distance matrix.
-</p>
-
+<p>Classical (metric) multidimensional scaling projects the 5 &times; 5 distance matrix into two dimensions (eigendecomposition of the double-centred squared distances; F<sub>ST</sub> itself is used as the distance). The first axis carries 81.8% and the second 17.2% of the positive eigenvalues; the first separates AFR from everyone else, the second EUR from EAS, and UZB sits near SAS, slightly toward EAS relative to EUR. Because two dimensions cannot hold a 5-point distance matrix exactly, small distances such as UZB&ndash;SAS&ndash;EUR are only approximate in the plot; the table in section 3 is the exact result.</p>
 <div class="two-col">
   <div class="chart-panel">
     <h3>MDS Projection (Dimension 1 vs 2)</h3>
     <canvas id="mdsCanvas" width="480" height="420"></canvas>
   </div>
   <div class="chart-panel">
-    <h3>F<sub>ST</sub> Bar Chart — Distance from UZB</h3>
+    <h3>F<sub>ST</sub> Bar Chart &mdash; Distance from UZB</h3>
     <canvas id="barCanvas" width="480" height="420"></canvas>
   </div>
 </div>
-
+<p style="font-size:.85em;color:#666">Static version of the heatmap and MDS (computed in Python from the same matrix): <a href="../images/nygc_fst_heatmap_mds.png">nygc_fst_heatmap_mds.png</a>. MDS coordinates (dimension 1, dimension 2): UZB (-0.0212, 0.0019), SAS (-0.0166, 0.0065), EUR (-0.0208, 0.0413), EAS (-0.0528, -0.0398), AFR (0.1115, -0.0098).</p>
 
 <!-- ════════════════════ 5. POPULATION RANKING ════════════════════ -->
 <h2 id="ranking">5. Population Proximity Ranking</h2>
-
-<p>Ranked by weighted F<sub>ST</sub> to each target population:</p>
-
 <div class="two-col">
   <div>
-    <h3>🏔 Closest to UZB</h3>
-    <table>
-      <thead><tr><th>#</th><th>Population</th><th>Weighted F<sub>ST</sub></th><th>Category</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td><strong>SAS</strong></td><td>0.0145</td><td style="color:#2e7d32">Very low</td></tr>
-        <tr><td>2</td><td><strong>EUR</strong></td><td>0.0150</td><td style="color:#2e7d32">Very low</td></tr>
-        <tr><td>3</td><td><strong>EAS</strong></td><td>0.0396</td><td style="color:#e65100">Moderate</td></tr>
-        <tr><td>4</td><td><strong>AFR</strong></td><td>0.1283</td><td style="color:#c62828">High</td></tr>
-      </tbody>
-    </table>
+    <h3>Closest to UZB</h3>
+    <table><thead><tr><th>#</th><th>Population</th><th>Weighted F<sub>ST</sub></th><th>Category</th></tr></thead><tbody><tr><td>1</td><td><strong>SAS</strong></td><td>0.0143</td><td style="color:#2e7d32">Very low</td></tr><tr><td>2</td><td><strong>EUR</strong></td><td>0.0152</td><td style="color:#2e7d32">Very low</td></tr><tr><td>3</td><td><strong>EAS</strong></td><td>0.0400</td><td style="color:#e65100">Moderate</td></tr><tr><td>4</td><td><strong>AFR</strong></td><td>0.1310</td><td style="color:#c62828">High</td></tr></tbody></table>
   </div>
   <div>
-    <h3>🌍 Largest Divergences (all pairs)</h3>
-    <table>
-      <thead><tr><th>#</th><th>Pair</th><th>Weighted F<sub>ST</sub></th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td><strong>EAS – AFR</strong></td><td>0.1648</td></tr>
-        <tr><td>2</td><td><strong>EUR – AFR</strong></td><td>0.1389</td></tr>
-        <tr><td>3</td><td><strong>UZB – AFR</strong></td><td>0.1283</td></tr>
-        <tr><td>4</td><td><strong>SAS – AFR</strong></td><td>0.1273</td></tr>
-        <tr><td>5</td><td><strong>EUR – EAS</strong></td><td>0.0866</td></tr>
-      </tbody>
-    </table>
+    <h3>Largest divergences (all pairs)</h3>
+    <table><thead><tr><th>#</th><th>Pair</th><th>Weighted F<sub>ST</sub></th></tr></thead><tbody><tr><td>1</td><td><strong>EAS &ndash; AFR</strong></td><td>0.1668</td></tr><tr><td>2</td><td><strong>EUR &ndash; AFR</strong></td><td>0.1414</td></tr><tr><td>3</td><td><strong>UZB &ndash; AFR</strong></td><td>0.1310</td></tr><tr><td>4</td><td><strong>SAS &ndash; AFR</strong></td><td>0.1294</td></tr><tr><td>5</td><td><strong>EUR &ndash; EAS</strong></td><td>0.0872</td></tr></tbody></table>
   </div>
 </div>
 
-
 <!-- ════════════════════ 6. INTERPRETATION ════════════════════ -->
-<h2 id="interpretation">6. Biological Interpretation</h2>
-
-<h3>6.1. UZB Position in Human Genetic Landscape</h3>
-<p>
-  The F<sub>ST</sub> distances place Uzbekistan squarely as an <strong>admixed Central Asian population</strong>
-  on the West-East Eurasian cline:
-</p>
+<h2 id="interpretation">6. Interpretation</h2>
+<h3>6.1. Where the Uzbek cohort sits</h3>
 <ul>
-  <li><strong>Equidistant from SAS (0.0145) and EUR (0.0150)</strong> — reflects deep Indo-Iranian ancestry shared across Central
-      and South Asia, alongside European gene pool overlap through shared
-      ancestral components (Ancient North Eurasian, Steppe ancestry). UZB–SAS and UZB–EUR are virtually identical.</li>
-  <li><strong>Moderate distance to EAS (0.0396)</strong> — Turkic and Mongol contributions. Notably, UZB–EAS
-      is <em>less than half</em> of EUR–EAS (0.0866), quantifying the East Asian admixture.</li>
-  <li><strong>UZB–AFR similar to EUR–AFR</strong> — the out-of-Africa divergence affects all Eurasian
-      populations similarly (UZB 0.1283 vs EUR 0.1389).</li>
+<li><strong>UZB&ndash;SAS (0.0143) and UZB&ndash;EUR (0.0152) are nearly equal.</strong> The difference (0.0010) is measurable but small (<a href="step9.html">step 9</a>); which of the two is &ldquo;closer&rdquo; depends on the reference panel, which contains no Central Asian groups.</li>
+<li><strong>UZB&ndash;EAS (0.0400) is less than half of EUR&ndash;EAS (0.0872) and smaller than SAS&ndash;EAS (0.0570).</strong> That is the F<sub>ST</sub> expression of an East-Asian-like share of ancestry that Europeans and South Asians lack.</li>
+<li><strong>UZB&ndash;AFR (0.1310) equals SAS&ndash;AFR (0.1294) and is below EUR&ndash;AFR (0.1414),</strong> as expected when there is no African ancestry component (ADMIXTURE K=4: about 0%).</li>
 </ul>
-
-<h3>6.2. Continental Structure</h3>
-<p>
-  The MDS plot reveals the classic triangle of human genetic variation:
-</p>
+<p>Historical explanations for these patterns (Indo-Iranian, Steppe, Turkic or Mongol contributions) are plausible context but were not tested here: the panel has no ancient or Central Asian reference samples.</p>
+<h3>6.2. Continental structure</h3>
 <ul>
-  <li><strong>AFR</strong> is the most distant from all others — consistent with out-of-Africa bottleneck
-      and longer independent drift.</li>
-  <li><strong>EUR–SAS</strong> cluster together (F<sub>ST</sub> = 0.0313) — Western Eurasian affinity.</li>
-  <li><strong>EAS</strong> forms a distinct cluster from Western Eurasians (0.0574–0.0866).</li>
-  <li><strong>UZB</strong> sits between EUR/SAS and EAS — visually confirming its admixed status.</li>
+<li>AFR is farthest from every other group (0.129&ndash;0.167), EAS is farther from SAS (0.057) and EUR (0.087) than UZB is from either.</li>
+<li>EUR&ndash;SAS (0.0314) is the closest pair among the three reference Eurasian groups, and both are close to UZB.</li>
 </ul>
-
-<h3>6.3. Comparison with Published Fst Values</h3>
-<table>
-  <thead>
-    <tr><th>Pair</th><th>Our Value</th><th>Published (1000G Phase 3)</th><th>Note</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>EUR–EAS</td><td>0.0866</td><td>0.100–0.115</td><td>⚠️ Below range — reflects LD-pruned marker set</td></tr>
-    <tr><td>EUR–AFR</td><td>0.1389</td><td>0.130–0.160</td><td>✅ Within range</td></tr>
-    <tr><td>EAS–AFR</td><td>0.1648</td><td>0.150–0.190</td><td>✅ Within range</td></tr>
-    <tr><td>EUR–SAS</td><td>0.0313</td><td>0.020–0.040</td><td>✅ Within range</td></tr>
-    <tr><td>EAS–SAS</td><td>0.0574</td><td>0.055–0.080</td><td>✅ Within range</td></tr>
-  </tbody>
-</table>
-<p>All reference-population Fst values fall within expected ranges from published 1000 Genomes studies, validating our merged dataset and QC pipeline. Consistent with the original cohort's comparison.</p>
-
+<h3>6.3. Check against unascertained SNPs (replaces the earlier &ldquo;published values&rdquo; table)</h3>
+<p>The earlier version of this page compared reference-pair values with &ldquo;published 1000 Genomes F<sub>ST</sub> ranges&rdquo;. Those ranges have no source in the project records and are removed. In their place, F<sub>ST</sub> was recomputed on chromosome 22 using <em>all</em> common biallelic SNVs (MAF &ge; 0.01; about 190,000 in the NYGC data, 60,979 in the imputed Uzbek data, 53,765 shared) instead of the LD-pruned array-based panel. Reference pairs: PLINK Weir &amp; Cockerham; Hudson (Bhatia et al. 2013) estimator computed from allele frequencies for all pairs, used for the Uzbek pairs because the Uzbek and NYGC data are not in one PLINK file. The Hudson estimator reproduces PLINK on the reference pairs to within 0.005.</p>
+<table><thead><tr><th>Pair</th><th>Panel (82,744 SNPs, W&amp;C)</th><th>chr22, all SNVs (W&amp;C)</th><th>chr22, all SNVs (Hudson)</th><th>SNPs used (Hudson)</th><th>Hudson / panel</th></tr></thead><tbody><tr><td>UZB vs SAS</td><td>0.0143</td><td>&mdash;</td><td>0.0170</td><td>53,765</td><td>1.19</td></tr><tr><td>UZB vs EUR</td><td>0.0152</td><td>&mdash;</td><td>0.0173</td><td>53,765</td><td>1.14</td></tr><tr><td>UZB vs EAS</td><td>0.0400</td><td>&mdash;</td><td>0.0551</td><td>53,765</td><td>1.38</td></tr><tr><td>UZB vs AFR</td><td>0.1310</td><td>&mdash;</td><td>0.1201</td><td>53,765</td><td>0.92</td></tr><tr><td>EUR vs SAS</td><td>0.0314</td><td>0.0366</td><td>0.0366</td><td>154,844</td><td>1.17</td></tr><tr><td>EAS vs SAS</td><td>0.0570</td><td>0.0683</td><td>0.0683</td><td>141,910</td><td>1.20</td></tr><tr><td>EUR vs EAS</td><td>0.0872</td><td>0.1036</td><td>0.1038</td><td>154,097</td><td>1.19</td></tr><tr><td>AFR vs SAS</td><td>0.1294</td><td>0.1183</td><td>0.1202</td><td>189,197</td><td>0.93</td></tr><tr><td>AFR vs EUR</td><td>0.1414</td><td>0.1255</td><td>0.1276</td><td>187,230</td><td>0.90</td></tr><tr><td>AFR vs EAS</td><td>0.1668</td><td>0.1597</td><td>0.1641</td><td>188,577</td><td>0.98</td></tr></tbody></table>
+<div class="box info"><strong>Two conclusions.</strong> (1) <em>The ordering is the same</em> in the panel and in the unascertained chr22 set: UZB is about equally close to SAS and EUR, closer to EAS than SAS and EUR are, and equal to SAS in distance from AFR. (2) <em>The magnitudes are not the same.</em> The array-based, LD-pruned panel gives smaller F<sub>ST</sub> between Eurasian groups than all common SNVs (for example EUR&ndash;EAS 0.087 vs 0.104) and slightly larger F<sub>ST</sub> to AFR for EUR (0.141 vs 0.126). This is SNP ascertainment: array SNPs are chosen to be common in the populations the array was designed for. Absolute F<sub>ST</sub> values from this panel should therefore not be compared with published genome-wide values without that caveat. Chromosome 22 is a single chromosome, so these numbers carry sampling noise of the order of a few thousandths.</div>
 
 <!-- ════════════════════ 7. METHODS ════════════════════ -->
 <h2 id="methods">7. Methods</h2>
-
-<div class="callout callout-method">
-  <strong>F<sub>ST</sub> estimation:</strong> PLINK v1.9 <code>--fst</code> implementing the
-  Weir &amp; Cockerham (1984) estimator. Computed on 83,091 LD-pruned, B2/B4-corrected biallelic SNPs from the
-  global merged dataset (UZB + 1000 Genomes Phase 3: EUR, EAS, SAS, AFR), GRCh38. "Weighted F<sub>ST</sub>"
-  is the ratio-of-averages estimator, less sensitive to rare variants than the simple mean.
-</div>
-
-<div class="callout callout-method">
-  <strong>MDS:</strong> Classical (metric) multidimensional scaling via eigendecomposition of the
-  doubly-centered distance matrix. Implemented in JavaScript using the F<sub>ST</sub> values as
-  inter-population distances. The 2D projection captures the dominant axes of population differentiation.
-</div>
-
-<h3>7.1. Sample Sizes</h3>
-<table>
-  <thead><tr><th>Population</th><th>N (global dataset)</th><th>Source</th></tr></thead>
-  <tbody>
-    <tr><td>UZB (Uzbek)</td><td>1,256</td><td>Expanded ALSU cohort (post-QC, incl. 48redone + GWAS2026 + GWAS2026-2)</td></tr>
-    <tr><td>EUR (European)</td><td>503</td><td>1000G Phase 3 (CEU, GBR, FIN, IBS, TSI)</td></tr>
-    <tr><td>EAS (East Asian)</td><td>504</td><td>1000G Phase 3 (CHB, JPT, CHS, CDX, KHV)</td></tr>
-    <tr><td>SAS (South Asian)</td><td>489</td><td>1000G Phase 3 (GIH, PJL, BEB, STU, ITU)</td></tr>
-    <tr><td>AFR (African)</td><td>660</td><td>1000G Phase 3 (YRI, LWK, GWD, MSL, ESN, ACB, ASW)</td></tr>
-  </tbody>
-</table>
-
-<h3>7.2. Commands</h3>
-<div class="code-block"># Example: UZB vs EAS
-plink --bfile UZB_1kG_merged \
-      --keep keep_UZB_EAS_fixed.txt \
-      --within within_UZB_EAS_fixed.txt \
-      --fst \
-      --out fst_UZB_EAS_fixed \
-      --silent
-
-# Remaining 5 pairs (EUR-SAS, EUR-AFR, EAS-SAS, EAS-AFR, SAS-AFR)
-# computed in step14_fst_matrix/ using the same pipeline, Aug 13 2026</div>
-
-<h3>7.3. Run Details</h3>
+<div class="box meth"><strong>F<sub>ST</sub> estimation:</strong> PLINK v1.9 <code>--fst --within</code> (Weir &amp; Cockerham 1984) on the merged cohort + NYGC panel (<code>merged_refqc</code>, 82,744 SNPs, GRCh38). &ldquo;Weighted&rdquo; is the ratio-of-averages estimator.</div>
+<div class="box meth"><strong>MDS:</strong> classical metric MDS (double-centring of the squared distance matrix, two leading eigenvectors), implemented in JavaScript on this page and re-computed in Python for the static figure; both use the F<sub>ST</sub> values directly as distances.</div>
+<h3>7.1. Sample sizes</h3>
+<table><thead><tr><th>Population</th><th>N</th><th>Source</th></tr></thead><tbody><tr><td>UZB (Uzbek)</td><td>1,256</td><td>Expanded ALSU cohort (post-QC)</td></tr><tr><td>EUR</td><td>633</td><td>NYGC 1000G 30x (CEU, GBR, FIN, IBS, TSI)</td></tr><tr><td>EAS</td><td>585</td><td>NYGC 1000G 30x (CHB, JPT, CHS, CDX, KHV)</td></tr><tr><td>SAS</td><td>601</td><td>NYGC 1000G 30x (GIH, PJL, BEB, STU, ITU)</td></tr><tr><td>AFR</td><td>893</td><td>NYGC 1000G 30x (YRI, LWK, GWD, MSL, ESN, ACB, ASW)</td></tr></tbody></table>
+<p style="font-size:.88em;color:#666">Reference samples were not filtered for relatedness. Population labels are the superpopulation codes of the NYGC sample table, as used in the keep-lists on DRAGEN.</p>
+<h3>7.2. Commands and files</h3>
+<pre style="background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em">for each pair A_B (UZB EUR EAS SAS AFR):
+  plink --bfile merged_refqc --keep keep_A_B.txt --within within_A_B.txt --fst --out all_A_B
+  (second set: --exclude nygc30x_1256_filt/flagged_overlap.txt  -> filt_A_B)</pre>
 <ul>
-  <li><strong>Server:</strong> Biotech2024 (100.104.25.22), 515 GB RAM</li>
-  <li><strong>Date:</strong> Recalculation: August 2026, using post-QC 1,256 Uzbek samples (expanded cohort)</li>
-  <li><strong>SNPs per pair:</strong> 83,091 LD-pruned, B2/B4-corrected SNPs (global merged dataset, GRCh38)</li>
-  <li><strong>Run time:</strong> ~1 second per pair (fast — genome-wide Fst is a simple allele frequency comparison)</li>
+<li>Script <code>/staging/tmp/scratch/alsu_fst_all.sh</code>; outputs <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/pbs_refqc_2026-10/fst_all_pairs_2026-10-04/</code> (DRAGEN).</li>
+<li>chr22 check: <code>/staging/tmp/fst22.sh</code> and <code>/staging/tmp/fst22b.py</code>; outputs <code>/staging/tmp/scratch/fst22_check/</code> (DRAGEN).</li>
+<li>Run date 2026-10-04 (matrix first computed 2026-10-02/04).</li>
 </ul>
 
-
-</div><!-- /content -->
+</div><!--NYGC:step14:END--></div><!-- /content -->
 </div><!-- /main-content -->
 </div><!-- /page-wrapper -->
 
@@ -375,11 +248,11 @@ const popColors = {
 // step10_pbs/fst_*_fixed.log and step14_fst_matrix/fst_*.log, Aug 13 2026.
 // Order: UZB, SAS, EUR, EAS, AFR
 const fst = [
-    [0.0000, 0.0145, 0.0150, 0.0396, 0.1283],
-    [0.0145, 0.0000, 0.0313, 0.0574, 0.1273],
-    [0.0150, 0.0313, 0.0000, 0.0866, 0.1389],
-    [0.0396, 0.0574, 0.0866, 0.0000, 0.1648],
-    [0.1283, 0.1273, 0.1389, 0.1648, 0.0000]
+    [0.0000, 0.0143, 0.0152, 0.0400, 0.1310],
+    [0.0143, 0.0000, 0.0314, 0.0570, 0.1294],
+    [0.0152, 0.0314, 0.0000, 0.0872, 0.1414],
+    [0.0400, 0.0570, 0.0872, 0.0000, 0.1668],
+    [0.1310, 0.1294, 0.1414, 0.1668, 0.0000]
 ];
 const n = pops.length;
 
@@ -611,9 +484,9 @@ const n = pops.length;
     ctx.fillStyle = '#888';
     ctx.font = '12px Segoe UI';
     ctx.textAlign = 'center';
-    const pctDim1 = (vals[0] / vals.reduce((a,b)=>a+b,0) * 100).toFixed(1);
-    const pctDim2 = (vals[1] / vals.reduce((a,b)=>a+b,0) * 100).toFixed(1);
-    ctx.fillText(`Dimension 1 (${pctDim1}%)`, pad.l + w / 2, canvas.height - 8);
+    const pctDim1 = '81.8';
+    const pctDim2 = '17.2';
+    ctx.fillText(`Dimension 1 (${pctDim1}% of positive eigenvalues)`, pad.l + w / 2, canvas.height - 8);
     ctx.save();
     ctx.translate(14, pad.t + h / 2);
     ctx.rotate(-Math.PI / 2);
@@ -630,7 +503,7 @@ const n = pops.length;
     const w = canvas.width - pad.l - pad.r;
     const h = canvas.height - pad.t - pad.b;
     const others = ['SAS', 'EUR', 'EAS', 'AFR'];
-    const vals = [0.0144, 0.0145, 0.0393, 0.1293];
+    const vals = [0.0143, 0.0152, 0.0400, 0.1310];
 
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
