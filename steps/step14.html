@@ -117,6 +117,18 @@ canvas{display:block;margin:0 auto;max-width:100%}
 
 <div class="content">
 
+<h2 style="border-bottom:3px solid #16a34a;">CURRENT RESULTS (NYGC 30x reference, 2026-10-04)</h2>
+<p><strong>All ten pairs recomputed</strong> on the 1000 Genomes high-coverage (NYGC) GRCh38 reference merged with the expanded Uzbek cohort: 82,744 SNPs, 3,968 samples (UZB 1,256; EUR 633; EAS 585; SAS 601; AFR 893; AMR not included). Method identical to the 2026-10-02 replication (PLINK 1.9 <code>--fst --within</code>, weighted Weir &amp; Cockerham). Check: the three pairs published on 2026-10-02 (UZB&ndash;EUR, UZB&ndash;EAS, EUR&ndash;EAS) come out identical to the last digit. Removing the 8,573 sites that overlap indel, multiallelic or SV records changes every value by less than 0.0005.</p>
+<table>
+<tr><th></th><th>UZB</th><th>SAS</th><th>EUR</th><th>EAS</th><th>AFR</th></tr>
+<tr><td><strong>UZB</strong></td><td>&mdash;</td><td>0.0143</td><td>0.0152</td><td>0.0400</td><td>0.1310</td></tr>
+<tr><td><strong>SAS</strong></td><td>0.0143</td><td>&mdash;</td><td>0.0314</td><td>0.0570</td><td>0.1294</td></tr>
+<tr><td><strong>EUR</strong></td><td>0.0152</td><td>0.0314</td><td>&mdash;</td><td>0.0872</td><td>0.1414</td></tr>
+<tr><td><strong>EAS</strong></td><td>0.0400</td><td>0.0570</td><td>0.0872</td><td>&mdash;</td><td>0.1668</td></tr>
+<tr><td><strong>AFR</strong></td><td>0.1310</td><td>0.1294</td><td>0.1414</td><td>0.1668</td><td>&mdash;</td></tr>
+</table>
+<p>The August picture below (old reference) holds. Uzbeks are about equally close to South Asians and Europeans, farther from East Asians, and farthest from Africans. Every pair differs from the August matrix by at most 0.0027 (largest change: UZB&ndash;AFR 0.1283 &rarr; 0.1310), and both rankings are unchanged. Files on DRAGEN: <code>/staging/ALSU-analysis/spring2026/full_expanded_cohort/pbs_refqc_2026-10/fst_all_pairs_2026-10-04/</code> (<code>fst_all_pairs.tsv</code> and per-pair logs; script <code>/staging/tmp/scratch/alsu_fst_all.sh</code>). The heatmap, MDS and ranking sections below still show the August values.</p>
+
 <!-- ════════════════════ 1. OVERVIEW ════════════════════ -->
 <h2 id="overview">1. Overview</h2>
 
