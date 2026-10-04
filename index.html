@@ -163,8 +163,8 @@
                         <a href="steps/step8.html">
                             <rect x="150" y="1100" width="300" height="120" fill="#d32f2f" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="1130" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 8: Global PCA + 1000G</text>
-                            <text x="300" y="1155" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + 1000 Genomes reference</text>
-                            <text x="300" y="1175" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: Global PCA, ancestry inference | Jan 4</text>
+                            <text x="300" y="1155" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + NYGC 30x reference (EUR/EAS/SAS/AFR)</text>
+                            <text x="300" y="1175" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: Global PCA, 3,968 samples, 64,959 SNPs | rebuilt Oct 2026</text>
                         </a>
 
                         <line x1="300" y1="1220" x2="300" y2="1260" stroke="#d32f2f" stroke-width="3"/>
@@ -172,9 +172,9 @@
                         <!-- STEP 9 -->
                         <a href="steps/step9.html">
                             <rect x="150" y="1260" width="300" height="120" fill="#c62828" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
-                            <text x="300" y="1290" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 9: Fst Analysis (UZB vs EUR)</text>
-                            <text x="300" y="1315" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + 1000G EUR (376K SNPs)</text>
-                            <text x="300" y="1335" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: Genome-wide Fst = 0.020 | Oct–Nov</text>
+                            <text x="300" y="1290" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 9: Genome-wide Fst (10 pairs)</text>
+                            <text x="300" y="1315" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + NYGC reference (82,744 SNPs)</text>
+                            <text x="300" y="1335" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: UZB–EUR 0.0152, UZB–SAS 0.0143 | Oct 2026</text>
                         </a>
 
                         <line x1="300" y1="1380" x2="300" y2="1420" stroke="#1b5e20" stroke-width="3"/>
@@ -183,8 +183,8 @@
                         <a href="steps/step10.html">
                             <rect x="150" y="1420" width="300" height="120" fill="#2e7d32" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="1450" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 10: Multi-Pop &amp; PBS</text>
-                            <text x="300" y="1475" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + EUR/EAS/SAS/AFR (376K SNPs)</text>
-                            <text x="300" y="1495" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: PBS (old run DEPRECATED)</text>
+                            <text x="300" y="1475" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + NYGC EUR/EAS/SAS/AFR (74,171 SNPs)</text>
+                            <text x="300" y="1495" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: PBS, no candidates (max 0.070) | Oct 2026</text>
                         </a>
 
                         <line x1="300" y1="1540" x2="300" y2="1580" stroke="#5c6bc0" stroke-width="3"/>
@@ -193,8 +193,8 @@
                         <a href="steps/step11.html">
                             <rect x="150" y="1580" width="300" height="120" fill="#3949ab" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="1610" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 11: ADMIXTURE K=2–8</text>
-                            <text x="300" y="1635" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + 1000G (376K SNPs)</text>
-                            <text x="300" y="1655" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: K=5 old run DEPRECATED; NYGC rerun current</text>
+                            <text x="300" y="1635" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB + NYGC reference (64,959 SNPs)</text>
+                            <text x="300" y="1655" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: K=4: ~50% EUR / 30% EAS / 19% SAS-like | Oct 2026</text>
                         </a>
 
                         <line x1="300" y1="1700" x2="300" y2="1740" stroke="#6a1b9a" stroke-width="3"/>
@@ -202,9 +202,9 @@
                         <!-- STEP 12 -->
                         <a href="steps/step12.html">
                             <rect x="150" y="1740" width="300" height="120" fill="#6a1b9a" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
-                            <text x="300" y="1770" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 12: PBS SNP Annotation</text>
-                            <text x="300" y="1795" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: old PBS SNPs (DEPRECATED)</text>
-                            <text x="300" y="1815" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: VEP + GWAS + GTEx results | Mar 2026</text>
+                            <text x="300" y="1770" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 12: Annotation of top PBS / Fst SNPs</text>
+                            <text x="300" y="1795" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: top PBS and Fst SNPs (NYGC)</text>
+                            <text x="300" y="1815" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: gene, consequence, GWAS Catalog lookups | Oct 2026</text>
                         </a>
 
                         <line x1="300" y1="1860" x2="300" y2="1900" stroke="#00695c" stroke-width="3"/>
@@ -214,7 +214,7 @@
                             <rect x="150" y="1900" width="300" height="120" fill="#00695c" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="1930" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 13: LD Analysis</text>
                             <text x="300" y="1955" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: old PBS SNPs (DEPRECATED)</text>
-                            <text x="300" y="1975" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 401 independent loci | Mar 2026</text>
+                            <text x="300" y="1975" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: LD decay, UZB vs NYGC groups | Oct 2026</text>
                         </a>
 
                         <line x1="300" y1="2020" x2="300" y2="2060" stroke="#1b5e20" stroke-width="3"/>
@@ -224,7 +224,7 @@
                             <rect x="150" y="2060" width="300" height="120" fill="#1b5e20" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="2090" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 14: FST &amp; MDS</text>
                             <text x="300" y="2115" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: Global merged BED (5 pops)</text>
-                            <text x="300" y="2135" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 5×5 FST matrix + MDS | Mar 2026</text>
+                            <text x="300" y="2135" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 5×5 FST matrix + MDS (NYGC) | Oct 2026</text>
                         </a>
 
                         <line x1="300" y1="2180" x2="300" y2="2220" stroke="#004d40" stroke-width="3"/>
@@ -233,8 +233,8 @@
                         <a href="steps/step15.html">
                             <rect x="150" y="2220" width="300" height="120" fill="#004d40" stroke="#333" stroke-width="2" rx="5" style="cursor: pointer;"/>
                             <text x="300" y="2250" text-anchor="middle" fill="white" font-size="18" font-weight="bold" style="pointer-events: none;">Step 15: ROH &amp; IBD</text>
-                            <text x="300" y="2275" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB BED (1,047 × 5.41M SNPs)</text>
-                            <text x="300" y="2295" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 36.7K ROH | F_ROH | IBD | Mar 2026</text>
+                            <text x="300" y="2275" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Input: UZB BED (1,256 × 5.36M SNPs)</text>
+                            <text x="300" y="2295" text-anchor="middle" fill="white" font-size="13" style="pointer-events: none;">Output: 44.9K ROH | F_ROH | IBD | Aug 2026</text>
                         </a>
 
                         <!-- Side branch: Admixture-Aware Relatedness Report -->
@@ -244,7 +244,7 @@
                             <text x="625" y="2258" text-anchor="middle" fill="white" font-size="12" font-weight="bold" style="pointer-events:none;">Admixture-Aware</text>
                             <text x="625" y="2275" text-anchor="middle" fill="white" font-size="12" font-weight="bold" style="pointer-events:none;">Relatedness</text>
                             <text x="625" y="2295" text-anchor="middle" fill="white" font-size="10" style="pointer-events:none;">PC-Relate · RelateAdmix</text>
-                            <text x="625" y="2313" text-anchor="middle" fill="white" font-size="10" style="pointer-events:none;">K=5 map (DEPRECATED)</text>
+                            <text x="625" y="2313" text-anchor="middle" fill="white" font-size="10" style="pointer-events:none;">K=4 map (NYGC)</text>
                         </a>
 
                         <line x1="300" y1="2340" x2="300" y2="2380" stroke="#b71c1c" stroke-width="3"/>

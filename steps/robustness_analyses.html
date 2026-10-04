@@ -43,7 +43,7 @@ th{background:#f5f5f5;font-weight:600;color:#333}
 </style>
 </head>
 <body>
-<div class="correction-banner" style="background:#fff4e5;border:2px solid #d97706;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Pending update (2026-10-02):</strong> The PBS-candidate analyses here (bootstrap confidence intervals, FROH-adjusted association tests) concern candidates that have been withdrawn as reference-file artefacts. The FROH covariate GWAS parts do not depend on PBS but use the older ancestry axes. <a href="deprecated_old_runs.html" style="color:#92400e;font-weight:700">See the list of deprecated old runs and pending updates.</a></div>
+<div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> the PBS-candidate parts (section 2 and the FROH-adjusted candidate test in section 1) are withdrawn because the candidates were reference-file artefacts. The FROH-covariate GWAS and the conditional analyses do not depend on PBS and use Uzbek-only PCs, so they are unaffected by the reference change. <a href="deprecated_old_runs.html">Current and deprecated runs</a>.</div>
 <div class="page-wrapper">
 <aside class="sidebar">
   <h3>Pipeline Steps</h3>
@@ -107,7 +107,7 @@ th{background:#f5f5f5;font-weight:600;color:#333}
        F<sub>ROH</sub> adjustment (p range 0.22&ndash;0.98) &mdash; consistent with the primary model.
        PBS and RPL-GWAS signal are, as expected, independent tracks.</p>
 
-    <h2 id="pbs-boot">2. Bootstrap confidence intervals on PBS candidates</h2>
+    <h2 id="pbs-boot">2. Bootstrap confidence intervals on PBS candidates [WITHDRAWN]</h2><div style="background:#fff4e5;border-left:4px solid #d97706;padding:12px 16px;margin:12px 0;border-radius:6px"><strong>Withdrawn 2026-10-04.</strong> The PBS candidates analysed here are artefacts of the old 1000 Genomes GRCh38 reference file; on the NYGC 30x reference no SNP reaches any PBS tier (maximum PBS<sub>UZB</sub> 0.070; <a href="step10.html">step 10</a>). A confidence interval that excludes zero describes sampling variance around a value computed from wrong reference genotypes, so it supports nothing about selection. Kept for the record only.</div>
     <p>
       1,000 individual-level bootstrap resamples (resampling with replacement within each population),
       Hudson's F<sub>ST</sub> estimator, recomputing PBS<sub>UZB</sub> = (T<sub>UZB-EUR</sub> +
