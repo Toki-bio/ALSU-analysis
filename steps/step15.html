@@ -76,7 +76,7 @@ canvas{display:block;margin:0 auto;max-width:100%}
 .badge-teal{background:#e0f2f1;color:#004d40}
 @media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
 </style>
-</head><body>
+</head><body><div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-04:</strong> section 7 (ancestry &times; ROH) was recomputed on the NYGC-reference ADMIXTURE; ROH and IBD themselves use Uzbek data only and are unaffected by the reference change. External comparison values were removed because they were unsourced. See the <a href="deprecated_old_runs.html">list of current and deprecated runs</a>.</div>
 <div class="page-wrapper">
 
 <!-- ═══════ SIDEBAR ═══════ -->
@@ -175,8 +175,7 @@ These per-individual figures appear in the 2026 interim report (&sect;3.15) and 
 two records agree.</p>
 
 <div class="callout callout-key">
-  <strong>Key finding:</strong> Median F<sub>ROH</sub> = 0.0147 is comparable to outbred European populations
-  (~0.01–0.02) and nearly identical to the original cohort (0.0148). A substantial tail of consanguineous
+  <strong>Key finding:</strong> Median F<sub>ROH</sub> = 0.0147 is nearly identical to the original cohort (0.0148); no external comparison is made (see section 8). A substantial tail of consanguineous
   individuals (35 with F<sub>ROH</sub> &gt; 0.0625, 2.8% of the expanded cohort vs 2.7% originally)
   indicates historical endogamy patterns in a subset of the Uzbek cohort. This is
   directly relevant to pregnancy loss genetics, as elevated autozygosity increases exposure
@@ -251,13 +250,13 @@ two records agree.</p>
   <div class="chart-panel">
     <h3 style="color:#c62828">🔴 Highest F<sub>ROH</sub></h3>
     <table>
-      <thead><tr><th>Individual</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
+      <thead><tr><th>Rank (individual codes not shown)</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
       <tbody>
-        <tr><td><strong>14-79m</strong></td><td>147</td><td>323.72</td><td><span class="badge badge-red">0.1124</span></td></tr>
-        <tr><td>312-AM</td><td>135</td><td>309.01</td><td><span class="badge badge-red">0.1073</span></td></tr>
-        <tr><td>14-20m</td><td>127</td><td>302.60</td><td><span class="badge badge-red">0.1050</span></td></tr>
-        <tr><td>03-160</td><td>127</td><td>293.77</td><td><span class="badge badge-red">0.1020</span></td></tr>
-        <tr><td>02-35</td><td>115</td><td>279.57</td><td><span class="badge badge-amber">0.0970</span></td></tr>
+        <tr><td><strong>#1</strong></td><td>147</td><td>323.72</td><td><span class="badge badge-red">0.1124</span></td></tr>
+        <tr><td>#2</td><td>135</td><td>309.01</td><td><span class="badge badge-red">0.1073</span></td></tr>
+        <tr><td>#3</td><td>127</td><td>302.60</td><td><span class="badge badge-red">0.1050</span></td></tr>
+        <tr><td>#4</td><td>127</td><td>293.77</td><td><span class="badge badge-red">0.1020</span></td></tr>
+        <tr><td>#5</td><td>115</td><td>279.57</td><td><span class="badge badge-amber">0.0970</span></td></tr>
       </tbody>
     </table>
     <p style="font-size:.84em;color:#888;margin-top:10px">
@@ -267,10 +266,10 @@ two records agree.</p>
   <div class="chart-panel">
     <h3 style="color:#2e7d32">🟢 Lowest F<sub>ROH</sub></h3>
     <table>
-      <thead><tr><th>Individual</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
+      <thead><tr><th>Rank (individual codes not shown)</th><th>N<sub>ROH</sub></th><th>Total Mb</th><th>F<sub>ROH</sub></th></tr></thead>
       <tbody>
-        <tr><td><strong>08-227</strong></td><td>12</td><td>15.56</td><td><span class="badge badge-green">0.0054</span></td></tr>
-        <tr><td>08-416</td><td>16</td><td>20.58</td><td><span class="badge badge-green">0.0071</span></td></tr>
+        <tr><td><strong>#1 (lowest)</strong></td><td>12</td><td>15.56</td><td><span class="badge badge-green">0.0054</span></td></tr>
+        <tr><td>#2 (lowest)</td><td>16</td><td>20.58</td><td><span class="badge badge-green">0.0071</span></td></tr>
       </tbody>
     </table>
     <p style="font-size:.84em;color:#888;margin-top:10px">
@@ -465,38 +464,38 @@ two records agree.</p>
 
 <!-- ════════════════════ 7. ADMIXTURE × ROH ════════════════════ -->
 <hr class="section-divider">
-<h2 id="admix-roh">7. ADMIXTURE × ROH Cross-Reference</h2>
-
-<div class="callout callout-key">
-  <strong>Updated with expanded-cohort data (2026-08-15):</strong> Step 11's Uzbek-only ADMIXTURE rerun
-  (single seed, K=2&ndash;8) is now complete — see <a href="step11.html">Step 11</a> for the full
-  methodology and CV-error stability results. This section now reflects the expanded cohort's own K=2
-  Q-values, not the original cohort's.
-</div>
-
-<p>
-  Using ADMIXTURE K=2 ancestry proportions (Q2: European-like component, mean 0.615; Q1: East Asian-like
-  component, mean 0.385; expanded cohort, 1,256 samples), we can examine whether
-  autozygosity varies by ancestry proportion.
-  In admixed populations, individuals with more homogeneous ancestry (one dominant component) may
-  show elevated homozygosity due to assortative mating within subgroups.
-</p>
-
-<div class="chart-wrap">
-  <canvas id="admixRohScatter" width="800" height="400"></canvas>
-</div>
-
-<div class="callout callout-info">
-  <strong>Expected pattern:</strong> In a single-pulse admixture, F<sub>ROH</sub> should be somewhat
-  elevated at both extremes of the ancestry distribution (Q1 &lt; 0.3 or Q1 &gt; 0.8) where individuals
-  are genetically more homogeneous, and lower in the middle where recombination between ancestral
-  haplotypes breaks up long homozygous blocks. Deviations suggest ongoing substructure or
-  community-level endogamy.
-</div>
-
-<!-- ════════════════════ 8. CLINICAL RELEVANCE ════════════════════ -->
-<hr class="section-divider">
-<h2 id="clinical">8. Clinical Relevance for Pregnancy Loss</h2>
+<!--NYGC:step15:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc"><h2 id="admix-roh">7. ADMIXTURE &times; ROH Cross-Reference (rebuilt 2026-10-04 on NYGC K=4)</h2>
+<p>The earlier version of this section described an expected pattern but showed no result, and it used an Uzbek-only K=2 run. It is replaced by a computed comparison of each person&rsquo;s F<sub>ROH</sub> with their ancestry components from the NYGC-reference ADMIXTURE K=4 run (expanded cohort, seed 11, <a href="step11.html">step 11</a>), joined by sample ID (1,256 of 1,256 cohort samples have both). Check on the join: the F<sub>ROH</sub> computed here has mean 0.0188 and median 0.0147, the values given in section 2, with 35 samples above 0.0625 as stated there.</p>
+<table><thead><tr><th>Ancestry component</th><th>Tertile bounds (low/mid cut-points)</th><th>Median F<sub>ROH</sub>, lowest third</th><th>middle third</th><th>highest third</th><th>Spearman &rho; (all 1,256)</th><th>Spearman &rho; (self-reported Uzbeks, n = 836)</th></tr></thead><tbody><tr><td>EUR-like</td><td>0.46 / 0.50</td><td>0.0154 (mean 0.0205, n=419)</td><td>0.0145 (mean 0.0186, n=418)</td><td>0.0141 (mean 0.0173, n=419)</td><td>-0.17 (6.3e-10)</td><td>-0.18 (8.2e-08)</td></tr><tr><td>EAS-like</td><td>0.27 / 0.32</td><td>0.0142 (mean 0.0176, n=419)</td><td>0.0142 (mean 0.0178, n=418)</td><td>0.0157 (mean 0.0210, n=419)</td><td>+0.17 (1.5e-09)</td><td>+0.19 (2.1e-08)</td></tr><tr><td>SAS-like</td><td>0.19 / 0.23</td><td>0.0154 (mean 0.0185, n=419)</td><td>0.0147 (mean 0.0190, n=418)</td><td>0.0140 (mean 0.0189, n=419)</td><td>-0.11 (7.2e-05)</td><td>-0.13 (1.0e-04)</td></tr></tbody></table>
+<div class="box key"><strong>Result.</strong> F<sub>ROH</sub> is weakly but consistently associated with ancestry: it is lower in people with more EUR-like ancestry (&rho; = -0.17), higher in people with more EAS-like ancestry (&rho; = +0.17) and slightly lower with more SAS-like ancestry (&rho; = -0.11). The same direction holds among self-reported Uzbeks alone (-0.18, +0.19, -0.13). The effect is small: median F<sub>ROH</sub> moves from 0.0142 to 0.0157 between the lowest and highest third of EAS-like ancestry, against a spread (interquartile range 0.0126&ndash;0.0180) many times larger. The consanguineous tail (F<sub>ROH</sub> &gt; 0.0625, n = 35) is not clearly enriched for any component; the nominal p = 0.03 for EUR-like (lower in the tail) does not survive correction for three tests (mean EUR-like 0.46 vs 0.50 in the rest, p = 0.03; EAS-like 0.32 vs 0.30, p = 0.11; SAS-like 0.21 vs 0.19, p = 0.24).</div>
+<p><strong>The U-shape that was predicted is not seen.</strong> The earlier text expected higher F<sub>ROH</sub> at both extremes of the ancestry distribution. A quadratic term in a regression of F<sub>ROH</sub> on each component is not significant (t = 1.3 for EUR-like, -0.1 for EAS-like, 1.4 for SAS-like); the relation is monotone and weak.</p>
+<p><strong>Caution on interpretation.</strong> This is an association, not an explanation. ROH detection on imputed array data depends on how well each ancestry&rsquo;s haplotypes are imputed, so the EAS-like trend could partly reflect imputation quality or reference-panel coverage rather than mating patterns; this was not tested. Because ancestry and F<sub>ROH</sub> are correlated (|&rho;| up to 0.17), models that use F<sub>ROH</sub> as a covariate should also include ancestry or PCs.</p>
+</div><!--NYGC:step15:END--><h2 id="clinical">8. Clinical Relevance for Pregnancy Loss</h2>
 
 <div class="callout callout-clinical">
   <strong>Clinical context:</strong> Elevated autozygosity (F<sub>ROH</sub>) has been consistently
@@ -515,10 +514,10 @@ two records agree.</p>
   <div class="chart-panel">
     <h3>Population-level</h3>
     <ul>
-      <li>Median F<sub>ROH</sub> = 0.0147 — comparable to outbred European and South Asian populations, nearly identical to the original cohort (0.0148)</li>
+      <li>Median F<sub>ROH</sub> = 0.0147, nearly identical to the original cohort (0.0148)</li>
       <li>~2.8% of individuals (35) have F<sub>ROH</sub> &gt; 0.0625, suggesting 1st-cousin-level parental consanguinity</li>
       <li>Minimal cryptic relatedness (11 pairs at 2nd degree or closer in 1,256 samples)</li>
-      <li>Consistent with historical preference for endogamous marriages in Uzbek communities</li>
+      <li>Whether the tail reflects endogamous marriage customs was not tested here (no pedigree or marriage data were analysed)</li>
     </ul>
   </div>
   <div class="chart-panel">
@@ -532,19 +531,7 @@ two records agree.</p>
   </div>
 </div>
 
-<h3>F<sub>ROH</sub> vs. published populations</h3>
-<table>
-  <thead>
-    <tr><th>Population</th><th>Typical median F<sub>ROH</sub></th><th>Relative to UZB</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>UK Biobank (British)</td><td>0.008–0.012</td><td><span class="badge badge-green">3–4× lower</span></td></tr>
-    <tr><td>South Asian (1000G SAS)</td><td>0.015–0.025</td><td><span class="badge badge-green">1.3–2× lower</span></td></tr>
-    <tr><td><strong>Uzbek (this study)</strong></td><td><strong>0.0147</strong></td><td><span class="badge badge-teal">Reference</span></td></tr>
-    <tr><td>Qatar / Saudi populations</td><td>0.040–0.060</td><td><span class="badge badge-amber">1.3–1.9× higher</span></td></tr>
-    <tr><td>Isolated populations (e.g., Amish)</td><td>0.060–0.120</td><td><span class="badge badge-red">2–4× higher</span></td></tr>
-  </tbody>
-</table>
+<h3>F<sub>ROH</sub> vs. published populations</h3><div class="callout callout-info" style="margin:12px 0;padding:12px 16px">The comparison table that stood here (UK Biobank, 1000G SAS, Qatar/Saudi, Amish) is removed: its values have no source in the project records, and one row was internally inconsistent (&ldquo;3&ndash;4&times; lower&rdquo; for 0.008&ndash;0.012 against 0.0147). F<sub>ROH</sub> depends strongly on the SNP set, the minimum ROH length and the calling parameters, so values from other studies are not comparable without recomputing them with the same pipeline.</div>
 
 <!-- ════════════════════ 9. METHODS ════════════════════ -->
 <hr class="section-divider">
