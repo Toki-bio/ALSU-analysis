@@ -217,7 +217,7 @@ STILL OUTSTANDING (as of this writing):
         <div class="content">
 
             <!-- ═══════ EXPANDED COHORT RESULTS (Aug 2026) ═══════ -->
-            <h2 style="border-bottom:3px solid #16a34a;">CURRENT RESULTS (NYGC 30x reference, 2026-10-02)</h2>
+            <h2 style="border-bottom:3px solid #16a34a;">CURRENT RESULTS (NYGC 30x reference, 2026-10-02; extended 2026-10-04)</h2>
 <p><strong>Reference:</strong> 1000 Genomes high-coverage (NYGC) GRCh38, EUR/EAS/SAS/AFR, 2,712 samples (AMR not included). The Uzbek-cohort sites were extracted from it, merged with the cohort, and filtered (call rate, MAF 1%, strand-ambiguous A/T and C/G SNPs removed, long-range LD regions removed, LD pruning 50/5/0.2). ADMIXTURE K=2&ndash;8, cross-validation 5-fold, 3 seeds (1,047 cohort) or 2 seeds (1,256 cohort); PCA 20 components.</p>
 <table>
 <tr><th></th><th>Cohort of 1,047</th><th>Expanded cohort of 1,256</th></tr>
@@ -241,7 +241,50 @@ STILL OUTSTANDING (as of this writing):
 <img src="../images/step11_admix_K5_nygc_1256.png" style="max-width:100%;margin:6px 0" alt="ADMIXTURE K=5">
 <img src="../images/step11_admix_K7_nygc_1256.png" style="max-width:100%;margin:6px 0" alt="ADMIXTURE K=7">
 <p><em>The 1,047-sample cohort gives the same picture; its figures are not shown.</em></p>
-<h2 style="border-bottom:3px solid #dc2626;color:#991b1b;">DEPRECATED OLD RUNS &mdash; everything below is kept for the record and must not be cited</h2>
+<!--NYGC:step11:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2 style="border-bottom:3px solid #16a34a;">ANCESTRY BY SELF-REPORTED GROUP, KEYED BY SAMPLE ID (added 2026-10-04)</h2>
+<p>The earlier statement &ldquo;ethnicity is not significant for ADMIXTURE&rdquo; came from joining nationality codes to samples by line position. It is withdrawn. Below, the phenotype sheet (<code>GWAS от 27.08 - For_Plink.csv</code>) is joined to the K=4 ADMIXTURE result (expanded cohort, seed 11, <code>nygc30x_1256/adm/s11/adm_in.4.Q</code>) <strong>by sample ID only</strong>. 968 of the 1,256 cohort samples have a phenotype row with one of the seven listed nationality codes (1,057 match by ID at all; the 2026 batch largely lacks phenotype rows; nationality &ldquo;Other&rdquo; and &ldquo;Missing&rdquo; are not shown). K=4 components were named by the reference means (EUR-like 0.97 in EUR, EAS-like 1.00 in EAS, SAS-like 0.89 in SAS; AFR-like is about 0 in the cohort and not shown).</p>
+<table><thead><tr><th>Self-reported nationality</th><th>n</th><th>EUR-like (mean &plusmn; SD)</th><th>EAS-like</th><th>SAS-like</th></tr></thead><tbody><tr><td>Uzbek</td><td>836</td><td>0.48 &plusmn; 0.07</td><td>0.31 &plusmn; 0.09</td><td>0.21 &plusmn; 0.05</td></tr><tr><td>Russian</td><td>43</td><td>0.85 &plusmn; 0.15</td><td>0.09 &plusmn; 0.08</td><td>0.06 &plusmn; 0.07</td></tr><tr><td>Tajik</td><td>24</td><td>0.56 &plusmn; 0.13</td><td>0.22 &plusmn; 0.09</td><td>0.22 &plusmn; 0.09</td></tr><tr><td>Tatar</td><td>23</td><td>0.72 &plusmn; 0.14</td><td>0.21 &plusmn; 0.10</td><td>0.07 &plusmn; 0.05</td></tr><tr><td>Korean</td><td>22</td><td>0.11 &plusmn; 0.18</td><td>0.87 &plusmn; 0.23</td><td>0.02 &plusmn; 0.06</td></tr><tr><td>Kazakh</td><td>11</td><td>0.39 &plusmn; 0.04</td><td>0.50 &plusmn; 0.09</td><td>0.10 &plusmn; 0.06</td></tr><tr><td>Karakalpak</td><td>9</td><td>0.44 &plusmn; 0.04</td><td>0.42 &plusmn; 0.08</td><td>0.14 &plusmn; 0.06</td></tr></tbody></table>
+<p>Reading: Russians are 85% EUR-like and Tatars 72%, Koreans 87% EAS-like, Kazakhs and Karakalpaks have a large EAS-like share (50% and 42%), and Tajiks (n = 24) are 56% EUR-like, 22% EAS-like and 22% SAS-like, somewhat more EUR-like and less EAS-like than Uzbeks, but the group is small. Self-reported Uzbeks (n = 836) are 48% EUR-like, 31% EAS-like and 21% SAS-like, with large individual spread (see the figure above). Group means describe groups, not individuals.</p>
+<h3>Tests, with controls</h3>
+<table><thead><tr><th>Test (Kruskal&ndash;Wallis, ID-keyed)</th><th>EUR-like</th><th>EAS-like</th><th>SAS-like</th><th>Purpose</th></tr></thead><tbody><tr><td>Self-reported nationality (7 groups, n &ge; 5)</td><td>9.3e-43</td><td>2.6e-46</td><td>1.7e-42</td><td>the real test</td></tr><tr><td>Same test, nationality labels randomly permuted (200 times)</td><td>median p 0.52; 7% below 0.05</td><td>median p 0.45; 4% below 0.05</td><td>median p 0.51; 5% below 0.05</td><td>negative control: should give p near 0.5 and about 5% below 0.05</td></tr><tr><td>NYGC reference samples by superpopulation label (EUR/EAS/SAS/AFR)</td><td>&lt; 1e-300</td><td>&lt; 1e-300</td><td>&lt; 1e-300</td><td>positive control: must be highly significant</td></tr><tr><td>Birthplace among self-reported Uzbeks (13 regions with n &ge; 10)</td><td>2.0e-26</td><td>6.3e-25</td><td>3.2e-16</td><td>second real test</td></tr></tbody></table>
+<p>The real test is overwhelmingly significant for all three components; the permuted-label control behaves as it should (median p about 0.5, 4&ndash;7% below 0.05), and the positive control is significant to the limit of floating-point precision. This confirms that the join is correct and that the result is not an artefact of group sizes.</p>
+<h3>Birthplace within self-reported Uzbeks</h3>
+<table><thead><tr><th>Region of birth</th><th>n</th><th>EUR-like</th><th>EAS-like</th><th>SAS-like</th></tr></thead><tbody><tr><td>Tashkent (city)</td><td>356</td><td>0.49 &plusmn; 0.07</td><td>0.30 &plusmn; 0.07</td><td>0.21 &plusmn; 0.04</td></tr><tr><td>Tashkent Region</td><td>123</td><td>0.48 &plusmn; 0.09</td><td>0.32 &plusmn; 0.11</td><td>0.20 &plusmn; 0.05</td></tr><tr><td>Jizzakh</td><td>81</td><td>0.44 &plusmn; 0.05</td><td>0.37 &plusmn; 0.09</td><td>0.18 &plusmn; 0.05</td></tr><tr><td>Kashkadarya</td><td>50</td><td>0.47 &plusmn; 0.08</td><td>0.31 &plusmn; 0.09</td><td>0.22 &plusmn; 0.05</td></tr><tr><td>Samarkand</td><td>44</td><td>0.48 &plusmn; 0.05</td><td>0.30 &plusmn; 0.09</td><td>0.22 &plusmn; 0.06</td></tr><tr><td>Khorezm</td><td>41</td><td>0.54 &plusmn; 0.04</td><td>0.25 &plusmn; 0.05</td><td>0.21 &plusmn; 0.03</td></tr><tr><td>Bukhara</td><td>26</td><td>0.53 &plusmn; 0.03</td><td>0.19 &plusmn; 0.04</td><td>0.27 &plusmn; 0.04</td></tr><tr><td>Fergana</td><td>25</td><td>0.46 &plusmn; 0.04</td><td>0.33 &plusmn; 0.05</td><td>0.21 &plusmn; 0.04</td></tr><tr><td>Syrdarya</td><td>21</td><td>0.47 &plusmn; 0.08</td><td>0.33 &plusmn; 0.08</td><td>0.19 &plusmn; 0.06</td></tr><tr><td>Surxondaryo</td><td>18</td><td>0.46 &plusmn; 0.07</td><td>0.32 &plusmn; 0.12</td><td>0.22 &plusmn; 0.08</td></tr><tr><td>Namangan</td><td>15</td><td>0.47 &plusmn; 0.03</td><td>0.31 &plusmn; 0.05</td><td>0.22 &plusmn; 0.04</td></tr><tr><td>Karakalpakstan</td><td>10</td><td>0.52 &plusmn; 0.16</td><td>0.32 &plusmn; 0.14</td><td>0.15 &plusmn; 0.06</td></tr><tr><td>Navoiy</td><td>10</td><td>0.47 &plusmn; 0.02</td><td>0.29 &plusmn; 0.07</td><td>0.23 &plusmn; 0.04</td></tr></tbody></table>
+<p>820 self-reported Uzbeks with a region of birth in one of the 13 regions with at least 10 people. Differences are significant (table above), but they are small in absolute terms: regional means of the EUR-like share range from 0.44 to 0.54 and of the EAS-like share from 0.19 to 0.37. Regions with n &lt; 30 are noisy. The significance comes mostly from the largest regions (Tashkent city n = 356); the test does not say which regions differ.</p>
+
+<h3>Cross-check of the K=4 proportions without ADMIXTURE</h3>
+<p>The ADMIXTURE K=4 means for the Uzbek cohort (EUR-like 0.50, EAS-like 0.30, SAS-like 0.19, AFR-like 0.00) were checked against an independent method: a non-negative least-squares fit of Uzbek allele frequencies as a mixture of the four reference allele frequencies over 74,171 SNPs (<a href="step9.html">step 9</a>). The fit gives EUR 49%, EAS 28%, SAS 23%, AFR 0% and predicts the observed Uzbek frequency with r = 0.994. The two methods agree on the shares of EUR and EAS within a few points; the fit gives more weight to SAS (23% vs 19%) and the sum is the same by construction. Neither method proves that these sources are the true ancestral populations: the reference panel has no Central Asian groups, which is why K=7 finds a component that no reference carries.</p>
+<h3>PCA percentages</h3>
+<p>The table above quotes PC1/PC2 as shares of the first 20 PCs (55.0% / 23.4% for the expanded cohort). <a href="step8.html">Step 8</a> and the report use shares of the first 10 PCs (59.0% / 25.1%). Same PCA, different denominators; neither is a share of total variance.</p>
+<h3>One sample with a mostly African-like profile</h3>
+<p>One cohort sample has an AFR-like component of 0.90 at K=4 and lies inside the African reference cluster in the PCA (<a href="step8.html">step 8</a>). It has not been excluded from any analysis and has been flagged for a provenance check.</p>
+</div><!--NYGC:step11:END--><h2 style="border-bottom:3px solid #dc2626;color:#991b1b;">DEPRECATED OLD RUNS &mdash; everything below is kept for the record and must not be cited</h2>
 <p>The sections below describe the older global runs (1000 Genomes GRCh38 phase-3-era panel with 2,548 reference samples, K=5, 54,718 markers) and the earlier ethnicity test with the sample-matching error. See <a href="deprecated_old_runs.html">deprecated old runs and pending updates</a>.</p>
 <h2 style="border-bottom:3px solid #4caf50;">0. Expanded Cohort Results (August 2026)</h2>
 
