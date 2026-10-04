@@ -100,19 +100,88 @@
         <div class="header">
             <a href="../index.html" class="back-link">&larr; Back to Roadmap</a>
             <h1>Step 13: LD Analysis</h1>
-            <p>Linkage disequilibrium clumping of PBS candidates and genome-wide LD decay estimation</p>
-            <span class="step-badge">✓ Expanded cohort — August 2026 (1,256 samples)</span>
-            <span class="step-badge step-badge-old">Original cohort (1,047 samples) — March 2026</span>
+            <p>Genome-wide LD decay in the Uzbek cohort compared with the NYGC reference populations</p>
+            <span class="step-badge">✓ NYGC 30x reference, expanded cohort (1,256 samples) — rebuilt 2026-10-04</span>
+            
             <a href="archive/step13_original_cohort_1047_2026-01.html" style="display:inline-block;margin-top:10px;color:rgba(255,255,255,0.85);font-size:0.85em;text-decoration:underline;">&#8592; View original 1,047-sample cohort results (archived, not directly comparable on this page)</a>
         </div>
-        <div class="info-box" style="margin:20px 30px 0;">
-            <strong>Cohort expansion (August 2026):</strong> This page reflects the expanded cohort. Step 10's PBS
-            candidate list changed from 8 to 5 Tier-1 SNPs after the population-mislabeling bug fix (see
-            <a href="step10.html">Step 10</a>), so this page now analyzes 5 candidates, not 8.
-        </div>
+        
 
         <div class="content">
+<!--NYGC:step13:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2>1. Overview</h2>
+<p>Linkage disequilibrium (LD) is the non-random association between alleles at nearby variants, measured here as r&sup2; between pairs of SNPs. How fast it decays with distance reflects population history: effective population size, bottlenecks and admixture all leave a mark. This step characterises LD in the Uzbek cohort and compares it with the four NYGC reference groups on exactly the same SNPs.</p>
+<div class="box warn"><strong>This page was rebuilt on 2026-10-04.</strong> The earlier version of this step asked whether the &ldquo;PBS candidate&rdquo; SNPs of step 10 were independent loci (PLINK clumping, pairwise r&sup2;). Those candidates are withdrawn as artefacts of the old 1000G reference file (see <a href='step10_pbs_candidates.html'>step10_pbs_candidates</a>), so that analysis has no object any more; its text is kept collapsed at the bottom. What remains and is new here is the LD-decay comparison, recomputed on the NYGC reference.</div>
+<div class="cards"><div class="card"><div class="num">30,000</div><div class="lab">random SNVs (seed 42)</div></div><div class="card"><div class="num">1,256</div><div class="lab">Uzbek samples</div></div><div class="card"><div class="num">2,712</div><div class="lab">NYGC reference samples</div></div><div class="card"><div class="num">&le; 2 Mb</div><div class="lab">pair distance</div></div><div class="card"><div class="num">0.05</div><div class="lab">minimum MAF in each group</div></div></div>
 
+<h2>2. Data and method</h2>
+<ul>
+<li><strong>Uzbek data:</strong> imputed, quality-filtered genotypes of the expanded cohort (<code>imputation_results/hq_filtered/UZB_imputed_HQ_qc</code>, 1,256 samples, 5,358,770 variants) on DRAGEN. From its 3,298,098 single-nucleotide variants with Uzbek MAF &ge; 0.05, 30,000 were drawn at random (fixed seed, all chromosomes).</li>
+<li><strong>Reference data:</strong> the same 30,000 positions were extracted from the NYGC 30x GRCh38 VCFs (biallelic SNVs only) for EUR (633), EAS (585), SAS (601) and AFR (893). Each group was analysed separately.</li>
+<li><strong>r&sup2;:</strong> PLINK 1.9 <code>--r2 --ld-window-kb 2000 --ld-window 99999 --ld-window-r2 0</code>, all SNP pairs on the same chromosome within 2 Mb, with <code>--maf 0.05</code> applied within each group. Pairs were binned by distance and r&sup2; averaged per bin. Because the SNP set is the same, differences between groups are not due to different sites; because MAF is filtered within each group, the pair sets overlap but are not identical.</li>
+<li><strong>Sample-size baseline:</strong> r&sup2; computed from n individuals has an expected value of about 1/n even for unlinked SNPs (0.0008 for n = 1,256; 0.0016 for n = 633). The second table subtracts 1/n from every mean so that groups of different size can be compared at long distance.</li>
+<li>Script <code>/staging/tmp/ld13.sh</code>; output <code>/staging/tmp/scratch/ld13_full/</code> on DRAGEN (<code>ld_bins.json</code> and per-chromosome r&sup2; files); log <code>/staging/tmp/ld13_full.out</code>. It was toy-tested on chromosome 22 before the full run.</li>
+</ul>
+
+<h2>3. Results</h2>
+<img src="../images/nygc_ld_decay.png" alt="Mean r&amp;sup2; by distance, five groups, same 30,000 SNPs. Left: raw. Right: after subtracting the 1/n sample-size baseline."><p class="cap">Mean r&sup2; by distance, five groups, same 30,000 SNPs. Left: raw. Right: after subtracting the 1/n sample-size baseline.</p>
+<h3>Mean r&sup2; by distance (raw)</h3>
+<table><thead><tr><th>Distance (kb)</th><th>UZB (n=1,256)</th><th>EUR (n=633)</th><th>SAS (n=601)</th><th>EAS (n=585)</th><th>AFR (n=893)</th></tr></thead><tbody><tr><td>0&ndash;10</td><td>0.4475</td><td>0.4875</td><td>0.4707</td><td>0.5238</td><td>0.3958</td></tr><tr><td>10&ndash;25</td><td>0.3001</td><td>0.3310</td><td>0.3130</td><td>0.3638</td><td>0.2206</td></tr><tr><td>25&ndash;50</td><td>0.2019</td><td>0.2287</td><td>0.2082</td><td>0.2446</td><td>0.1292</td></tr><tr><td>50&ndash;100</td><td>0.1203</td><td>0.1388</td><td>0.1247</td><td>0.1457</td><td>0.0680</td></tr><tr><td>100&ndash;200</td><td>0.0616</td><td>0.0735</td><td>0.0630</td><td>0.0738</td><td>0.0323</td></tr><tr><td>200&ndash;500</td><td>0.0205</td><td>0.0251</td><td>0.0212</td><td>0.0225</td><td>0.0112</td></tr><tr><td>500&ndash;1000</td><td>0.0058</td><td>0.0072</td><td>0.0063</td><td>0.0061</td><td>0.0037</td></tr><tr><td>1000&ndash;2000</td><td>0.0025</td><td>0.0032</td><td>0.0030</td><td>0.0031</td><td>0.0021</td></tr></tbody></table>
+<h3>Mean r&sup2; minus 1/n</h3>
+<table><thead><tr><th>Distance (kb)</th><th>UZB (n=1,256)</th><th>EUR (n=633)</th><th>SAS (n=601)</th><th>EAS (n=585)</th><th>AFR (n=893)</th></tr></thead><tbody><tr><td>0&ndash;10</td><td>0.4468</td><td>0.4860</td><td>0.4690</td><td>0.5221</td><td>0.3947</td></tr><tr><td>10&ndash;25</td><td>0.2993</td><td>0.3294</td><td>0.3113</td><td>0.3621</td><td>0.2195</td></tr><tr><td>25&ndash;50</td><td>0.2011</td><td>0.2272</td><td>0.2065</td><td>0.2429</td><td>0.1281</td></tr><tr><td>50&ndash;100</td><td>0.1195</td><td>0.1372</td><td>0.1231</td><td>0.1440</td><td>0.0669</td></tr><tr><td>100&ndash;200</td><td>0.0608</td><td>0.0719</td><td>0.0613</td><td>0.0721</td><td>0.0312</td></tr><tr><td>200&ndash;500</td><td>0.0197</td><td>0.0235</td><td>0.0196</td><td>0.0208</td><td>0.0101</td></tr><tr><td>500&ndash;1000</td><td>0.0050</td><td>0.0056</td><td>0.0046</td><td>0.0044</td><td>0.0026</td></tr><tr><td>1000&ndash;2000</td><td>0.0017</td><td>0.0016</td><td>0.0013</td><td>0.0014</td><td>0.0009</td></tr></tbody></table>
+<h3>Number of SNP pairs per bin</h3>
+<table><thead><tr><th>Distance (kb)</th><th>UZB (n=1,256)</th><th>EUR (n=633)</th><th>SAS (n=601)</th><th>EAS (n=585)</th><th>AFR (n=893)</th></tr></thead><tbody><tr><td>0&ndash;10</td><td>6,529</td><td>5,306</td><td>5,683</td><td>4,620</td><td>4,627</td></tr><tr><td>10&ndash;25</td><td>7,814</td><td>6,266</td><td>6,673</td><td>5,301</td><td>5,353</td></tr><tr><td>25&ndash;50</td><td>11,782</td><td>9,258</td><td>10,027</td><td>7,777</td><td>8,000</td></tr><tr><td>50&ndash;100</td><td>21,452</td><td>16,719</td><td>18,068</td><td>14,013</td><td>14,270</td></tr><tr><td>100&ndash;200</td><td>40,066</td><td>30,897</td><td>33,496</td><td>25,935</td><td>26,611</td></tr><tr><td>200&ndash;500</td><td>113,291</td><td>86,681</td><td>94,513</td><td>72,533</td><td>74,793</td></tr><tr><td>500&ndash;1000</td><td>178,913</td><td>136,992</td><td>149,493</td><td>113,141</td><td>118,019</td></tr><tr><td>1000&ndash;2000</td><td>354,824</td><td>271,366</td><td>297,534</td><td>226,753</td><td>237,337</td></tr></tbody></table>
+<h3>Distance at which mean r&sup2; first falls below a threshold</h3>
+<table><thead><tr><th>Group</th><th>&lt; 0.2</th><th>&lt; 0.1</th><th>&lt; 0.05</th><th>&lt; 0.01</th></tr></thead><tbody><tr><td>UZB</td><td>50&ndash;100 kb</td><td>100&ndash;200 kb</td><td>200&ndash;500 kb</td><td>500&ndash;1000 kb</td></tr><tr><td>EUR</td><td>50&ndash;100 kb</td><td>100&ndash;200 kb</td><td>200&ndash;500 kb</td><td>500&ndash;1000 kb</td></tr><tr><td>SAS</td><td>50&ndash;100 kb</td><td>100&ndash;200 kb</td><td>200&ndash;500 kb</td><td>500&ndash;1000 kb</td></tr><tr><td>EAS</td><td>50&ndash;100 kb</td><td>100&ndash;200 kb</td><td>200&ndash;500 kb</td><td>500&ndash;1000 kb</td></tr><tr><td>AFR</td><td>25&ndash;50 kb</td><td>50&ndash;100 kb</td><td>100&ndash;200 kb</td><td>500&ndash;1000 kb</td></tr></tbody></table>
+
+<h2>4. Interpretation</h2>
+<div class="box key"><strong>The Uzbek LD curve lies with the Eurasian groups, not with the African group.</strong> At 0&ndash;10 kb the mean r&sup2; is 0.448 (UZB), 0.488 (EUR), 0.471 (SAS), 0.524 (EAS) and 0.396 (AFR). The African group decays fastest at every distance (shorter haplotypes, as expected for a population with a larger long-term effective size). The Uzbek curve is closest to South Asian and European, slightly below East Asian at short range.</div>
+<ul>
+<li><strong>No excess long-range LD.</strong> At 1&ndash;2 Mb the baseline-corrected r&sup2; is 0.0017 for UZB, 0.0016 for EUR and 0.0013 for SAS: indistinguishable. Recent or ongoing admixture between differentiated sources would raise long-range LD above that of the parental groups; this is not seen in a 30,000-SNP sample. This does not rule out older admixture (generations ago LD between ancestry blocks has long since decayed) and it is not a date for it.</li>
+<li><strong>Short-range LD in the Uzbek group is slightly lower than in EUR, SAS and EAS.</strong> The difference is about 5&ndash;15% (for example 0.448 vs 0.488 at 0&ndash;10 kb). Possible causes that this analysis cannot separate: a larger effective population size or mixed ancestry (more haplotype diversity), and the fact that the Uzbek genotypes are imputed from an array while the reference is sequencing-based (imputation errors lower r&sup2; at short distance). It should not be read as a population-history result by itself.</li>
+<li>The earlier version of this page reported r&sup2; = 0.207 in the first 50 kb bin and 0.069 in the next, from 3,000 SNPs with no MAF filter. The numbers are not comparable: rare SNPs have lower r&sup2;, and this analysis keeps only SNPs with MAF &ge; 0.05 in each group (the corresponding 25&ndash;50 kb bin here is 0.202, the 50&ndash;100 kb bin 0.120).</li>
+</ul>
+
+<h2>5. What happened to the PBS-candidate LD analysis</h2>
+<table><thead><tr><th>Earlier statement</th><th>Status now</th></tr></thead><tbody><tr><td>&ldquo;5 PBS candidates, 5 clumps, 0 pairs with r&sup2; &ge; 0.1: all independent loci&rdquo; (expanded cohort); &ldquo;8 candidates&rdquo; (original cohort)</td><td>Withdrawn. The candidate SNPs come from the old 1000G reference file and are not differentiated on NYGC (see <a href='step10_pbs_candidates.html'>step10_pbs_candidates</a>). The finding &ldquo;independent loci&rdquo; was true but uninformative: the sites are on different chromosomes or tens of Mb apart.</td></tr><tr><td>&ldquo;LD decay: 0.207 &rarr; 0.069, background by 1,500 kb&rdquo;</td><td>Replaced by the table above (different SNP set and MAF filter; see section 4).</td></tr><tr><td>&ldquo;Pattern consistent with admixed Central Asian population history&rdquo;</td><td>Not supported by this analysis: no excess long-range LD relative to EUR/SAS. See section 4.</td></tr></tbody></table>
+
+<h2>6. Limitations</h2>
+<ul>
+<li>Imputed (Uzbek) versus sequenced (reference) genotypes are not equivalent; see section 4.</li>
+<li>The baseline correction uses the approximation E[r&sup2;] &asymp; 1/n and ignores relatedness: the NYGC reference includes related individuals (not removed) while the Uzbek set went through the project&rsquo;s own relatedness QC; unequal relatedness can shift LD estimates slightly.</li>
+<li>One random sample of 30,000 SNPs was analysed; the sampling error of the bin means was not estimated, but each bin contains thousands of pairs.</li>
+</ul>
+<h2>7. Next steps</h2>
+<ul>
+<li><a href="step14.html">Step 14: F<sub>ST</sub> &amp; MDS</a> &mdash; the pairwise F<sub>ST</sub> matrix and its MDS.</li>
+<li><a href="step15.html">Step 15: ROH &amp; IBD</a> &mdash; runs of homozygosity and identity by descent.</li>
+</ul>
+</div><!--NYGC:step13:END--><!--NYGC:step13:OLDBEGIN--><details class="nygc-old"><summary>ARCHIVED, not current: previous version of this page (clumping of PBS candidates, 3,000-SNP LD decay, August 2026). Candidate analysis withdrawn; do not cite.</summary>
             <h2>1. Overview</h2>
             <p>
                 To determine whether the 5 PBS candidate SNPs from <a href="step10.html">Step 10</a> (expanded
@@ -294,7 +363,7 @@ awk 'NR>1 {                                    # NR>1: skip header row
             <ul>
                 <li><a href="step14.html">Step 14: Fst &amp; MDS</a> &mdash; Pairwise F<sub>ST</sub> matrix and multidimensional scaling across all populations.</li>
                 <li><a href="step15.html">Step 15: ROH &amp; IBD</a> &mdash; Runs of homozygosity and identity-by-descent analysis.</li>
-            </ul>
+            </ul></details><!--NYGC:step13:OLDEND-->
 
         </div>
     </div>
