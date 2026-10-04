@@ -53,20 +53,20 @@
         .footer {background: #f5f5f5; padding: 20px 30px; text-align: center; color: #666; font-size: 0.9em; border-top: 1px solid #ddd;}
     </style>
 </head>
-<body>
+<body><div style="background:#fee2e2;border:2px solid #dc2626;padding:10px 14px;margin:10px 0;font:14px/1.4 Segoe UI,Arial,sans-serif;color:#1f2937"><strong>Archived page (2026-10-04 audit).</strong> This file is a draft, backup or older version that is not part of the current pipeline. Numbers may be outdated or withdrawn. See the <a href="../../steps/archive/index.html">archive index</a> and the <a href="../../steps/deprecated_old_runs.html">list of deprecated runs</a>.</div>
     <div class="page-wrapper">
         <!-- LEFT SIDEBAR -->
         <aside class="sidebar">
             <h3>Pipeline Steps</h3>
             <div class="roadmap-mini">
-                <a href="step1.html">Step 1: Missingness</a>
-                <a href="step2.html">Step 2: IBD Dedup</a>
-                <a href="step3.html">Step 3: SNP QC</a>
-                <a href="step4.html">Step 4: Imputation</a>
-                <a href="step5.html">Step 5: ID Normalize</a>
-                <a href="step6.html">Step 6: Final QC</a>
-                <a href="step7.html" class="current">Step 7: PCA Analysis</a>
-                <a href="step8.html">Step 8: Global PCA</a>
+                <a href="../step1.html">Step 1: Missingness</a>
+                <a href="../step2.html">Step 2: IBD Dedup</a>
+                <a href="../step3.html">Step 3: SNP QC</a>
+                <a href="../step4.html">Step 4: Imputation</a>
+                <a href="../step5.html">Step 5: ID Normalize</a>
+                <a href="../step6.html">Step 6: Final QC</a>
+                <a href="../step7.html" class="current">Step 7: PCA Analysis</a>
+                <a href="../step8.html">Step 8: Global PCA</a>
             </div>
         </aside>
         
@@ -78,7 +78,7 @@
             <div class="search-results" id="searchResults"></div>
             
             <div class="header">
-                <a href="../index.html" class="back-link">← Back to Roadmap</a>
+                <a href="../../index.html" class="back-link">← Back to Roadmap</a>
                 <h1>Step 7: Local PCA on Uzbek Cohort</h1>
                 <p>Population structure analysis and visualization through principal component analysis</p>
                 <span class="step-badge">Completed — January 3-4, 2026</span>
@@ -516,7 +516,7 @@ PC2 explains: 11.51%
             <h3 style="margin-top: 30px; color: #555;">Result: Local PCA Plot</h3>
             <p style="color: #666; margin: 15px 0;">The PCA plot below shows clear population substructure within the Uzbek cohort. PC1 (28.93%) and PC2 (11.51%) capture ~40% of total genetic variance, revealing distinct ancestry clusters.</p>
             <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0;">
-                <img src="../images/PCA_UZB_Imputed.png" alt="PCA of UZB Imputed Data" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+                <img src="../../images/PCA_UZB_Imputed.png" alt="PCA of UZB Imputed Data" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
                 <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Figure 1: Local PCA showing population structure in 1,062 Uzbek samples across 88,315 independent SNPs</p>
             </div>
             
@@ -599,7 +599,7 @@ PC2 explains: 11.51%
             <div style="background: #e3f2fd; padding: 15px; border-left: 4px solid #1976d2; border-radius: 5px; margin: 30px 0 20px 0;">
                 <strong>➡️ Next Step: Step 8 – Global PCA with 1000 Genomes</strong>
                 <p style="margin: 10px 0 0 0; color: #555;">Compare Uzbek samples against 1000 Genomes reference populations to establish global ancestry context and identify admixture proportions.</p>
-                <a href="step8.html" style="color: #1976d2; text-decoration: none; font-weight: 500; margin-top: 10px; display: inline-block;">Proceed to Step 8 →</a>
+                <a href="../step8.html" style="color: #1976d2; text-decoration: none; font-weight: 500; margin-top: 10px; display: inline-block;">Proceed to Step 8 →</a>
             </div>
         </div>
     </div>
@@ -612,7 +612,7 @@ PC2 explains: 11.51%
             
             if (input.length > 2) {
                 resultsDiv.classList.add('active');
-                resultsDiv.innerHTML = `<p>Search functionality for: "${input}" - <a href="../index.html#steps">View all steps</a></p>`;
+                resultsDiv.innerHTML = `<p>Search functionality for: "${input}" - <a href="../../index.html#steps">View all steps</a></p>`;
             } else {
                 resultsDiv.classList.remove('active');
             }
