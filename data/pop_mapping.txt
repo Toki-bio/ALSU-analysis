@@ -5816,3 +5816,4 @@ CAT-222-AD	UZB_(no_phenotype)
 M15-09	UZB_(no_phenotype)
 M15-14	UZB_(no_phenotype)
 NA12236	EUR
+GWAS2026_0035	UZB_(no_phenotype)
