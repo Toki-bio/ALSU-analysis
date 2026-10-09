@@ -22,12 +22,13 @@ GitHub repo.
 
 ## 1a. How the genotyping documentation is organised (so nobody has to ask)
 
-One master file, copies in the places a session will look first. If you change one, change all four:
+One master file, copies in the places a session will look first (status 2026-10-09: the repo copy was swept into GitHub commit
+b83cd58 by another session; the DRAGEN copy was blocked by the permission classifier and is NOT placed). If you change the master, refresh the copies:
 
 | Copy | Why there |
 |---|---|
 | `C:\work\alsu\DATA_LOCATIONS.md` (this file, the master) | Local project folder; `CLAUDE.md` there links to it |
-| `/staging/ALSU-analysis/DATA_LOCATIONS.md` on DRAGEN | Next to the data, for anyone who logs in |
+| `/staging/tmp/ALSU_DATA_LOCATIONS.md` on DRAGEN | For anyone who logs in. (`/staging/ALSU-analysis/` itself is root-owned and refused the write on 2026-10-09; if an admin can place it there, that is the better spot.) |
 | `C:\work\ALSU-analysis\DATA_LOCATIONS.md` (GitHub Toki-bio/ALSU-analysis, linked from README) | Public repo, no participant IDs in it |
 | Pointers: skill `alsu-project`, memory `alsu-genotype-data-locations` | Loaded at session start |
 
@@ -114,7 +115,13 @@ On DRAGEN: `.../dragen_array_test_20260513/reports/caller_concordance_48_report_
   local copy `C:\work\alsu\uniparental\y_haplogroups_63males_2026-10-09.txt` (has sample IDs, keep local); method and numbers in
   `C:\work\alsu\uniparental\Y_HAPLOGROUPS.md`. Input was built from the GRCh38 VCF genotypes by liftOver to GRCh37
   (`run/hg38ToHg19.over.chain.gz`).
-- mtDNA haplogroups and HLA: not done yet (probe names and rCRS positions of the 987-1,138 MT probes are unchecked).
+- **SNAPPY 2.2 on the same 63 males:** `/staging/tmp/snappy_males/real/males_snappy.out` (tool and venv in `/staging/tmp/snappy_males/`);
+  58 of 63 agree with Yhaplo at 3-character level, see `Y_HAPLOGROUPS.md`.
+- **mtDNA haplogroups, 2026-10-09**, HaploGrep3 3.3.2 (`/staging/tmp/mt_haplo/hg3/`, tree phylotree-rcrs@17.3, `--chip`): 238 samples of the three 2026
+  batches `/staging/tmp/mt_haplo/new238_haplo.txt` (MT VCF `mt_new238.vcf.gz`), original 1,247 `/staging/tmp/mt_haplo/convsk_haplo.txt` (ConvSK MT genotypes
+  converted by `mt_convsk.py`, 883 sites after strand alignment to the DRAGEN VCF). Coarse (495 of 1,247 calls shorter than 3 characters). Not yet related to ancestry.
+- **Public summary page:** `steps/uniparental_markers.html` in the ALSU-analysis repo (no sample IDs); linked from index and the cohorts page.
+- HLA: not done (needs imputation; the array has about 7,760 probes in the MHC window).
 
 ## 9. Known contradictions in other docs (fix or keep in mind)
 

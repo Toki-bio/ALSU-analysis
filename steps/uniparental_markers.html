@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sex, Y-chromosome and mtDNA haplogroups - ALSU Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#4a4a4a 0%,#2a2a2a 100%);min-height:100vh;padding:24px;color:#1f2937}
+.wrap{max-width:1150px;margin:0 auto;background:#fff;border-radius:10px;padding:28px 32px}
+h1{font-size:26px;margin-bottom:6px}h2{font-size:19px;margin:26px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:4px}
+p,li{font-size:14px;line-height:1.55;margin:6px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}th,td{border:1px solid #d1d5db;padding:6px 9px;text-align:left;vertical-align:top}th{background:#f3f4f6}
+.tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600}
+.ok{background:#d1fae5;color:#065f46}.st{background:#fef3c7;color:#92400e}.no{background:#fee2e2;color:#991b1b}
+a{color:#0d47a1}.back{font-size:13px}code{font-size:12px}
+</style></head>
+<body><div class="wrap">
+<p class="back"><a href="../index.html">&larr; Back to pipeline</a> &middot; <a href="cohorts_and_sample_sets.html">Cohorts and sample sets</a> &middot; <a href="deprecated_old_runs.html">Deprecated runs and pending updates</a></p>
+<h1>Sex, Y-chromosome and mtDNA haplogroups</h1>
+<p>Last updated 2026-10-09. First pass, not part of the original pipeline. Tags: <span class="tag ok">verified</span> = computed from the named files on DRAGEN on 2026-10-09; <span class="tag st">stated</span> = quoted from a tool or document, not re-checked. No participant IDs are shown on this page; per-sample tables are kept locally.</p>
+
+<h2>1. Which genotype files contain X, Y and mtDNA probes</h2>
+<table>
+<tr><th>Batch</th><th>Samples</th><th>Caller</th><th>Format with all chromosomes</th><th>Probes (Y / MT / X)</th><th>Status</th></tr>
+<tr><td>Original cohort (ConvSK)</td><td>1,247</td><td>GenomeStudio</td><td>PLINK <code>winter2025/PLINK_301125_0312/ConvSK_raw</code></td><td>4,138 / 1,138 / 27,171</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>GWAS2026 (wave 1)</td><td>95</td><td>DRAGEN Array</td><td>VCF <code>dragen_array_test_20260513/gwas2026/gwas2026_merged.vcf.gz</code></td><td>3,822 / 987 / 27,516</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>GWAS2026-2 (wave 2)</td><td>95</td><td>DRAGEN Array</td><td>VCF <code>/staging/GWAS2026-2/gwas2026_2_merged.vcf.gz</code></td><td>3,822 / 987 / 27,516</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>48redone (rescans)</td><td>48</td><td>DRAGEN Array</td><td>VCF <code>dragen_array_test_20260513/gwas48redone/gwas48redone_merged.vcf.gz</code></td><td>3,822 / 987 / 27,516</td><td><span class="tag ok">verified</span></td></tr>
+</table>
+<p>The PLINK sets built from the 2026 batches and the expanded-cohort merges (<code>FULL_MERGED</code>, <code>dragen3_*</code>, <code>cross_gwas2026_alsu_winter/merged</code>) contain autosomes only, and the imputed data are autosomal. All <code>.fam</code> files have sex coded 0, so sex has to be inferred from the genotypes. A full map of the batches is in <code>DATA_LOCATIONS.md</code> (repository root).</p>
+
+<h2>2. Sex inferred from the genotypes</h2>
+<p>Male-like = chrY call rate &ge; 0.80 and chrX heterozygosity &lt; 0.05 (VCF batches); original cohort: <code>plink --check-sex</code>. The two signals separate the 2026 batches into two groups. Sample sheets were not used.</p>
+<table>
+<tr><th>Batch</th><th>Male-like</th><th>Female-like</th><th>Other</th><th>Status</th></tr>
+<tr><td>Original cohort</td><td>0</td><td>1,243</td><td>4 ambiguous (F statistic)</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>GWAS2026 (wave 1)</td><td>37</td><td>58</td><td>0</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>GWAS2026-2</td><td>26</td><td>68</td><td>1 in between</td><td><span class="tag ok">verified</span></td></tr>
+<tr><td>48redone</td><td>0</td><td>48</td><td>0</td><td><span class="tag ok">verified</span></td></tr>
+</table>
+<p>The original cohort is a pregnancy-history study and is female. The 63 males therefore all come from the two 2026 case/control batches, whose study is not identified in the files I read.</p>
+
+<h2>3. Y-chromosome haplogroups of the 63 males</h2>
+<p><b>Method.</b> The 3,822 array chrY sites (GRCh38) were lifted to GRCh37 with UCSC liftOver; 3,807 per batch were single-base variants and were kept. Both tools below use GRCh37 and an ISOGG-derived tree. Yhaplo: 23andMe, commit f72f88f, bundled ISOGG table of 2016-01-04. SNAPPY 2.2: commit f14f338 (2022-07-26). Both were first run on their own example data. 2,270 of the lifted array positions are positions in the Yhaplo ISOGG table.</p>
+<p><b>Check on the liftover.</b> The chip names 981 of its Y probes with their own GRCh37 position. The lifted position agrees with it within 1 bp for 981 of 981 <span class="tag ok">verified</span>. This tests the coordinate conversion, not the haplogroup calls.</p>
+<table>
+<tr><th>Clade (Yhaplo)</th><th>Males</th><th>Sub-clades seen</th></tr>
+<tr><td>R</td><td>29</td><td>R1a 22 (R-Z93 14), R1b 6, R2a 1</td></tr>
+<tr><td>C</td><td>8</td><td>C2b 6, C1b 1, C2e 1</td></tr>
+<tr><td>N</td><td>6</td><td>N1c 4, N 1, N1 1</td></tr>
+<tr><td>J</td><td>6</td><td>J2a 3, J1a 2, J2b 1</td></tr>
+<tr><td>Q</td><td>4</td><td>Q1a 4</td></tr>
+<tr><td>G</td><td>4</td><td>G2a 3, G1a 1</td></tr>
+<tr><td>L</td><td>2</td><td>L1a 2</td></tr>
+<tr><td>O, I, H, E</td><td>1 each</td><td>O1b, I2a, H1, E1b</td></tr>
+</table>
+<p><b>Second tool.</b> SNAPPY called all 63 (best-call scores 0.857&ndash;0.978, none below 0.85). All 63 agree with Yhaplo on the major clade letter, and 58 of 63 agree on the first three characters of the name. Of the five that differ, three are SNAPPY stopping higher in the tree (C vs C1b, C vs C2e, L1 vs L1a), one is N1 vs N2, and one is O1b vs O2b; the O case is probably the renaming of a branch between tree versions, which I did not check. On SNAPPY's own example data its best call differs from the authors' shipped results for 54 of about 1,230 samples, and I did not find out why.</p>
+<p><b>Support for the Yhaplo calls.</b> Each call has 285&ndash;428 derived SNPs on the path from the root (median 351). At the terminal node, however, 51 of 63 calls rest on a single derived SNP, 7 on two, and 5 on three or more (maximum 10). The broad clade is therefore well supported; the last step of the name is not.</p>
+<p><b>Caveats.</b> The array has probes chosen for a general-purpose chip, not a Y design. The ISOGG snapshot is from 2016, so names of deep branches are old. The two tools share the same data lineage and the same probes, so their agreement is not independent evidence. Yhaplo's licence is non-commercial. The mix (R1a-Z93 most common, C2, N, J, Q, G and L present) looks like what is expected for Central Asian men, which is reassuring but not a test.</p>
+
+<h2>4. mtDNA haplogroups</h2>
+<p><b>Method.</b> HaploGrep 3 v3.3.2, tree phylotree-rcrs 17.3, <code>--chip</code> mode (VCF from a genotyping chip). The 238 samples of the three 2026 batches were taken from the DRAGEN VCFs (987 MT sites, rCRS coordinates). For the original cohort the ConvSK MT genotypes were converted to a VCF: they were aligned to the DRAGEN REF/ALT alleles, 424 sites needed a strand flip, 52 palindromic (A/T, C/G) sites were dropped because their strand cannot be told, and 4 sites with non-matching alleles were dropped, leaving 883 sites. HaploGrep 3 was first run on its shipped microarray example.</p>
+<p><b>Check across callers.</b> The 48 rescanned people appear in both the ConvSK and the DRAGEN-Array files. At the 31,212 MT genotype comparisons, 30,815 agree (98.7%) <span class="tag ok">verified</span>. This is a weak check: the original chips of these 48 are the ones documented as failed.</p>
+<table>
+<tr><th>Set</th><th>Samples</th><th>Most frequent top-level groups (as reported)</th><th>Calls shorter than 3 characters</th></tr>
+<tr><td>2026 batches</td><td>238</td><td>H 54, U 28, C 21, D 20, A 13, T 13, M 12, J 11, HV 9, G 8, F 8, W 7, N 6, B 5</td><td>56</td></tr>
+<tr><td>Original cohort</td><td>1,247</td><td>H 283, U 189, D 128, T 91, J 65, A 48, M8 48, M9 47, N 44, R 40, F 36, M 31, B 29, W 26, C 24, K 20, I 16</td><td>495</td></tr>
+</table>
+<p>Quality scores are 0.50&ndash;1.00 (median 0.98 and 0.97). The labels are what the program reports, so &ldquo;M8&rdquo; and &ldquo;M9&rdquo; mean the call stops at that node, and groups that sit inside the M branch (C, D, G, Z and others) are listed under their own letters.</p>
+<p><b>Caveats.</b> (1) The array covers only part of the mtDNA tree, so many calls stay at coarse level: 495 of 1,247 and 56 of 238 are shorter than three characters. (2) In chip mode an untyped position is treated as matching the reference, so a sample with poor data tends to drift toward the reference haplogroup (H2a2a1). Among the 48 rescanned people, the pairs that disagree include original-cohort calls of H2a2a1 where the rescan gives I4b, W6 or V1. Of the 48, 39 agree on the top-level group and 20 on the full name. (3) The frequency table was not compared with published Uzbek mtDNA frequencies and was not related to ancestry components; that has not been done.</p>
+
+<h2>5. HLA</h2>
+<p>Not done. The raw array has about 7,760 probes in the HLA region (GRCh38 window 28.51&ndash;33.48 Mb), but classical alleles cannot be read from them directly. They would have to be imputed (for example with HIBAG or SNP2HLA), and how well that works for Central Asians depends on the reference panel used.</p>
+
+<h2>6. Where the files are</h2>
+<table>
+<tr><th>What</th><th>Path on DRAGEN</th></tr>
+<tr><td>Sex calls per sample</td><td><code>/staging/tmp/uniparental_probe/*_sexsummary.tsv</code>, <code>sexchk.sexcheck</code></td></tr>
+<tr><td>Yhaplo run and calls</td><td><code>/staging/tmp/yhaplo_males/run/out/haplogroups.males.txt</code></td></tr>
+<tr><td>SNAPPY run and calls</td><td><code>/staging/tmp/snappy_males/real/males_snappy.out</code></td></tr>
+<tr><td>mtDNA calls</td><td><code>/staging/tmp/mt_haplo/new238_haplo.txt</code>, <code>convsk_haplo.txt</code></td></tr>
+</table>
+</div></body></html>
