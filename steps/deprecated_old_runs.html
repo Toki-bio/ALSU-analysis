@@ -17,7 +17,7 @@ a{color:#0d47a1}.back{font-size:13px}
 <body><div class="wrap">
 <p class="back"><a href="../index.html">&larr; Back to pipeline</a></p>
 <h1>Deprecated old runs and pending updates</h1>
-<p>Last updated 2026-10-04. Results marked <span class="tag ok">current</span> use the NYGC 30x high-coverage GRCh38 reference. Everything in the second table is kept only for the record and should not be cited. Pages that still contain old numbers carry a banner and are listed as <span class="tag pend">pending update</span>.</p>
+<p>Last updated 2026-10-09. Results marked <span class="tag ok">current</span> use the NYGC 30x high-coverage GRCh38 reference. Everything in the second table is kept only for the record and should not be cited. Pages that still contain old numbers carry a banner and are listed as <span class="tag pend">pending update</span>.</p>
 <p>Drafts, backups and older versions of pages that are not part of the pipeline are listed in the <a href="archive/index.html">archive index</a> (link audit 2026-10-04).</p>
 <p>Sample counts quoted across the site are explained on the <a href="cohorts_and_sample_sets.html">cohorts and sample sets</a> page.</p>
 
@@ -29,6 +29,12 @@ a{color:#0d47a1}.back{font-size:13px}
 <tr><td>PBS / FST, cohort of 1,047 and expanded cohort of 1,256</td><td><span class="tag ok">current</span></td><td>Previous Tier-1 candidates do not replicate (chr12 test site 12:22967890: EUR 2.6% in NYGC, 97% in the old file). The first NYGC-based run gave five new PBS peaks, but they were artefacts of my extraction: the sites lie inside repeats or next to overlapping indels in the NYGC call set (for example CA-repeat deletions at 2:30673774, a 12-bp insertion at 22:48293814), so single-base records were not comparable with the array genotypes; the Uzbek array and 1000G phase 3 agree with each other at these sites. After excluding every site with an overlapping indel, multiallelic or structural-variant record within 1 bp (8,573 of 82,744 sites), PBS finds no Tier 1, 2 or 3 candidate (maximum PBS 0.07). <strong>Conclusion: no population-specific selection signal is supported.</strong> Check used: all-site scan for Uzbek frequencies outside the range of the four reference populations (6 of 81,986 sites, five of them these peaks).</td></tr>
 <tr><td>ADMIXTURE and PCA, cohort of 1,047 (3,759 samples with reference; 60,019 LD-pruned SNPs; K=2&ndash;8, 3 seeds)</td><td><span class="tag ok">current</span></td><td>Reference populations separate cleanly at K=4. CV error has no clear minimum (elbow at K=4&ndash;5); at K=7 about half of the Uzbek ancestry forms a component absent from the references. Self-reported ethnicity and birthplace are both significantly associated with the ancestry components.</td></tr>
 <tr><td>ADMIXTURE and PCA, expanded cohort of 1,256 (3,968 samples with reference; 64,959 LD-pruned SNPs; K=2&ndash;8, 2 seeds)</td><td><span class="tag ok">current</span></td><td>Same picture as the 1,047 cohort: Uzbek ancestry at K=4 about 50% EUR-like, 30% EAS-like, 19% SAS-like; ethnicity and birthplace significantly associated with the components. Figures: see step11.</td></tr>
+<tr><td>Top F<sub>ST</sub> SNPs, per-chromosome F<sub>ST</sub>, allele-frequency mixture fit, chr22 all-SNV F<sub>ST</sub> check</td><td><span class="tag ok">current</span></td><td>Top 30 UZB&ndash;EUR SNPs are admixture markers (mixture fit r = 0.994); array-panel F<sub>ST</sub> is about 15% below all-SNV F<sub>ST</sub> between Eurasian groups, ordering unchanged. Pages step9, step14 (rebuilt 2026-10-04).</td></tr>
+<tr><td>PBS statistics, top 15, branch-range check, fate of the eight earlier candidates</td><td><span class="tag ok">current</span></td><td>step10, step10_pbs_candidates, step12 (annotation of top-ranking SNPs).</td></tr>
+<tr><td>Global PCA (3,968 samples, 64,959 SNPs), nearest-reference labels</td><td><span class="tag ok">current</span></td><td>step8: PC4 separates the cohort from all references; one cohort sample lies in the African cluster (flagged, not excluded).</td></tr>
+<tr><td>LD decay, Uzbek vs NYGC groups (30,000 SNPs)</td><td><span class="tag ok">current</span></td><td>step13.</td></tr>
+<tr><td>Ancestry by nationality and birthplace (ID-keyed, with controls); F<sub>ROH</sub> vs ancestry</td><td><span class="tag ok">current</span></td><td>step11 (added section), step15 section 7.</td></tr>
+<tr><td>Relatedness set (1,193): ancestry distances on projected K=4; hub samples</td><td><span class="tag ok">current</span></td><td>Five poor-quality samples account for 98% of PI_HAT &ge; 0.185 pairs and are not in the final cohort; the K=5 distance conclusion is withdrawn. admixture_aware_relatedness.</td></tr>
 </table>
 
 <h2>2. Deprecated old runs</h2>
@@ -41,16 +47,13 @@ a{color:#0d47a1}.back{font-size:13px}
 <tr><td>&ldquo;Ethnicity is not significant / not a confounder&rdquo; (56 Kruskal&ndash;Wallis tests)</td><td>Sample matching used line position instead of sample ID. Corrected result: significant at every K.</td><td>step11 &sect;6.1, step16, next_steps (already corrected)</td></tr>
 </table>
 
-<h2>3. Pending update</h2>
+<h2>3. Pending, open and closed items</h2>
+<p>The live status table is on <a href="next_steps.html">next steps</a>. Short list as of 2026-10-09:</p>
 <ul>
-<li>step9 FST tables: the pairwise values are now recomputed on the NYGC reference (all ten pairs, step14 current-results block, 2026-10-04); the step9 tables themselves still show the old run. The &ldquo;FST = 0.998&rdquo; loci (chr9 14.8 Mb, chr1 40.9 Mb) could not be reproduced (not SNPs in NYGC 30x, absent from the Uzbek imputed data) and are most likely artefacts; do not cite.</li>
-<li>step10, step12, step13: candidate lists and functional annotation of the old candidates.</li>
-<li>step11: current results added at the top, old body kept below as deprecated. next_steps: body rewrite with the new SNP counts, K choice and covariate recommendation still pending.</li>
-<li>step16: covariates re-checked (the Uzbek-only PCs are unaffected by the reference; ethnicity only partly captured). The sensitivity GWAS has been run and does not change the results (see step16).</li>
-<li>Figures for the 1,047 cohort and the final report (the 1,256 figures are on step11).</li>
-<li>Pages carrying a banner but not yet rewritten: step8 (old global PCA), admixture_aware_relatedness (old K=5 ancestry), manuscript_uzb and manuscript_rpl (PBS candidate text), robustness_analyses (PBS-candidate tests), relatedness slides (ancestry distances checked: r = 0.988 old vs new, text not regenerated).</li>
-<li>Population history (ARG pilot, steps/arg_methods_pilot.html): only a chr22 pilot exists; the plan to corroborate the PBS candidates is withdrawn; Ne(t) and divergence times still to be done.</li>
-<li>Claim ledger (audit/claim_ledger.tsv, 2,071 claims from 15 pages; 85% name no source file) &mdash; triage in progress. Stale claims already identified in page bodies: &ldquo;8 PBS Tier-1 SNPs&rdquo; (step10, step12, step16, manuscripts, robustness_analyses), &ldquo;490 candidates enriching HLA/MHC genes&rdquo; (manuscript_uzb; traced: stale V1 result, not supported by any current data), RPL association of the withdrawn candidates (step16, robustness_analyses).</li>
-<li>Final project report and presentation figures (regeneration).</li>
+<li><strong>Closed or done:</strong> step9, step10, step10_pbs_candidates, step12, step13, step14 rebuilt; step8 rebuilt; step11 and step15 extended; both manuscripts and the relatedness page rewritten; archive index and link audit; deck slides 6, 10, 11 and report figures 24, 25 replaced, report additions 27a and 29a.</li>
+<li><strong>Not completed (server outage 2026-10-07):</strong> Central Asian reference (Kazakh GSA, 224 samples; pipeline toy-tested) and recent Ne(t) (hap-ibd/IBDNe; toy-tested on chr22).</li>
+<li><strong>Still old:</strong> deck slides 3&ndash;5, 7, 9 and slide 11 MDS; report figures outside the rebuilt sections; step16 body (RPL GWAS) apart from banners and the withdrawn Tier 1; next_steps sections 1&ndash;6 below the new status table (kept for the record).</li>
+<li><strong>Open questions for the project owner:</strong> provenance of the sample inside the African cluster (code 03-84); whether to re-examine the 20% missingness cut-off of the original array QC; whether to move the 69 loose root files into <code>scripts/legacy/</code>; one participant name remains in git history.</li>
+<li>Claim ledger (audit/claim_ledger.tsv, 2,071 claims from 15 pages) predates the rebuild and should be regenerated; most pages it covers have changed.</li>
 </ul>
 </div></body></html>

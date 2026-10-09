@@ -6,6 +6,10 @@ https://toki-bio.github.io/ALSU-analysis/steps/step1.html
 
 This directory contains comprehensive HTML documentation for the ALSU Uzbek Pregnancy Loss Cohort genotyping imputation and quality control pipeline.
 
+## Where is the genotyping data?
+
+See [DATA_LOCATIONS.md](DATA_LOCATIONS.md): every GSA batch (original ConvSK, GWAS2026, GWAS2026-2, 48redone), its format and DRAGEN path, which files keep X/Y/MT, and which doc describes what.
+
 ## Structure
 
 - **index.html** - Main page with roadmap of all 6 pipeline steps

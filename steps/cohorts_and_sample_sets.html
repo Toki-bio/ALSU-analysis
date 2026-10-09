@@ -46,6 +46,11 @@ a{color:#0d47a1}.back{font-size:13px}code{font-size:12px}
 <tr><td>1,011 of 1,047; 1,057 of 1,256</td><td>Uzbek-cohort samples matched by sample ID to a nationality code in the phenotype sheet (the 2026 batch largely lacks phenotype rows)</td><td><span class="tag ok">verified</span></td></tr>
 <tr><td>1,021</td><td>Samples with both an Uzbek-only PCA position and an ancestry estimate (used for the covariate re-check)</td><td><span class="tag ok">verified</span></td></tr>
 <tr><td>1,026 (old test), 992 (old map)</td><td>Matches used in the earlier, superseded ethnicity test and K=5 birthplace map</td><td><span class="tag st">stated</span>; deprecated</td></tr>
+<tr><td>1,096 of 1,193</td><td>Samples of the 1,193 relatedness set (1,098 ALSU + 95 GWAS2026) whose ID is also in the final 1,256 cohort; 97 are not (QC removed them or IDs differ)</td><td>verified 2026-10-04 (exact ID match to the NYGC ADMIXTURE .fam)</td></tr>
+<tr><td>6 of 1,193</td><td>Samples that appear in 205&ndash;1,184 of the 6,228 flagged pairs (PI_HAT &ge; 0.185); poor-quality (11&ndash;18% missing, excess heterozygosity); none is in the final cohort</td><td>verified 2026-10-04</td></tr>
+<tr><td>17,484 SNPs</td><td>SNPs shared (same alleles) between the 1,193 array merge and the NYGC ADMIXTURE input; used to project those samples onto fixed K=4 frequencies</td><td>verified 2026-10-04</td></tr>
+<tr><td>3,968 = 1,256 + 2,712</td><td>Global PCA/ADMIXTURE sample set. The public eigenvector file had 3,967 rows until 2026-10-04: one cohort sample whose ID was a participant name had been dropped; restored under the alias GWAS2026_0035</td><td>verified 2026-10-04</td></tr>
+<tr><td>224 (Kazakh GSA, EVA PRJEB89820)</td><td>Public Central Asian genotypes (GSA-24v2, GRCh37) downloaded to DRAGEN; merge with the panel tested on 40 samples; full merge not done</td><td>downloaded; analysis not completed</td></tr>
 </table>
 <p>The 1,193 merge was confirmed on 2026-10-04: <code>merged.fam</code> is at the path the relatedness page gives, with 1,098 ALSU and 95 GWAS2026 samples.</p>
 </div></body></html>
