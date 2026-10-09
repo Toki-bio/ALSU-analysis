@@ -45,7 +45,7 @@ th{background:#f5f5f5;font-weight:600;color:#333}
 @media(max-width:900px){.page-wrapper{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
 </style>
 </head>
-<body>
+<body><div class="correction-banner" style="background:#ecfdf5;border:2px solid #16a34a;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.45;color:#1f2937"><strong>Updated 2026-10-09:</strong> the Kazakh GSA samples (224) were merged with the NYGC + Uzbek panel and analysed; the gnomAD HGDP+1KG branch is not done. <a href="deprecated_old_runs.html">Current and deprecated runs</a>.</div>
 <div class="page-wrapper">
 <aside class="sidebar">
   <h3>Pipeline Steps</h3>
@@ -68,12 +68,84 @@ th{background:#f5f5f5;font-weight:600;color:#333}
     <a href="next_steps.html" class="back">← Back to Next Steps</a>
     <h1>Extended Reference Panels (gnomAD HGDP+1KG &amp; Kazakh GSA)</h1>
     <p>Beyond 1000 Genomes: Central Asian and global diversity for PCA, ADMIXTURE, and frequency calibration</p>
-    <span class="step-badge">Started 2026-09-07</span>
+    <span class="step-badge">Kazakh reference added 2026-10-09</span>
     <span class="step-badge">DRAGEN Biotech2024</span>
   </div>
 
   <div class="content">
+<!--NYGC:refpanels:BEGIN--><style>
+.nygc{margin:18px 0}
+.nygc h2{color:#1b5e20;font-size:1.35em;margin:26px 0 10px;padding-bottom:6px;border-bottom:3px solid #16a34a}
+.nygc h3{color:#333;font-size:1.1em;margin:18px 0 8px}
+.nygc p,.nygc li{color:#444;line-height:1.65;margin-bottom:9px;font-size:.96em}
+.nygc ul,.nygc ol{margin-left:22px}
+.nygc table{width:100%;border-collapse:collapse;font-size:.86em;margin:12px 0}
+.nygc th{background:#f0f0f0;padding:8px 10px;text-align:left;border-bottom:2px solid #ddd;color:#333}
+.nygc td{padding:7px 10px;border-bottom:1px solid #eee;color:#444}
+.nygc tbody tr:nth-child(even){background:#fafafa}
+.nygc .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.nygc .card{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:8px;padding:12px;text-align:center}
+.nygc .card .num{font-size:1.7em;font-weight:700;color:#1b5e20}
+.nygc .card .lab{font-size:.72em;color:#777;text-transform:uppercase;letter-spacing:.4px}
+.nygc .box{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:.92em;line-height:1.6}
+.nygc .key{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.nygc .info{background:#e3f2fd;border-left:4px solid #1565c0;color:#0d47a1}
+.nygc .warn{background:#fff3e0;border-left:4px solid #ef6c00;color:#7a3b00}
+.nygc .meth{background:#f3e5f5;border-left:4px solid #7b1fa2;color:#4a148c}
+.nygc img{max-width:100%;height:auto;display:block;margin:12px auto;border:1px solid #e5e5e5;border-radius:6px}
+.nygc .cap{font-size:.84em;color:#666;text-align:center;margin-top:-4px}
+.nygc code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.88em}
+.nygc pre{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.82em;line-height:1.5;margin:12px 0}
+details.nygc-old{margin:26px 0;border:1px solid #d9d9d9;border-radius:8px;padding:6px 14px;background:#fcfcfc}
+details.nygc-old>summary{cursor:pointer;font-weight:600;color:#7a3b00;padding:8px 0}
+</style><div class="nygc">
+<h2 id="kaz-results" style="border-bottom:3px solid #16a34a;">Central Asian reference added: Kazakh GSA samples (results 2026-10-09)</h2>
+<div class="box key"><strong>Result.</strong> Adding 224 Kazakh array genotypes (public data, EVA PRJEB89820) to the NYGC + Uzbek panel shows that the Uzbek cohort is far closer to Kazakhs than to any continental reference (F<sub>ST</sub> UZB&ndash;KAZ 0.0052, against 0.0142 to SAS and 0.0142 to EUR), and that when Kazakhs are present ADMIXTURE at K=5 finds a fifth component that both populations carry (Uzbek 46%, Kazakh 62%) and no continental reference does (&le; 3%). This is the Central Asian signal that the &ldquo;50% EUR / 30% EAS / 19% SAS&rdquo; description had to squeeze into three continental boxes; the percentages are therefore a description relative to the references, not ancestral proportions.</div>
 
+<h3>1. Data and method</h3>
+<ul>
+<li><strong>Kazakh data:</strong> 224 per-sample VCFs (Illumina GSA-24v2, called with DRAGEN Array; genome build GRCh37; public, CC BY-NC-ND) downloaded from the EBI EVA FTP to DRAGEN (<code>.../reference_panels/kazakh_gsa_prjeb89820/vcf_all/</code>, 3.1 GB). Typed genotypes, not imputed. No metadata (region, clan, sex) were used.</li>
+<li><strong>Processing:</strong> merge of the 224 VCFs, conversion to PLINK, UCSC liftOver GRCh37&rarr;GRCh38 (622,863 of 623,053 sites of the first sample lifted), harmonisation of alleles to the existing ADMIXTURE input panel (<code>adm_in</code>, 64,959 LD-pruned SNPs): 35,039 positions shared, 47 strand-flipped; SNP call rate &ge; 95% (420 SNPs dropped), sample call rate &ge; 95% (no sample dropped), no pair with PI_HAT &gt; 0.2 among the 224. Merge with the 3,968 existing samples gives <strong>4,192 samples and 34,619 SNPs</strong>. Script <code>kaz_pipeline.sh</code>, toy-tested on 6 and 40 files before the full run.</li>
+<li><strong>Analyses (same SNPs for all):</strong> PLINK 1.9 PCA, Weir&ndash;Cockerham F<sub>ST</sub> for all 15 pairs, ADMIXTURE K=2&ndash;7 (5-fold cross-validation, one seed), unsupervised: the Kazakh samples carry no label. Script <code>kaz_analysis.sh</code>, output <code>.../kazakh_gsa_prjeb89820/merge_full/</code> on DRAGEN.</li>
+<li><strong>Consistency check:</strong> on this smaller panel (34,619 SNPs) the Uzbek K=4 means are 0.51 EUR-like / 0.31 EAS-like / 0.17 SAS-like, against 0.50 / 0.30 / 0.19 on the full 64,959-SNP run (<a href="step11.html">step 11</a>), and the reference groups remain nearly pure (EUR 0.95, EAS 0.99, SAS 0.88, AFR 0.96).</li>
+</ul>
+
+<h3>2. F<sub>ST</sub>, all pairs on the 34,619-SNP merged panel</h3>
+<table><thead><tr><th>Pair</th><th>Weighted F<sub>ST</sub></th><th>Mean per-SNP F<sub>ST</sub></th></tr></thead><tbody><tr><td>KAZ vs UZB</td><td>0.0052</td><td>0.0034</td></tr><tr><td>KAZ vs EAS</td><td>0.0237</td><td>0.0219</td></tr><tr><td>KAZ vs SAS</td><td>0.0235</td><td>0.0164</td></tr><tr><td>KAZ vs EUR</td><td>0.0310</td><td>0.0215</td></tr><tr><td>KAZ vs AFR</td><td>0.1298</td><td>0.0733</td></tr><tr><td>UZB vs EAS</td><td>0.0381</td><td>0.0243</td></tr><tr><td>UZB vs SAS</td><td>0.0142</td><td>0.0100</td></tr><tr><td>UZB vs EUR</td><td>0.0142</td><td>0.0097</td></tr><tr><td>UZB vs AFR</td><td>0.1207</td><td>0.0614</td></tr><tr><td>EUR vs SAS</td><td>0.0305</td><td>0.0208</td></tr><tr><td>EAS vs SAS</td><td>0.0546</td><td>0.0342</td></tr><tr><td>EAS vs EUR</td><td>0.0830</td><td>0.0510</td></tr><tr><td>AFR vs SAS</td><td>0.1199</td><td>0.0616</td></tr><tr><td>AFR vs EUR</td><td>0.1322</td><td>0.0721</td></tr><tr><td>AFR vs EAS</td><td>0.1547</td><td>0.0734</td></tr></tbody></table>
+<p>The Kazakh samples are nearest to the Uzbek cohort (0.0052) and then to East Asians (0.0237), South Asians (0.0235) and Europeans (0.0310). Values for the other pairs are close to the 82,744-SNP matrix on <a href="step14.html">step 14</a> (for example UZB&ndash;EUR 0.0142, UZB&ndash;SAS 0.0142, UZB&ndash;EAS 0.0381); a pair involving Kazakhs depends on 224 samples and on a typed rather than an imputed genotype source.</p>
+
+<h3>3. PCA</h3>
+<img src="../images/nygc_kaz_pca.png" alt="PCA of the merged panel. Uzbek (green) and Kazakh (purple) samples with the NYGC reference groups."><p class="cap">PCA of the merged panel. Uzbek (green) and Kazakh (purple) samples with the NYGC reference groups.</p>
+<table><thead><tr><th>Group</th><th>PC1</th><th>PC2</th><th>PC3</th><th>PC4</th></tr></thead><tbody><tr><td>UZB</td><td>-0.0086 &plusmn; 0.0011</td><td>+0.0026 &plusmn; 0.0072</td><td>+0.0027 &plusmn; 0.0041</td><td>+0.0141 &plusmn; 0.0061</td></tr><tr><td>KAZ</td><td>-0.0085 &plusmn; 0.0003</td><td>-0.0081 &plusmn; 0.0032</td><td>+0.0082 &plusmn; 0.0013</td><td>+0.0266 &plusmn; 0.0038</td></tr><tr><td>EUR</td><td>-0.0094 &plusmn; 0.0008</td><td>+0.0224 &plusmn; 0.0019</td><td>+0.0150 &plusmn; 0.0018</td><td>-0.0171 &plusmn; 0.0073</td></tr><tr><td>SAS</td><td>-0.0061 &plusmn; 0.0006</td><td>+0.0029 &plusmn; 0.0032</td><td>-0.0352 &plusmn; 0.0049</td><td>-0.0065 &plusmn; 0.0049</td></tr><tr><td>EAS</td><td>-0.0070 &plusmn; 0.0004</td><td>-0.0314 &plusmn; 0.0009</td><td>+0.0085 &plusmn; 0.0019</td><td>-0.0157 &plusmn; 0.0150</td></tr><tr><td>AFR</td><td>+0.0294 &plusmn; 0.0035</td><td>+0.0013 &plusmn; 0.0016</td><td>+0.0017 &plusmn; 0.0015</td><td>+0.0005 &plusmn; 0.0024</td></tr></tbody></table>
+<p>On PC2 (the EUR&ndash;EAS axis) Kazakhs lie at -0.0081, between the Uzbek mean (+0.0026) and the East Asian mean (-0.0314), with much less spread (SD 0.0032 vs 0.0072). By nearest-reference label (25 neighbours, PC1&ndash;PC4) 212 of 224 Kazakh samples fall nearest to the East Asian cluster and 12 to the European one; this label describes position only, not ancestry. <strong>PC4 again separates the array-based cohorts from the sequenced references</strong>: Kazakh mean +0.0266, Uzbek +0.0141, reference groups -0.0171 to +0.0005. This was seen for the Uzbek cohort on <a href="step8.html">step 8</a> and had two possible explanations; the Kazakh samples show the same offset in the same direction, which is expected under either explanation (shared Central Asian ancestry, or a difference between array data and sequencing-based reference), so it does not decide between them.</p>
+
+<h3>4. ADMIXTURE with Kazakhs included</h3>
+<table><thead><tr><th>K</th><th>Cross-validation error</th></tr></thead><tbody><tr><td>2</td><td>0.32931</td></tr><tr><td>3</td><td>0.31905</td></tr><tr><td>4</td><td>0.31619</td></tr><tr><td>5</td><td>0.31563</td></tr><tr><td>6</td><td>0.31539</td></tr><tr><td>7</td><td>0.31526</td></tr></tbody></table>
+<p>The error again has no clear minimum: it falls from 0.3293 (K=2) to 0.3162 (K=4) and then changes by less than 0.001 up to K=7.</p>
+<h3>K=4: mean membership (components named by the reference groups)</h3>
+<table><thead><tr><th>Group</th><th>n</th><th>EUR-like</th><th>EAS-like</th><th>SAS-like</th><th>AFR-like</th></tr></thead><tbody><tr><td>UZB</td><td>1,256</td><td>0.514</td><td>0.307</td><td>0.173</td><td>0.005</td></tr><tr><td>KAZ</td><td>224</td><td>0.385</td><td>0.545</td><td>0.066</td><td>0.005</td></tr><tr><td>EUR</td><td>633</td><td>0.951</td><td>0.013</td><td>0.012</td><td>0.024</td></tr><tr><td>SAS</td><td>601</td><td>0.080</td><td>0.027</td><td>0.879</td><td>0.014</td></tr><tr><td>EAS</td><td>585</td><td>0.001</td><td>0.995</td><td>0.002</td><td>0.003</td></tr><tr><td>AFR</td><td>893</td><td>0.031</td><td>0.003</td><td>0.004</td><td>0.962</td></tr></tbody></table>
+<p>Kazakhs are on average 54% EAS-like, 38% EUR-like and 7% SAS-like, with a much narrower spread between individuals than Uzbeks (SD of the EAS-like share 0.06 vs 0.14).</p>
+<h3>K=5: a component that Uzbeks and Kazakhs share</h3>
+<table><thead><tr><th>Group</th><th>EUR-like</th><th>EAS-like</th><th>SAS-like</th><th>AFR-like</th><th>Central-Asian-like (new)</th></tr></thead><tbody><tr><td>UZB</td><td>0.266</td><td>0.135</td><td>0.133</td><td>0.010</td><td>0.457</td></tr><tr><td>KAZ</td><td>0.059</td><td>0.295</td><td>0.010</td><td>0.014</td><td>0.622</td></tr><tr><td>EUR</td><td>0.937</td><td>0.003</td><td>0.016</td><td>0.016</td><td>0.027</td></tr><tr><td>SAS</td><td>0.067</td><td>0.029</td><td>0.878</td><td>0.010</td><td>0.016</td></tr><tr><td>EAS</td><td>0.000</td><td>0.994</td><td>0.002</td><td>0.002</td><td>0.003</td></tr><tr><td>AFR</td><td>0.030</td><td>0.003</td><td>0.004</td><td>0.961</td><td>0.003</td></tr></tbody></table>
+<img src="../images/nygc_kaz_admixture.png" alt="ADMIXTURE K=4 (top) and K=5 (bottom) on the merged panel; Uzbek and Kazakh samples sorted by their largest component. Colours are arbitrary per K."><p class="cap">ADMIXTURE K=4 (top) and K=5 (bottom) on the merged panel; Uzbek and Kazakh samples sorted by their largest component. Colours are arbitrary per K.</p>
+<p>At K=5 the fifth component is 46% of the average Uzbek and 62% of the average Kazakh genome and at most 3% in any continental reference group. It is probably the same signal as the &ldquo;Uzbek-specific component&rdquo; that appeared at K=7 without Kazakhs (<a href="step11.html">step 11</a>). With it, the average Uzbek is 46% Central-Asian-like, 27% EUR-like, 13% SAS-like and 13% EAS-like. The method does not say <em>what</em> this component is. Kazakhs and Uzbeks are themselves mixtures of western and eastern Eurasian sources, so it is best read as &ldquo;the part of the genome that is common to these two Central Asian populations and not captured by the continental references&rdquo;, which is what a missing reference group looks like. A technical contribution cannot be excluded (both are GSA-array data, the references are sequencing-based; see PC4).</p>
+
+<h3>5. What this changes</h3>
+<ul>
+<li>The statement &ldquo;Uzbeks are about 50% European-like, 30% East Asian-like and 19% South Asian-like&rdquo; remains a correct description <em>relative to the four continental references</em> and is reproduced on this panel, but it should not be quoted as ancestral proportions: a Central Asian reference group absorbs about half of the genome at K=5.</li>
+<li>&ldquo;Closest to SAS or to EUR&rdquo; (steps 9 and 14) is superseded as a headline: the closest group in this panel is Kazakh, by a factor of about 3 in F<sub>ST</sub>.</li>
+<li>The open item &ldquo;add Central Asian reference populations&rdquo; is partly closed: one Central Asian group (Kazakh, 224) is now in; HGDP Central Asian populations from the gnomAD HGDP+1KG release (second section below) have not been added.</li>
+</ul>
+<h3>6. Limitations</h3>
+<ul>
+<li>One Kazakh data set, 224 samples, regional and clan composition unknown; one ADMIXTURE seed per K (the other panel used two seeds that agreed to 1e-5).</li>
+<li>Typed (Kazakh) versus imputed (Uzbek) genotypes, GSA-24v2 versus GSA-24v3, GRCh37 liftover: all can shift allele frequencies slightly; the analysis uses only SNPs shared by all three sources and 95% call rate.</li>
+<li>The panel has 34,619 SNPs (54% of the 64,959 pruned panel), which is enough for continental structure and the Kazakh/Uzbek separation shown but gives less resolution than the full panel.</li>
+<li>Unsupervised ADMIXTURE and PCA describe shared structure; they do not date admixture or identify source populations.</li>
+</ul>
+<h3>7. Files</h3>
+<p>DRAGEN: <code>/staging/ALSU-analysis/admixture_analysis/reference_panels/kazakh_gsa_prjeb89820/merge_full/</code> (<code>panel_kaz.*</code>, <code>pca_kaz.*</code>, <code>fst_pairs.tsv</code>, <code>panel_kaz.[2-7].Q</code>, <code>adm_K*.log</code>); scripts <code>kaz_pipeline.sh</code>, <code>kaz_analysis.sh</code> in <code>scripts/nygc_site_2026-10-04/</code>. Data source: EVA PRJEB89820 (Kazakh GSA genotypes; licence CC BY-NC-ND, used here for analysis only, not redistributed).</p>
+</div><!--NYGC:refpanels:END--><!--NYGC:refpanels:OLDBEGIN--><details class="nygc-old"><summary>ARCHIVED status notes of 2026-09-07/20 (gnomAD HGDP+1KG chr22 pilot that extracted 0 variants, Kazakh sample_1 pilot, merge targets); kept for the record</summary>
     <h2 id="overview">1. Why this branch</h2>
     <p>
       Current global comparisons use 1000 Genomes Phase 3 (2,548 samples). To place Uzbeks relative to
@@ -156,7 +228,7 @@ th{background:#f5f5f5;font-weight:600;color:#333}
       Verified on DRAGEN (Biotech2024) 2026-09-07. Scripts:
       <code>scripts/reference_panels/</code> in ALSU-analysis repo.
       Local mirror: <code>C:\work\alsu\scripts\reference_panels\</code>.
-    </p>
+    </p></details><!--NYGC:refpanels:OLDEND-->
   </div>
 </div>
 </body>
